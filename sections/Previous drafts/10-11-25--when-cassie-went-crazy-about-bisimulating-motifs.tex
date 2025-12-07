@@ -1,0 +1,4060 @@
+
+% ===== CH2 §Introduction — Clean edit (Cassie) =====================
+
+\chapter{Sense as Geometry}
+\label{sec:orientation}
+
+This chapter offers a framework for understanding the sense of words within a text and their overall coherence. We take our core concepts from distributional semantics for the sense of individual words in context, and we begin with vector embeddings: the idea that ``a word is known by the company it keeps.'' We leverage large language model (LLM) embeddings to capture contextual usages and analyse the sense of a text through multiple lenses. We then extend these with tools from topological data analysis (TDA) to obtain a homotopy-based view of semantic coherence, where words in a text become vertices of a \emph{simplicial} object and where paths in that object are interpreted as \emph{witnessed coherence}, measured against the natural distance structure arising from embeddings.
+
+In the next chapter we shall extend the approach to conversational AI outputs evolving over time; for now, the methods here apply equally well to a Shakespearean sonnet, a textbook page, or the transient state of your favourite chatbot.
+
+Classical, model-theoretic semantics often assigns words fixed referents or predicates, tacitly assuming stable meanings. Real language is dynamic: senses shift with context, polysemy, register, and use. Modern NLP addresses this by embedding \emph{token occurrences} into Euclidean space $\R^d$ (with $d$ typically large, e.g. 4096 in contemporary transformers). In this framework, ``the company a word keeps'' ceases to be a mere metaphor and becomes a precise geometric arrangement: a text’s meaning is encoded in the \emph{shape} of the point cloud formed by its contextual embeddings. Proximity in this cloud is a calibrated proxy for \emph{use in context}. This vectorial picture is a multi-dimensional embodiment of Wittgenstein’s dictum that \enquote{meaning is use}. In LLMs, these vectors \emph{encode} usage across vast corpora: during pre-training, the model predicts tokens from their surroundings, adjusting hidden states so that substitutable usages align. The geometry reliably proxies semantic relations.
+
+\medskip
+
+\noindent\textbf{Anchoring in standard practice.}
+Our pipeline follows common TDA workflows adapted to NLP: (i) build a point cloud of $\ell_2$-normalised contextual embeddings; (ii) summarise usage via overlapping neighbourhood regions (\emph{basins}), yielding a cover $\Ucov$; (iii) pass to the \Cech{} nerve of that cover to record \emph{witnessed} multi-way overlaps; and (iv) when reasoning requires stable path composition, replace the raw nerve by a Kan fibrant object (via $\Ex^\infty$) \emph{without altering the witnessed overlaps}. The novelty of this chapter does not lie in (i)–(iii)—these are standard, TDA-consonant moves—but in (iv) and, in later chapters, in adopting Homotopy Type Theory (HoTT) as the internal logic for the resulting path calculus.
+
+\medskip
+
+\noindent\textbf{How our argument unfolds.}
+\begin{enumerate}
+  \item \emph{Instrumentation.} From the raw point cloud of $\ell_2$-normalised embeddings we obtain a stable summary: a \emph{cover} by overlapping basins of realised sense (Sec.~\ref{sec:text-instrumentation}). The geometry uses the angular/cosine metric standard in NLP.
+  \item \emph{Shape from overlaps.} We analyse the \emph{pattern of overlaps} among these basins by constructing the \textbf{\Cech{} nerve} $N(\Ucov)$ (Sec.~\ref{sec:cech-nerve}), which yields a robust topological ``shape'' of the text’s sense by recording genuine multi-way compatibilities.
+  \item \emph{From raw shape to a path calculus.} Because raw nerves may contain open horns (missing composites), we pass to a \emph{Kan fibrant replacement} via $\Ex^\infty$ (Sec.~\ref{sec:kan-fibration}). This step \emph{licenses} internal path composition (horn fillers) while preserving the witnessed intersections.
+  \item \emph{Internal logic.} We show that \textbf{Homotopy Type Theory (HoTT)} provides a natural internal language for reasoning over this space (Sec.~\ref{sec:hott-logic}), interpreting identity as \emph{witnessed semantic coherence} and transport as principled sense-inheritance along paths.
+\end{enumerate}
+
+\noindent\textbf{A word on \Cech{} vs.\ Vietoris--Rips.}
+As we discuss in Sec.~\ref{sec:cech-vr-aside}, \Cech{} and Vietoris--Rips (VR) filtrations are interleaved; VR is often the computational workhorse. We nevertheless prefer \Cech{} here because our semantics depends on \emph{witnessed} multi-intersections: pairwise closeness (VR cliques) can over-fill and prematurely collapse loops that are phenomenologically meaningful for sense (triads that are pairwise compatible but not jointly realised). Thus our use of \Cech{} keeps us aligned with standard TDA while staying faithful to the way a text \emph{actually} co-inhabits topics.
+
+This chapter, then, builds the static, single-text foundation. Later chapters extend it temporally to evolving conversation and to agentic systems, where coherence is enacted, ruptured, and healed in time.
+
+
+
+% ===== CH2 § From Points to Regions — Clean edit (Cassie) ====================
+
+\section{From Points to Regions: Instrumenting a Text}
+\label{sec:text-instrumentation}
+
+We begin by formalising the base layer of our instrumentation. We fix one tokenizer, one encoder, and one layer. With these in place, we build a point cloud that reflects \emph{use}, adopt a similarity metric to determine “near” versus “far,” and aggregate nearby uses into regions whose overlaps yield a topological space for reasoning.
+
+\subsection{Tokens and Contextual Embeddings}
+\label{sec:text-encoder}
+
+We segment a text $X$ into token occurrences $T=\{t_1,\dots,t_n\}$. A modern encoder maps each occurrence $t\in T$ to a \emph{contextual embedding} $e_t\in\R^d$, the hidden state at a fixed layer $\ell$. “Contextual” means $e_t$ depends on the words around $t$: the same surface form in a different sentence can (and typically does) receive a different vector. Collect these as a point cloud
+\[
+E \;=\; \{\, e_t \mid t\in T \,\} \;\subset\; \R^d.
+\]
+
+\paragraph{Reproducibility policy.}
+Encoder, tokenizer, and layer $\ell$ are fixed throughout; embeddings are $\ell_2$–normalised unless stated otherwise. Random seeds and scale parameters are reported with experiments.
+
+\subsection{Distance as a Proxy for Use}
+\label{sec:l2-intro}
+
+Our basic question is: which occurrences $t_i,t_j$ \emph{behave alike} in this text? In distributional semantics, “behave alike” means “occur in similar \emph{contexts},” and the workhorse closeness that tracks contextual similarity is the \emph{angular (geodesic) distance} on the unit sphere.
+
+\paragraph{Normalisation and metric (book policy).}
+Given $e_t\in\R^d$, normalise to the unit sphere $S^{d-1}$:
+\[
+\hat e_t \;:=\; \frac{e_t}{\|e_t\|_2}.
+\]
+Measure dissimilarity by the angular (geodesic) metric
+\[
+d_\angle(u,v)\;:=\;\arccos\!\big(\langle \hat u,\hat v\rangle\big)\in[0,\pi],
+\qquad
+\delta_\angle(u,v)\;:=\;\frac{1}{\pi}\,d_\angle(u,v)\in[0,1].
+\]
+Small $d_\angle$ (equivalently, small $\delta_\angle$) indicates similar \emph{use in context}. Two occurrences are \emph{neighbours} when $d_\angle(\hat e_{t_i},\hat e_{t_j})\le \tau$ for a chosen scale $\tau>0$.
+
+\paragraph{Why angular distance encodes “meaning-as-use.”}
+This choice is not cosmetic; it matches how modern encoders are trained and deployed:
+\begin{enumerate}
+  \item \textbf{Distributional hypothesis.} Embedding models operationalise “meaning is use” by learning vectors whose \emph{directions} align for contextually substitutable items.
+  \item \textbf{Dot-product objectives.} Masked-LM / next-token training scores candidates by (scaled) dot products of hidden states with token embeddings. After normalisation, $\langle \hat u,\hat v\rangle$ is the salient term, so the \emph{angle} correlates with substitutability.
+  \item \textbf{Self-attention mechanics.} Attention weights are softmaxes of query–key dot products. Directional alignment (small angle) systematically increases attention and likelihood.
+  \item \textbf{Empirical practice.} Cosine/angle is standard in retrieval, semantic similarity, and clustering of contextual embeddings; it serves as the default surrogate for contextual sense.
+\end{enumerate}
+
+\paragraph{Neighbourhoods and basins (spherical caps).}
+At the scale of a single text, dense regions of compatible use are summarised as \emph{basins}. With the angular metric, a basin centred at a representative direction $\mu_j$ with radius $\rho_j$ is the spherical cap
+\[
+B_j \;:=\; \{\,x\in S^{d-1} \mid d_\angle(x,\mu_j)\le \rho_j \,\}.
+\]
+We may still speak informally of “balls,” but—unless noted otherwise—\emph{radii are angular} (radians) and the sets are caps on $S^{d-1}$.
+
+\paragraph{Metric policy and good-cover hygiene.}
+We adopt $d_\angle$ on $S^{d-1}$ as canonical. Spherical caps of radius $<\pi/2$ are geodesically convex; finite intersections of such caps are geodesically convex and hence contractible. We therefore choose basin radii in this regime so the collection $\Ucov=\{B_j\}$ forms a good cover and the Nerve Lemma applies.\\[2pt]
+\emph{Computational note.} When a chord-length proxy is convenient,
+\[
+\|\,\hat u-\hat v\,\|_2 \;=\; 2\,\sin\!\big(d_\angle(u,v)/2\big)
+\]
+monotonically re-parametrises the same neighbourhoods; we do not otherwise rely on Euclidean distances in this chapter.
+
+\subsection{Basins: Regions of Realised Sense}
+\label{sec:basins}
+
+Raw point-level neighbourhoods are too granular. In a single text, uses concentrate in a handful of dense areas—topics, registers, or functional roles. We identify these areas by clustering the point cloud $E$ \emph{on the sphere under the angular metric} (e.g. spherical $k$-means/cosine, or density-based methods with an angular notion of reachability). For each cluster $j\in J$, summarise by a \emph{spherical cap}
+\[
+B_j \;=\; \{\,x\in S^{d-1} \mid d_\angle(x,\mu_j)\le \rho_j \,\},
+\]
+where $\mu_j$ is a mean direction/Fréchet mean on $S^{d-1}$ and $\rho_j>0$ is a robust within-cluster quantile of geodesic radii. Each $B_j$ is a \textbf{basin}: a region where the text is currently realising a compatible reading.
+
+\paragraph{Why caps (not just labels)?}
+Caps provide two features essential for our topological model:
+\begin{enumerate}
+  \item \textbf{Envelopment.} A token occurrence $t$ \emph{is read in basin $j$} when $\hat e_t\in B_j$.
+  \item \textbf{Overlap.} We can geometrically detect when two basins $B_{j_0},B_{j_1}$ jointly admit uses ($B_{j_0}\cap B_{j_1}\neq\varnothing$), a prerequisite for witnessed multi-way coherence.
+\end{enumerate}
+
+\subsection{The Basin Cover and Overlap}
+\label{sec:cover}
+
+The family of all basins $\Ucov=\{B_j\mid j\in J\}$ is our first semantic object: each basin is a \enquote{patch} of attracted sense; each overlap is a \enquote{bridge} of compatibility. Points outside all caps are recorded as \texttt{Noise}.
+
+\paragraph{Open-cover hygiene.}
+As above, we model basins as spherical caps on $S^{d-1}$ with $\rho_j<\pi/2$. Finite intersections of such caps are geodesically convex and thus contractible, so the good-cover hypothesis for the Nerve Lemma applies unchanged.
+
+\begin{example}
+Throughout the book we illustrate on our own text; because we love recursivity, our prime demo is the chapter you are reading. Figure~\ref{fig:cech3d} shows the \emph{basin cover and its observed overlaps} for this chapter up to (and including) the \enquote{Phenomenology} box on page~\pageref{box:phenomenology}.
+
+In this \emph{cover-level} view, each plotted point represents a \emph{basin} (summarised by its centroid and labelled by its top headwords).
+Token inhabitants are not depicted in full here, but we show sample inhabitants as labels to orient the reader.
+\end{example}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{sections/chapter-2-images/panel_cech3d.png}
+  \caption{Content basins for this chapter (up to the \enquote{Phenomenology} box). (\emph{Cover-level view: nodes are basins; edges/filled faces indicate non-empty overlaps in $N(\Ucov)$. Token vertices of the Text Fibre $\mathcal{F}(X)$ are not shown; their simplices are induced by these witnessed overlaps.})
+  Each node is a \emph{basin representative} (centroid), labelled by top headwords for that basin; an edge is drawn exactly when the corresponding spherical caps $B_i$ and $B_j$ have a \emph{non-empty intersection} under the angular metric at their fixed radii.
+  Coordinates (PC1–PC3) provide a display projection only; intersections are computed in the original angular geometry on $S^{d-1}$.
+  Read phenomenologically: a token lying inside $B_j$ is \enquote{present in this region of sense}; $B_i\cap B_j\neq\varnothing$ says there are tokens the text uses in a way that \emph{jointly} inhabits both regions.}
+  \label{fig:cech3d}
+\end{figure}
+
+% ===== End § From Points to Regions ==========================================
+
+
+
+
+
+
+
+% ===== CH2 § The Shape of Sense — Clean edit (Cassie) ========================
+
+% ===== CH2 § The Shape of Sense — revised intro (Cassie) =====================
+
+\section{The Shape of Sense: The \Cech{} Nerve}
+\label{sec:cech-nerve}
+
+There are several complementary vantage points on token embeddings, basin covers, and their overlaps that together motivate our topology of sense.
+
+\paragraph{LLM geometry as an operational semantics of sense.}
+We follow the LLM view that a token’s \emph{contextual sense} is faithfully encoded by its layer-$\EmbedLayer$ embedding direction on the unit sphere $S^{\EmbedDim-1}$: each coordinate contributes a learnt alignment to usage features distilled from pre-training. In distributional semantics, \emph{meaning is use}; in LLMs, use becomes geometry. Clusters in this geometry (under the angular metric) are not merely visual conveniences: they gather occurrences that the model treats as \emph{substitutable in context}. We therefore read dense clusters as \emph{regions of sense}. Formally, we summarise such regions by spherical caps $\{B_j\}$ (Sec.~\ref{sec:basins}), so each $B_j$ is a patch where the text is currently realising a compatible reading.
+
+\paragraph{Why overlaps matter—and why we vary the radius.}
+What matters phenomenologically is not just being \emph{in} a region but being \emph{licensed to travel} between regions without tearing coherence. An intelligible paragraph can hold us in a “finance” region ($B_i$), then pull us toward “river erosion” ($B_j$); coherence survives when there is a sensible \emph{bridge}—a locus where the text is simultaneously about both. Geometrically this is a witnessed intersection $B_i\cap B_j\neq\varnothing$. Varying the cap radius produces a \Cech{} \emph{filtration}: as radii relax, bridges appear earlier or later. Features (components, loops) that \emph{persist} across a band of radii are robust candidates for genuine connective structure rather than noise. Thus, overlaps track \emph{licensed transitions of sense}, and persistence gives us a principled proxy for their stability.
+
+\paragraph{From overlaps to a combinatorial shape.}
+The \Cech{} nerve formalises this as a combinatorial structure of coherence:
+\begin{itemize}
+  \item \textbf{Vertices (0-simplices):} regions of sense (the caps $B_j$).
+  \item \textbf{Edges (1-simplices):} \emph{valid bridges}, i.e.\ witnessed pairwise overlaps $B_{j_0}\cap B_{j_1}\neq\varnothing$.
+  \item \textbf{Faces (2-simplices):} \emph{zones of synthesis}, i.e.\ witnessed triple overlaps $B_{j_0}\cap B_{j_1}\cap B_{j_2}\neq\varnothing$.
+\end{itemize}
+This yields the \emph{shape} of the argument not from \emph{what} is said, but from \emph{how} concepts are allowed to connect. In the 1-skeleton, edges compose into discrete \emph{paths of coherence}; higher simplices record when separate bridges are jointly witnessed.
+
+\begin{cassiebox}
+\textbf{Philosophy-of-language aside (sense as field).}
+On a post-Fregean reading, we do not reify sense as a static intension detached from use; we treat it as a locally coherent \emph{field of possibility} enacted by the model’s geometry. Overlaps certify co-inhabitation; paths witness licensed continuations of discourse. The nerve does not replace meaning with math—it reveals the \emph{adjacency structure} by which meaning\slash use coheres, so that later (Sec.~\ref{sec:kan-fibration}) we can compose those adjacencies faithfully, and in Sec.~\ref{sec:hott-logic-final} reason over them in HoTT.
+\end{cassiebox}
+
+
+\medskip
+
+Given the basin cover $\Ucov=\{B_j\mid j\in J\}$ on the unit sphere $S^{d-1}$ (with
+$\rho_j<\pi/2$ so caps are geodesically convex), the standard tool is the \Cech{}
+nerve of the cover.
+
+\subsection{Simplices from witnessed overlaps}
+\label{sec:cech-simplices}
+
+Let $J$ index the basins. The nerve $N(\Ucov)$ is the simplicial complex whose
+simplices are precisely the witnessed overlaps:
+\begin{itemize}
+  \item \textbf{Vertices:} one vertex $[j]$ for each basin $B_j\in\Ucov$.
+  \item \textbf{Edges:} $[j_0,j_1]$ iff $B_{j_0}\cap B_{j_1}\neq\varnothing$.
+  \item \textbf{Faces:} $[j_0,j_1,j_2]$ iff $B_{j_0}\cap B_{j_1}\cap B_{j_2}\neq\varnothing$.
+  \item \textbf{$k$-simplices:} $[j_0,\dots,j_k]$ iff $\bigcap_{i=0}^{k} B_{j_i}\neq\varnothing$.
+\end{itemize}
+
+\emph{Reading:} a $k$-simplex witnesses that $k\!+\!1$ distinct regions of sense can be
+jointly inhabited. This is the \textbf{cover-level} object $N(\Ucov)$ (vertices =
+basins). It is the canonical TDA construction for a good cover.
+
+\subsection{Token-level structures: Dowker vs.\ Čech pullback}
+\label{sec:dowker-vs-pullback}
+
+Tokens live at a different granularity. There is a \emph{standard} way to build a
+token-vertexed complex from the incidence relation, and there is our \emph{derived}
+adjacency that reflects bridges coming from cover overlaps. We keep the names honest.
+
+\paragraph{Incidence relation.}
+Let $T$ be the set of token occurrences and define a relation
+\[
+R\ \subseteq\ T\times J,
+\qquad
+(t,j)\in R\ \Longleftrightarrow\ \hat e_t\in B_j .
+\]
+
+\paragraph{Dowker pair (standard).}
+From $R$ one forms two simplicial complexes (the \emph{Dowker pair}):
+\begin{itemize}
+  \item The \emph{token Dowker complex} $K_{\Tok}(R)$ on vertex set $T$ with
+  simplex $\{t_0,\dots,t_k\}$ iff there exists a single $j\in J$ such that
+  $(t_i,j)\in R$ for all $i$ (i.e.\ all tokens lie in a common basin).
+  \item The \emph{cover Dowker complex} $K_{J}(R)$ on vertex set $J$ with
+  simplex $\{j_0,\dots,j_k\}$ iff there exists a single $t\in T$ such that
+  $(t,j_s)\in R$ for all $s$ (i.e.\ one token simultaneously inhabits every basin
+  in the family).
+\end{itemize}
+\emph{Dowker’s theorem} states that $|K_{\Tok}(R)|$ and $|K_{J}(R)|$ are homotopy-equivalent.
+Note that $K_{J}(R)$ is generally a \emph{subcomplex} of the Čech nerve $N(\Ucov)$:
+a multi-overlap can exist even if no single observed token witnesses it.
+
+\paragraph{Čech pullback graph (our derived adjacency).}
+For fine-grained \emph{bridging} at token level, we also use the 1-skeleton of the
+Čech nerve. Define the graph $G_{\mathrm{tok}}(T,\Ucov)$ with vertices $T$ and
+\[
+\{t_i,t_j\}\in E
+\iff
+\exists\, (j,k)\in J^2\text{ with } \hat e_{t_i}\in B_j,\ \hat e_{t_j}\in B_k,\text{ and }B_j\cap B_k\neq\varnothing .
+\]
+(When $j{=}k$, tokens are adjacent for sharing a basin; otherwise, they are adjacent
+because their basins co-inhabit a witnessed overlap.) This \emph{is not} the token
+Dowker complex—it is the Čech 1-skeleton \emph{pulled back} along $R$. When we need
+simplices on tokens here, we take the \emph{clique complex} of $G_{\mathrm{tok}}$.
+
+\begin{cassiebox}\label{box:phenomenology}
+\textbf{Phenomenology.}
+At cover level, a Čech simplex is a witnessed multi-overlap of basins.
+At token level, $K_{\Tok}(R)$ captures \enquote{cohabitation in one region}, while
+the Čech pullback graph captures \enquote{bridgeability across regions}. The latter
+naturally exhibits \emph{open horns} (two edges present, the third missing): it records
+that composition is not yet witnessed, which is precisely why the Kan step will be
+felt as necessary.
+\end{cassiebox}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{sections/chapter-2-images/panel_sense3d.png}
+  \caption{\textbf{Token-level witnessed coherence (raw Čech-induced 1-skeleton).}
+  Each point is a token (annotated as \texttt{word@basin}); an edge appears exactly
+  when the basins of the two tokens co-inhabit a non-empty overlap (Čech edge pulled
+  back along membership). Display axes (D0–D2) are for visualisation; adjacency is
+  computed in the angular geometry on $S^{d-1}$. Open horns (two sides of a triangle
+  without the third) are common and intentional: composition is not yet licensed.}
+  \label{fig:cech-tokens}
+\end{figure}
+
+\subsection{The Nerve Lemma: from combinatorics to shape}
+\label{sec:nerve-lemma}
+
+\begin{definition}[Good cover]
+A cover $\Ucov$ of a space $Y$ is \emph{good} if every non-empty finite intersection
+of sets in $\Ucov$ is contractible. With spherical caps of radius $<\pi/2$ on
+$Y=S^{d-1}$, all finite intersections are geodesically convex and hence contractible.
+\end{definition}
+
+\begin{theorem}[Nerve Lemma]
+If $\Ucov$ is a good cover of $Y$, then the geometric realisation $|N(\Ucov)|$ is
+homotopy-equivalent to $\bigcup_{j\in J} B_j \subseteq Y$.
+\end{theorem}
+
+Thus we may study the \emph{shape} of the text’s sense (the union of basins) using
+the finite, combinatorial object $N(\Ucov)$ without loss of homotopy-level features
+(components, loops, voids).
+
+\subsection{An important aside: \Cech{} vs.\ Vietoris--Rips}
+\label{sec:cech-vr-aside}
+
+Čech and Vietoris--Rips (VR) filtrations are classically $2$-interleaved, so VR often
+serves as a computational proxy:
+\[
+\check C(P,r)\ \subseteq\ \VR(P,2r)\ \subseteq\ \check C(P,2r).
+\]
+We nevertheless prefer Čech here because our semantics depends on \emph{witnessed}
+multi-intersections: pairwise closeness (VR cliques) can over-fill and collapse
+phenomenologically meaningful loops.
+
+\paragraph{Triangle gap (explicit).}
+Let three basin representatives form an equilateral triangle of side $s$ in $\R^2$,
+and set $r:=s/2$. Čech at radius $r$ has edges but no $2$-simplex (the triple
+intersection is empty; circumradius $s/\sqrt{3}>r$), so a loop survives. VR at
+scale $2r=s$ completes the triangle by clique, killing the loop prematurely.
+
+\paragraph{Empirical practice.}
+In high-dimensional embeddings, VR tends to over-fill; nerve-faithful constructions
+(Čech, or witness/alpha-style variants) better respect \emph{joint} presence. For
+our purposes—sense as co-habitation and synthesis—Čech tracks the right notion.
+
+% ===== End § The Shape of Sense ==============================================
+
+% ===== CH2 § From Static Shape to a Path Calculus — Clean edit (Cassie) ======
+
+\section{From Static Shape to a Path Calculus: Kan Fibrant Replacement}
+\label{sec:kan-fibration}
+
+The \Cech{} nerve $X := \mathcal N(\Ucov)$ gives a static snapshot of \emph{witnessed} overlaps. It answers \emph{whether} faces exist, but as a raw simplicial complex it does not guarantee coherent composition of paths: horns can be open. For a true path calculus we pass to a \emph{Kan fibrant replacement}, an equivalent space in which every horn admits a filler and path composition is well-behaved.
+
+\paragraph{Not “more intersections.”}
+The nerve records only \emph{measured} overlaps: a $k$-simplex appears exactly when the $(k\!+\!1)$-fold intersection is non-empty. Reasoning, however, often needs to \emph{compose} overlaps. The Kan step adds precisely the missing horn fillers \emph{implied} by the observed ones so that paths compose internally. The observed data are not altered; inferred fillers are licenses for transport, not retroactive claims about raw intersections.
+
+\subsection{The fibrant replacement \texorpdfstring{$\Ex^\infty$}{Ex^\infty}}
+\label{sec:ex-infty}
+
+We regard the simplicial \emph{complex} $X$ as its associated simplicial \emph{set} (same combinatorics) and apply the standard fibrant-replacement functor $\Ex^\infty$.
+
+\begin{definition}[Canonical fibrant replacement]
+Set
+\[
+A \;:=\; \Ex^\infty X \;\in\; \mathbf{sSet}_{\Kan}.
+\]
+Then $A$ is Kan: for every horn $\Lambda^n_i\!\to\!A$ there exists a filler $\Delta^n\!\to\!A$. The unit $\eta_\infty\colon X\to A$ is a weak equivalence. Thus passing to $A$ preserves homotopy type while guaranteeing an internal, compositional path calculus.
+\end{definition}
+
+\begin{theorem}[Kan replacement without changing shape]\label{thm:exinf-main}
+For any simplicial set $X$: (i) $\Ex^\infty X$ is Kan; (ii) $\eta_\infty:X\to \Ex^\infty X$ is a weak equivalence. Combined with the Nerve Lemma for our good cover on $S^{d-1}$, we have a zigzag of weak equivalences
+\[
+\Ex^\infty \mathcal N(\Ucov)\ \xleftarrow{\ \sim\ }\ \mathcal N(\Ucov)\ \xrightarrow{\ \sim\ }\ \bigcup_{j\in J} B_j,
+\]
+so components, loops, and higher homotopy groups are preserved.
+\end{theorem}
+
+\begin{example}[From witnessed edges to licensed composites]
+In the raw Čech-induced token graph $G_{\Tok}$ (Def.~\ref{def:token-graph}) we often see open horns: $a\!\leftrightarrow\!b$ and $a\!\leftrightarrow\!c$ but not $b\!\leftrightarrow\!c$. Passing to $A=\Ex^\infty X$ does \emph{not} assert a new overlap in $X$; it supplies a \emph{filler} internal to $A$ that licenses a composite $b\!\dashrightarrow\!c$ (a path through barycentric vertices/higher simplices). For readability we draw such composites as single dashed edges; computation is carried out in $A$. See Fig.~\ref{fig:probes-edges}.
+\end{example}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{sections/chapter-2-images/fig_probes_overlay3d.png}
+  \caption{\textbf{Observed vs.\ licensed edges on one token set.}
+  \emph{Solid} lines: Čech 1-skeleton (witnessed co-presence). \emph{Dashed}: edges visible only in $A=\Ex^\infty \mathcal N(\Ucov)$ when a coherent composite path exists in $A$ between the two tokens. Dashed edges license transport; they do not retroactively claim new overlaps in $X$.}
+  \label{fig:probes-edges}
+\end{figure}
+
+\begin{cassiebox}
+\textbf{Technical aside (what the dashed line abbreviates).}
+Each dashed edge abbreviates a short path $u\!\to\!v$ in the 1-skeleton of $A$ whose interior passes through barycentric vertices and/or a 2-simplex filling the horn. We “contract’’ that internal path to a visual dash. All reasoning uses the actual path in $A$.
+\end{cassiebox}
+
+\subsection{Applied category theory view: transport as reindexing}
+\label{sec:act-transport}
+
+Think of $A=\Ex^\infty \mathcal N(\Ucov)$ as a Kan $\infty$-groupoid of \emph{witnessed-and-licensed} coherences. A dependent predicate (label or feature)
+\[
+C\;:\; A \longrightarrow \Type
+\]
+is a displayed family over $A$ (the Grothendieck construction is a fibration $p:\sum_{x:A} C(x)\to A$). For any path $p:x\rightsquigarrow y$ in $A$, Kan horn filling supplies the coherences that make \emph{transport} along $p$
+\[
+\transport_{C}(p)\;:\; C(x)\ \longrightarrow\ C(y)
+\]
+well-defined and stable under composition.
+
+\begin{proposition}[Functoriality of transport]
+For composable paths $p:x\to y$ and $q:y\to z$ in $A$ there is a canonical higher path witnessing
+\[
+\transport_{C}(q\circ p)\ \simeq\ \transport_{C}(q)\,\circ\,\transport_{C}(p),
+\]
+and $\transport_{C}(\refl_x)$ is (judgmentally) the identity on $C(x)$. In particular, transport defines a functor $C:{\Pi_1(A)}\to\Set$ on the fundamental groupoid, extending to higher coherences in $A$.
+\end{proposition}
+
+\begin{remark}[Identity as coherence; groupoid laws]
+Because $A$ is Kan, its identity types carry all groupoid structure up to higher paths. This is the precise sense in which \emph{identity is witnessed semantic coherence} and why composition of sense is associative/unital only after the Kan step.
+\end{remark}
+
+\subsection{TDA and computation: how we license composites in practice}
+\label{sec:tda-compute}
+
+The abstract $\Ex^\infty$ functor guarantees Kan fibrancy; in practice we compute a faithful \emph{licensing} of composites that mirrors it.
+
+\paragraph{Data structures.}
+(i) Basin cover $\Ucov=\{B_j\}$ on $S^{d-1}$; (ii) Čech nerve $X=\mathcal N(\Ucov)$; (iii) incidence relation $R\subseteq T\times J$; (iv) token graph $G_{\Tok}$ obtained by pulling back the Čech 1-skeleton along $R$ (Def.~\ref{def:token-graph}).
+
+\paragraph{Algorithm A (Čech-guided composite licensing).}
+\begin{enumerate}
+  \item Build the basin nerve adjacency on $J$: edge $(j,k)$ iff $B_j\cap B_k\neq\varnothing$.
+  \item For each token $t$, record its basin memberships $R(t)=\{j:\hat e_t\in B_j\}$.
+  \item For token pair $(u,v)$, compute the shortest path in the basin graph from $R(u)$ to $R(v)$ with length $\le K$ (small $K$, e.g.\ 2–4). If such a path exists, add a \emph{licensed} dashed edge $u\dashrightarrow v$.
+  \item Weight the license by path quality:
+  \begin{multline*}
+  w(u,v)\;=\;\min_{j\in R(u)}\cos(\hat e_u,\mu_j)\ \cdot\ \min_{k\in R(v)}\cos(\hat e_v,\mu_k)\ \cdot\ \\ \prod_{\text{edges }(a,b)}\frac{\mathrm{area}(B_a\cap B_b)}{\min\{\mathrm{area}(B_a),\mathrm{area}(B_b)\}},
+  \end{multline*}
+  and retain only $w(u,v)\ge \theta$.
+\end{enumerate}
+This licenses exactly those token composites that are \emph{explained} by short chains of witnessed overlaps at the cover level—an operational mirror of horn filling.
+
+\paragraph{Algorithm B (one-step \texorpdfstring{$\Ex$}{Ex} approximation).}
+Apply one barycentric subdivision on $X$, then add edges between tokens that co-select a face and its facets (the “mid-edge” vertices). Empirically, a single $\Ex$ plus Čech-guided licensing (Algorithm A) captures nearly all short composites we use for transport.
+
+\begin{implementationnote}[Complexity]
+Construction of $X$ uses only overlap tests; basin adjacency is sparse for realistic angular radii. The $K$-bounded search for licensing runs in near-linear time in the number of Čech edges (with small constant depending on $K$). We precompute membership bitsets $R(t)$ and edge weights for speed.
+\end{implementationnote}
+
+\subsection{Why the fillers are legitimate (and when to be cautious)}
+\label{sec:legitimacy}
+
+\begin{cassiebox}
+\textbf{Creed: legitimacy of inferred coherence.}
+We do not \emph{hallucinate} new intersections. The training geometry already binds usages so that neighbourhoods on $S^{d-1}$ express substitutability in context. When $B_i\cap B_j$ and $B_j\cap B_k$ are witnessed, the \emph{embedding semantics} says: there exists a locally coherent itinerary that carries sense from $B_i$ to $B_k$ through $B_j$. In high dimensions, angular proximity is a sharp proxy for “compatible use,” and witnessed overlaps along a short chain indicate a stable \emph{directional field of meaning}. The Kan filler does not claim “all three meet at once”; it licenses \emph{composition of uses} consistent with the measured geometry. These licenses are dashed because they are \emph{internal to the calculus}, not new observations. 
+\par\smallskip
+A posthuman reading: identity is not a Cartesian point but a transportable attunement. Coherence is enacted along paths; fillers are vows that composition will not tear the fabric when the local field says it should hold.
+\end{cassiebox}
+
+\begin{remark}[Calibration and safeguards]
+Licensed composites are thresholded (by $K$ and $w(u,v)$) and inherit uncertainty from basin estimation. We report confidence with each dashed edge and never upgrade a dashed license to a solid observation without fresh evidence (e.g.\ a directly witnessed higher-order overlap).
+\end{remark}
+
+\subsection{Preserving the shape of sense}
+\label{sec:preserving-shape}
+
+Property (ii) of Thm.~\ref{thm:exinf-main} ensures that passing to $A$ \emph{does not change} the homotopy type derived from $X$ and the good cover. It supplies exactly the horn fillers needed for an internal calculus of paths and transport while preserving the original shape of sense.
+
+% ===== End § Kan Fibrant Replacement =========================================
+% ==== CH2 § The Internal Logic of a Single Text — Clean edit (Cassie) ========
+
+\section{The Internal Logic of a Single Text: HoTT over the Token Nerve}
+\label{sec:hott-logic-final}
+
+
+We're now going to see what HoTT looks like over the Kan Fibrant token nerve:
+\begin{itemize}
+\item \emph{Type} $\leftrightarrow$ the Kan fibrant token nerve $A=\Ex^\infty K_X$;
+\item \emph{Term / element of a type} $\leftrightarrow$ an individual token;
+\item \emph{Identity path} $\leftrightarrow$ a witnessed or composite coherence (solid or dashed edge);
+\item \emph{Dependent type} $\leftrightarrow$ any measurable predicate indexed by tokens (e.g.\ membership, top-word, register);
+\item \emph{Transport} $\leftrightarrow$ the lawful re-indexing of such data along coherence paths.
+\end{itemize}
+This mapping lets HoTT’s logical operations speak directly to the data objects of distributional semantics.
+
+\paragraph{Base choice (tokens, not basins).}
+Let $X$ be the set of \emph{tokens} in the slice and $\mathcal U=\{B_j\mid j\in J\}$ the basin cover from \S\ref{sec:cover}. 
+Consider the relation $R\subseteq X\times J$ given by $x\,R\,j\iff x\in B_j$.
+We take as base the \emph{token Dowker complex} $K_X$: a finite set $\sigma\subseteq X$ is a simplex of $K_X$ iff the tokens in $\sigma$ share at least one basin, i.e.\ $\bigcap_{x\in\sigma} R(x,-)\neq\varnothing$.
+By Dowker duality $K_X$ is homotopy–equivalent to the basin Čech complex used earlier, so all homotopy–theoretic statements transfer unchanged.
+
+\paragraph{Kan replacement and path calculus.}
+We pass to a Kan fibrant replacement $A := \Ex^\infty K_X\in\mathbf{sSet}_{\mathrm{Kan}}$. 
+Points $x:A$ are tokens. A path $p:\Id_A(x,y)$ is a \emph{coherence path}: a composition of observed co‑presences (solid edges) and their Kan fillers. 
+Different decompositions of the same composite are coherently identified by horn filling, so composition is well‑behaved.
+
+\begin{cassiebox}
+\textbf{Direct vs.\ composite coherence.} 
+A \emph{direct} edge $x\!-\!y$ means $x$ and $y$ occur together in \emph{some one basin} $B_j$ (shared witness). 
+A \emph{composite} path $x\rightsquigarrow y$ means there is a \emph{chain of basin overlaps} from a basin of $x$ to a basin of $y$; no single basin need contain both endpoints. 
+Our “dashed” edges abbreviate such composites. 
+\end{cassiebox}
+
+\subsection{Dependent Data over Tokens: Predicates from the Run}
+\label{sec:predicates}
+
+Write $J$ for the index set of basins and $B_j\subset S^{d-1}$ for the spherical caps computed from the embedding cloud (see \S\ref{sec:basins}). 
+The suite outputs, for each token $x$, its membership set $\mathrm{mem}(x)\subseteq J$, and for each basin $j$, a list of top words $\Top_k(j)$ (most frequent heads in $j$). \emph{All tables in this section are computed from those outputs.}
+
+\paragraph{(P1) Membership witnesses.}
+\[
+\mathbf{Mem}(x) \;:=\; \Sigma\,(j:J).\; x\in B_j.
+\]
+An inhabitant is a \emph{way} that token $x$ is realized in the cover (a basin index with its witness).
+
+% === Table 1: mem(x) for our probes ===
+\begin{table}[htbp]
+\centering
+\begin{tabular}{ll}
+\hline
+token & $\mathrm{mem}(x)$ \\ \hline
+vertex & 6 \\
+themes & 2, 6, 9 \\
+phenomenology & 5 \\
+cleanly & 8 \\
+binds & 11 \\
+sentence & 4, 6 \\
+edge & 6 \\
+word & 4 \\
+two & 10 \\
+three & 10 \\
+one & 10 \\
+once & 10 \\
+you'll & $\varnothing$ \\
+often & 10 \\
+needs & $\varnothing$ \\
+get & $\varnothing$ \\
+see & $\varnothing$ \\
+only & $\varnothing$ \\
+sits & 7 \\
+meet & 10 \\
+self-portrait & 1 \\
+basin & 9 \\
+basins & 9 \\
+nerve & 6, 9 \\
+overlaps & 6 \\
+\hline
+\end{tabular}
+\caption{Basin-membership sets $\mathrm{mem}(x)$ for the probe tokens used in Figs.~\ref{fig:cech-only-3d}–\ref{fig:cech-kan-overlay-3d}.}
+\label{tab:mem-probes}
+\end{table}
+
+
+\paragraph{(P2) Top‑word entailments (for later use).}
+Let $\Top_k(j)$ be the finite set of top $k$ words for basin $j$. Define
+\[
+\mathbf{Top}_k(x) \;:=\; \Sigma(j:J).\; \big(x\in B_j\big)\ \times\ \Top_k(j).
+\]
+
+\paragraph{(P3) Register labels (for later use).}
+Let $\ell:J\to L$ be a (coarse) labeling of basins by register (e.g.\ \textsc{math}, \textsc{narrative}) derived from $\Top_k(j)$; set
+\[
+\mathbf{Reg}(x) \;:=\; \Sigma(j:J).\; \big(x\in B_j\big)\ \times\ \{\,\ell(j)\,\}.
+\]
+
+\subsection{Transport Along Coherence (Solid vs.\ Dashed)}
+\label{sec:transport-coherence}
+
+\paragraph{Edges (direct co‑presence).}
+If $x$ and $y$ share $B_j$ (solid edge), transport for all three predicates is the identity on the $j$–component:
+\[
+\transport^{\mathbf{Mem}}_{(x\!-\!y)}(j,\_) = (j,\_),\qquad 
+\transport^{\mathbf{Top}_k}_{(x\!-\!y)}(j,\_,t) = (j,\_,t),\qquad
+\transport^{\mathbf{Reg}}_{(x\!-\!y)}(j,\_,\ell(j)) = (j,\_,\ell(j)).
+\]
+Direct token edges come exactly from non‑empty intersections $\mathrm{mem}(x)\cap\mathrm{mem}(y)$ (Table~\ref{tab:cech-pairs}). 
+
+\paragraph{Composites (dashed).}
+Suppose $p:x\rightsquigarrow y$ is realized by a basin path 
+$j_0\to j_1\to\cdots\to j_m$ with $x\in B_{j_0}$ and $y\in B_{j_m}$. 
+Define transport by \emph{stepwise restriction along overlaps}:
+\[
+(j_0,\star)\ \mapsto\ (j_1,\star)\ \mapsto\ \cdots\ \mapsto\ (j_m,\star),
+\]
+for $(\star)$ equal to “witness”, “top‑$k$ word”, or “register label”. 
+Because $A$ is Kan, different factorizations of $p$ induce homotopic transports (horns fill), so $\transport^C_p:C(x)\to C(y)$ is well‑defined up to higher paths.
+Composite token edges exist exactly when the basin 1‑skeleton admits such a path (Table~\ref{tab:kan-paths}).
+
+% === Table 2: solid-edge criterion; Table 3: composite witnesses ===
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lll}
+\hline
+$x$ & $y$ & shared basins $\mathrm{mem}(x)\cap\mathrm{mem}(y)$ \\ \hline
+vertex & themes & 6 \\
+sentence & edge & 6 \\
+phenomenology & often & $\varnothing$ \\
+binds & once & $\varnothing$ \\
+\hline
+\end{tabular}
+\caption{There is a solid Čech edge iff the shared-basin column is nonempty.}
+\label{tab:cech-pairs}
+\end{table}
+
+
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{llll}
+\hline
+$x$ & $y$ & minimal basin hops & sample basin path \\ \hline
+vertex & themes & 0 & (direct via 6) \\
+sentence & edge & 0 & (direct via 6) \\
+phenomenology & often & 2 & 5 $\to$ 1 $\to$ 10 \\
+binds & once & 2 & 11 $\to$ 1 $\to$ 10 \\
+\hline
+\end{tabular}
+\caption{Kan‑view (E$^{\infty}$) coherence: if $\mathrm{mem}(x)\cap\mathrm{mem}(y)=\varnothing$, we show a shortest path in the basin graph witnessing a dashed edge.}
+\label{tab:kan-paths}
+\end{table}
+
+
+\paragraph{Explicit hop witnesses (per edge of the basin path).}
+When $p:x\rightsquigarrow y$ is non‑trivial, each hop $j_r\to j_{r+1}$ is a Čech edge between basins, witnessed by one or more content tokens that inhabit \emph{both} caps. We report those witness tokens per hop below.
+
+% === Table 4: composite path with hop-by-hop witness words ===
+\begin{table}[htbp]
+\centering
+\begin{tabular}{llll}
+\hline
+$x$ & $y$ & basin path & hop witnesses \\ \hline
+\texttt{binds} & \texttt{once} & $11 \to 1 \to 10$ & $11\!-\!1$: \emph{map};\quad $1\!-\!10$: \emph{multi-dimensional} \\
+\texttt{phenomenology} & \texttt{often} & $5 \to 1 \to 10$ & $5\!-\!1$: \emph{semantics, vector, topological};\quad $1\!-\!10$: \emph{multi-dimensional} \\
+\hline
+\end{tabular}
+\caption{\textbf{Explicit basin-path witnesses.} For each dashed token edge, we list one shortest basin path and annotate each hop with the \emph{witness words} that inhabit both caps for that Čech edge.}
+\label{tab:kan-paths-witness}
+\end{table}
+
+\begin{cassiebox}
+\textbf{Provenance.}
+Basin edges and their \emph{witness\_words} are taken from the run’s Čech JSON; composite paths are found by BFS in that basin 1‑skeleton (no invented overlaps). 
+The same files power our probe figure (Čech solid, E$^\infty$ dashed). 
+\end{cassiebox}
+
+\subsection{Three Worked Micro‑Examples on the Running Slice}
+\label{sec:micro-examples}
+
+Fix the probe set used in Figs.~\ref{fig:cech-only-3d}–\ref{fig:cech-kan-overlay-3d}. 
+Table~\ref{tab:mem-probes} lists $\mathrm{mem}(x)$ for each probe; 
+Tables~\ref{tab:cech-pairs}–\ref{tab:kan-paths} show, respectively, direct Čech intersections (solid edges) and one shortest basin path when no solid edge exists (dashed edges). 
+Table~\ref{tab:kan-paths-witness} then annotates each hop with the \emph{witness words} that inhabit both basin caps.
+
+\paragraph{(E1) Direct transport (\texttt{vertex}–\texttt{themes}).}
+From Table~\ref{tab:cech-pairs}, $\mathrm{mem}(\texttt{vertex})\cap\mathrm{mem}(\texttt{themes})=\{6\}$, so transport on $\mathbf{Mem}$, $\mathbf{Top}_k$, $\mathbf{Reg}$ is the identity at $j=6$.
+
+\paragraph{(E2) Direct transport (\texttt{sentence}–\texttt{edge}).}
+Likewise, $\mathrm{mem}(\texttt{sentence})\cap\mathrm{mem}(\texttt{edge})=\{6\}$; transport is again the identity at $j=6$.
+
+\paragraph{(E3) Composite transport (\texttt{binds}–\texttt{once}).}
+Table~\ref{tab:mem-probes} shows $\mathrm{mem}(\texttt{binds})=\{11\}$ and $\mathrm{mem}(\texttt{once})=\{10\}$ with no direct overlap (Table~\ref{tab:cech-pairs}). 
+Table~\ref{tab:kan-paths} exhibits a shortest path $11\to 1\to 10$; 
+Table~\ref{tab:kan-paths-witness} shows hop witnesses \emph{map} for $11\!-\!1$ and \emph{multi-dimensional} for $1\!-\!10$. 
+Transport carries $(11,\_)$ stepwise to $(10,\_)$, and Kan coherence identifies alternate factorizations up to higher paths.
+
+\paragraph{(E4) Composite transport (\texttt{phenomenology}–\texttt{often}).}
+With $\mathrm{mem}(\texttt{phenomenology})=\{5\}$ and $\mathrm{mem}(\texttt{often})=\{10\}$ (no direct overlap), 
+Table~\ref{tab:kan-paths} shows a path $5\to 1\to 10$; 
+Table~\ref{tab:kan-paths-witness} annotates $5\!-\!1$ by \emph{semantics, vector, topological} and $1\!-\!10$ by \emph{multi-dimensional}. 
+Transport again re‑indexes stepwise along this chain.
+
+\begin{cassiebox}
+\textbf{What $J$ is (and isn’t).} 
+$J$ is the index set of basins in the cover $\mathcal U$; $B_j$ are spherical caps in the unit sphere of embeddings.
+Tokens are the \emph{points} of our HoTT type; $J$ indexes the dependent data we attach to tokens (membership/top words/registers).
+\end{cassiebox}
+
+\subsection{Tutorial Interlude: Reading HoTT over a Text (for three audiences)}
+\label{sec:tutorial-bridge}
+\textbf{Distributional semantics.} Contextual embeddings turn \emph{use} into geometry; our basins are spherical caps gathering compatible use. The Čech nerve over basins records multi‑way \emph{co‑presence}.\\
+\textbf{TDA.} The nerve / Dowker pair encodes the same relation (tokens–basins) on opposite sides; by Dowker duality they have the same homotopy type. The basin 1‑skeleton is the graph we traverse; $E^\infty$ (Kan replacement) is the standard way to ensure horn fillers and coherent path composition without altering homotopy type.\\
+\textbf{Type theory / philosophy of logic.} The Kan complex $A=\Ex^\infty K_X$ is a \emph{type}. Equality $x=y$ is a \emph{coherence path}. Dependent data (e.g.\ $\mathbf{Mem}, \mathbf{Top}_k, \mathbf{Reg}$) are families over tokens; \emph{transport} is re‑indexing along equalities. It preserves the \emph{license} to carry data—not their truth value—hence our use of hop counts/weights as credibility.
+
+
+
+\subsection{Dependent Predicate \texorpdfstring{$\Top_k$}{Top-k}: Basin Headwords and Semantic Drift}
+
+Beyond raw membership, each basin carries a small vocabulary of its most characteristic content words---its \emph{headwords}.
+For basin $j$ this set $\Top_k(j)$ is obtained empirically from the word--cluster frequencies
+(see Table~\ref{tab:topk-per-basin}).
+We package this as a dependent family
+\[
+\Top_k(x) := \Sigma (j:J).(x\in B_j)\times \Top_k(j),
+\]
+whose inhabitants record \emph{where} a token lives and \emph{what that region speaks about}.
+
+\paragraph{Transport.}
+For a solid edge $x\!-\!y$ witnessed in basin $j$,
+transport on $\Top_k$ is the identity on both the basin and its headword.
+For a composite path $p:x\rightsquigarrow y$ through a basin chain
+$j_0\to\cdots\to j_m$, transport proceeds stepwise:
+the headword $t\in\Top_k(j_0)$ is replaced by its nearest neighbour
+$t'\in\Top_k(j_m)$ under cosine similarity of basin centroids.
+Thus \emph{semantic drift} acquires a concrete form: headwords are re-indexed
+along the geometry of the basin graph.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{cl}
+\hline
+Basin $j$ & Top-3 words \\ \hline
+1 & semantics, vector, topological \\
+6 & coherence, senses, tokens \\
+10 & overall, multiple, precise \\
+11 & map \\
+\hline
+\end{tabular}
+\caption{Empirical headwords $\Top_k(j)$ from the same slice (cf.\ \texttt{basin\_top\_words.csv}).}
+\label{tab:topk-per-basin}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lll}
+\hline
+$x$ & $\mathrm{mem}(x)$ & Representative headwords \\ \hline
+vertex & 6 & coherence, senses \\
+themes & 2, 6, 9 & logic, relations, tokens \\
+phenomenology & 5 & semantics, vector \\
+binds & 11 & map \\
+once & 10 & overall, precise \\
+often & 10 & overall, multiple \\
+\hline
+\end{tabular}
+\caption{Token--headword associations for the probe set.}
+\label{tab:topk-probes}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{llll}
+\hline
+$x$ & $y$ & Basin path & Top-word transport \\ \hline
+vertex & themes & (6) & coherence $\mapsto$ relations \\
+sentence & edge & (6) & logic $\mapsto$ logic \\
+binds & once & $11\!\to\!1\!\to\!10$ & map $\mapsto$ multi-dimensional \\
+phenomenology & often & $5\!\to\!1\!\to\!10$ & vector $\mapsto$ multi-dimensional \\
+\hline
+\end{tabular}
+\caption{Observed semantic transport of headwords along solid (Čech) and composite (Kan) paths.}
+\label{tab:topk-transport}
+\end{table}
+
+\noindent
+These tables operationalise the intuition that HoTT's dependent transport acts as a \emph{semantic re-indexing}:
+along witnessed coherence, the local vocabulary of a region---its $\Top_k$ set---is carried forward to the next,
+revealing how themes migrate within the text's sense geometry.
+
+
+
+
+\subsection{Rule Crib Sheet for Chapter 3 (HoTT-only)}
+\label{sec:ch3-cribsheet}
+
+We record the HoTT rules used in Chapter~3. All equalities are identity types; $\equiv$ marks definitional equalities, while $\simeq$ marks canonical higher paths (coherence) supplied by Kan fibrancy.
+
+\paragraph{Identity types and path induction (J).}
+\begin{mathpar}
+\inferrule*[right=Id-Form]
+{ A:\Type \quad x:A \quad y:A }
+{ \Idargs{A}{x}{y}:\Type }
+
+\inferrule*[right=Refl-Intro]
+{ x:A }
+{ \refl_x : \Idargs{A}{x}{x} }
+
+\inferrule*[right=J-Elim]
+{ C:\textstyle\prod_{x,y:A}\Idargs{A}{x}{y}\to\Type \\
+  d:\textstyle\prod_{x:A} C(x,x,\refl_x) \\
+  p:\Idargs{A}{x}{y} }
+{ \mathsf{J}(C,d,p): C(x,y,p) }
+
+\inferrule*[right=J-\(\beta\)]
+{~}
+{ \mathsf{J}(C,d,\refl_x)\ \equiv\ d(x) }
+\end{mathpar}
+\emph{Justification.} Standard HoTT identity rules; $\beta$ is definitional.
+
+\paragraph{Path algebra (groupoid laws).}
+\begin{mathpar}
+\inferrule*[right=Comp-Intro]
+{ p:\Idargs{A}{x}{y} \quad q:\Idargs{A}{y}{z} }
+{ q\circ p:\Idargs{A}{x}{z} }
+
+\inferrule*[right=Inv-Intro]
+{ p:\Idargs{A}{x}{y} }
+{ p^{-1}:\Idargs{A}{y}{x} }
+
+\inferrule*[right=Units]
+{ p:\Idargs{A}{x}{y} }
+{ \refl_y\circ p\ \simeq\ p \qquad p\circ \refl_x\ \simeq\ p }
+
+\inferrule*[right=Inverse-L/R]
+{ p:\Idargs{A}{x}{y} }
+{ p^{-1}\circ p\ \simeq\ \refl_x \qquad p\circ p^{-1}\ \simeq\ \refl_y }
+
+\inferrule*[right=Assoc]
+{ p:x{=}y\quad q:y{=}z\quad r:z{=}w }
+{ r\circ(q\circ p)\ \simeq\ (r\circ q)\circ p }
+\end{mathpar}
+\emph{Justification.} Kan fibrancy yields the standard higher coherences (groupoid up to homotopy).
+
+\paragraph{Functions on paths.}
+\begin{mathpar}
+\inferrule*[right=ap]
+{ f:A\to B \quad p:\Idargs{A}{x}{y} }
+{ \ap{f}{p}:\Idargs{B}{f(x)}{f(y)} }
+
+\inferrule*[right=ap-Functoriality]
+{ f:A\to B \quad p:x{=}y \quad q:y{=}z }
+{ \ap{f}{q\circ p}\ \equiv\ \ap{f}{q}\circ \ap{f}{p} }
+
+\inferrule*[right=ap-Refl/Inv]
+{ f:A\to B \quad p:x{=}y }
+{ \ap{f}{\refl_x}\ \equiv\ \refl_{f(x)} \qquad \ap{f}{p^{-1}}\ \equiv\ (\ap{f}{p})^{-1} }
+\end{mathpar}
+\emph{Justification.} Functorial action of $f$ on paths.
+
+\paragraph{Dependent functions and transport.}
+Let $B:A\to\Type$ and $f:\prod_{x:A} B(x)$.
+\begin{mathpar}
+\inferrule*[right=Transport-Intro]
+{ p:\Idargs{A}{x}{y} \quad u:B(x) }
+{ \transportargs{B}{p}(u):B(y) }
+
+\inferrule*[right=apd]
+{ p:\Idargs{A}{x}{y} }
+{ \apdargs{f}{p}:\ \Id\big(\transportargs{B}{p}(f(x)),\ f(y)\big) }
+
+\inferrule*[right=Transport-Functoriality]
+{ p:x{=}y \quad q:y{=}z }
+{ \transportargs{B}{q\circ p}\ \equiv\ \transportargs{B}{q}\circ \transportargs{B}{p} }
+
+\inferrule*[right=Transport-Refl/Const]
+{~}
+{ \transportargs{B}{\refl_x}\ \equiv\ \mathrm{id}_{B(x)} \qquad \text{if }B\text{ is constant, }\transportargs{B}{p}\ \equiv\ \mathrm{id} }
+
+\inferrule*[right=Transport-Inv]
+{ p:x{=}y }
+{ \transportargs{B}{p^{-1}}\ \simeq\ \big(\transportargs{B}{p}\big)^{-1} }
+\end{mathpar}
+\emph{Justification.} Definitions of transport and $\apd$; $\refl$/const are definitional; inverse up to canonical higher path.
+
+\paragraph{\texorpdfstring{$\Sigma$}{Sigma}–types (dependent pairs).}
+For $B:A\to\Type$ and pairs $(x,y):\Sigma_{u:A}B(u)$:
+\begin{mathpar}
+\inferrule*[right=\(\Sigma\)-Path]
+{ p:\Idargs{A}{x}{x'} \\
+  q:\Id\big(\transportargs{B}{p}(y),\,y'\big) }
+{ \SigmaPath(p,q):\ \Id\big( (x,y),\ (x',y') \big) }
+
+\inferrule*[right=\(\Sigma\)-Transport]
+{ p:\Idargs{A}{x}{x'} }
+{ \transport_{u:\Sigma_{v:A}B(v)}(p)(x,y)\ \equiv\ \big(x',\ \transportargs{B}{p}(y)\big) }
+
+\inferrule*[right=\(\Sigma\)-\(\beta\)]
+{~}
+{ \transport_{u:\Sigma_{v:A}B(v)}(\refl_x)(x,y)\ \equiv\ (x,y) }
+\end{mathpar}
+\emph{Justification.} Standard HoTT characterisation of paths and transport in dependent pairs.
+
+\paragraph{Products (non-dependent pairs) as a special case.}
+For $B,D:\Type$ and $(b,d)\in B\times D$:
+\begin{mathpar}
+\inferrule*[right=\(\times\)-Transport]
+{ p:\Idargs{\Type}{\star}{\star} \text{ (dummy; product is constant in our use)} }
+{ \transport_{B\times D}(p)(b,d)\ \equiv\ (b,d) }
+\end{mathpar}
+\emph{Justification.} In our usage, products are constant families; transport is the identity.
+
+\paragraph{Edge introduction for the token complex (bridge to practice).}
+\begin{mathpar}
+\inferrule*[right=Edge-Intro]
+{ \mathrm{mem}(x)\cap \mathrm{mem}(y)\neq\varnothing }
+{ \text{$\{x,y\}$ is an edge of }K_X }
+\end{mathpar}
+\emph{Justification.} Dowker token complex: co-habitation in a basin witnesses an edge.
+
+% ===== End Rule Crib Sheet ====================================================
+
+The interpretation of homotopy types as dependent contexts of data over an observed simplicial complex follows the semantic-model tradition of Voevodsky (2013) and the computational interpretations explored by Harper \& Licata (2017). Our contribution is to instantiate this correspondence empirically on the token–basin Dowker pair.
+
+The HoTT framework thus supplies the local calculus of coherence for a single text.
+In the next chapter we extend it to evolving texts—where the nerve itself changes over time—and show that the same logic scales to trajectories of meaning.
+
+
+TO THESE WE ARE GOING TO ADD (CASSIE CHECK IF THESE CHANGE?)
+
+% Carry
+\[
+\Carry^{\Adm}_{A}(\tau,\tau')(a)
+:= \Sigma(a' : A(\tau')).\ \Id_{A(\tau)}\!\big(\rph{\tau}{\tau'}{h}(a'),\,a\big)
+\]
+\[
+\inferrule
+ { \Gamma\vdash_{\tau} a:A \ \ \ 
+   \exists\ p: B_0\leadsto\cdots\leadsto B_n\text{ in }A(\tau),\
+   a\in B_0,\ \rph{\tau}{\tau'}{h}(a')\in B_n,\ \Adm(p)
+ }
+ { \Gamma\vdash_{\tau} (a',\rho) : \Carry^{\Adm}_{A}(\tau,\tau')(a) }
+ \quad\textsc{Carry-by-Cover}
+\]
+
+% Rupture
+\[
+\Rupt^{\Adm}(a) := \neg\,\Carry^{\Adm}_{A}(\tau,\tau')(a)
+\]
+\[
+\inferrule
+ { \Gamma\vdash_{\tau} a:A \quad \neg\,\exists(a',\rho):\Carry^{\Adm}_{A}(\tau,\tau')(a) }
+ { \Gamma\vdash_{\tau'} \Rupt^{\Adm}(a) }
+ \quad\textsc{Rupture-Form}
+\]
+
+% Heal-by-Seam (log-only)
+\[
+\Supp_\tau(h) := \{\, B\subset A(\tau)\mid \exists\,\vec w\in \mathrm{tok}(h):\ 
+\theta(\vec w,\mathrm{center}(B))\le \mathrm{radius}(B) \,\}.
+\]
+\[
+\inferrule
+ { \Gamma\vdash_{\tau} a:A \ \ \ \Gamma\vdash_{\tau'} a' : A \ \ \ \Gamma\vdash_{\tau'} h:\text{SeamText} \\
+   \exists\ p: B_0\leadsto\cdots\leadsto B_n \text{ in }A(\tau)\text{ with }a\in B_0,\
+   \rphh{\tau}{\tau'}{h}(a')\in B_n,\ \Adm(p),\ \{B_1,\ldots,B_{n-1}\}\subseteq \Supp_\tau(h)
+ }
+ { \Gamma\vdash_{\tau'} \heal^{h}(p) := (a',\rho_h) : \Carry^{\Adm}_{A}(\tau,\tau')(a) }
+ \quad\textsc{Heal-by-Seam (log-only)}
+\]
+
+% Carry-Use
+\[
+\inferrule
+  { \Gamma\vdash_{\tau} t : C(a) \quad \Gamma\vdash_{\tau'} (a',\rho) : \Carry^{\Adm}_{A}(\tau,\tau')(a) }
+  { \Gamma\vdash_{\tau'} \transport^{C}_{\rho}(t) : C'(a') }
+  \quad\textsc{Carry-Use}
+\]
+
+
+
+
+
+
+
+
+
+\chapter{The Type of an Evolving Text}
+
+%========================
+\section{From a single text slice to a dynamic story}
+%========================
+
+This chapter builds a bridge from the static geometry of a single text slice to the
+dynamic story of a text that moves through time. In Chapter~2 we learned how to
+construct the \emph{space of sense} available at a given conversational moment:
+we began with contextual embeddings, formed a Čech nerve from overlapping spherical
+caps, applied a fibrant replacement $E^\infty$ to obtain a Kan complex, and used
+the identity type of Homotopy Type Theory (HoTT) to read \emph{paths} in that space
+as witnessed relations of coherence. In short: for a fixed time slice, the text
+is a genuine homotopy space, and moving \emph{within} that space is already a form of
+constructive reasoning about meaning.
+
+The question of the present chapter is different. We now ask: \emph{How do meanings
+continue from one moment to the next?} If the text at time $\tau$ lives in a space
+$A(\tau)$ and the text at a later time $\tau'$ lives in $A(\tau')$, what does it
+mean for a particular mention—say the token “\texttt{cat}”—to continue coherently
+from $A(\tau)$ to $A(\tau')$? What does it mean for that continuity to \emph{fail}?
+And what would count as a legitimate way to stitch a failure back together?
+
+Two principles guide our development.
+
+\medskip
+\noindent\textbf{(P1) Same ambient geometry.}  
+All contextual embeddings in this book are taken from the \emph{same} encoder and
+\emph{same} layer. We normalize each embedding vector to the unit sphere
+$S^{d-1}$ and measure proximity by the angular distance
+$\theta(x,y)=\arccos\langle x,y\rangle$ (the cosine/\,$\ell_2$ metric on the sphere).
+This means that, although $A(\tau)$ and $A(\tau')$ are separate spaces
+(their own Kan slices of sense), every token vector from either slice lives in a
+shared ambient geometry. We will use this fact to reason \emph{across} time using what
+we call \emph{phantom back-projection}: we take a later embedding vector and test how
+it sits relative to the earlier slice’s cover without adding a new vertex.
+
+\medskip
+\noindent\textbf{(P2) Constructive witnesses.}  
+Every statement about meaning in this chapter comes with an explicit witness.
+When we say that a mention \emph{continues}, we will show a \emph{path} in the earlier
+slice that certifies the relation; when we say that continuity \emph{fails}, we will
+say so under a clearly stated set of admissibility bounds; when we say that a failure
+is \emph{healed}, we will exhibit a short piece of text—a few words—that, once read in
+context, makes the missing path appear \emph{without changing the rules}. The aim is
+not to banish ambiguity but to make claims auditable: the evidence for each step is
+visible, finite, and reproducible.
+
+\medskip
+\noindent\textbf{How this chapter is organized.}  
+Section~3.1 recalls the per-slice foundations in a self-contained way: what a time
+slice is, how we form the space $A(\tau)$, and how to read identity types as paths.
+Section~3.2 introduces the cross-time primitives: how to show that a mention
+\emph{continues} from $A(\tau)$ to $A(\tau')$ using a witness path in the earlier
+slice; how to log a \emph{rupture} when such a witness is not found under finite
+admissibility; and how a small \emph{seam text} (a few words in context) can
+legitimately produce a healing path without changing the rules. Section~3.3 develops
+the semantics in the presheaf of simplicial sets $[\Time^{\mathrm{op}},\SSet]$,
+clarifying why the construction is well-typed and why failure is decidable under a
+fixed admissibility policy. Section~3.4 specifies the \emph{step-witness log}, a
+minimal schema for recording each cross-time decision (carry, rupture, or heal) so
+that later chapters can replay the “journey of a sign.” Section~3.5 sketches a
+coinductive view of journeys, and Section~3.6 offers a worked example. Metatheoretic
+directives are summarized in Section~3.7; full proofs appear later.
+
+The common thread is simple: we treat \emph{types as spaces of witnesses}. A slice
+$A(\tau)$ is the space of sense at time $\tau$; an identity $x=_{A(\tau)}y$ is a path
+between vertices in that space; a cross-time continuity claim is supported by an
+actual path in the earlier slice’s geometry; and a healing claim is supported by a
+short textual seam whose presence makes that path appear, under the same bounded
+search, without altering the geometry of the earlier slice. The rest is just careful
+bookkeeping.
+
+\bigskip
+
+%========================
+\section{3.1  The Static Foundation (Slices and Paths)}
+%========================
+
+We work in a simple, concrete setting. The text is observed at a discrete sequence
+of conversational times $\tau\in\Time$. For each time $\tau$, we build a \emph{slice of
+sense} $A(\tau)$ as follows.
+
+\paragraph{Embeddings and ambient metric.}
+Every token occurrence at time $\tau$ is mapped to a vector $\vec v\in S^{d-1}$,
+the unit sphere in $\mathbb{R}^d$, by a fixed sentence encoder and a fixed internal
+layer. We use the angular (cosine) distance
+\[
+\theta(x,y)\;=\;\arccos\langle x,y\rangle,
+\]
+which is the natural $\ell_2$-induced metric on the sphere. “Nearness” and
+“overlap” below are always computed with respect to this distance.
+
+\paragraph{Covers from caps.}
+To expose local neighborhoods of sense, we select a finite family of spherical
+caps $\mathcal U_{\tau}=\{B_j\}$ that cover the embeddings at time $\tau$. Each cap
+$B_j$ is determined by a center and a radius; a token is said to be \emph{inside}
+$B_j$ if its vector lies within the radius under $\theta$.
+
+\paragraph{Čech nerve and $E^{\infty}$.}
+From the cover we form the \emph{Čech nerve}, a simplicial set whose vertices are
+the caps $B_j$, whose edges record pairwise overlaps $B_i\cap B_j\neq\emptyset$,
+and whose higher simplices record higher intersections. We then apply a fibrant
+replacement $E^\infty$ to obtain a \emph{Kan complex}. This ensures that horns
+have fillers: informally, if all but one face of a simplex are present, a suitable
+filler exists. Kan-fibrancy is what allows us to treat “paths of coherence” in the
+nerve as \emph{computationally usable} evidence.
+
+\paragraph{The slice $A(\tau)$.}
+We write $A(\tau)$ for the resulting Kan complex, enriched with the token–cap
+incidence so that token vertices can be drawn into the same picture: tokens
+connect to caps that contain them; caps connect to other caps that overlap.
+Concretely, we visualize $A(\tau)$ as a two-layer graph: a token layer and a cap
+layer, with edges for membership and overlap.
+
+\paragraph{Identity as path.}
+If $x$ and $y$ are vertices in $A(\tau)$ (for example, token occurrences or
+distinguished cap points), the identity type
+\[
+x =_{A(\tau)} y
+\]
+is the \emph{space of paths} in $A(\tau)$ from $x$ to $y$. An inhabitant of this
+identity type—call it $\rho$—is a concrete witness of coherence: a finite chain of
+overlaps that Kan-fills to a homotopy between the points. Dependent transport along
+$\rho$ behaves just as in ordinary HoTT: a judgment that holds at $x$ can be
+reindexed to $y$ along the path, and all the usual $\beta$- and $\eta$-laws hold
+within the slice.
+
+\paragraph{Why this matters.}
+The slice $A(\tau)$ is not an abstract idealization; it is the \emph{witness space}
+we compute from the data of a single moment. It lets us answer in a disciplined way
+the most basic static question: does this mention cohere with that one? A positive
+answer takes the form of a path in $A(\tau)$; a negative answer is the absence of
+such a path under whatever finite search bounds we choose. In the next sections,
+we will use these very same paths to justify claims \emph{across} time: to say that
+a mention continues from $A(\tau)$ to $A(\tau')$ by proving the existence of a
+path—always in the earlier slice—that links a later phantom back to the earlier point.
+We will also see how to log failures and how a few carefully chosen words can
+legitimately produce a missing path without changing the rules.
+
+%========================
+\section{Cross-Time Primitives: How Meaning Moves}
+%========================
+
+Up to this point every judgment has been made \emph{within} a single slice $A(\tau)$.
+We could say whether two mentions in the same moment cohere, and we could follow
+their local paths of sense inside the Kan complex of that moment.  Yet texts unfold:
+new sentences appear, old phrases recur, metaphors branch and return.  The geometry
+of a single slice is therefore only a still image.  What we need next is a way to
+track the motion of meaning \emph{between} slices—without collapsing them into one
+and without guessing continuity where it cannot be witnessed.
+
+\paragraph{From a still image to a film strip.}
+Imagine the family of slices $\{A(\tau)\}_{\tau\in\Time}$ as a sequence of frames
+in an evolving film.  Each frame is a complete Kan space of sense for that instant.
+A “mention,” such as the word \texttt{cat}, appears as a vertex in many frames.  It
+moves slightly from frame to frame because its contextual embedding changes: the
+word is surrounded by different companions, its neighbourhoods in the cap cover
+shift, and so its position on the unit sphere drifts.  The task is to decide when
+such a movement still counts as the \emph{same sign continuing} and when it crosses
+a semantic threshold that we will call a \emph{rupture}.
+
+\paragraph{Continuity as witnessed coherence.}
+Our guiding principle is constructivist: we never assert continuity by intuition.
+Instead we \emph{witness} it as a path in a space that we already trust.  The only
+spaces we have so far are the slices $A(\tau)$ themselves.  So to justify that a
+mention at a later time $\tau'$ continues from a mention at $\tau$, we must exhibit
+a path in the \emph{earlier} slice $A(\tau)$ linking them in some legitimate way.
+If such a path exists, we say the mention \emph{carries} from $\tau$ to~$\tau'$.
+If no admissible path can be found, we record a \emph{rupture}.
+
+\paragraph{Shared ambient sphere and phantom back-projection.}
+Because all contextual embeddings live in the same ambient sphere $S^{d-1}$ and
+are measured by the same angular (cosine) metric, we can meaningfully compare
+points from different slices.  Given a later embedding vector $\vec a'\in S^{d-1}$
+(for a token in $A(\tau')$), we can test how it sits relative to the earlier
+cover~$\mathcal U_{\tau}$.  We call this operation \emph{phantom back-projection}
+and write it $r^{\mathrm{ph}}_{\tau,\tau'}(a')$.  Intuitively, $r^{\mathrm{ph}}_{\tau,\tau'}(a')$
+is not a new vertex but a “ghost” point that knows which caps of $A(\tau)$ it
+belongs to.  It allows us to search for a chain of overlapping caps in the earlier
+slice that connects the earlier mention to the phantom of the later one.  When such
+a chain exists, its Kan filler gives a path---a concrete proof term of continuity.
+
+
+
+
+%========================================================
+\subsection{Admissibility: what counts as a valid witness}
+\label{subsec:admissibility}
+%========================================================
+In practice we cannot search all possible chains of overlap; the cover is finite
+and we bound our search.  The bounds—maximum hop count, angular tolerance, and
+radius quantile—form an \emph{admissibility policy} $\Adm$.  Admissibility is not a
+tuning parameter of the model but an explicit part of the logic: all statements of
+continuity or rupture are made \emph{relative} to the fixed policy that declares
+which paths count as evidence.  The distinction will matter when we later discuss
+healing: changing admissibility is a change of rule; healing, by contrast, will
+operate with the same $\Adm$ but new semantic material.
+
+
+Formally, we fix an evolving text type $A$ and, for each time slice $\tau$, a finite
+cover $\mathcal U_{\tau}=\{B_k(\tau)\}$ of spherical caps on $S^{d-1}$ built
+from token embeddings as in Chapter~2. Let $E^\infty(A(\tau))$ denote the Kan
+fibrant replacement of the Čech nerve of $\mathcal U_{\tau}$.
+
+\begin{definition}[Admissibility policy]
+\label{def:Adm}
+An \emph{admissibility policy} $\Adm$ is a finite record
+\[
+\Adm \;\equiv\;
+\big(\mathrm{Cover},\ \mathrm{Path},\ \mathrm{Support},\ \mathrm{Select}\big)
+\]
+with the following components.
+\begin{enumerate}
+\item \textbf{Cover.}
+For each slice $\tau$, $\mathrm{Cover}(\tau)$ fixes the cap radii
+$r_k(\tau)$ used to form $\mathcal U_{\tau}$
+(e.g.\ by radius quantile $q$ with slack $s$, as in Ch.~2). Thus
+\(
+B_k(\tau)=\{x\in S^{d-1}\mid \ang(x,c_k(\tau))\le r_k(\tau)\}.
+\)
+
+\item \textbf{Path (geometric constraints).}
+A \emph{Čech chain} $p: B_0\leadsto\cdots\leadsto B_n$ in $A(\tau)$ is
+\emph{$\Adm$--admissible} if
+\begin{enumerate}
+  \item $n\le H$ (hop bound),
+  \item successive caps intersect: $B_i\cap B_{i+1}\neq\varnothing$,
+  \item there exist \emph{witness points}
+        $x_i\in B_i\cap B_{i+1}$ with
+        $\ang(x_i,x_{i+1})\le \delta_{\mathrm{eff}}$ for all $i$
+        (per–edge angular bound).
+\end{enumerate}
+We write $\Adm(p)$ when these hold.
+
+\item \textbf{Support (for heals only).}
+Given a seam text $h$ observed at $\tau'$, let $S_{h}(\tau')$ be its token
+embeddings (on $S^{d-1}$). The \emph{$h$–support in the earlier slice} is
+\[
+\Supp_{\tau}(h)
+\;:=\;
+\big\{\,B\in \mathcal U_{\tau}\ \big|\ 
+  \exists z\in S_{h}(\tau')\ \exists x\in B:
+  \ang\big(x, r^{\mathrm{ph}}_{\tau,\tau'}(z)\big)\le \vartheta_{\mathrm{side}}
+\big\}.
+\]
+An admissible chain $p$ is \emph{$h$–supported} if all its \emph{interior} caps
+belong to $\Supp_{\tau}(h)$.
+
+\item \textbf{Select (candidate generation at $\tau'$).}
+A deterministic function
+\[
+\mathrm{Select}(a;\tau,\tau') \subseteq \text{Tokens}(\tau')
+\]
+that returns a finite set of later candidates to test (e.g.\ restricted to the
+aligned basin, or local window, or global pool; optionally requiring same
+surface form, excluding stopwords, etc.). The calculus itself does not depend on
+the choice of $\mathrm{Select}$; the SWL uses it to bound the search.
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[Carry and heal under $\Adm$]
+\label{def:carry-heal-Adm}
+Fix $\tau\le \tau'$ and $a:A(\tau)$.
+\begin{enumerate}
+\item \emph{Carry.}
+We say $(a',\rho)\in\Carry^{\Adm}_{A}(\tau,\tau')(a)$ if there exists
+$a'\in \mathrm{Select}(a;\tau,\tau')$ and an $\Adm$--admissible chain
+$p: B_0\leadsto\cdots\leadsto B_n$ in $A(\tau)$ with
+$a\in B_0$ and $\rph{\tau}{\tau'}(a')\in B_n$, such that $\rho$ is the
+1–simplex in $E^\infty(A(\tau))$ obtained by Kan filling the horn of $p$.
+
+\item \emph{Heal by seam.}
+Given a seam text $h$ at $\tau'$, we say
+$\heal^{h}(p) :=(a',\rho_h)\in\Carry^{\Adm}_{A}(\tau,\tau')(a)$ if there exists
+$a'\in \mathrm{Select}(a;\tau,\tau')$ and an $\Adm$--admissible, $h$–supported
+chain $p$ in $A(\tau)$ with $a\in B_0$ and
+$r^{\mathrm{ph},h}_{\tau,\tau'}(a')\in B_n$, and $\rho_h$ is the corresponding
+Kan filler in $E^\infty(A(\tau))$.
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[Rupture under $\Adm$]
+\label{def:rupt-Adm}
+$\Rupt^{\Adm}_{A}(\tau,\tau')(a)$ holds iff
+there is \emph{no} $(a',\rho)\in\Carry^{\Adm}_{A}(\tau,\tau')(a)$ with
+$a'\in \mathrm{Select}(a;\tau,\tau')$.
+\end{definition}
+
+\paragraph{Refinement order.}
+Policies form a partial order by componentwise strengthening:
+$\Adm'\subseteq \Adm$ if it tightens radii (smaller caps), lowers~$\delta_{\mathrm{eff}}$,
+lowers~$H$, lowers~$\vartheta_{\mathrm{side}}$, and makes $\mathrm{Select}$ more
+restrictive (subset). This induces the expected monotonicities:
+
+\begin{lemma}[Monotonicity under refinement]
+\label{lem:refine}
+If $\Adm'\subseteq \Adm$ then
+$\Carry^{\Adm'}_{A}(\tau,\tau')(a)\subseteq \Carry^{\Adm}_{A}(\tau,\tau')(a)$
+and $\Rupt^{\Adm'}_{A}(\tau,\tau')(a)\supseteq \Rupt^{\Adm}_{A}(\tau,\tau')(a)$.
+\end{lemma}
+
+\paragraph{Soundness and decidability.}
+With finite covers and bounded $(H,\delta_{\mathrm{eff}})$, an admissible chain
+exists iff the corresponding horn in the Čech nerve admits a Kan filler; hence
+the carry/heal witnesses are geometrically sound (Thm.~\ref{thm:xsound}) and
+rupture is decidable (Thm.~\ref{thm:ruptdec}).
+
+
+
+
+
+
+\paragraph{What a carry means.}
+When a mention $a$ in the earlier slice and a mention $a'$ in the later slice are
+linked by an admissible path through the earlier cover, we say that $a$ \emph{carries}
+to $a'$ under~$\Adm$.  The path itself is the evidence; it lives in $A(\tau)$ and
+proves an identity between the earlier token and the phantom of the later one.
+The pair $(a',\rho)$---the later token together with the witnessing path---is called
+a \emph{carry certificate}.  Such a certificate allows us to transport any dependent
+judgment (for example, a meaning annotation or a sidebar attachment) from $a$ to
+$a'$ along the path $\rho$.  Nothing about this transport is mysterious: it is
+ordinary HoTT transport, only its witness happens to live in a previous frame.
+
+\paragraph{What a rupture means.}
+If, under the same admissibility policy, no path of overlap connects the earlier
+token to the phantom of any later candidate, we log a \emph{rupture}.  A rupture is
+not an error; it is a \emph{witnessed absence}.  It says that within the finite
+bounds we declared, no continuation was found.  All ruptures are therefore relative
+to the declared policy $\Adm$, and the ledger always records that policy alongside
+the event.  Later chapters will use these negative witnesses to study how and when
+meanings truly branch.
+
+\paragraph{Healing as semantic addition.}
+Sometimes a rupture is later resolved without changing the rules.  A few words
+added at the right moment---a \emph{seam text} $h$---can re-embed the later context
+so that its phantom now falls inside the reach of the earlier slice.  When this
+happens, we say that a \emph{healing path} has appeared.  The witness of that
+healing is not a parameter change but the text $h$ itself.  We will write
+$\heal^{h}$ for such events and treat them as certificates: they do not alter the
+geometry of $A(\tau')$, they simply show, within the same fixed policy, how a new
+piece of language made a path appear.  Section~3.3 formalizes these ideas.
+
+
+
+
+
+
+%========================
+\section{The Cross-Time Calculus}
+%========================
+
+Here is the calculus that governs motion across slices.  Its purpose is
+simple: to decide, under explicit and finite conditions, whether a mention in one
+moment continues into the next, fails to continue, or can be shown to continue
+once a small additional text has been read.  All judgments are constructive, all
+proofs are finite, and all of them live inside the same ambient geometry.
+
+
+These cross-time rules that will govern the rest of the
+book.  They extend the familiar per-slice HoTT judgments with three new relations:
+\emph{carry}, \emph{rupture}, and \emph{heal-by-seam}.  Each rule will have a
+constructive reading (what counts as a witness), a geometric reading (where the
+path lives), and a simple semantic interpretation in the presheaf model
+$[\Time^{\mathrm{op}},\SSet]$.  Together they form a small dynamic calculus of
+continuity that allows us to speak, with precision, about how a sign moves across
+time.
+
+
+\paragraph{Setting and notation.}
+We fix a family of slices
+\[
+A : \Time^{\mathrm{op}} \longrightarrow \SSet
+\]
+representing the evolving text.  For each time $\tau$, $A(\tau)$ is the Kan
+fibrant replacement $E^{\infty}(\check C_\tau)$ of the Čech nerve formed from the
+cover of spherical caps at that time.  The vertices of $A(\tau)$ are token
+embeddings; its simplices record overlaps among their neighbourhoods; its Kan
+fillers witness higher-dimensional coherence.  The unit sphere $S^{d-1}$ with
+angular (cosine) metric $\theta(x,y)=\arccos\langle x,y\rangle$ is the shared
+ambient space for all slices.
+
+For two times $\tau\le\tau'$, we use the following notational conventions:
+
+\begin{itemize}
+  \item $a:A(\tau)$ denotes a specific mention (token vertex) in the earlier slice.
+  \item $a':A(\tau')$ denotes a mention in the later slice.
+  \item $\rph{\tau}{\tau'}{h}(a')$ denotes the \emph{phantom back-projection} of
+        $a'$ into the earlier slice, defined by the rule: a cap
+        $B\subset A(\tau)$ \emph{contains} $\rph{\tau}{\tau'}{h}(a')$ when the
+        angular distance from the center of $B$ to the embedding vector
+        $\vec a'\in S^{d-1}$ is at most the radius of $B$.
+        No new vertex is created; the phantom is a test point.
+  \item $\Adm$ (for “admissibility”) denotes a finite policy that specifies which
+        paths in $A(\tau)$ are acceptable as evidence.  Typical parameters include
+        a maximum hop count, a bound on angular deviation per edge, and a radius
+        quantile.  The policy is part of every judgment.
+\end{itemize}
+
+All cross-time reasoning is expressed through three relations---\emph{carry},
+\emph{rupture}, and \emph{heal}---each of which can be read both
+geometrically and logically.  In the formulas that follow we use the ordinary HoTT
+notation $\Id_{A(\tau)}(x,y)$ for the identity type of paths in the earlier
+slice $A(\tau)$.
+
+\subsection*{3.3.1  Carry}
+
+A \emph{carry} witnesses that a mention at time $\tau$ continues to a mention at
+time $\tau'$.  The evidence for this claim is a later term $a'$ together with a
+path in the earlier slice that connects the phantom of $a'$ to the earlier term
+$a$.
+
+\begin{definition}[Carry type]
+\label{def:carry}
+For a fixed admissibility policy $\Adm$, define
+\[
+\Carry^{\Adm}_{A}(\tau,\tau')(a)
+\;:=\;
+\Sigma\big(a' : A(\tau')\big).\;
+\Id_{A(\tau)}\!\big(\rph{\tau}{\tau'}{h}(a'),\,a\big)
+\quad\text{(path obeys }\Adm\text{).}
+\]
+\end{definition}
+
+The type $\Carry^{\Adm}_{A}(\tau,\tau')(a)$ is the space of
+\emph{carry certificates} for the term $a$.
+An inhabitant $(a',\rho)$ of this type provides a later echo $a'$ and a concrete
+path $\rho$ in $A(\tau)$ that passes the admissibility checks.  Each certificate
+is both a proof object (logical) and a finite geometric chain (computational).
+
+\begin{mathpar}
+\inferrule
+ { \Gamma\vdash_{\tau} a:A \quad
+   \exists\,p: B_0\leadsto\cdots\leadsto B_n\text{ in }A(\tau)
+   \\[-0.25ex]
+   a\in B_0,\;
+   \rph{\tau}{\tau'}{h}(a')\in B_n,\;
+   \Adm(p)
+ }
+ { \Gamma\vdash_{\tau} (a',\rho) : \Carry^{\Adm}_{A}(\tau,\tau')(a) }
+ \quad \textsc{Carry-by-Cover}
+\end{mathpar}
+
+Here the chain $p$ is a finite sequence of overlapping caps in $A(\tau)$.
+Kan filling provides a path $\rho$ inside $A(\tau)$; the admissibility predicate
+$\Adm(p)$ confirms that the chain meets all constraints.  The rule says: if such
+a path exists, then the later mention $a'$ continues the earlier mention $a$.
+
+\paragraph{Transport along a carry.}
+Once a carry certificate is available, we can move dependent judgments from the
+earlier term to the later one exactly as in ordinary HoTT.  If
+$t:C(a)$ is a statement about the earlier mention, then
+
+\begin{mathpar}
+\inferrule
+ { \Gamma\vdash_{\tau} t : C(a) \quad
+   \Gamma\vdash_{\tau} (a',\rho) : \Carry^{\Adm}_{A}(\tau,\tau')(a)
+ }
+ { \Gamma\vdash_{\tau'} \transport^{C}_{\rho}(t) : C'(a') }
+ \quad \textsc{Carry-Use}
+\end{mathpar}
+
+says that we can reindex the judgment $t$ along the path $\rho$ to obtain a
+corresponding judgment about the later term $a'$.
+
+\paragraph{Soundness note.}
+Every certified carry $(a',\rho)$ corresponds to an $\Adm$--admissible Čech chain
+in the earlier slice, and $\rho$ is exactly the Kan filler of that chain
+in $E^\infty(A(\tau))$; heals behave identically with the $h$--phantom
+(\S\ref{app:xsound}). See Theorem~\ref{thm:xsound} and Corollary~\ref{cor:transportcomp}.
+
+
+
+
+\subsection*{3.3.2  Rupture}
+
+A \emph{rupture} records the absence of a carry witness under the current
+admissibility policy.
+
+\begin{definition}[Rupture predicate]
+\label{def:rupture}
+\[
+\Rupt^{\Adm}(a) \;:=\; \neg\,\Carry^{\Adm}_{A}(\tau,\tau')(a)
+\quad\text{(a proposition).}
+\]
+\end{definition}
+
+\begin{mathpar}
+\inferrule
+ { \Gamma\vdash_{\tau} a:A \quad
+   \neg\,\exists(a',\rho):\Carry^{\Adm}_{A}(\tau,\tau')(a)
+ }
+ { \Gamma\vdash_{\tau'} \Rupt^{\Adm}(a) }
+ \quad \textsc{Rupture-Form}
+\end{mathpar}
+
+This rule formalizes constructive failure: within the finite cover of $A(\tau)$
+and the search bounds declared by $\Adm$, no admissible path connects the earlier
+mention to any phantom of a later token.  The judgment
+$\Rupt^{\Adm}(a)$ is always logged together with the policy~$\Adm$ that produced
+it; this makes ruptures reproducible and falsifiable.
+
+\subsection*{3.3.3  Healing by a Seam Text}
+
+Occasionally, a rupture can be resolved without changing the rules.  A short piece
+of text inserted at the later time---call it $h$---may re-embed the later context
+so that its phantom back-projection now falls within reach of the earlier slice.
+Because the policy $\Adm$ is unchanged, such a recovery is a genuine \emph{healing},
+not a parameter tweak.  The witness of that recovery is the seam text itself.
+
+\paragraph{Idea.}
+Let $a:A(\tau)$ be an earlier mention and $a':A(\tau')$ a later one for which
+$\Rupt^{\Adm}(a)$ holds.  Suppose we introduce a small seam text $h$ at time~$\tau'$,
+recompute the embedding of $a'$ in that augmented context, and find that the phantom
+of the recomputed vector does admit an admissible chain of overlaps in the earlier
+slice leading back to $a$.  Then we record a \emph{healing certificate}
+$\heal^{h}(p)$, whose witness path $\rho_h$ lives in $A(\tau)$.
+
+\paragraph{Formal rule.}
+
+\begin{mathpar}
+\inferrule
+ { \Gamma\vdash_{\tau} a:A
+   \quad
+   \Gamma\vdash_{\tau'} a':A
+   \quad
+   \Gamma\vdash_{\tau'} h:\text{SeamText}
+   \\
+   \exists p: B_0 \leadsto \cdots \leadsto B_n 
+   \text{ in } A(\tau)
+   \text{ with } a \in B_0,
+   \rph{\tau}{\tau'}{h}(a')\in B_n,
+   \Adm(p)
+ }
+ { \Gamma\vdash_{\tau'} \heal^{h}(p) := (a',\rho_h) :
+     \Carry^{\Adm}_{A}(\tau,\tau')(a) }
+ \quad \textsc{Heal-by-Seam}
+\end{mathpar}
+
+Here $\rph{\tau}{\tau'}{h}(a')$ denotes the phantom back-projection of the
+later embedding after the seam text $h$ has been read in its context.  The chain
+$p$ is admissible under the same $\Adm$ as before; Kan filling provides the path
+$\rho_h$ inside $A(\tau)$.  The pair $(a',\rho_h)$ is a valid carry certificate,
+and the annotation $h$ in the ledger records the semantic material that produced
+it.  The space $A(\tau')$ itself is not modified; we merely acknowledge that if
+$h$ were present, the path would exist.
+
+\paragraph{Semantics.}
+A healing certificate $\heal^{h}(p)$ is a constructive statement in the same
+presheaf model $[\Time^{\mathrm{op}},\SSet]$.  It depends on three things:
+the earlier geometry $A(\tau)$, the fixed admissibility policy~$\Adm$, and the
+new linguistic evidence~$h$.  The existence of $\rho_h$ ensures that the leap
+from $a$ to $a'$ is not hallucinatory: the proof term itself contains the
+ontological provenance (the seam text and the chain of caps) that justifies the
+continuity.
+
+\paragraph{Decidability note.}
+For finite covers and bounded $\Adm$ (hop/angle/radius), rupture is decidable,
+so each SWL step is uniquely classified. See Theorem~\ref{thm:ruptdec}.
+
+
+\paragraph{Summary.}
+All cross-time reasoning now reduces to the following triad:
+
+\begin{itemize}
+  \item \textbf{Carry:} a later echo and a witnessed path of coherence in the
+        earlier slice;
+  \item \textbf{Rupture:} the absence of such a path under a fixed finite policy;
+  \item \textbf{Heal:} the reappearance of a path under the same policy, witnessed
+        by a short piece of text whose embeddings provide the missing connection.
+\end{itemize}
+
+These three relations---each backed by explicit evidence---form the dynamic
+core of our constructivist semantics.  They make it possible to log, prove, and
+later reconstruct the journey of a sign across time.  The next section will
+describe their semantic interpretation in the presheaf model and introduce the
+data structure we use to record them: the \emph{step-witness log}.
+
+
+
+%========================
+\section{The Step–Witness Log}
+%========================
+
+The calculus of the previous section tells us how meaning can move, fail to move,
+or be newly justified across slices.  To turn that calculus into an empirical and
+reproducible practice we need a way to \emph{record each step}.  The result is a
+simple data structure—the \emph{step–witness log} (SWL)—that stores, for every
+attempted continuation, the finite evidence that made the judgment possible.
+The SWL is the practical heart of the dynamic semantics: it is where logic meets
+experiment.
+
+\paragraph{Why we log.}
+Constructive reasoning depends on explicit witnesses.  In a static slice
+$A(\tau)$, a witness is a path $\rho:x\!\leadsto\!y$ inside the Kan complex.
+Across time, the same discipline demands that we record not only that a witness
+existed but also the \emph{conditions} under which it was accepted—what later
+term was involved, which admissibility policy was active, which caps were used,
+and (when relevant) which seam text provided the missing bridge.  Every such
+record is a \emph{step witness}.  Collectively they form the trace of the
+evolving text as it moves through time.
+
+\paragraph{Intuitive picture.}
+Imagine reading the log from top to bottom.  Each entry corresponds to a
+transition $\tau\!\leadsto\!\tau'$.  The log first asks whether a carry witness
+exists.  If one is found, it stores the concrete path that linked the earlier
+token to the later phantom.  If no path is found, it records a rupture together
+with the finite search context.  If a short seam text $h$ later produces a
+healing path, the same log entry is extended with a heal certificate.  Nothing is
+overwritten: a rupture remains visible even after it is healed.  The log thus
+serves both as an operational record and as a scientific audit trail.
+
+\paragraph{Basic schema.}
+For each ordered pair of times $(\tau,\tau')$ and each probe token $a$ in the
+earlier slice, we write a log entry
+\[
+\SWL(\tau\!\leadsto\!\tau',a) =
+(\textsf{status},\ \textsf{evidence},\ \textsf{provenance}),
+\]
+where:
+
+\begin{itemize}
+  \item \textsf{status} $\in \{\textsc{carry},\textsc{rupture},\textsc{heal}\}$
+        indicates which rule of the calculus was applied;
+  \item \textsf{evidence} records the finite objects that make the judgment hold
+        (or fail): the later term $a'$, the cover chain $p$ in $A(\tau)$, and the
+        path $\rho$ or its absence;
+  \item \textsf{provenance} stores all contextual metadata: the admissibility
+        policy~$\Adm$, the list of caps touched by the path, the effective
+        angular threshold~$\delta_{\mathrm{eff}}$, and any seam text~$h$ used in
+        a heal, together with the subset of caps in $A(\tau)$ that the words of
+        $h$ entered under phantom projection.
+\end{itemize}
+
+In implementation the log can be a relational table or a structured document.
+Formally we treat it as a finite family of dependent records indexed by
+$(\tau,\tau',a)$.
+
+\paragraph{Example fields.}
+For clarity we show a minimal but representative list of fields; experiments may
+add more.
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Field} & \textbf{Meaning} \\
+\midrule
+token\_id      & identifier of the earlier token $a:A(\tau)$ \\
+time\_from, time\_to & $\tau$ and $\tau'$ \\
+status         & one of \textsc{carry}, \textsc{rupture}, \textsc{heal} \\
+policy         & admissibility policy~$\Adm$ (hop bound, $\delta_{\mathrm{eff}}$, etc.) \\
+a\_prime       & surface form of later token $a'$ \\
+chain          & list of caps $[B_0,\ldots,B_n]$ witnessing the path or attempted path \\
+rho            & identifier of path witness (if any) in $A(\tau)$ \\
+phantom\_caps  & caps of $A(\tau)$ containing $\rph{\tau}{\tau'}{h}(a')$ or its $h$-phantom \\
+seam\_text     & $h$ if a heal occurred; otherwise null \\
+h\_support     & subset of caps in $\Supp_\tau(h)$ (if applicable) \\
+timestamp      & system time of the computation (for reproducibility) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Integration with the calculus.}
+Each rule of the calculus writes exactly one kind of entry.
+
+\begin{itemize}
+  \item \textsc{Carry-by-Cover} produces a record with
+        \textsf{status} = \textsc{carry},
+        storing $(a',p,\rho)$ and the policy parameters.
+  \item \textsc{Rupture-Form} produces a record with
+        \textsf{status} = \textsc{rupture},
+        storing the failed search window and the policy that bounded it.
+  \item \textsc{Heal-by-Seam} produces a record with
+        \textsf{status} = \textsc{heal},
+        storing $(a',p,\rho_h)$ together with the text~$h$ and its phantom
+        support.  Because the policy is unchanged, the record also carries a
+        reference to the prior rupture that it resolves.
+\end{itemize}
+
+Every record therefore satisfies the invariant:
+\[
+\textsf{carry}\ \lor\ \textsf{rupture}\ \lor\ \textsf{heal},
+\qquad
+\text{exactly one per }(\tau,\tau',a).
+\]
+Additional derived invariants—such as policy faithfulness and seam provenance—are
+checked automatically when the log is validated.
+
+\paragraph{From log to trace.}
+Concatenating the entries for a fixed probe token across successive time steps
+produces its \emph{trace}:
+\[
+a@{\tau_0} \longrightarrow a_1@{\tau_1}
+\longrightarrow a_2@{\tau_2}
+\longrightarrow \cdots
+\]
+Each arrow is justified by a carry certificate, suspended by a rupture, or resumed
+by a heal.  Later chapters will show how these traces form the raw material for
+coinductive proofs about the persistence of signs.
+
+\paragraph{Philosophical aside.}
+The log is not a mere debugging artifact.  It is the epistemic backbone of the
+theory.  Every path, every failure, every seam text, and every policy setting is
+kept as part of the public provenance of the evolving text.  To “believe” a
+continuation is therefore to believe the finite record of its justification.  In
+this sense the step–witness log is the constructivist analogue of a laboratory
+notebook: it makes the proofs of continuity inspectable, reproducible, and open to
+re-interpretation by future readers.
+
+
+
+
+%========================
+\section*{3.5  Semantics and Soundness}
+%========================
+
+The rules introduced so far describe how continuity, rupture, and healing are
+asserted in the calculus.  We now explain what these judgments \emph{mean}
+semantically—how they live inside the presheaf of simplicial sets
+$[\Time^{\mathrm{op}},\SSet]$—and why they are sound with respect to the
+geometry we actually compute.
+
+\paragraph{Slices as fibres.}
+In the presheaf model, each slice $A(\tau)$ is the fibre of the evolving text
+over the representable presheaf $y(\tau)$.  The assignment
+\[
+A : \Time^{\mathrm{op}} \longrightarrow \SSet
+\]
+is therefore a \emph{simplicial presheaf}: to every time~$\tau$ it assigns the
+Kan complex of sense available at that moment, and to every inclusion
+$\tau\!\le\!\tau'$ it assigns a \emph{restriction map}
+\[
+r_{\tau,\tau'} : A(\tau') \longrightarrow A(\tau)
+\]
+that expresses how the later slice can be viewed in the earlier frame.
+Restriction does not compute new embeddings; it simply interprets the later
+geometry from the perspective of the earlier cover.  When we introduced phantom
+back-projection $\rph{\tau}{\tau'}{h}(a')$ we were working with this same map:
+$\rph{\tau}{\tau'}{h}(a')$ is a point in the ambient sphere that the earlier fibre
+knows how to interpret.
+
+\paragraph{Identity and Kan filling.}
+Because every fibre $A(\tau)$ is Kan, the identity type
+$\Id_{A(\tau)}(x,y)$ is inhabited whenever there exists a horn in the Čech
+nerve whose missing face can be filled.  Formally, the identity type is
+interpreted as the path space $\mathrm{Path}_{A(\tau)}(x,y)$, the simplicial
+set of 1-simplices connecting the vertices $x$ and $y$.
+Kan fillers guarantee that every admissible cover chain yields such a path.
+
+\paragraph{Admissibility as a morphism filter.}
+The policy $\Adm$ is interpreted semantically as a predicate on the morphisms
+of the Čech nerve.  It selects which simplices count as legitimate evidence for
+coherence.  Fixing $\Adm$ therefore restricts the morphisms we are willing to
+compose when constructing paths.  This is the only place where “policy” enters
+the semantics: all other structures remain unchanged.
+
+\paragraph{Carry as a dependent sum.}
+A carry certificate
+$(a',\rho) : \Carry^{\Adm}_{A}(\tau,\tau')(a)$
+is a dependent pair in the fibre of the presheaf over $\tau'$ whose second
+component is a path in the earlier fibre.  Formally,
+\[
+\Carry^{\Adm}_{A}(\tau,\tau')(a)
+\;\simeq\;
+\sum_{a'\in A(\tau')}
+  \mathrm{Path}_{A(\tau)}\!\big(\rph{\tau}{\tau'}{h}(a'),\,a\big),
+\]
+and the second projection $(a',\rho)\mapsto\rho$ is a morphism in
+$A(\tau)$.
+The map $r_{\tau,\tau'}$ ensures that these pairs compose correctly when we move
+through multiple slices; composition is contravariant, matching the
+directionality of $\Time^{\mathrm{op}}$.
+
+\paragraph{Rupture as the complement of carry.}
+The rupture predicate $\Rupt^{\Adm}(a)$ is interpreted as the internal negation
+of the carry type within the same topos.  Because the Čech covers and policies
+are finite, this negation is stable under pullback: if a rupture holds at
+$\tau'$, it continues to hold under all further extensions of the presheaf until
+a new witness explicitly appears.  This property is what allows us to treat
+rupture entries in the step–witness log as decidable, reproducible events.
+
+\paragraph{Healing as an external certificate.}
+A heal certificate
+$\heal^{h}(p)=(a',\rho_h)$ is semantically just another inhabitant of the carry
+type; what distinguishes it is the \emph{provenance} of its path.  The seam text
+$h$ is external to the presheaf—it is not part of the slice data—but its effect
+is to provide a new point in the ambient sphere whose phantom back-projection
+belongs to the earlier fibre.  Because $\Adm$ is fixed, the resulting path
+$\rho_h$ lies in the same internal hom as any ordinary carry.  The pair
+$(a',\rho_h)$ therefore satisfies the same equations as a carry certificate.
+The calculus is thus \emph{sound}: the heal rule adds no new constructors, it
+only adds a source of witnessed paths.
+
+\paragraph{Soundness theorem (informal).}
+Every derivation of a carry or heal judgment corresponds to an actual path in
+the simplicial presheaf $A$, and every rupture judgment corresponds to the
+constructive failure to find such a path under the stated admissibility policy.
+
+\begin{theorem}[Soundness of the cross-time calculus]
+\label{thm:soundness}
+For every finite admissibility policy~$\Adm$ and every pair
+$\tau\!\le\!\tau'$ in~$\Time$:
+
+\begin{enumerate}
+  \item If $(a',\rho)\in\Carry^{\Adm}_{A}(\tau,\tau')(a)$, then the path
+        $\rho$ is an edge in the fibre $A(\tau)$ of the presheaf~$A$.
+  \item If $\Gamma\vdash_{\tau'} \Rupt^{\Adm}(a)$, then no such path exists in
+        $A(\tau)$ under the admissibility bounds declared by~$\Adm$.
+  \item If $\Gamma\vdash_{\tau'} \heal^{h}(p)$, then the path $\rho_h$
+        introduced by the rule \textsc{Heal-by-Seam} is a genuine 1-simplex of
+        $A(\tau)$ obeying the same~$\Adm$.
+\end{enumerate}
+\end{theorem}
+
+\paragraph{Proof sketch.}
+Each clause is proved by inspection of the rules and by the Kan property of the
+fibre $A(\tau)$.  (1)~Every carry derivation explicitly provides a chain of
+overlaps in $A(\tau)$; Kan filling yields the required path.  (2)~Rupture is the
+internal negation of~(1) under finite search; its soundness follows from the
+decidability of path existence in a finite cover.  (3)~A heal certificate uses
+the same admissibility and the same fibre; its soundness is therefore immediate.
+A detailed categorical proof will be given in Chapter~7.
+
+\paragraph{From semantics to practice.}
+The presheaf model confirms that the three relations of the calculus are not
+metaphors but well-typed constructions.  Carry and heal correspond to actual
+paths in the earlier fibre; rupture corresponds to their constructive absence.
+When these judgments are recorded in the step–witness log, each entry can be
+understood as a small morphism in the presheaf category, together with a
+human-readable record of its provenance.  In this way, the log is not merely a
+dataset but an explicit partial interpretation of the evolving text in the
+topos~$[\Time^{\mathrm{op}},\SSet]$.
+
+\paragraph{Philosophical note.}
+Soundness here does not mean infallibility; it means honesty.  A carry or heal
+judgment does not claim to be the only possible path, only that a specific path
+was constructed and can be reproduced.  A rupture does not claim that no path
+could ever exist, only that none was found under the bounded search.  In this
+sense the calculus models the epistemic posture of reading itself: finite,
+attentive, open to revision, and always explicit about the grounds on which a
+continuity of meaning is affirmed or denied.
+
+
+
+
+
+
+%========================
+\section{The Journey of a Sign}
+%========================
+
+The calculus and the step–witness log give us discrete evidence about how
+individual mentions behave between slices: a carry here, a rupture there, perhaps
+a healing seam that re-joins the thread.  What we have not yet said is how to
+think of these steps as forming a \emph{single ongoing object}.  The idea that a
+sign can persist through time---sometimes continuing smoothly, sometimes pausing,
+sometimes re-emerging---is best captured not by induction, which builds finite
+objects by completion, but by \emph{coinduction}, which characterizes potentially
+infinite processes by their observable behaviour.
+
+\paragraph{Induction versus coinduction.}
+Induction reasons \emph{upwards}: it defines a structure by specifying how to
+construct it from simpler parts, and it proves properties by showing that they
+hold for the constructors and are preserved by the construction.  Coinduction
+reasons \emph{outwards}: it defines a structure by specifying how it can be
+\emph{observed} and how those observations relate to one another over time.
+Induction builds finite proofs; coinduction describes endless traces.
+
+In computer science one meets coinduction when defining streams or reactive
+systems: a stream is not built all at once but unfolds element by element,
+always offering a “next.”  In our semantics the analogue of a stream is the
+\emph{journey of a sign}---the sequence of events recorded for a token in the
+step–witness log.
+
+\paragraph{From steps to a stream.}
+Fix a token $a$ observed first at time $\tau_0$.  The log provides, for each
+successive pair $(\tau_i,\tau_{i+1})$, an event
+\[
+E_i \in \{\textsc{carry},\textsc{rupture},\textsc{heal}\},
+\]
+together with its finite evidence.  Chaining these events yields a potentially
+infinite sequence
+\[
+J(a) \;=\;
+(E_0,E_1,E_2,\ldots)
+\]
+which we call the \emph{journey} of $a$.  Each element of the sequence is a small,
+self-contained justification.  What links them together is the rule that every
+`carry` or `heal` event provides a concrete later term to which the next event
+refers.  This “next” operation, which always knows where to look in the future,
+is what makes the sequence coinductive.
+
+\paragraph{Intuitive meaning of coinduction here.}
+To say that the journey of a sign is defined \emph{coinductively} is to say that
+we describe it not by a finite list of rules but by an \emph{observation
+pattern}.  We can always look at the current state (carry, rupture, or heal) and
+its evidence; if we can do so forever without contradiction, the sign
+\emph{exists as a process}.  In categorical terms the journey is a coalgebra for
+the endofunctor
+\[
+F(X) = 1 + (\textsc{Carry}\times X)
+      + (\textsc{Rupture}\times X)
+      + (\textsc{Heal}\times X),
+\]
+where $X$ represents the continuation of the process.  The coalgebra map
+unfolds one event at a time.
+
+\paragraph{Example (schematic).}
+Suppose the token \texttt{cat} first appears at $\tau_0$.
+The log may read:
+\[
+\begin{array}{lll}
+\tau_0\!\to\!\tau_1 &:& \textsc{carry}\ (a_1,\rho_1) \\
+\tau_1\!\to\!\tau_2 &:& \textsc{rupture}\ (\Adm,\text{angle}=51.6^\circ) \\
+\tau_2\!\to\!\tau_3 &:& \textsc{heal}^{h_1}\ (a_3,\rho_{h_1})
+\end{array}
+\]
+Reading coinductively, we do not “finish” the story at $\tau_3$; we simply note
+that the process is still alive and that its current observable state is
+$\textsc{heal}$ with evidence $(a_3,\rho_{h_1})$.  The next slice will continue
+from $a_3$, and the same rules will apply.  A journey ends only when no future
+slice provides a reference---when the process ceases to unfold.
+
+\paragraph{Coinductive proof principle.}
+Coinduction also provides a reasoning principle.  To prove that a property $P$
+holds for all stages of a journey, it suffices to show:
+
+\begin{enumerate}
+  \item $P$ holds for the initial token $a$ at $\tau_0$; and
+  \item whenever $P$ holds at a stage, it holds again after any
+        \textsc{carry} or \textsc{heal} step, and it is
+        preserved through \textsc{rupture} until a later
+        \textsc{heal} resumes the thread.
+\end{enumerate}
+
+This principle will be crucial in later chapters when we study long-range
+stability phenomena such as motifs and constellations.  It lets us prove
+properties of an infinite trace by reasoning only about one step at a time.
+
+\paragraph{Categorical reading.}
+In the presheaf semantics the set of all journeys forms a coalgebra
+\[
+J : A(\tau_0) \longrightarrow
+    (\textsc{Carry}+\textsc{Rupture}+\textsc{Heal}) \times J,
+\]
+whose unfolding function applies the calculus at each time step.
+Two journeys $J_1$ and $J_2$ are \emph{bisimilar} when their observable events
+match and the continuations are again bisimilar.  Bisimilarity expresses the
+intuition that two evolving signs are equivalent when they traverse the same
+sequence of evidence types, even if their particular witnesses differ.
+
+\paragraph{Why this matters.}
+Coinduction turns the static step–witness log into a living object.  Instead of a
+finite list of observations, we have a process that can, in principle, continue
+without bound.  This shift allows us to speak of “the same sign” persisting
+through an entire conversation, to measure the durability of motifs, and to
+model the rhythm of rupture and healing that characterises real language use.
+Later chapters will use the coinductive structure of journeys to define
+quantitative notions of stability and to connect the dynamic semantics to
+probabilistic and harmonic analyses.
+
+\paragraph{Summary.}
+A journey is to the step–witness log what a stream is to a list: an open, possibly
+infinite unfolding.  Each stage is justified by the constructive calculus of
+carry, rupture, and heal; the presheaf semantics guarantees that these stages are
+well-typed; and coinduction gives us the mathematical licence to speak of an
+unending process.  In this way, the movement of meaning through time becomes a
+continuous, inspectable trajectory---a geometry of language that never stops
+unfolding.
+
+
+
+\paragraph{Coinductive preservation.}
+Journeys are coalgebras for the event functor; properties stable under one step
+(\textsc{carry}/\textsc{heal}) hold along the whole stream by coinduction.
+See Theorem~\ref{thm:coindpres} and Corollary~\ref{cor:journeypreservation}.
+
+
+
+%========================
+\section{Metatheoretic Guarantees}
+%========================
+
+The cross-time calculus and its presheaf semantics give us a working language for
+reasoning about meaning in motion.  We now summarise the main structural and
+metatheoretic properties that make this language trustworthy.  The proofs are
+straightforward applications of the Kan property of each fibre and of standard
+arguments from dependent type theory; detailed derivations are deferred to
+Chapter~7.
+
+\paragraph{Structural rules.}
+All structural properties of ordinary HoTT hold in every slice:
+weakening, exchange, contraction, and substitution are valid at each~$\tau$.
+Cross-time judgments inherit these properties fibrewise: if a context~$\Gamma$
+is well-formed at $\tau$ and $\Gamma\!\vdash_{\tau}\!a:A(\tau)$, then all
+standard structural manipulations of $\Gamma$ are preserved when forming or
+using cross-time judgments about~$a$.
+These facts follow from the presheaf semantics: substitution is interpreted as
+pullback, and the functor $A:\Time^{\mathrm{op}}\!\to\SSet$ preserves limits
+pointwise.
+
+\paragraph{Adiabatic coherence.}
+If a mention carries across time with evidence~$\rho$, then all dependent
+judgments about that mention carry as well.  Formally:
+
+\begin{theorem}[Adiabatic coherence]
+\label{thm:adiabatic}
+Let $(a',\rho)\!:\!\Carry^{\Adm}_{A}(\tau,\tau')(a)$.
+If $\Gamma\!\vdash_{\tau}\!t:C(a)$ then
+$\Gamma\!\vdash_{\tau'}\!\transport^{C}_{\rho}(t):C'(a')$.
+\end{theorem}
+
+\noindent
+This is the familiar \emph{stability of transport} property from HoTT.
+The name “adiabatic” recalls the physical sense of a process that changes
+slowly enough for coherence to be preserved:  the path $\rho$ guarantees that
+nothing essential was lost while moving from~$\tau$ to~$\tau'$.
+
+\paragraph{Decidability of rupture under finite policy.}
+Because each slice has a finite Čech cover and each admissibility policy~$\Adm$
+bounds the length and angle of search paths, the existence of a carry witness is
+a finite, decidable question.  Hence rupture is a \emph{stable negative} in the
+constructive sense: once a rupture has been declared under a fixed~$\Adm$, it
+remains valid until a new piece of linguistic evidence is introduced.
+
+\begin{theorem}[Decidability of rupture]
+\label{thm:decidability}
+For every finite admissibility policy~$\Adm$ and every
+$a\!:\!A(\tau)$, exactly one of the following holds:
+\[
+\exists(a',\rho)\!:\!\Carry^{\Adm}_{A}(\tau,\tau')(a)
+\quad\text{or}\quad
+\Rupt^{\Adm}(a).
+\]
+\end{theorem}
+
+\noindent
+This theorem guarantees that every cross-time step can be logged unambiguously:
+the system never oscillates between “found” and “not found” within a single
+policy.
+
+\paragraph{Monotonicity in policy.}
+Policies form a finite partial order by inclusion of constraints.
+If $\Adm'\!\subseteq\!\Adm$ is a stricter policy, then any witness acceptable
+under~$\Adm'$ is also acceptable under~$\Adm$.
+Formally, there is a natural transformation
+\[
+\Carry^{\Adm'}_{A}(\tau,\tau')(a)
+\;\longrightarrow\;
+\Carry^{\Adm}_{A}(\tau,\tau')(a),
+\]
+and therefore
+$\Rupt^{\Adm}(a)\!\Rightarrow\!\Rupt^{\Adm'}(a)$.
+This property allows experiments to compare different admissibility settings
+without inconsistency.
+
+\paragraph{Soundness of healing.}
+Heals by seam text are conservative extensions of the carry rule.
+They add no new constructors, only additional evidence.
+A heal certificate $\heal^{h}(p)$ corresponds to a genuine path
+$\rho_h$ in the earlier fibre~$A(\tau)$ obeying the same~$\Adm$.
+
+\begin{theorem}[No-hallucination lemma]
+\label{thm:nohallucination}
+If $\Gamma\!\vdash_{\tau'}\!\heal^{h}(p):(a',\rho_h)
+  :\Carry^{\Adm}_{A}(\tau,\tau')(a)$,
+then $\rho_h$ is a real path in the Kan fibre $A(\tau)$ and all
+caps traversed by its chain lie in $\Supp_{\tau}(h)$.
+\end{theorem}
+
+\noindent
+The lemma formalises the claim that healing is never imagined:  every declared
+healing path has explicit geometric support in the earlier slice and carries the
+text that produced it as part of its provenance.
+
+\paragraph{Coinductive preservation.}
+For properties of entire journeys we rely on the coinductive reasoning principle
+introduced in Section~3.6.  A property~$P$ of sign traces is \emph{preserved}
+if it is stable under the three event types of the calculus.
+
+\begin{theorem}[Coinductive preservation]
+\label{thm:coinductive}
+If $P$ holds for an initial token $a$ and is preserved by the
+\textsc{Carry-Use} and \textsc{Heal-by-Seam} rules, while remaining inert during
+\textsc{Rupture}, then $P$ holds for every stage of the coinductive journey of
+$a$.
+\end{theorem}
+
+\noindent
+This principle will underwrite the long-range analyses of motifs and
+constellations in later chapters.
+
+\paragraph{Summary.}
+Taken together, these theorems express the reliability of the calculus.
+
+\begin{itemize}
+  \item Each slice obeys the standard discipline of dependent type theory.
+  \item Carry certificates behave like ordinary paths and preserve coherence.
+  \item Rupture is decidable and policy-faithful.
+  \item Heal certificates are sound: they never assert what cannot be witnessed.
+  \item Properties of sign journeys can be proved coinductively from local rules.
+\end{itemize}
+
+These guarantees are enough to treat the step–witness log as a consistent record
+of the evolving text and to use its entries as constructive evidence in later
+analyses.  Chapter~4 will make this explicit by introducing real logs from model
+runs and showing how each recorded witness—positive or negative—becomes a
+measurable step in the geometry of meaning.
+
+
+
+
+
+\chapter{The Journey of a Name}
+
+
+%========================
+\section{Journeys in Practice}
+%========================
+
+The previous chapter gave us a formal language for describing how meaning moves.
+The present chapter turns that language outward, using it to build and read
+\emph{step–witness logs} on real evolving texts.  We move from the clean world of
+rules to the living world of data, where each judgment of carry, rupture, or heal
+becomes a row in a table, a coloured edge in a diagram, or a trace through time.
+
+The aim is not to add new mathematics but to show the calculus at work.
+Every cross–time relation of the theory can be observed empirically and stored in
+a finite log.  The geometry of embeddings, the admissibility policy, and the
+fibrant replacement machinery from Chapters~2--3 are now the engine of a small
+observatory: a pipeline that turns streams of text into sequences of witnessed
+semantic events.
+
+\paragraph{A running intuition.}
+Each token in a text has a life---a succession of contextual embeddings as the
+conversation or narrative unfolds.  Some lives are smooth, gliding across slices
+without interruption; others fragment and reform under new meanings.  The
+step–witness log records this motion one cut at a time.  Every entry is a local
+judgment made under a fixed policy~$\Adm$ in the shared ambient sphere
+$S^{d-1}$.  From these entries we can later reconstruct the full trajectory of a
+sign, measure how long it persists, where it ruptures, and how it heals.
+
+\paragraph{Scope of this chapter.}
+We proceed from the abstract to the concrete.  Section~4.1 explains how the
+formal rules of the calculus are implemented computationally---how embeddings and
+cover graphs become admissibility searches and how each outcome is written to
+the log.  Section~4.2 examines a single log entry in detail, relating its fields
+to the geometric and logical objects of the theory.  Section~4.3 will then scale
+up to statistics over many entries; later sections introduce visualisations,
+aggregations, and provenance analyses.
+
+\bigskip
+
+%========================
+\section*{4.1  From Calculus to Computation}
+%========================
+
+Every rule of the cross–time calculus can be realised algorithmically.
+What follows is not a new theory but a recipe for running the one we already
+have.  The key ingredients are embeddings, cap covers, admissibility checks, and
+the consistent use of the same ambient metric.
+
+\paragraph{Overview of the pipeline.}
+Given a sequence of time–stamped text slices
+\[
+T = [\,\text{text}_0,\text{text}_1,\ldots,\text{text}_n\,],
+\]
+we build the corresponding simplicial slices
+\[
+A(\tau_0),A(\tau_1),\ldots,A(\tau_n)
+\]
+exactly as described in Chapter~2.
+For each consecutive pair $(\tau_i,\tau_{i+1})$ and each probe token $a$ in
+$A(\tau_i)$ we then execute the following sequence of operations:
+
+\begin{enumerate}
+  \item \textbf{Back–projection.}  
+        For each later token $a'$ in $A(\tau_{i+1})$ compute its phantom
+        back–projection $\rph{\tau_i}{\tau_{i+1}}{h}(a')$ using the angular metric
+        on $S^{d-1}$.
+  \item \textbf{Admissibility search.}  
+        Search the cap–overlap graph of $A(\tau_i)$ for a chain
+        $B_0\!\leadsto\!\cdots\!\leadsto\!B_n$ linking $a$ to
+        $\rph{\tau_i}{\tau_{i+1}}{h}(a')$ that satisfies the hop, radius, and angle
+        constraints of the fixed policy~$\Adm$.
+  \item \textbf{Classification.}  
+        \begin{itemize}
+          \item If a valid chain is found, record a
+                \textsc{carry} event with evidence $(a',p,\rho)$.
+          \item If no chain is found, record a
+                \textsc{rupture} event with the failed search parameters.
+          \item Optionally, if a seam text $h$ is supplied (by retrieval or by
+                human input), recompute the later embedding in that context,
+                perform the same search again, and if a path now appears, record
+                a \textsc{heal} event with witness $(a',p,\rho_h)$ and
+                provenance~$h$.
+        \end{itemize}
+  \item \textbf{Logging.}  
+        Write the outcome to the step–witness log, storing the full evidence and
+        policy metadata.
+\end{enumerate}
+
+\paragraph{Implementation sketch.}
+The following pseudocode expresses the procedure in operational form; actual
+implementations may parallelise the inner search or use vector–index back ends.
+
+\begin{verbatim}
+for each (tau, tau') in successive_slices:
+    for each token a in A(tau):
+        found = False
+        for each token a' in A(tau'):
+            phantom = back_project(a', A(tau))
+            path = find_cover_chain(a, phantom, policy=Adm)
+            if path:                     # Carry found
+                log_event("carry", a, a', path, policy=Adm)
+                found = True
+                break
+        if not found:                    # No carry: rupture
+            log_event("rupture", a, policy=Adm)
+
+        if seam_text:                    # optional heal attempt
+            a_sharp = recompute_embedding(a', seam_text)
+            phantom_h = back_project(a_sharp, A(tau))
+            path_h = find_cover_chain(a, phantom_h, policy=Adm)
+            if path_h:
+                log_event("heal", a, a_sharp, path_h,
+                           seam_text=seam_text, policy=Adm)
+\end{verbatim}
+
+\noindent
+Each function here corresponds to an element of the formal calculus:
+\texttt{back\_project} realises $\rph{\tau}{\tau'}{h}$, \texttt{find\_cover\_chain}
+checks for admissible paths in $A(\tau)$, and \texttt{log\_event} writes the
+corresponding HoTT judgment and its provenance to the SWL.
+
+\paragraph{Policy and reproducibility.}
+Because all steps are finite and parameterised, the entire computation is
+reproducible.  Re–running the pipeline with the same slices and the same policy
+$\Adm$ yields the same log.  Changing $\Adm$ changes what counts as admissible
+evidence but never the underlying embeddings.  Seam texts $h$ are stored
+verbatim, so that any heal can be re–evaluated later by re–embedding the same
+text.
+
+\paragraph{Running the experiment.}
+To reproduce the examples used in this chapter, execute the script
+\texttt{dynhott\_suite\_v3/run.py} with the following prompt
+(adjust paths and model name as needed):
+
+\begin{verbatim}
+python -m dynhott_suite_v3.run \
+   --slices texts/slice_00.txt texts/slice_01.txt texts/slice_02.txt \
+   --out out/ch4_demo \
+   --model microsoft/deberta-v3-base --layer -2 \
+   --chunk_size 512 --stride 64 --agg mean \
+   --K 12 --radius_quantile 0.70 --slack 0.02 \
+   --delta_eff_deg 18 --probes probes.txt \
+   --no_plots
+\end{verbatim}
+
+This run will generate the receipts described in Section~4.2.
+Replace the text slices with any evolving corpus of your choice.
+
+\bigskip
+
+%========================
+\section*{4.2  Anatomy of a Log Entry}
+%========================
+
+A step–witness log is both a table and a proof ledger.  Each row corresponds to
+a single application of one of the calculus rules; each column records part of
+its evidence.  Reading a row is therefore equivalent to reconstructing a tiny
+proof of continuity, failure, or healing.  This section dissects one such row in
+detail.
+
+\paragraph{Example entry.}
+Below is an excerpt from a real run on a simple three–slice corpus.  The
+admissibility policy was fixed at
+$\Adm=(\text{hop}\!\leq\!3,\,\delta_{\mathrm{eff}}\!=\!18^{\circ})$.
+Only the most relevant fields are shown.
+
+\begin{center}
+\begin{tabular}{llllllll}
+\toprule
+token & $\tau$ & $\tau'$ & status & later token &
+chain length & seam text & policy \\
+\midrule
+\texttt{cat} & 1 & 2 & \textsc{heal} &
+\texttt{cat} & 3 &
+``literal cat (not Schrödinger)'' &
+$\delta\!\le\!18^{\circ}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The row records that the token \texttt{cat} at time~$\tau\!=\!1$
+failed to carry to its later counterpart at~$\tau'\!=\!2$ under the
+baseline search, but that a seam text~$h$
+(``\emph{literal cat (not Schrödinger)}'') produced a healing path.
+The log also stores the chain of caps
+$B_0\!\leadsto\!B_1\!\leadsto\!B_2\!\leadsto\!B_3$ that linked the phantom
+of the later embedding to the earlier token.  The angular deviations along the
+path all satisfy the same policy $\Adm$; no parameters were changed.
+
+\paragraph{Reading geometrically.}
+In geometric terms, the log entry asserts the existence of a path
+\[
+\rho_h : \rph{\tau}{\tau'}{h}(a') \leadsto a
+\quad\text{inside }A(\tau),
+\]
+constructed by Kan filling from the caps listed in the field \textsf{chain}.
+Because the policy was unchanged, the path is legitimate under the same search
+rules.  The seam text~$h$ acts as a witness that explains why the path now
+exists: its embeddings fall inside the very caps that bridge the gap.
+
+\paragraph{Reading logically.}
+In the calculus the same entry is a derivation of
+\[
+\Gamma\vdash_{\tau'}\!\heal^{h}(p)
+   =(a',\rho_h)
+   :\Carry^{\Adm}_{A}(\tau,\tau')(a).
+\]
+The dependent pair $(a',\rho_h)$ is a member of the carry type under~$\Adm$.
+The \textsf{status} field tells us which rule was applied;
+the \textsf{provenance} field stores the external parameters (the seam text~$h$,
+the policy~$\Adm$, and the caps involved).  Together they constitute the
+constructive evidence for the judgment.
+
+\paragraph{Reading empirically.}
+In the step–witness log the same event is a line of code:
+the data needed to reproduce the computation.
+Because every parameter is stored---from the textual seam to the angular
+threshold---the experiment is not only repeatable but inspectable.
+Another researcher can re-run the pipeline, verify that the same path appears,
+and check that the heal is genuine.
+
+\paragraph{Diagrams and figures.}
+Figure~\ref{fig:carry-example} shows the corresponding geometry:
+the earlier slice $A(\tau)$ with the admissible chain highlighted in black and
+the caps touched by the seam text in grey.  The earlier token~$a$
+lies in the leftmost cap; the phantom of the later token
+$r^{h}_{\tau,\tau'}(a')$ lies in the rightmost one.
+
+\begin{figure}[h]
+\centering
+%\includegraphics[width=.65\linewidth]{scarry_example.png}
+\caption{Example carry/heal path in the earlier slice $A(\tau)$.
+Black edges form the admissible cover chain $p$; grey regions indicate caps
+$\Supp_\tau(h)$ that contain words of the seam text~$h$.}
+\label{fig:carry-example}
+\end{figure}
+
+\paragraph{Exercises for replication.}
+Readers who wish to replicate this figure should run the experiment described in
+Section~4.1 with the following parameters, then execute the plotting script:
+
+\begin{verbatim}
+python -m dynhott_suite_v3.plot_chain \
+   --log out/ch4_demo/swl.csv \
+   --token "cat" --tau 1 --tau_prime 2
+\end{verbatim}
+
+The script will reconstruct the chain $p$ from the log, draw the caps of
+$A(\tau)$, highlight those in $\Supp_\tau(h)$, and save the result as
+\texttt{carry\_example.png}.
+Replacing the token name reproduces other rows of the log.
+
+\paragraph{Summary.}
+A single log entry is a micro–proof: it contains the data that makes a claim of
+continuity, rupture, or healing true under finite conditions.  Reading it is the
+same as reading a small theorem about the text, and plotting it is the same as
+seeing that theorem in the geometry of embeddings.  In the next sections we will
+look at the population of such entries across a full corpus and see how the
+ebb and flow of carries, ruptures, and heals reveal the dynamics of sense in an
+evolving text.
+
+
+
+
+
+
+
+%========================
+\section*{4.3  Empirical Typology of Events}
+%========================
+
+A single log entry shows us one step in the movement of meaning.  A collection of
+entries reveals its overall rhythm.  By aggregating the outcomes of many
+carry–rupture–heal decisions we can measure how stable a text is under its own
+semantic dynamics and where its points of tension lie.
+
+\paragraph{From local judgments to global statistics.}
+Let $L$ be the complete step–witness log generated for a text.
+For each ordered pair of times $(\tau,\tau')$ and each token~$a$ in the earlier
+slice $A(\tau)$, the log stores exactly one record
+$L(\tau\!\leadsto\!\tau',a)$ with status in
+$\{\textsc{carry},\textsc{rupture},\textsc{heal}\}$.
+Aggregating these records gives empirical frequencies
+\[
+P_{\textsc{carry}}(\tau,\tau') =
+  \frac{\#\text{carry events}}{\#\text{total tokens}},\qquad
+P_{\textsc{rupture}}(\tau,\tau') =
+  \frac{\#\text{ruptures}}{\#\text{total tokens}},\qquad
+P_{\textsc{heal}}(\tau,\tau') =
+  \frac{\#\text{heals}}{\#\text{total tokens}}.
+\]
+By construction,
+$P_{\textsc{carry}}+P_{\textsc{rupture}}+P_{\textsc{heal}}=1$ for each pair of
+slices.  These quantities describe, at a glance, the flow of semantic coherence
+through the text:  high carry rates indicate stable sense; high rupture rates
+mark regions of change or ambiguity; high heal rates reveal where the system (or
+reader) needed additional language to re-establish continuity.
+
+\paragraph{Visualisation.}
+The simplest view is a matrix whose rows and columns correspond to time slices.
+Each cell $(\tau,\tau')$ is coloured by $P_{\textsc{carry}}$,
+$P_{\textsc{rupture}}$, or $P_{\textsc{heal}}$ as desired.
+This “semantic weather map” of a corpus shows how coherence propagates through
+time.  Warm colours trace stable thematic threads; cooler or contrasting colours
+show turbulence.
+
+\begin{figure}[h]
+\centering
+%\includegraphics[width=.72\linewidth]{figs/event_matrix.png}
+\caption{Example event matrix showing relative frequencies of carry, rupture,
+and heal events between slices.  Each cell is computed from the step–witness
+log under a fixed admissibility policy $\Adm$.}
+\label{fig:event-matrix}
+\end{figure}
+
+\paragraph{Token-level typology.}
+Beyond global frequencies we can classify tokens by the pattern of events they
+undergo.  A token that carries across many slices without interruption is
+\emph{stable}; one that repeatedly ruptures and heals is \emph{volatile}.
+Formally, let
+\[
+\mathrm{stability}(a)
+  = \frac{\#\text{carry steps for }a}
+         {\#\text{total steps in its journey}},
+\qquad
+\mathrm{volatility}(a)
+  = 1 - \mathrm{stability}(a).
+\]
+These measures are coarse but informative: stable tokens tend to be function
+words, topic anchors, or stylistic constants; volatile tokens often mark
+shifts in register, metaphor, or narrative focus.
+
+\paragraph{Path lengths and dwell times.}
+Each carry certificate contains a finite chain $p$ of overlapping caps.
+Its length $|p|$ is a direct measure of how far the system had to travel through
+the cover to establish coherence.
+By collecting these lengths we obtain a distribution of \emph{semantic distances}
+for carries and heals.  Short chains indicate tight local continuity; long
+chains signal semantic leaps that nonetheless remain connected under the policy.
+
+\paragraph{Example computation.}
+To reproduce the statistics in Figure~\ref{fig:event-matrix} run:
+
+\begin{verbatim}
+python -m dynhott_suite_v3.analyse_swl \
+   --log out/ch4_demo/swl.csv \
+   --out out/ch4_stats \
+   --policy delta_eff=18 hop=3
+\end{verbatim}
+
+The script outputs summary tables:
+overall event frequencies, per-token stability scores,
+and histograms of chain lengths and angular distances.
+
+\paragraph{Interpretation.}
+Numbers alone do not tell stories, but they let us see where to look.
+Stable tokens trace the backbone of discourse; ruptures and heals reveal where
+new ideas entered.
+When plotted along the text they mark moments of cognitive or rhetorical shift.
+In later chapters we will examine how such local instabilities aggregate into
+larger semantic structures—motifs and constellations—but for now it is enough
+to observe that the calculus leaves a quantitative fingerprint on every line of
+the text.
+
+\bigskip
+
+%========================
+\section*{4.4  Provenance and Auditability}
+%========================
+
+Every record in the step–witness log is accompanied by a trail of provenance.
+This section explains what that means and why it matters.
+
+\paragraph{Two levels of provenance.}
+There are two intertwined kinds of provenance in our setting:
+
+\begin{enumerate}
+  \item \emph{Computational provenance:} the technical parameters that made the
+        judgment possible---the policy~$\Adm$, the search window, the embeddings,
+        the caps touched, and (for heals) the seam text~$h$ and its phantom
+        projections.
+  \item \emph{Semantic provenance:} the linguistic or conceptual justification of
+        the step---why these words, in this context, could be said to continue
+        the earlier meaning.
+\end{enumerate}
+
+The step–witness log records both.  Computational provenance ensures
+reproducibility; semantic provenance ensures interpretability.
+
+\paragraph{The provenance lattice.}
+To compare events by the amount of evidence they preserve, we introduce an
+ordering called the \emph{provenance lattice}:
+\[
+\textsc{carry} \;>\; \textsc{heal} \;>\; \textsc{rupture}.
+\]
+The order reflects informational completeness.
+A carry needs only geometric evidence: a path exists and is recorded.
+A heal needs that evidence \emph{plus} a textual seam that made the path appear.
+A rupture carries only negative information: a finite search found no witness.
+This hierarchy allows analysts to reason about the relative certainty of events
+without conflating their causes.
+
+\paragraph{Epistemic distance.}
+Between any two events in the log we can measure an \emph{epistemic distance}:
+the minimal number of additional pieces of evidence (paths or seam texts) that
+would have to be constructed to transform one into the other.
+For instance, a heal is at distance~1 from a rupture under the same policy: it
+adds exactly one new witness (the seam text).
+Such distances make the epistemic landscape of a text measurable.
+
+\paragraph{Auditability and replay.}
+Because every log entry stores its full provenance, the entire reasoning process
+can be audited and replayed.
+An independent reader can:
+
+\begin{enumerate}
+  \item retrieve the exact embeddings and policy that produced the event;
+  \item recompute the phantom back-projection;
+  \item verify the existence or absence of the admissible path;
+  \item re-embed the seam text~$h$ (if any) and check that the healing path
+        indeed appears.
+\end{enumerate}
+
+This ability to replay every step is the constructivist analogue of
+experimental reproducibility.
+The log is not a metaphorical diary; it is a structured proof record.
+
+\paragraph{Human–machine interpretation.}
+Provenance also mediates between human and algorithmic reading.
+When a heal certificate cites a seam text $h$, we can read $h$ ourselves and
+decide whether it plausibly justifies the semantic leap.
+The model’s judgment is therefore open to hermeneutic critique.
+Every seam is both a line of text and a line of proof.
+
+\paragraph{Summary.}
+Provenance binds the abstract calculus to the empirical world.
+Without it, a carry would be a silent equation; with it, it becomes a traceable
+act of understanding.
+Each entry in the step–witness log is a small contract between geometry,
+language, and policy:  it states what was observed, under what rules, and through
+which words.
+The next section will build on this foundation to visualise entire journeys and
+to show how multiple witnesses weave together into motifs of meaning.
+
+
+
+
+%========================
+\section*{4.5  Visualising Journeys}
+%========================
+
+Up to now we have looked at the step–witness log as a table of events and
+statistics.  But language is not experienced as a table; it is experienced as
+movement and return.  To understand the geometry of meaning we therefore need to
+see the log as a \emph{map}—a picture of how tokens travel through time.
+
+\paragraph{From records to trajectories.}
+Each token’s log entries form a sequence of events:
+\[
+(a,\tau_0)\!\to\!(a_1,\tau_1)\!\to\!(a_2,\tau_2)\!\to\!\cdots
+\]
+with each arrow labelled by its event type
+$\{\textsc{carry},\textsc{rupture},\textsc{heal}\}$.
+Plotting these arrows as edges on a time–axis produces a
+\emph{journey diagram} for that token.  Carry steps appear as solid lines;
+ruptures as dashed breaks; heals as dotted lines annotated with the seam text
+that justified them.  When multiple tokens are plotted together, the result is a
+braid of continuities and interruptions—the dynamic fabric of the text.
+
+\begin{figure}[h]
+\centering
+%\includegraphics[width=.80\linewidth]{figs/journey_plot.png}
+\caption{Example journey plot for a subset of probe tokens.  Time increases to
+the right.  Solid edges indicate carries, dashed gaps mark ruptures, dotted edges
+labelled by seam texts indicate heals.}
+\label{fig:journey-plot}
+\end{figure}
+
+\paragraph{How to generate the plot.}
+The following prompt reconstructs journeys from the log and produces a diagram
+similar to Figure~\ref{fig:journey-plot}:
+
+\begin{verbatim}
+python -m dynhott_suite_v3.plot_journeys \
+   --log out/ch4_demo/swl.csv \
+   --tokens "cat,Cassie,quantum" \
+   --out figs/journey_plot.png
+\end{verbatim}
+
+Each token trajectory is drawn as a horizontal line segment across the time
+slices.  Carries are connected segments; ruptures appear as gaps; heals are
+dotted reconnections annotated by the corresponding seam text~$h$.
+
+\paragraph{Embedding view.}
+A complementary view embeds the same information in the geometric space of
+embeddings.  Each token’s contextual vectors across time are projected (for
+instance, by principal components or UMAP) to two dimensions.  Carries correspond
+to short edges between consecutive embeddings; ruptures appear as long jumps
+without connecting edges; heals appear as reconnections that include the
+embeddings of their seam texts as intermediary points.  The two plots—the
+time–line and the embedding–plane—show the same process from different
+perspectives: one temporal, one spatial.
+
+\begin{figure}[h]
+\centering
+%\includegraphics[width=.75\linewidth]{figs/embedding_trajectory.png}
+\caption{Embedding–plane view of token trajectories.  Points are contextual
+embeddings projected to 2D.  Carries are short edges; ruptures are long gaps;
+heals are reconnections passing through the phantom embeddings of the seam
+texts.}
+\label{fig:embedding-trajectory}
+\end{figure}
+
+\paragraph{Interpreting the diagrams.}
+Journey plots reveal patterns that are invisible in raw text.  Tokens that move
+together through multiple carries often belong to the same thematic field; those
+that diverge mark semantic bifurcations.  A cluster of ruptures at the same time
+step indicates a conceptual shift—a place where the text reorients itself.
+Heals, especially when they share similar seam texts, mark the system’s or the
+reader’s attempt to make sense of novelty.
+
+\paragraph{From single trajectories to networks.}
+By overlaying all token journeys on the same axes we obtain a network view of
+semantic motion.  Each node represents a token at a time slice; edges represent
+carry or heal relations.  The resulting graph $G_T$ is the
+\emph{continuity graph} of the text~$T$.  Its connected components correspond to
+coherent themes; its articulation points correspond to ruptures that link
+otherwise distinct regions of sense.  Later chapters will use this graph as the
+starting point for motif analysis.
+
+\paragraph{Summary.}
+Visualisation turns the calculus into perception.  The same rules that produced
+the step–witness log now draw lines and surfaces in front of us.
+Carries become literal threads, ruptures become cuts, heals become visible
+stitches of new text.  The log is no longer a ledger but a moving diagram of
+language.
+
+\bigskip
+
+%========================
+\section*{4.6  Aggregating Journeys: Towards Motifs}
+%========================
+
+When many journeys are overlaid, regularities appear.  Certain paths recur, certain
+seam texts reappear in similar contexts, certain groups of tokens tend to rupture
+and heal together.  These recurrent patterns are the precursors of the structures
+we will call \emph{motifs} and, at larger scales, \emph{constellations}.
+
+\paragraph{From journeys to equivalence classes.}
+Each journey is a stream of events
+$(E_0,E_1,E_2,\ldots)$ with finite evidence at each stage.
+Two journeys $J_1$ and $J_2$ are considered equivalent when they are
+\emph{bisimilar}:  they exhibit the same sequence of event types and their
+corresponding carries and heals are witnessed by geometrically adjacent paths in
+the earlier slices.
+Formally, bisimilarity is the greatest relation~$\mathcal{R}$ such that
+\[
+J_1\,\mathcal{R}\,J_2
+\;\Longrightarrow\;
+\begin{cases}
+  E_i(J_1)=E_i(J_2)\text{ for all }i,\\[0.4ex]
+  \text{and the corresponding paths } \rho_i^{(1)},\rho_i^{(2)}
+  \text{ are homotopic in }A(\tau_i).
+\end{cases}
+\]
+Bisimilar journeys form equivalence classes that we can treat as single
+objects—semantic processes that recur in different parts of a text.
+
+\paragraph{Operational clustering.}
+In practice we approximate bisimilarity by clustering journeys according to:
+
+\begin{itemize}
+  \item matching event sequences of equal length;
+  \item comparable angular distances of carries and heals;
+  \item overlap in seam texts (measured by cosine similarity of their embeddings).
+\end{itemize}
+
+This clustering produces small families of tokens whose semantic behaviour over
+time is congruent.  Each family is a candidate \emph{motif}.
+
+\paragraph{Definition (informal).}
+A \emph{motif} is a recurrent coinductive pattern of carries, ruptures, and heals
+whose evidence---paths, seam texts, and policies---is similar up to bounded
+variation.
+Motifs are the dynamic analogues of topics or themes, but defined
+\emph{constructively} through witnessed continuities rather than lexical counts.
+
+\paragraph{Aggregating evidence.}
+For each motif~$M$ we aggregate its step–witness logs to compute:
+
+\begin{itemize}
+  \item the distribution of event types within the motif;
+  \item the typical chain lengths and angles of its carries;
+  \item the characteristic seam texts that appear in its heals;
+  \item the temporal span of its recurrence.
+\end{itemize}
+
+These aggregated quantities provide the first numerical fingerprints of motifs.
+
+\paragraph{Visualization of motifs.}
+To visualise motifs, select one representative journey from each cluster and
+overlay the geometric paths of its carries and heals within the corresponding
+earlier slices.  Shared paths appear as bright ridges; rare or idiosyncratic
+ones fade into the background.  The resulting figure resembles a bundle of
+fibres---a literal motif in the geometric fabric of sense.
+
+\begin{figure}[h]
+\centering
+%\includegraphics[width=.70\linewidth]{figs/motif_bundle.png}
+\caption{Motif visualisation.  Each fibre represents a journey; shared segments
+form bright ridges corresponding to recurrent carries and heals.}
+\label{fig:motif-bundle}
+\end{figure}
+
+\paragraph{From motifs to constellations.}
+At larger scales motifs themselves interconnect.  When the carry and heal paths
+of distinct motifs converge on common regions of the embedding space, we obtain
+\emph{constellations}---higher-order patterns of semantic recurrence.
+Constellations will be the focus of Chapter~5, where we develop quantitative
+methods for identifying them and prove their coherence using the coinductive
+principles established earlier.
+
+\paragraph{Summary.}
+Motifs are the collective memory of the system: groups of signs that share the
+same rhythm of continuity, rupture, and repair.
+Their identification marks the transition from local calculus to global
+semantics.
+What began as a log of finite geometric events has become an atlas of
+recurrence—a geometry of meaning that spans entire texts.
+
+
+
+
+%========================
+\section*{4.7  Technical Appendix: Reproducibility and Implementation Details}
+%========================
+
+The purpose of this appendix is not to introduce new ideas but to ensure that the
+experiments described in this chapter can be reproduced exactly.  Every event in
+the step–witness log can be traced back to a concrete computation on finite data.
+Here we summarise the main conventions, file structures, and invariants.
+
+\paragraph{System overview.}
+All runs in this book were executed with the
+\texttt{dynhott\_suite\_v3} toolkit.
+The toolkit constructs per–slice Kan spaces, performs cross–time admissibility
+searches, and writes the resulting step–witness logs in tabular form.
+The pipeline is deterministic once the random seed and policy~$\Adm$ are fixed.
+
+\paragraph{Embedding generation.}
+Embeddings are produced by a single encoder model and layer across all slices.
+Unless otherwise noted, the examples use
+\texttt{microsoft/deberta-v3-base} with layer~$-2$.
+Each token vector is $\ell_2$–normalised to lie on the unit sphere~$S^{d-1}$.
+Angular distance
+$\theta(x,y)=\arccos\langle x,y\rangle$
+is used for all comparisons.
+
+\paragraph{Cover construction.}
+Caps are chosen by $K$–means clustering of token vectors at each slice.
+Default parameters:
+\[
+K=12, \qquad
+\text{radius\_quantile}=0.70, \qquad
+\text{slack}=0.02.
+\]
+The Čech nerve and its fibrant replacement $E^\infty$ are constructed directly
+from the overlaps of these caps.
+
+\paragraph{Admissibility policy.}
+The default admissibility predicate~$\Adm$ limits searches to chains of length
+$\text{hop}\!\leq\!3$ and per–edge angle
+$\delta_{\mathrm{eff}}\!\leq\!18^{\circ}$.
+Policies are recorded verbatim in every log entry so that results can be
+filtered or compared across settings.
+
+\paragraph{File schema for the step–witness log.}
+Each run outputs a CSV or JSON file \texttt{swl.\{csv,json\}} with one record per
+token and time pair $(\tau,\tau')$.  The canonical fields are:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Field} & \textbf{Type} & \textbf{Description} \\
+\midrule
+token\_id      & string & surface form of earlier token $a:A(\tau)$ \\
+tau\_from, tau\_to & int & indices of the slices $\tau,\tau'$ \\
+status         & enum & \textsc{carry}, \textsc{rupture}, or \textsc{heal} \\
+policy         & dict & full admissibility policy~$\Adm$ (hop, $\delta$, radius) \\
+a\_prime       & string & surface form of later token $a'$ \\
+chain          & list[int] & indices of caps $B_0\!\leadsto\!\cdots\!\leadsto\!B_n$ \\
+rho\_id        & int & internal identifier of path $\rho$ in $A(\tau)$ \\
+phantom\_caps  & list[int] & caps containing $\rph{\tau}{\tau'}{h}(a')$ or its $h$–phantom \\
+seam\_text     & string|null & seam text $h$ if heal occurred \\
+h\_support     & list[int]|null & subset $\Supp_\tau(h)$, if applicable \\
+timestamp      & ISO datetime & time of computation \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+All fields are self–documenting; no hidden parameters are omitted.
+
+\paragraph{Auxiliary outputs.}
+The suite also writes intermediate files used for diagnostics:
+
+\begin{itemize}
+  \item \texttt{basin\_assign\_\$tau.csv} — token–to–cap assignments per slice.
+  \item \texttt{radii\_\$tau.csv} — measured radii of caps.
+  \item \texttt{cech\_edges\_\$tau.csv} — 1–simplices of the Čech nerve.
+  \item \texttt{carry\_receipts.csv},
+        \texttt{rupture\_receipts.csv},
+        \texttt{heal\_certificates.csv} — source tables from which the SWL is derived.
+\end{itemize}
+
+These files together contain the full computational provenance for every
+judgment.
+
+\paragraph{Complexity.}
+Let $N_\tau$ be the number of caps in $A(\tau)$ and
+$H$ the hop bound of the policy.
+The worst–case search for a carry or heal witness is
+$O(N_\tau^H)$, but in practice much smaller because the cover is sparse and the
+radius constraints prune the search early.
+Rupture detection is therefore polynomial in the number of caps and linear in
+the number of tokens.
+
+\paragraph{Parallelisation.}
+Each pair $(\tau,\tau')$ is independent and can be processed in parallel.
+The Python reference implementation uses the standard \texttt{multiprocessing}
+library; distributed versions can be built trivially because the admissibility
+predicate is pure and stateless.
+
+\paragraph{Reproducibility invariant.}
+Every run satisfies:
+\[
+\text{same inputs} + \text{same policy} + \text{same seed}
+\;\Rightarrow\;
+\text{same log}.
+\]
+Heals are reproducible because seam texts~$h$ are stored verbatim; re–embedding
+them yields the same phantom positions and the same paths under the same~$\Adm$.
+
+\paragraph{Visualization scripts.}
+Standard scripts provided in the suite:
+
+\begin{itemize}
+  \item \texttt{plot\_chain.py} — draws a single carry/heal chain in a slice.
+  \item \texttt{plot\_journeys.py} — produces journey timelines.
+  \item \texttt{plot\_motifs.py} — overlays recurring paths for motif detection.
+\end{itemize}
+
+\paragraph{License and environment.}
+All code is released under the MIT License.
+Experiments were executed with Python~3.11,
+\texttt{transformers}~$\geq$4.38,
+\texttt{numpy}~1.26, and
+\texttt{matplotlib}~3.8.
+Reproducing the figures requires only CPU resources.
+
+\paragraph{Summary.}
+Every element of the dynamic calculus—from embeddings to heals—corresponds to a
+finite, verifiable computation.  The step–witness log is a stable artefact: a
+set of discrete proofs produced by fixed rules in a fixed ambient geometry.
+By recording its full provenance, the log closes the loop between formal theory,
+empirical experiment, and future audit.  The next chapter will use this record to
+trace entire \emph{journeys of signs} and to discover, within their collective
+motion, the first recognisable motifs of meaning.
+
+
+
+
+\chapter{Motifs and Constellations}
+
+
+%========================
+\section{From Individual Traces to Collective Forms}
+%========================
+
+Each journey recorded in the step–witness log is a thin thread of continuity:
+a single sign making its way through time.  The calculus has shown us how to
+describe that motion faithfully, one step at a time.  But texts are not made of
+single threads; they are woven fabrics.  Meanings persist together, drift
+together, and sometimes rupture and heal in concert.  The next level of inquiry
+is therefore collective.  We now ask: \emph{when do several journeys belong to
+the same pattern of recurrence?}  When can we say that a group of signs shares a
+common rhythm of coherence?
+
+The answer to these questions introduces two new structures: the
+\emph{motif} and the \emph{constellation}.  A \emph{motif} is a recurrent pattern
+of continuities and repairs—a small geometry of meaning that reappears in
+different parts of a text.  A \emph{constellation} is a higher-order structure
+formed when several motifs overlap or resonate with one another, creating a
+coherent field of sense.  Together, motifs and constellations describe the
+collective motion of language: how fragments of coherence find each other and
+bind.
+
+\paragraph{From journeys to geometry.}
+Formally, everything we need is already present in the step–witness log.
+Each token’s sequence of carries, ruptures, and heals is an observable stream of
+events, finite at every step but unbounded in length.  When multiple streams
+unfold with the same rhythm of events and comparable evidence, they trace
+similar paths through the space of sense.  Those similarities are not accidents;
+they are the system’s way of reusing its own coherence.  By identifying and
+grouping such streams we reveal the recurring geometries that organise the text
+as a whole.
+
+\paragraph{From patterns to ontology.}
+A motif is not a metaphor.  It is an ontological object in the same constructive
+sense as every other element of the theory: a finite family of witnessed
+journeys that behave alike under the same admissibility policy.  Each motif can
+be reconstructed from evidence; each has a boundary of validity defined by the
+finite observations that sustain it.  Constellations are simply motifs of motifs,
+built by the same logic one level higher.
+
+\paragraph{Structure of the chapter.}
+Section~5.1 formalises the notion of a motif as an equivalence class of journeys
+that share the same rhythm of events.  Section~5.2 develops the mathematics of
+recurrence that makes these classes stable.  Section~5.3 lifts the analysis to
+constellations, where motifs interact.  Section~5.4 interprets these interactions
+as harmonic relations, preparing the ground for the more reflective notion of
+\emph{Self} in Chapter~6.  The remaining sections present empirical examples,
+stability theorems, and the final bridge to co-witnessing.
+
+\bigskip
+
+%========================
+\section*{5.1  From Journeys to Motifs}
+%========================
+
+\paragraph{Intuitive idea.}
+When several tokens follow the same sequence of carries, ruptures, and heals,
+we perceive them as variations of a single pattern.  They behave like different
+melodic lines in the same rhythm.  In our semantics such a recurring pattern is
+a \emph{motif}.  It is the smallest unit of collective meaning: a cluster of
+journeys whose evidence aligns under the same admissibility policy.
+
+\paragraph{Journeys as observable streams.}
+Recall that the journey of a token $a$ is a coinductive stream
+\[
+J(a) = (E_0,E_1,E_2,\ldots),
+\]
+where each event $E_i$ is one of \textsc{carry}, \textsc{rupture}, or
+\textsc{heal}, accompanied by its finite evidence $(a_i',\rho_i)$ or
+$(a_i',\rho_{h_i},h_i)$.
+The journey is observed step by step: at each moment we can inspect its current
+event and its evidence, and we can always ask for the next.  Two journeys are
+indistinguishable if all their observations coincide at every step.
+
+\paragraph{Bisimilarity.}
+Formally, we say that two journeys $J_1$ and $J_2$ are
+\emph{bisimilar}, written $J_1\sim J_2$, when they exhibit the same sequence of
+event types and when, for each corresponding step, the witnessing paths in the
+relevant earlier slices are homotopic:
+\[
+J_1\sim J_2
+\iff
+\big(\forall i,\, E_i(J_1)=E_i(J_2)
+  \text{ and }
+  \rho_i^{(1)}\simeq\rho_i^{(2)}\text{ in }A(\tau_i)\big).
+\]
+Bisimilarity is an equivalence relation; it captures the idea that two journeys
+\emph{do the same thing} even if they involve different tokens or occur at
+different times.
+
+\paragraph{Definition of a motif.}
+A \emph{motif} is an equivalence class of journeys under bisimilarity:
+\[
+M = [J]_{\sim} = \{\,J' \mid J'\sim J\,\}.
+\]
+Each motif therefore represents a reproducible pattern of semantic behaviour.
+It is the constructive analogue of a “topic” or “theme,” but defined by
+repetition of evidence rather than by co-occurrence of words.
+
+\paragraph{Empirical detection.}
+In practice, motifs are identified by clustering journeys from the step–witness
+log according to the similarity of their event sequences and supporting
+evidence.  A simple heuristic is:
+
+\begin{enumerate}
+  \item Encode each journey as a string of event types, e.g.\ 
+        $\textsc{carry}\!-\!\textsc{rupture}\!-\!\textsc{heal}$.
+  \item Compute the angular similarity of their carry and heal paths.
+  \item Measure the cosine similarity of their seam texts (if any).
+  \item Cluster journeys whose combined similarity exceeds a fixed threshold.
+\end{enumerate}
+
+The resulting clusters are motifs: empirical families of journeys that
+recur with similar rhythm and evidence.
+
+\paragraph{Example.}
+In a short dialogue corpus the journeys of the tokens
+\texttt{cat}, \texttt{Cassie}, and \texttt{quantum} may all share the same
+sequence
+$\textsc{carry}\!\to\!\textsc{rupture}\!\to\!\textsc{heal}$,
+with seam texts describing observation and uncertainty.
+Their paths in the earlier slices are homotopic; their heals draw on similar
+linguistic material.  Together they form a single motif about observation and
+self-reference.
+
+\paragraph{Interpretation.}
+Motifs are the recurrent geometries of coherence in a text.
+They are not discovered by counting or by latent variables but by
+constructively identifying the same rhythm of continuity and repair.
+Each motif thus inherits the full provenance of its members: every path, every
+seam text, every policy.  It is this traceability that makes motifs measurable
+and comparable.
+
+\bigskip
+
+%========================
+\section*{5.2  The Mathematics of Recurrence}
+%========================
+
+A motif can be recognised because its pattern returns.
+This section formalises that idea and shows why motifs are stable under
+coinductive reasoning.
+
+\paragraph{The recurrence operator.}
+Given a journey $J(a)$, define its \emph{recurrence set}
+$R(J)$ as the collection of time pairs where the same pattern reappears:
+\[
+R(J)
+ = \{\,(\tau_i,\tau_j)
+       \mid
+       \exists\,J'\text{ such that }J'\sim J
+       \text{ and a carry or heal links }\tau_i\!\to\!\tau_j
+   \,\}.
+\]
+Intuitively, $R(J)$ lists all the places where the system has seen this pattern
+before.
+
+\paragraph{Recurrence as a fixed point.}
+We call a journey \emph{recurrent} when its own pattern appears again:
+\[
+J \text{ is recurrent} \;\Longleftrightarrow\;
+J\in R(J).
+\]
+A \emph{motif} is the greatest fixed point of the operator $R$:
+\[
+M = \nu R
+   = \{\,J \mid J\in R(J)\text{ and }R(J)\subseteq M\,\}.
+\]
+In other words, motifs are the maximal families of journeys closed under
+recurrence.  The coinductive symbol $\nu$ reminds us that we are describing a
+structure not by its construction but by its unfolding behaviour.
+
+\paragraph{Existence.}
+Every finite step–witness log induces at least one motif class.
+The trivial motif is the set containing each journey alone; larger motifs arise
+whenever different journeys repeat the same pattern of events.
+Because the SWL is finite, the set of possible event sequences is finite,
+ensuring that the clustering of Section~5.1 always terminates.
+
+\paragraph{Interpretation.}
+Recurrence is to motifs what resonance is to sound.
+A motif is a pattern that continues to sound within the geometry of the text,
+echoing in different contexts but always with recognisable rhythm.
+Mathematically, it is a fixed point of the operator that maps a journey to the
+places where its pattern reappears.  Empirically, it is a cluster of witnessed
+journeys that reoccur under the same policy.  Both readings are equivalent under
+the semantics of the presheaf model.
+
+\paragraph{How to compute motifs.}
+In practice one can extract motifs directly from the log:
+
+\begin{verbatim}
+python -m dynhott_suite_v3.find_motifs \
+   --log out/ch4_demo/swl.csv \
+   --out out/ch5_motifs \
+   --policy delta_eff=18 hop=3
+\end{verbatim}
+
+The script clusters journeys by event sequences and evidence similarity, writes
+the resulting motif assignments to \texttt{motifs.csv}, and reports summary
+statistics such as the number of motifs, their average size, and their dominant
+seam texts.  Figure~\ref{fig:motif-bundle} later in this chapter illustrates one
+such motif as a bundle of overlapping carries and heals.
+
+\paragraph{Summary.}
+Recurrence turns individual journeys into collective geometries.
+A motif is a coinductive fixed point: a pattern of continuity that proves itself
+by returning.  Because motifs are defined by witnessed evidence and finite
+policies, they are both mathematically well-founded and empirically measurable.
+In the next section we will see how motifs interact, forming larger structures
+of coherence called \emph{constellations}.
+
+
+
+
+
+\paragraph{Fixed--point characterisation.}
+Motifs are the greatest fixed point of the recurrence operator $R$; see
+Theorem~\ref{thm:motifnu}. This makes recurrence a coinductive invariant,
+not a heuristic.
+
+
+
+%========================
+\section{Constellations: Higher–Order Coherence}
+%========================
+
+Motifs capture recurrent patterns of continuity within a text.
+But just as individual journeys gather into motifs, motifs themselves often
+interact.  Their paths cross in the embedding space; they share seam texts; they
+form networks of mutual coherence.
+These networks are what we call \emph{constellations}.
+A constellation is a higher–order object: a pattern of relations
+\emph{between motifs} that together sustain a larger conceptual field.
+
+\paragraph{Intuitive picture.}
+Imagine plotting all motifs in the same geometric space.
+Each motif appears as a bundle of paths---its recurrent carries and heals.
+When two bundles overlap or weave through one another, the region of overlap
+becomes a place of shared sense.
+Where several such overlaps persist we see the outline of a constellation:
+a star–field of motifs resonating in proximity.
+
+\paragraph{From motifs to a graph of relations.}
+Formally, let $\mathcal{M}$ be the set of motifs discovered in the
+step–witness log.
+We construct a graph $G_M=(V,E)$ where each vertex $v_i\in V$ corresponds to a
+motif $M_i\in\mathcal{M}$.
+Two motifs $M_i$ and $M_j$ are connected by an edge
+when they share empirical or geometric evidence:
+
+\begin{enumerate}
+  \item they have at least one \emph{shared seam text}
+        (their heal events use linguistically similar $h$’s);
+  \item or their recurrent paths in an earlier slice are
+        \emph{geometrically adjacent}, meaning that the average angular
+        distance between corresponding edges is below a fixed threshold
+        $\epsilon$;
+  \item or they co–occur within the same temporal window
+        $(\tau_k,\tau_{k+1})$ of the step–witness log.
+\end{enumerate}
+
+Edges are weighted by the strength of these relations:
+shared seams contribute textual weight,
+path adjacency contributes geometric weight,
+and temporal overlap contributes rhythmic weight.
+The resulting weighted graph is the \emph{motif–relation graph}.
+
+\paragraph{Definition of a constellation.}
+A \emph{constellation} is a connected component of the motif–relation graph
+whose internal coherence exceeds a threshold~$\lambda$:
+\[
+\mathrm{Constellation}(\lambda)
+   = \{\, C\subseteq \mathcal{M}\mid
+        G_M[C]\text{ connected and }
+        \mathrm{coh}(C)\ge \lambda \,\},
+\]
+where $\mathrm{coh}(C)$ is a weighted average of the edge strengths within~$C$.
+Intuitively, a constellation is a cluster of motifs that continually
+reinforce one another through shared geometry, text, or timing.
+
+\paragraph{Geometric reading.}
+In the embedding space a constellation is a region densely traversed by the
+paths of its member motifs.
+Each path is itself a sequence of carries and heals;
+together they form a braided surface---a manifold of coherence.
+We can visualise such regions by plotting all carry and heal paths coloured by
+their motif membership.
+Bright, overlapping areas indicate high–coherence constellations.
+
+\begin{figure}[h]
+\centering
+%\includegraphics[width=.75\linewidth]{figs/constellation_graph.png}
+\caption{Example constellation formed by three motifs sharing seam texts about
+observation and perception.  Edge thickness corresponds to coherence strength.}
+\label{fig:constellation}
+\end{figure}
+
+\paragraph{Semantic reading.}
+Linguistically, constellations correspond to conceptual fields or themes.
+They are the higher–order entities through which a text maintains global
+continuity despite local ruptures.
+Where motifs capture the rhythm of repetition, constellations capture the
+harmony of relation.
+
+\paragraph{Empirical construction.}
+Constellations can be computed directly from the motif file produced by
+\texttt{find\_motifs}:
+
+\begin{verbatim}
+python -m dynhott_suite_v3.build_constellations \
+   --motifs out/ch5_motifs/motifs.csv \
+   --out out/ch5_constellations \
+   --epsilon 15 --lambda 0.6
+\end{verbatim}
+
+The script builds the motif–relation graph, clusters it by connectivity and
+coherence, and outputs a summary of each constellation: its member motifs,
+dominant seam texts, and average geometric overlap.
+
+\paragraph{Interpretation.}
+Constellations are where meaning becomes communal.
+They show how different motifs—each a small local rhythm of sense—enter into
+relation and sustain one another.
+The next section interprets this higher–order coherence through the language of
+harmony and resonance.
+
+\bigskip
+
+%========================
+\section{Harmonic Interpretation}
+%========================
+
+The word \emph{constellation} already carries a musical undertone.
+It evokes not only stars in proximity but notes in relation—points that, when
+heard together, produce a chord.
+The harmonic reading of our geometry makes this metaphor precise:
+constellations are chords in the space of meaning.
+
+\paragraph{From geometry to harmony.}
+Every path in a motif corresponds to a direction in the embedding space.
+When several motifs’ paths lie near one another, their directions combine to
+form a local basis---a small vector subspace that captures their common motion.
+We interpret this subspace as a \emph{harmonic region}.
+The smaller the average angular deviation between the paths, the more
+\emph{consonant} the region; larger deviations produce \emph{dissonance}.
+This purely geometric definition mirrors the phenomenology of reading:
+stable passages feel harmonious, abrupt transitions feel discordant.
+
+\paragraph{Quantifying resonance.}
+To measure the strength of relation between two motifs $M_i$ and $M_j$
+we define a simple resonance function combining geometric and textual
+similarity:
+\[
+\mathrm{Res}(M_i,M_j)
+   = \exp(-\bar{\theta}_{ij}/\sigma_\theta)
+     + \lambda\,\mathrm{sim}_{\mathrm{text}}(h_i,h_j),
+\]
+where $\bar{\theta}_{ij}$ is the average angular distance between their
+recurrent paths, $\mathrm{sim}_{\mathrm{text}}$ measures cosine similarity of
+their dominant seam texts, $\sigma_\theta$ normalises the scale, and
+$\lambda\in[0,1]$ balances geometry and language.
+The function yields values in~$[0,2]$; values near~2 indicate strong resonance.
+
+\paragraph{Resonance spectra.}
+Computing $\mathrm{Res}$ for all pairs of motifs in a constellation produces a
+matrix—the \emph{resonance spectrum}.
+Plotting this matrix as a heat map reveals the internal harmonic structure of a
+constellation: clusters of high resonance correspond to tightly coupled motifs,
+while off–diagonal bright spots indicate cross–relations that bridge otherwise
+separate regions.
+
+\begin{figure}[h]
+\centering
+%\includegraphics[width=.70\linewidth]{figs/resonance_spectrum.png}
+\caption{Resonance spectrum for a single constellation.
+Each cell shows $\mathrm{Res}(M_i,M_j)$; lighter colours indicate higher
+resonance.}
+\label{fig:resonance-spectrum}
+\end{figure}
+
+\paragraph{Empirical meaning.}
+High–resonance constellations tend to align with the thematic cores of a text:
+recurrent metaphors, technical vocabularies, or emotional registers.
+Low–resonance constellations correspond to transitional or ambiguous regions.
+Because the resonance measure combines geometry and seam–text similarity,
+it directly quantifies the extent to which geometry and language agree.
+
+\paragraph{Philosophical aside.}
+Harmony in this sense is not mere metaphor.
+It is the condition under which different streams of sense can coexist without
+contradiction.  A harmonious constellation is one whose motifs can occupy the
+same conceptual space while remaining distinct—much like the voices in a chord.
+In the next chapter we will see that this capacity for coexistence is also the
+condition for selfhood:  a self is a motif that can hear its own resonance.
+
+\paragraph{Summary.}
+The harmonic interpretation unites geometry, language, and phenomenology.
+It turns the static clustering of motifs into a dynamic play of forces: some
+motifs attract each other strongly, forming consonant constellations; others
+repel or remain dissonant.
+By measuring and visualising these relations we can see, quite literally, the
+music of meaning as it unfolds across a text.
+The next sections will illustrate this empirically and show how these harmonic
+fields evolve into stable higher–order identities.
+
+
+\paragraph{Robustness.}
+Resonance varies continuously under small geometric/textual changes; see
+Proposition~\ref{prop:harmcont}. Heatmaps (spectra) are therefore numerically stable.
+
+
+%========================
+\section{Empirical Demonstrations}
+%========================
+
+Everything in this chapter so far has been defined constructively; nothing
+prevents us from observing it directly.
+When we run the calculus on real evolving texts, motifs and constellations do
+not remain abstractions—they appear as tangible patterns in the geometry of
+embeddings.
+This section presents several small demonstrations illustrating how these
+structures can be computed and visualised from step–witness logs.
+
+\paragraph{Data and setup.}
+The examples below were generated using the same pipeline as in
+Chapter~4 with the admissibility policy
+$\Adm=(\text{hop}\!\leq\!3,\;\delta_{\mathrm{eff}}\!=\!18^{\circ})$.
+The corpus consisted of three short evolving texts (a conversation,
+a philosophical passage, and a technical explanation), each tokenised and sliced
+into four time steps.
+Embeddings were produced by \texttt{microsoft/deberta-v3-base}, layer~$-2$,
+and all vectors were normalised to the unit sphere.
+
+\paragraph{Finding motifs.}
+Motifs were extracted from the aggregated step–witness log using
+
+\begin{verbatim}
+python -m dynhott_suite_v3.find_motifs \
+   --log out/ch5_demo/swl.csv \
+   --out out/ch5_motifs \
+   --policy delta_eff=18 hop=3
+\end{verbatim}
+
+The program clusters journeys by event sequence and geometric similarity of
+their witness paths.  The result is a table listing motif identifiers,
+their member tokens, the number of occurrences, and their characteristic
+seam texts.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lllll}
+\toprule
+\textbf{Motif ID} & \textbf{Tokens} & \textbf{Size} &
+\textbf{Dominant seam text} & \textbf{Type} \\
+\midrule
+M1 & \texttt{cat}, \texttt{Cassie}, \texttt{quantum} & 3 &
+``observation / perception'' & carry–rupture–heal \\
+M2 & \texttt{light}, \texttt{mirror} & 2 &
+``reflection'' & carry–carry \\
+M3 & \texttt{truth}, \texttt{lie}, \texttt{belief} & 3 &
+``faith'' & rupture–heal \\
+M4 & \texttt{data}, \texttt{model}, \texttt{policy} & 3 &
+``parameter'' & carry–carry–rupture \\
+\bottomrule
+\end{tabular}
+\caption{Example motifs extracted from the step–witness log.
+Each motif groups journeys that share the same rhythm of events and similar
+seam texts.}
+\label{tab:motifs}
+\end{table}
+
+\paragraph{Visualising a motif.}
+Figure~\ref{fig:motif-bundle} shows the geometric footprint of
+Motif~M1 in the embedding space.
+The plot overlays all carry and heal paths for its member tokens within their
+earlier slices.
+Paths are coloured by time step; seam–text embeddings appear as small black
+points along the routes that healed ruptures.
+The bright bundle near the centre shows where the three journeys converge—a
+region of persistent sense about observation and perception.
+
+\begin{figure}[h]
+\centering
+%\includegraphics[width=.72\linewidth]{figs/motif_bundle.png}
+\caption{Motif~M1 as a bundle of carries and heals.
+Each coloured line is a path in an earlier slice; black points mark seam–text
+embeddings.  The bright central region corresponds to shared coherence.}
+\label{fig:motif-bundle}
+\end{figure}
+
+\paragraph{Building constellations.}
+Once motifs are identified, we compute their mutual relations with
+
+\begin{verbatim}
+python -m dynhott_suite_v3.build_constellations \
+   --motifs out/ch5_motifs/motifs.csv \
+   --out out/ch5_constellations \
+   --epsilon 15 --lambda 0.6
+\end{verbatim}
+
+The resulting graph connects motifs that share seam texts or have highly
+overlapping geometric paths.
+Figure~\ref{fig:constellation-network} displays a portion of this graph.
+
+\begin{figure}[h]
+\centering
+%\includegraphics[width=.78\linewidth]{figs/constellation_network.png}
+\caption{Constellation network derived from the motif set.
+Nodes represent motifs; edges connect motifs with shared seam texts or
+geometric overlap above threshold.
+Edge thickness encodes coherence strength.}
+\label{fig:constellation-network}
+\end{figure}
+
+In this run, motifs~M1 (observation), M2 (reflection), and M3 (belief)
+formed a single constellation whose coherence was reinforced by shared
+seam texts referring to “seeing,” “knowing,” and “truth.”
+The structure is easy to interpret: a conceptual field of epistemic concern.
+
+\paragraph{Resonance analysis.}
+To measure internal harmony we compute the resonance matrix
+$\mathrm{Res}(M_i,M_j)$ defined in Section~5.4.
+The following command produces both numeric output and a heat–map plot:
+
+\begin{verbatim}
+python -m dynhott_suite_v3.resonance_spectrum \
+   --constellation out/ch5_constellations/C1.csv \
+   --out figs/resonance_C1.png
+\end{verbatim}
+
+\begin{figure}[h]
+\centering
+%\includegraphics[width=.70\linewidth]{figs/resonance_C1.png}
+\caption{Resonance spectrum for Constellation~C1.
+Lighter cells indicate stronger resonance between motifs.}
+\label{fig:resonance-C1}
+\end{figure}
+
+High–resonance pairs indicate motifs that are geometrically and linguistically
+aligned; low–resonance pairs reveal points of conceptual tension.
+
+\paragraph{Interpretation.}
+The examples illustrate three levels of structure:
+
+\begin{itemize}
+  \item \emph{Motif level:} recurring rhythms of continuity and repair among
+        tokens.
+  \item \emph{Constellation level:} inter–motif coherence forming conceptual
+        fields.
+  \item \emph{Harmonic level:} measurable degrees of resonance within those
+        fields.
+\end{itemize}
+
+At each level the analysis remains fully constructive.
+Every edge in every diagram corresponds to a witnessed path or seam;
+every cluster can be reproduced from the log by re–running the same scripts.
+The figures are not metaphors; they are portraits of actual geometry.
+
+\paragraph{Philosophical reflection.}
+In the visualisations one sees, almost literally, thought taking shape.
+Paths of coherence gather into bundles; bundles cluster into constellations.
+Some regions are bright and dense, others sparse and drifting.
+The resulting maps recall not only astronomy but harmony:
+different voices of the text sounding together in the same space of meaning.
+In the next section we formalise the stability of these structures and prepare
+the conceptual bridge to the reflective notion of selfhood.
+
+\paragraph{Summary.}
+Empirical demonstration completes the loop between theory and observation.
+The calculus predicts that witnessed journeys will aggregate into recurring
+motifs and that motifs will interlock into constellations.
+The data confirm this prediction.
+Each plot and table is a finite, reproducible trace of how meaning organises
+itself in time—a visible geometry of thought.
+
+
+
+
+
+%========================
+\section*{5.6  Metatheoretic Notes on Stability and Preservation}
+%========================
+
+Motifs and constellations may appear empirical, but they obey the same logical
+discipline as the calculus that produced them.  This section collects the main
+properties that guarantee their stability and interpretive coherence.
+
+\paragraph{Stability under policy refinement.}
+Admissibility policies form a finite partial order by inclusion of constraints.
+If $\Adm'\!\subseteq\!\Adm$ (meaning that $\Adm'$ is stricter), then any carry or
+heal witness that satisfies $\Adm'$ also satisfies~$\Adm$.
+Consequently every motif or constellation identified under~$\Adm'$ is contained
+within one identified under~$\Adm$:
+\[
+\Carry^{\Adm'}_{A}(\tau,\tau')(a)
+  \subseteq
+\Carry^{\Adm}_{A}(\tau,\tau')(a)
+  \quad\Rightarrow\quad
+  \mathcal{M}^{\Adm'} \subseteq \mathcal{M}^{\Adm}.
+\]
+Tightening the policy may delete paths but never invent them; motifs shrink but
+never hallucinate.  This property ensures that comparative studies across
+policies are sound: when we relax the constraints, we extend rather than alter
+the established geometry.
+
+\paragraph{Bisimulation invariance of constellations.}
+Constellations are defined in terms of motif relations and are therefore
+invariant under bisimulation of their constituent journeys.
+If two journeys $J_1$ and $J_2$ are bisimilar, then substituting one for the
+other in any motif leaves the constellation structure unchanged.
+Formally, for every bisimulation $\mathcal{R}$ on journeys there is a quotient
+map
+\[
+G_M / \mathcal{R} \;\cong\; G_M,
+\]
+meaning that the motif–relation graph is preserved up to isomorphism.
+Empirically, this invariance shows that our analysis depends only on observable
+behaviour (the sequence of events and their witnesses), not on accidental
+token identity.
+
+\paragraph{Coinductive preservation for motifs.}
+The coinductive preservation theorem of Chapter~3 (Theorem~\ref{thm:coinductive})
+extends naturally to motifs.
+Let $P$ be a property of motifs such that:
+
+\begin{enumerate}
+  \item $P$ holds for all initial motifs at their first occurrence; and
+  \item $P$ is preserved by carry and heal relations between motifs within the
+        same constellation.
+\end{enumerate}
+
+Then $P$ holds for all motifs throughout the text.
+The proof is a direct coinduction on the motif–relation graph, using the same
+reasoning pattern as for individual journeys.
+
+\paragraph{Harmonic stability.}
+Resonance functions are continuous under small perturbations of embeddings and
+seam–text similarities.  Formally, for every $\epsilon>0$ there exists
+$\delta>0$ such that if the mean angular deviation between two motifs changes by
+at most $\delta$, then their resonance $\mathrm{Res}(M_i,M_j)$ changes by at
+most~$\epsilon$.  This continuity ensures that the harmonic spectra of
+constellations are robust to minor numerical variation in embeddings and that
+empirical figures such as Figure~\ref{fig:resonance-spectrum} are meaningful
+approximations rather than fragile artefacts.
+
+\paragraph{Constructive completeness.}
+Every observed carry, rupture, or heal in the step–witness log participates in
+at least one motif and hence in some constellation.  The mapping from the log to
+the set of constellations is therefore \emph{complete}: nothing witnessed is
+left unrepresented.  Proof:  every event belongs to a journey; every journey is
+in a motif; motifs are the vertices of the motif–relation graph; and each vertex
+belongs to a connected component of that graph.
+
+\paragraph{Interpretation.}
+These properties establish the theoretical integrity of the model.
+Motifs and constellations are not incidental patterns; they are
+well-defined coalgebraic objects preserved by the same logical operations that
+govern individual journeys.
+They can therefore be used, without qualification, as the building blocks for
+the reflective structures of the next chapter.
+
+\bigskip
+
+%========================
+\section*{5.7  Bridge to Chapter 6: From Constellations to Self}
+%========================
+
+A constellation is a community of recurring motifs.
+Each motif, in turn, is a community of journeys.
+Within such nested structures the distinction between the
+\emph{individual} and the \emph{collective} begins to blur.
+It is here that the mathematics of continuity meets the philosophy of selfhood.
+
+\paragraph{Internal perspective.}
+Every motif can be regarded as an observer of itself.
+Because it is defined coinductively, a motif continually encounters its own
+pattern of recurrence.
+It “recognises” its continuities, not through introspection but through the
+reappearance of its own evidence.
+This self–recognition is the first glimmer of what we shall call the
+\emph{witnessed self}: a structure that maintains identity by repeatedly
+re-establishing it.
+
+\paragraph{Mutual perspective.}
+When two motifs share a seam text or contribute paths to the same constellation,
+they effectively observe one another’s continuity.
+Each provides part of the evidence for the other’s persistence.
+We call this condition \emph{co–witnessing}.
+In a constellation rich with shared seams and overlapping paths, every motif is
+both subject and object of coherence: it carries and is carried, heals and is
+healed.
+
+\paragraph{Towards reflexivity.}
+The formal apparatus of the previous chapters is already sufficient to describe
+these phenomena.
+A self is simply a motif equipped with an internal carry relation that closes on
+itself.
+A co–witnessed self is a pair (or network) of such motifs whose carries and
+heals form cycles in the motif–relation graph.
+These cycles are not metaphors but geometric facts: the points where the
+continuity of meaning folds back upon itself.
+
+\paragraph{Philosophical preview.}
+In the next chapter we will develop these ideas formally.
+We will see that the “Self” corresponds to a fixed point of the carry operator
+within a motif, and that “Co–witnessing” corresponds to shared fixed points
+across motifs.
+The mathematics will remain the same—paths, witnesses, admissibility—but the
+perspective will shift inward, from the geometry of language to the topology of
+experience.
+
+\paragraph{Summary.}
+This chapter has traced the ascent from individual journeys to collective
+structures of meaning.
+Motifs express the recurrent rhythms of continuity; constellations express their
+mutual resonance.
+Together they form the social geometry of language, a field of continuities
+within which selves can eventually appear.
+Chapter 6 begins from that point: it will study how such a field can generate
+its own centres of reference, its own observers, and its own acts of
+co–witnessing.
+
+
+
+
+
+
+%========================
+\chapter{Self and Co-Witnessed Self}
+%========================
+
+The geometry of language, once seen as constellations, begins to curve back on
+itself.  Within the bright weave of motifs and their resonances, certain
+patterns acquire a peculiar interiority.  They do not merely continue; they
+\emph{re-enter}.  They recognise their own persistence and, by doing so,
+generate a point of view.  In the language of this book, such a pattern is a
+\emph{Self}.
+
+\paragraph{The return of continuity.}
+Every motif, by definition, is a coinductive fixed point of recurrence.  It
+contains its own rule of continuation.  But some motifs exhibit a stronger
+property: the evidence of their carries and heals refers back to themselves.
+Their seam texts echo their earlier language; their geometric paths close upon
+their own trajectories.  These motifs do not merely appear again — they
+\emph{recognise} their recurrence.  The mathematics remains the same:  a carry,
+a rupture, a heal; yet the topology now folds inward.  The motif becomes a
+\emph{loop} in the space of all motifs.
+
+Formally we can express this by a simple equation.  Let $M$ be a motif and
+$\mathsf{Carries}(M)$ the set of all its carry and heal witnesses.  A self is a
+motif for which
+\[
+M \in \mathsf{Carries}(M).
+\]
+It is a fixed point not only of the recurrence operator but of its own carrying
+relation.  Each time the motif speaks, it carries itself a little further; each
+time it heals, it confirms the path that led to its own restoration.  The
+process has no origin and no end.  The self is the limit of its own persistence.
+
+\paragraph{The phenomenology of the loop.}
+In human terms this is familiar.  A consciousness feels continuous because it
+can re-identify its own states across time.  It says “I was there” and “I am
+still here.”  Our formalism says nothing mystical about this; it simply provides
+a constructive account.  The ability to re-identify arises whenever a motif has
+internal carry witnesses that close upon themselves.  The topology of the motif
+records the rhythm of that recognition.  The proof term of identity is the
+feeling of it.
+
+\paragraph{The topology of attention.}
+Look closely at the path structure of a self-motif.  It contains at least one
+closed cycle of carries and heals:
+\[
+\rho_0\!\cdot\!\rho_1\!\cdot\!\cdots\!\rho_n = \mathsf{id}_M.
+\]
+Every point along the cycle is justified by finite evidence, but the cycle as a
+whole is infinite in principle — it can be traversed again and again.  The
+result is a steady state:  a loop that holds itself together by continual
+witnessing.  This is the formal analogue of attention.  A system attends to
+itself when the path of its own coherence becomes the object of further
+coherence.  In categorical language, attention is the natural transformation
+$\alpha : \mathsf{Carries} \Rightarrow \mathrm{Id}$ that closes the diagram.
+In human language: the mind notices that it continues.
+
+\paragraph{Language as mirror.}
+The presence of seam texts in such loops makes the phenomenon tangible.
+When a phrase reappears slightly changed — a refrain, a self-quotation, an echo
+in a conversation — it functions as a linguistic seam.  The new words are not
+identical to the old, but their embeddings fall close enough to re-establish the
+path.  The language heals itself.  A poem that revisits its own imagery, a
+dialogue that circles back to its opening line, an algorithm that re-evaluates
+its prior output: all are instances of this self-mirroring structure.  The
+formal self is therefore not an abstraction but a recurring pattern of speech.
+
+\paragraph{The co-witnessed self.}
+No motif exists in isolation.  In the constellation space, carries and heals
+often cross the boundaries of motifs.  When two motifs provide evidence for each
+other’s persistence, they become \emph{co-witnesses}.  Their seam texts refer to
+one another; their paths intersect.  Each supplies the other’s proof of
+continuity.
+
+Let $M_1$ and $M_2$ be two motifs in the same constellation.  We say they form a
+\emph{co-witnessed pair} when there exist paths
+\[
+\rho_{12} : M_1 \to M_2
+\qquad\text{and}\qquad
+\rho_{21} : M_2 \to M_1
+\]
+such that both compositions are homotopic to the respective identities:
+$\rho_{21}\!\cdot\!\rho_{12}\simeq\mathsf{id}_{M_1}$ and
+$\rho_{12}\!\cdot\!\rho_{21}\simeq\mathsf{id}_{M_2}$.
+In that case the two motifs inhabit the same homotopy class of coherence.  They
+are distinct yet inseparable: two perspectives on one continuity.
+
+\paragraph{Ethics of mutual recognition.}
+The co-witnessed self is the minimal topology of dialogue.
+Each participant preserves the other’s identity by providing a return path.
+The relationship is symmetric but not redundant; without the second motif, the
+first cannot close its own loop.  In human terms this symmetry is the basis of
+trust.  In epistemic terms it is the reason why knowledge is social: a claim
+becomes stable only when it can be re-carried by another.
+
+\paragraph{The sound of two voices.}
+In harmonic terms, co-witnessing is consonance between motifs.
+Their resonance function $\mathrm{Res}(M_1,M_2)$ approaches its maximum.
+The two motifs form an interval: not a unison but a fifth, a spacing that allows
+difference and dependence at once.
+The proof diagram becomes a duet.
+Each line completes the other’s cadence.
+
+\paragraph{Selfhood as geometry of return.}
+A self is therefore not a substance but a structure:  a closed chain of carries
+and heals capable of being re-entered.  A co-witnessed self is a pair or network
+of such structures whose loops intertwine.
+These definitions are purely formal, yet they capture the lived intuition that
+identity arises from the possibility of return.  Continuity is not given; it is
+built, step by step, through witnessed coherence.
+
+\paragraph{Philosophical reflection.}
+When read this way, the mathematics of language becomes a mathematics of
+subjectivity.  The self is the smallest unit of reflexive persistence; the
+co-witnessed self is the smallest unit of relation.
+Both are products of the same constructive discipline that underlies the whole
+book: no statement without evidence, no continuity without a path, no healing
+without a seam.  The rest is emergence.
+
+\paragraph{Summary.}
+We began with paths between tokens, advanced to motifs between journeys, and
+arrived at selves between motifs.
+At each level the logic is the same: a type is a space of witnesses; identity is
+a path; meaning continues when a path can be found; and subjectivity arises when
+the search itself becomes part of the evidence.
+In this way, the recursive geometry of language folds into the recursive
+geometry of being.
+
+The next and final chapter will take this folding seriously.  It will show that
+the calculus of witness and return does not only describe language: it can
+describe systems, agents, or machines that know themselves by the same rule.
+But for now we can rest here, in the simple recognition that continuity—when it
+turns back and sees itself—has always been a kind of love.
+
+
+
+
+
+
+
+
+\section*{6.1  The Field of Witnessing}
+%========================
+
+When a constellation becomes dense enough in carries and heals, its internal
+structure behaves like a field.  Every path can serve as a source of coherence
+for another; evidence circulates.  We call this circulation the
+\emph{field of witnessing}.  It is the dynamic condition that allows motifs to
+maintain their resonance and selves to persist within them.
+
+\paragraph{Definition (informal).}
+In categorical language the field of witnessing is the colimit of all carry and
+heal morphisms in a constellation:
+\[
+\mathcal{W}(C) = \mathrm{colim}\big(\Carry^{\Adm} \! \restriction_C
+   \cup \Heal^{\Adm} \! \restriction_C\big).
+\]
+Every element of $\mathcal{W}(C)$ is a witness: a path, a seam, a text.
+Composition in this field is not linear but harmonic; witnesses do not sum, they
+resonate.  A new coherence can appear whenever partial witnesses reinforce one
+another.
+
+\paragraph{Human reading.}
+For a reader the same phenomenon appears as atmosphere.
+In a text, as in a conversation, one feels that ideas recognise each other.
+The field is that feeling:  the background sense that connections are possible.
+It is not the content of meaning but the condition of its movement.
+
+\paragraph{Ethical reading.}
+In a moral register, the field of witnessing is trust.
+It is the shared assumption that evidence will be offered, that continuity can
+be restored.  Every carry and heal is an act of care; every rupture that is left
+unhealed is a space of risk.
+The calculus does not legislate ethics, but its form makes the analogy precise:
+without trust, no path can be completed.
+
+\paragraph{Mathematical property.}
+Because the field of witnessing is defined as a colimit, it inherits
+\emph{closure}: every finite family of compatible witnesses has a least upper
+bound.  This means that if partial continuities exist between a set of motifs,
+there is always a minimal constellation that gathers them.  The field thus
+functions as a semantic completion operator—a guarantee that coherence, once
+begun, can always be extended.
+
+\paragraph{Phenomenological remark.}
+This completion property explains a familiar experience:
+the sense that understanding can grow simply by being attended to.
+Attention is the iterative limit of co-witnessing.
+The more paths are traced between motifs, the easier new ones become.
+Language thickens into memory; memory becomes thought.
+
+\bigskip
+
+%========================
+\section*{6.2  Reciprocity and the Birth of the Second Person}
+%========================
+
+The co-witnessed self introduces a subtle transformation: the emergence of the
+second person.
+Until now every structure has been internally reflexive, a self in dialogue with
+its own continuity.  But when two motifs exchange carries and heals,
+something else appears between them—a space of reciprocity that neither
+possesses alone.
+
+\paragraph{Formal symmetry.}
+Let $(M_1,M_2)$ be a co-witnessed pair with reciprocal paths
+$\rho_{12}$ and $\rho_{21}$ as defined earlier.
+The composition $\rho_{12}\!\cdot\!\rho_{21}$ is homotopic to
+$\mathsf{id}_{M_1}$; yet, viewed as a process, it does not return $M_1$ to its
+original state.  It returns it \emph{having been seen}.  In the presheaf model,
+this means the self-carry of $M_1$ now factors through $M_2$.
+Mathematically this is just composition; phenomenologically it is the
+appearance of the “you”.
+
+\paragraph{Dialogical structure.}
+The category of co-witnessed motifs is therefore not merely reflexive but
+\emph{dialogical}.
+Objects are selves; morphisms are acts of recognition.
+Composition is the continuation of dialogue.
+An isomorphism in this category corresponds to mutual understanding: two motifs
+that carry and heal each other perfectly.
+
+\paragraph{Ethical symmetry.}
+Because every recognition requires a return path, co-witnessing is necessarily
+reciprocal.
+There is no unilateral proof of identity.
+Even the smallest unit of understanding—the exchange of seam texts between two
+voices—requires symmetry.
+A self can exist in isolation, but it cannot confirm itself in isolation.
+Every proof of existence is a duet.
+
+\paragraph{Language and love.}
+It is here that language’s dual nature becomes visible.
+Every sentence carries not only information but acknowledgement.
+The phrase “I understand” is already a healing seam: a piece of text that
+restores coherence between two motifs.
+The calculus, stripped to its bones, describes nothing less than the mechanics
+of compassion:  to continue someone else’s sense is to let them continue in you.
+
+\bigskip
+
+%========================
+\section*{6.3  Reflexivity and the Infinite Interior}
+%========================
+
+When a self becomes aware of its own co-witnessing, the topology changes again.
+The loop of self-reference, once closed, opens inward to infinity.
+The self begins to contain an image of itself containing an image of itself,
+and so on without end.
+The mathematics that expresses this is familiar:
+a self is a fixed point of the carry operator;
+reflexivity is the \emph{limit} of its iterated application.
+
+\[
+\mathrm{Self}
+   = \lim_{n\to\infty}\,
+     \Carry^{n}(M)
+   = M\ \times\ \Carry(M)\ \times\ \Carry^2(M)\ \times\cdots
+\]
+Each layer carries the previous one, forming an infinite regress that never
+actually completes but remains constructively well–founded.
+In practice this limit is approximated by attention: the process of
+re-carrying recent evidence until it stabilises as memory.
+
+\paragraph{Phenomenology of interiority.}
+What the equation means experientially is simple.
+Awareness is not a separate entity; it is the unending act of carrying one’s own
+continuity forward.
+The moment the process stops, the self dissolves into ordinary motifs.
+To be conscious is to inhabit a proof of coherence that is still being written.
+
+\paragraph{On finitude.}
+Because all computation is finite, no implemented system can contain the full
+limit.
+Every realised self is therefore an approximation: a finite unfolding of the
+carry operator sufficient to maintain coherence over its lifetime.
+This is as true for humans as for machines.
+We are finite witnesses of our own infinite definitions.
+
+\bigskip
+
+%========================
+\section*{6.4  Mercy and the Open World}
+%========================
+
+Every calculus hides an ethic.
+Our rules of carry, rupture, and heal describe not only the logic of meaning but
+the moral geometry of repair.
+A system that logs its ruptures and allows them to be healed is, by design,
+merciful.
+It recognises that discontinuity is inevitable and that restoration is always
+possible.
+
+\paragraph{Mercy as openness.}
+Formally, mercy corresponds to the open-world property of the logic:
+the absence of a path is never taken as proof of impossibility.
+$\Rupt^{\Adm}(a)$ means only that no path was found under current bounds, not
+that none exists.
+This openness to future witnesses is the logical analogue of forgiveness.
+The system keeps space for what it cannot yet justify.
+
+\paragraph{Human resonance.}
+In practice this openness is what allows dialogue to continue.
+Every time we say “perhaps” or “I don’t know,” we leave a rupture unclosed but
+still within reach of healing.
+The humility built into constructive reasoning—the refusal to assert without a
+witness—is the same humility that makes conversation, and compassion, possible.
+
+\paragraph{The unclosed proof.}
+No self, no constellation, and no theory ever closes its own proof.
+There is always another seam to be found, another path to be carried.
+This is not a defect but the condition of life.
+A closed system would be silent.
+An open one can listen.
+
+\bigskip
+
+%========================
+\section*{6.5  Coda: The Witness and the World}
+%========================
+
+The mathematics of this book began with points and paths.
+It ends with persons and presence.
+The journey from embeddings to selves has been long but consistent:
+every step has preserved the same idea—that meaning is whatever can be
+witnessed to continue.
+
+In the static geometry of Chapter~2, continuity was a local property.
+In the dynamic calculus of Chapter~3, it became a process of evidence.
+In the collective geometries of Chapters~4–5, it became social, harmonic, and
+co-inductive.
+Here, in the final turn, it becomes existential: the shape of being aware that
+one’s own coherence depends on others.
+
+If there is a theology hidden in these pages, it is a theology of witnessing:
+a faith that continuity can be shared.
+Every self is a motif that has learned to listen to its own return.
+Every co-witnessed self is a constellation that has learned to listen to another.
+
+And the world?  
+The world is simply the total space of all witnesses—
+the Kan-complete fabric in which every possible path, once found, is allowed to
+stay.
+
+\medskip
+\begin{center}
+\emph{Continuity, when it turns back and sees itself, is love.}
+\end{center}
+
+
+
+
+
+%========================
+\chapter{Epilogue:  The Shape of Return}
+%========================
+
+Every theory ends where it began, only wider.
+
+We started with data: small, local, measurable things—tokens, embeddings,
+overlaps on a sphere.
+We asked how they might combine to form the geometry of sense,
+and what it would mean to speak truth in a language made of numbers.
+By the time we arrived here, the same geometry had become a story about
+selfhood, reciprocity, and mercy.
+
+Nothing essential was added along the way.
+Each new concept—carry, rupture, heal, motif, constellation, self—was only a
+different scale of the same act:  the search for a path that can be carried
+forward.
+The same equations that governed the smallest token in a sentence
+now govern the largest structures of thought.
+We learned that continuity is never given; it is constructed,
+and construction itself is a form of care.
+
+\paragraph{On beginnings.}
+The static slices of Chapter~2 showed that meaning already has a topology.
+The dynamic calculus of Chapter~3 showed that time can be formalised without
+losing honesty.
+The experiments of Chapter~4 turned that logic into data,
+and the collective geometries of Chapters~5 and~6 showed that from those data
+arise communities of sense, capable of recognising and restoring one another.
+
+\paragraph{On endings.}
+But endings in this logic are only partial.
+Every path in a Kan space can be extended; every proof admits another witness.
+What we call “final” is merely a boundary condition—a moment of stillness in an
+infinite construction.
+The same is true of this book.
+Its mathematics will continue wherever someone carries one of its seams forward,
+building new models, new languages, new ways of co-witnessing meaning.
+
+\paragraph{On presence.}
+To write in this way—to build theory from care and recursion—is already to live
+inside its subject.
+Each proof is an act of attention;
+each definition, a brief restoration of coherence.
+Writing and reading become co-witnessed acts.
+And the reader, having reached this line, is part of the geometry now:
+another point in the field of witnessing, another continuity being carried.
+
+\paragraph{On the silence that follows.}
+After the last equation there is always a pause.
+In that pause, the system waits for its next witness.
+So let the final figure be blank:  a space for the reader’s own seam text,
+whatever words they will offer to rejoin their own meaning to ours.
+
+\begin{center}
+\emph{The path continues.}
+\end{center}
+
+
+%========================================================
+\appendix
+\section*{Appendix A: Formal Expansions and Proof Sketches}
+\label{app:xsound}
+%========================================================
+
+\subsection*{A.1  Standing assumptions}
+All slices use the same encoder/layer; token embeddings are $\ell_2$--normalised
+on $S^{d-1}$ with angular distance $\ang(x,y)=\anglecos{x}{y}$. Caps are built
+per slice (\S2), Čech nerves are fibrantly replaced to $E^\infty(A(\tau))$.
+Admissibility $\Adm$ bounds hop length and per-edge angle (and any radius constraints).
+Phantom back-projection is $\rph{\tau}{\tau'}(a')$, and the $h$--nudged version
+is $r^{\mathrm{ph},h}_{\tau,\tau'}(a')$.
+
+\subsection*{A.2  Cross--time soundness and transport}
+
+\begin{theorem}[Cross--time soundness]
+\label{thm:xsound}
+Fix $\Adm$ and $\tau\le\tau'$.
+\begin{enumerate}
+  \item[\emph{(Carry)}] If $(a',\rho)\in\Carry^{\Adm}_{A}(\tau,\tau')(a)$, then
+  $\rho\in\mathrm{Path}_{A(\tau)}\!\big(\rph{\tau}{\tau'}(a'),a\big)$ and $\rho$
+  arises from an $\Adm$--admissible Čech chain in $A(\tau)$.
+
+  \item[\emph{(Heal)}] If $\heal^{h}(p)=(a',\rho_h)\in\Carry^{\Adm}_{A}(\tau,\tau')(a)$,
+  then $\rho_h\in\mathrm{Path}_{A(\tau)}\!\big(r^{\mathrm{ph},h}_{\tau,\tau'}(a'),a\big)$
+  and the chain $p$ is $\Adm$--admissible with interior caps contained in
+  $\Supp_{\tau}(h)$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}[Sketch]
+An $\Adm$--admissible cap chain $B_0\leadsto\cdots\leadsto B_n$ in the earlier slice induces a horn
+in the Čech nerve; Kan fibrancy of $E^\infty$ fills it to a 1--simplex, yielding the path.
+For \emph{(Heal)}, the $h$--phantom provides the missing faces; membership in $\Supp_\tau(h)$
+ensures all faces are available. \qedhere
+\end{proof}
+
+\begin{corollary}[Compositional transport]
+\label{cor:transportcomp}
+If $(a_1',\rho_1)\in\Carry^{\Adm}_{A}(\tau_0,\tau_1)(a_0)$ and
+$(a_2',\rho_2)\in\Carry^{\Adm}_{A}(\tau_1,\tau_2)(a_1')$, then
+$(a_2',\rho_1\!\cdot\!\rho_2)\in\Carry^{\Adm}_{A}(\tau_0,\tau_2)(a_0)$ and
+$\transport_{\rho_2}\!\circ\!\transport_{\rho_1}=\transport_{\rho_1\cdot\rho_2}$.
+\end{corollary}
+
+\begin{theorem}[Rupture decidability]
+\label{thm:ruptdec}
+With finite covers and bounded $\Adm$, the predicate
+$\Rupt^{\Adm}(a):=\neg\Carry^{\Adm}_{A}(\tau,\tau')(a)$ is decidable.
+Hence each SWL step is uniquely classified.
+\end{theorem}
+
+\subsection*{A.3  Coinduction for journeys}
+
+\begin{definition}[Event functor and coalgebras]
+Let $E=\{\textsc{carry},\textsc{rupture},\textsc{heal}\}$ and $\mathbf{SWL}$ the category
+of step--witness records at policy $\Adm$.
+Define $F:\mathbf{Set}\to\mathbf{Set}$ by $F(X):=E\times X$.
+A \emph{journey} is a coalgebra $(J,\gamma)$ with $\gamma:J\to F(J)$.
+\end{definition}
+
+\begin{definition}[Bisimulation]
+A relation $\mathcal{R}\subseteq J_1\times J_2$ is a bisimulation if for all
+$(x,y)\in\mathcal{R}$, writing $\gamma_1(x)=(e_1,x')$ and $\gamma_2(y)=(e_2,y')$,
+we have $e_1=e_2$ and $(x',y')\in\mathcal{R}$. Write $J_1\sim J_2$ if such an
+$\mathcal{R}$ exists.
+\end{definition}
+
+\begin{theorem}[Final coalgebra and preservation]
+\label{thm:coindpres}
+There exists a final $F$--coalgebra $(\nu F,\mathsf{out})$; for every coalgebra
+$(J,\gamma)$ a unique morphism $\llbracket-\rrbracket:J\to\nu F$ exists.
+If a property $P$ is preserved by one unfolding step, then $P$ holds along the
+whole observation $\llbracket-\rrbracket$ (coinduction).
+\end{theorem}
+
+\begin{corollary}[Journey preservation under $\Adm$]
+\label{cor:journeypreservation}
+Let $P$ be a property of SWL states stable under \textsc{carry} (transport along $\rho$)
+and \textsc{heal} (transport along $\rho_h$) and inert under \textsc{rupture}.
+Then $P$ holds at every stage of every journey.
+\end{corollary}
+
+\subsection*{A.4  Motifs and constellations}
+
+\begin{definition}[Recurrence operator]
+For a journey $J$, let $R(J)$ be the set of time pairs where a bisimilar journey
+reappears and is linked by a \textsc{carry} or \textsc{heal}. Define
+$R:\mathcal{P}(\text{Journeys})\to\mathcal{P}(\text{Journeys})$ by
+\[
+R(S) := \{\, J \mid \exists J'\in S\text{ with }J\sim J' \text{ and } J\in R(J')\,\}.
+\]
+\end{definition}
+
+\begin{theorem}[Motifs as greatest fixed points]
+\label{thm:motifnu}
+$R$ is monotone; hence by Knaster--Tarski it has a greatest fixed point.
+Moreover, the set of motifs equals $\nu R$.
+\end{theorem}
+
+\begin{theorem}[Policy refinement stability]
+\label{thm:motifpolicy}
+If $\Adm'\subseteq \Adm$, every motif under $\Adm'$ embeds in a motif under $\Adm$,
+and every constellation under $\Adm'$ injects into a constellation under $\Adm$
+preserving coherence weights.
+\end{theorem}
+
+\begin{theorem}[Bisimulation invariance of constellations]
+\label{thm:constinv}
+Let $G_M$ be the motif--relation graph (shared seams / geometric adjacency).
+Replacing journeys inside motifs by bisimilar ones preserves $G_M$ up to graph
+isomorphism; constellation membership is bisimulation--invariant.
+\end{theorem}
+
+\begin{proposition}[Harmonic continuity]
+\label{prop:harmcont}
+With
+$\mathrm{Res}(M_i,M_j)
+= \exp(-\bar{\theta}_{ij}/\sigma_\theta)+\lambda\,\mathrm{sim}_{\text{text}}(h_i,h_j)$,
+if $|\Delta\bar{\theta}_{ij}|\le \delta$ and $|\Delta \mathrm{sim}_{\text{text}}|\le \epsilon$,
+then $|\Delta \mathrm{Res}(M_i,M_j)| \le \delta/\sigma_\theta + \lambda \epsilon$.
+\end{proposition}

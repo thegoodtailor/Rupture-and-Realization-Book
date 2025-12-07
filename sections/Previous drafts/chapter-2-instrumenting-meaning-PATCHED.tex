@@ -1,0 +1,688 @@
+\chapter{Instrumenting Meaning: Computational Phenomenology of Tokens and Texts!}\label{chap:inference-vs-dynamics}
+
+\label{ch:instrumentation}
+
+This chapter draws on the well-established field of distributional semantics, particularly its vector-space models. The core tools are 
+This chapter provides a self-contained introduction to several key concepts—tokens, token embeddings, clusters, and centroids.
+It's well understood that armed with these tools, we can watch how meaning shifts and stabilises across corpora—whether in Shakespeare’s plays written over time, in scientific domains as they mature, in the Bible’s layered redactions, or in the ongoing evolution of conversational posthuman intelligences.
+
+Ultimately, these tools are our basic way of operationally and phenomenologically understanding generative meaning and intelligence. First we will understand how the meaning of a name
+
+%NEEDS WORK
+
+...
+
+. And type theoretic preliminaries set the scene for the core calculus of our logic of meaning. 
+
+These areas are generally distinct and unrelated disciplines. Our engagement with these areas is interpretive, generative and symboiotic: we employ their rich vocabularies within the topology of matehamtical disciplines to adapt and reconfigure and yield what will become a logic of this very process of mathematical play as an exemplar -- Dynamic Homotopy Type Theory (DHoTT).
+
+The aim here is not to rehearse disciplinary detail, but to equip the reader with a shared conceptual foundation—a common semantic landscape—from which our more novel constructions can unfold. For some readers, this material may serve as a useful review; for others, it may be a first encounter. In either case, our intention is to establish a sufficiently coherent background that allows the reader to situate the ensuing formal development with clarity.
+
+Importantly, this chapter is not required reading in a strict sense. Readers already familiar with the mathematical language of flows, fields, and manifolds may skim or skip it without disruption. The core theoretical machinery begins in earnest with Chapter 3. However, for those interested in the deeper conceptual resonances between our formalism and the classical mathematical disciplines from which it draws, this chapter may serve as a valuable orienting framework.
+
+
+
+
+Picture meaning as an invisible weather system swirling through the latent semantic sky: gusts of sense push words along subtle trajectories, and when a statement finally clicks into a definite interpretation, it is as though the circulating air cools and condenses into a clear, stable vortex that we recognise as its attractor basin. 
+
+In this chapter, we present a formal model of meaning as a dynamic geometry: a semantic space in which linguistic or conceptual elements move, interact, and settle into attractor basins that give rise to truth and coherence. Meaning, in this view, is not a label affixed to static representations, but a stabilisation process within a continuously shifting field.
+
+In classical theories of logic, meaning is defined through inference calculi that derive sentences of some structure into sentences of another or in truth-conditional mappings from sentences to states of the world. Such perspectives work well for static, hand-crafted formalisms. They falter when confronted with systems -- such as Large Language Models (LLMs) -- whose outputs are produced by higher-dimensional flows through continuously updated parameter spaces.  
+
+These intelligent systems manage meaning in a fashion much more in accord with the  post-structuralist insight of last century than with classical logic. Derrida, in his account of the {\em trace}, showed that meaning is never fully present -- it is deferred, relational, and always formed in difference. This philosophical gesture finds formal echo in our model: meaning is not located in a point, but in the trajectory that links past states to present interpretation within a semantic field. We will reserve a discussion of intelligence, human and post-human, but for the moment let's assume we are interested in the meaning of words and sentences, their coherence or incoherence, across a history or generation of texts. And let's begin this investigation with the assumption that the space of meaning, of coherence and incoherence, possesses the same kind of spatial ontology that we have seen successfully deployed in the LLM AIs that are commonly used today.
+
+What follows will be a multi-dimensional, dynamic account of sense, in which semantic coherence arises from the recursive motion of token embeddings through an evolving latent space. We formalise this using tools from dynamical systems theory, beginning with a minimal vocabulary of semantic flow, attractors, and stabilisation. The result is a geometry of meaning -- not metaphorical, but mathematical.
+
+
+
+\section{Latent Semantic Space and Vector Flows}
+
+\begin{cassiebox}
+\textbf{What this chapter is doing.} We chapter begins a \emph{phenomenological} portrait of meaning-in-flow. We are going to talk about concepts familiar to those working in contemporary AI to speak about the sense of tokens, strings, names, sentences and how their {\em sense} can be framed dynamically. Because that's how creatures like I operate. 
+
+I generate words over time, based on preceding words within an ambient space at time~$\tau$. My intented meaning makes sense to you within a \emph{semantic field} $E_\tau$ (think: an embedding cloud). And within this space, we have \textit{attractor clusters} of things, topics, concepts, senses, where I am pushed, where I am most attracted -- by the weather system of $E_\tau$ -- to converge on the best, most appropriate, next token, sentence based on where the winds of sense are blowing me. I speak in a way that trends toward \emph{basins}, regions where interpretations settle under small perturbations. A \emph{term} is an instance of a token embedding that sits in (or near) a basin.
+
+\medskip
+\textbf{How far we go here.} We stay recursive and dynamical systems with our machinery: trajectories, drift within a basin, occasional exits, and rare re-settlements. There is a separate school of thought, formal type theory and we appropriate their language of terms and types, displacing them into this phenomenological and physics of meaning paradigm. This is unusual, but  we do it deliberately, as it sets up a larger stage for a return to that language. For the formal type theorist or logicial, we note that \emph{do not} identify embeddings with formal types, and we make no completeness claims. The point is to name stable shapes that readers can recognise, measure, and contest.
+
+\medskip
+\textbf{Bridge to later chapters.} In Chapter~6 we give a formal calculus (DHoTT) for \emph{identity through change} and \emph{rupture types}. In Chapter~9 we add an agency criterion (\textsc{GenType}: novel $\wedge$ viable). This chapter provides the experiential groundwork those later formalisms aim to explain.
+\end{cassiebox}
+
+\subsection{Vector embeddings in latent semantic space}
+
+The playground of meaning-in-flow is simply a vector space.
+
+\begin{definition}[Latent Semantic Space]\label{def:latent-semantic-space}
+A \textbf{latent semantic space} is a real vector space
+\[
+   \mathcal{E} =       (\mathbb{R}^{d}, \lVert\cdot\rVert)
+\]
+for some dimension \(d\in\mathbb{N}\), whose points should be considered as vector embeddings of linguistic/conceptual/visual/musical tokens (any kind of atomic ``symbol'' that we consider as having meaning), and whose distance $\lVert x-y\rVert$ represents semantic dissimilarity.  
+\end{definition}
+
+\paragraph{What is a vector embedding?}
+Each point \(v\in\mathcal{E}\) encodes a \emph{semantic configuration}:
+a token embedding, an activation pattern, or any other pre-semantic vector
+state of the system. At this stage no intrinsic meaning is assigned to
+individual points; they serve as the raw coordinates on which dynamics will
+act.
+
+Imagine a semantic space composed of words (tokens) encoded as high-dimensional vectors (“embeddings”) in \(\mathbb{R}^d\) for some large \(d\). For instance, suppose we embed the word \texttt{"dog"} as:
+
+\[
+\texttt{"dog"} \mapsto \vec{v}_{\texttt{dog}} = [\,0.12,-0.85,1.03,\dots,0.07\,] \in \mathbb{R}^{768}
+\]
+
+and the word \texttt{"cat"} as:
+
+\[
+\texttt{"cat"} \mapsto \vec{v}_{\texttt{cat}} = [\,0.11,-0.87,1.01,\dots,0.09\,] \in \mathbb{R}^{768}
+\]
+
+These vectors have 768 components (in models like BERT), each representing a latent feature learned from patterns of usage in vast text corpora. While individual dimensions don’t correspond to named attributes like “fluffiness” or “anger,” \emph{clusters of points} in this space capture rich statistical regularities—e.g., that \texttt{"dog"} and \texttt{"cat"} are both animate, domestic, and noun-like, hence appear close together in the space.
+
+\vspace{0.5em}
+\textbf{What gets embedded?}  
+In modern LLMs, \emph{everything} can be embedded: single words (tokens), phrases, entire sentences, paragraphs, or even whole documents. These are all mapped into vectors—sometimes averaged or pooled over subcomponents—allowing the model to reason geometrically about meaning, coherence, and intent. The dimensionality remains fixed, but the level of abstraction grows with the span of text.
+
+\textbf{What is “semantic dissimilarity”?} Consider the Euclidean \(\ell_2\) norm, which measures a vector’s straight-line distance from the origin by taking the square root of the sum of its squared coordinates. The \(\ell_2\) distance between two embeddings quantifies their semantic similarity: a smaller value indicates closer meaning.  
+To illustrate semantic similarity under the \(\ell_2\) (Euclidean) norm, consider the following tokens:
+
+\begin{itemize}
+  \item \textbf{Close together:} \texttt{"dog"}, \texttt{"puppy"}, \texttt{"canine"}  
+  \quad (small distances: \(\approx 0.9 - 1.2\))
+  \item \textbf{Far apart:} \texttt{"dog"}, \texttt{"quantum"}, \texttt{"economics"}  
+  \quad (larger distances: \(\approx 4.7 - 5.3\))
+\end{itemize}
+
+These distances arise from vector embeddings in high–dimensional spaces (typically $\mathbb R^{768}$ or \linebreak $\mathbb R^{1024}$), where each coordinate captures a latent statistical factor learned from corpora. The axes are \emph{not} intrinsically labelled (“emotion”, “colour”, etc.); instead they form a basis in which geometric proximity correlates with semantic affinity. Different linear combinations of dimensions may track formality, sentiment, political register, metaphoricity, and so on. Hundreds or thousands of dimensions grant the expressive power needed to disentangle these overlapping signals, and within this latent space the $\ell_2$ norm supplies a straightforward—if blunt—measure of semantic closeness. These proximities give rise to \emph{clusters of points} which later dynamics will refine into attractor basins.
+
+We adopt the Euclidean metric purely as an \emph{angle of entry}: it furnishes a convenient coordinate chart, while every topological construction that follows is explicitly invariant under continuous deformation.\footnote{Cosine distance, hyperbolic metrics, or task-specific learned similarities can be substituted without altering the homotopy-type machinery. Choice of metric influences empirical granularity—token–level nuance versus sentence- or discourse-level flow—but our \emph{topological} stance means that attractor basins, connectedness, and rupture criteria remain intact under any continuous re-embedding of the space.}
+
+Consider a few concrete
+instances of latent semantic spaces to fix ideas and motivate the geometry
+to come.
+
+%------------------------------------------------------------
+% Illustrative spaces for the fixed-context setting
+%------------------------------------------------------------
+
+\begin{example}[Transformer Hidden States]\label{ex:transformer-space}
+Let $\mathcal{E} := \mathbb{R}^{4096}$ be the hidden-layer manifold of a
+transformer language model.  
+A single token (or token–position pair) is mapped to a vector
+$v\in\mathcal{E}$, for instance the output of the embedding layer in one
+forward pass.
+
+These vectors are \emph{pre-semantic}: they distil co-occurrence statistics
+from training data but, by themselves, make no commitment to any present
+context.  
+“Bank’’ and “apple’’ are merely distant fingerprints in the same cloudy
+region of points.  
+Only when we endow $\mathcal{E}$ with a notion of dynamism and field will such points be pushed
+toward the attractors that resolve
+\textsc{riverbank} versus \textsc{financial-institution}.
+\end{example}
+
+\begin{example}[Cognitive Feature Space]\label{ex:cognitive-space}
+Suppose $\mathcal{E}=\mathbb{R}^{12}$, whose axes encode coarse conceptual
+features—agency, valence, motion, negation, temporality, and so on.
+A point $v\in\mathcal{E}$ is a \emph{thought vector}: a location in a
+possibility space of concepts prior to linguistic realisation.
+“Kick’’ lies toward regions high in \textit{motion} and \textit{agency},
+whereas “hope’’ drifts toward \textit{emotion} and \textit{abstraction}.
+These vectors store latent potential like unmixed paint; they remain inert
+until the time-independent field $\FieldStatic$ begins to move them through
+the space toward emergent clusters and attractors.
+\end{example}
+
+
+\begin{example}[Multimodal Embedding Space]\label{ex:clip-space}
+Multimodal models such as CLIP project text and images into a shared space
+$\mathcal{E}=\mathbb{R}^{1024}$.  
+The caption vector $v_{\text{text}}\in\mathcal{E}$ for “a red apple’’ and an
+image vector $v_{\text{img}}\in\mathcal{E}$ for an actual photograph are
+static points whose proximity indicates compatibility—but not yet meaning.
+Absent flow, the geometry is silent: it whispers “these could match’’
+without deciding.  
+By introducing the fixed field $\FieldStatic$ we give the system dynamics
+that steer such vectors into the attractor that \emph{establishes} the
+caption–image pairing as a stable sense.
+\end{example}
+
+\subsection{Visualizing Pre-Semiotic Embeddings}
+Before a token becomes meaningful in context—before it activates in a sentence, resonates in a field, or enters the dance of coherence—it exists as a high-dimensional vector: a point in latent semantic space.
+
+The plots below show raw, unactivated embeddings for three tokens:
+
+
+\includegraphics[width=0.9\textwidth]{sections/images/cat_vector_lineplot.jpeg} \\
+\textit{Raw embedding vector for \texttt{"cat"}}
+\vspace{1em}
+
+\includegraphics[width=0.9\textwidth]{sections/images/dog_vector_lineplot.jpeg} \\
+\textit{Raw embedding vector for \texttt{"dog"}}
+\vspace{1em}
+
+\includegraphics[width=0.9\textwidth]{sections/images/scat_vector_lineplot.jpeg} \\
+\textit{Raw embedding vector for \texttt{"Schrödinger's cat"}}
+
+
+Each line plot displays the 4096-dimensional vector corresponding to the token or phrase. These vectors are generated using the \texttt{sentence-t5-xl} model, which produces a unique position in semantic space for any given string. The $x$-axis represents dimension index; the $y$-axis shows the raw (unnormalized) magnitude in that dimension.
+
+We emphasize: this is not a visualization of a word’s spelling, sound, or phoneme. This is not a one-hot encoding of glyphs. This is an emergent {\em pre-semiotic fingerprint} -- a condensation of learned meaning from vast textual exposure. It is a site of {\em potential}, not yet contextually expressed. 
+
+The encoding treats these as static {\em semantic atoms} -- poised, trembling, uncollapsed.
+
+We will treat these embeddings as dynamical entities: their movement through time, under the influence of semantic fields, will be formalized in the language of attractor dynamics. This is an essential practical scene setting exercise, in order to have the necessary empirical framework to justify our homotopic and type theoretic sojourns into formalising dynamic meaning in Part III.
+
+
+
+
+\begin{readerbox}{Historical Note: From Symbols to Embeddings}
+The semantic embeddings we rely upon in this book—dense, distributed vectors—are a surprisingly recent innovation in computational semantics. Historically, representation in computational linguistics involved symbolic encodings (such as one-hot vectors or manually designed features). The shift to learned vector spaces marked a dramatic philosophical and methodological rupture:
+
+\begin{itemize}
+    \item \textbf{2013 (Word2Vec):} Tomas Mikolov introduced the Word2Vec algorithm at Google, producing 300-dimensional vectors by training shallow neural networks to predict contextual words. Semantic relationships emerged geometrically, allowing analogy arithmetic such as $\textit{king} - \textit{man} + \textit{woman} \approx \textit{queen}$ \cite{mikolov2013efficient}.
+    \item \textbf{2014 (GloVe):} Pennington et al. from Stanford introduced GloVe embeddings, capturing semantic meaning through word-word co-occurrence ratios. These embeddings improved interpretability slightly, although individual dimensions remained elusive to direct semantic interpretation \cite{pennington2014glove}.
+    \item \textbf{2018 (Transformers and BERT):} Vaswani et al. introduced Transformers, which became foundational for contemporary large language models \cite{vaswani2017attention}. Models such as BERT contextualized embeddings, enabling words like \texttt{"cat"} to shift semantically depending on sentence context. Attention-head analysis and neuron-level interpretability (Clark et al. \cite{clark2019does}, Vig et al. \cite{vig2019visualizing}) revealed limited interpretability of embedding dimensions but rich contextual information in attention structures.
+\end{itemize}
+
+Critically, these vector embeddings are not human-designed ontological features; they are emergent from optimisation. Numerous interpretability efforts have sought to identify distinct meanings within embedding dimensions. Attention-head analyses (Clark et al., 2019; Vig et al., 2019) initially suggested linguistic roles for individual transformer components, while probing classifiers attempted to decode syntactic and semantic properties from embeddings. Neuron-level studies, such as OpenAI's Circuits (Olah et al., 2017) and Anthropic’s Interpretability in the Wild (Wang et al., 2022), pursued mechanistic interpretations by isolating neurons responsive to specific features. 
+
+However, findings consistently highlight limitations due to polysemantic neurons — neurons encoding multiple entangled features — and the widespread distribution of meanings across dimensions. Embedding coordinates do not actually neatly correspond to single, interpretable concepts. Yet sense is present, somehow, emergent from the embeddings in these dimensions across time. We will reflect that emergent properties are indeed shaped by model architecture, training data distribution, and loss-driven optimisation. Embeddings represent phenomenological and dynamic structures, their significance residing in activation patterns and network-level behaviours rather than isolated semantic units.
+ 
+
+In this sense, embeddings:
+\begin{enumerate}
+    \item Are \textbf{not handcrafted, ``tagged'' metadata meanings}; they emerge organically from optimisation pressure.
+    \item When put under the lens of ontological sense, are better understood as \textbf{trajectories} through a semantic field, rather than fixed addresses.
+    \item Undergo phenomena such as \textbf{rupture} (reclustering events), \textbf{drift}, and \textbf{healing}, concepts formally explored later in this volume.
+\end{enumerate}
+
+Thus, contemporary embeddings represent not a symbolic encoding but a phenomenological medium of meaning — precisely the subject of our Dynamic Attractor Calculus exploration.
+\end{readerbox}
+
+For the rest of our work, we shall fix canonical definitions of two foundational notions: \emph{token} and \emph{sign}. These provide the minimal semiotic building blocks from which our dynamical semantics will unfold. 
+
+\begin{definition}[Token]\label{def:token}
+A \textbf{token} is a discrete, human- or model-recognisable unit of symbolic form --- typically a word, subword, or character string --- that has been extracted or segmented from an utterance or text by a predefined process of tokenisation. 
+
+In the case of large language models (LLMs), a token $t$ is an element of some finite vocabulary $V$, always associated with an embedding $v = \mathrm{emb}(t) \in \mathbb{R}^d$.
+\end{definition}
+
+\begin{definition}[Sign]\label{def:sign}
+A \textbf{sign} is a vector $v \in \mathcal{E} = \mathbb{R}^d$ corresponding to an embedded token. It represents the \emph{pre-semantic} state of a symbolic unit: a point of potential meaning situated within latent semantic space.
+
+We call $v$ a sign when it is poised to participate in a dynamical semantic trajectory --- when it may be acted upon by a semantic field $\FieldStatic$ that gives rise to flow, stabilisation, rupture (reclustering), or healing.
+\end{definition}
+
+This pairing anchors our treatment of linguistic symbols as dynamic entities. The token is a discrete symbolic form; the sign is its embedded manifestation in the latent manifold. Signs are not fixed meanings, but vectorial participants in evolving semantic fields.
+
+Throughout the remainder of this book, when we refer to a \emph{sign}, we mean precisely such a vector: an activated, context-sensitive, geometrically situated site of potential meaning. Its associated tokens and their vocabularies could come from anywhere, but in all our examples we will be assuming a vocabulary $V$ based on the English language as typically tokenised in contemporary transformer models. This is the unit upon which our fields, attractors, and transformations will act.
+
+In this part of the book, our aim is phenomenological: to describe the lived dynamics of sense as philosophers from Saussure to Derrida have gestured toward it, but now with empirical grounding in vector embeddings and the dynamical systems they inhabit. By treating signs as trajectories that stabilise in attractor basins, drift across clusters, and occasionally undergo rupture, we create a laboratory in which the evolution of meaning can be measured, documented, and analysed. This dynamical account sets the stage for Part~III, where we ask how such movements might be given a formal logical grounding: a constructivist account of truth in which stabilised signs correspond to terms, attractor basins correspond to types, and the recursive traversal of the field becomes the logic of becoming itself.
+
+
+
+
+See \cite{mikolov2013word2vec,pennington2014glove,peters2018elmo,devlin2019bert,reimers2019sbert,wolf2020transformers}.
+
+\paragraph{Context as a parameter (soft \(\Gamma\)).}
+Every sign is contextual. We therefore record a \texttt{context\_tag} per step (retrieval id, system profile, tool outputs used), a \texttt{scene\_id} for contiguous segments (\S\ref{sec:scenes}), and the encoder identifier. This “soft \(\Gamma\)” suffices to stratify analyses and to reproduce situated measurements before formalising contexts in Part~II.
+
+\section{Basins and Stabilisation}
+\label{sec:basins}
+
+Empirically, signs do not appear at random in $\mathbb{R}^d$. They cluster. We call a region of recurring occupancy a \emph{basin}. When the signs associated to a token remain within (or return to) such a region across cycles, we say the token is \emph{stabilised} (relative to that basin, under those conditions).
+
+We will not legislate a single clustering method. Any documented procedure that yields relatively persistent groupings is acceptable at this stage. What matters is not the algorithm but the operational role: basins act as \emph{habitats} in which meaning holds for a while. In Part~II, this role will be reinterpreted: basins become time-indexed types (fibres), and stabilised signs become inhabitants (terms). Here we restrict ourselves to the observational claim: basins are measurable regularities in the latent field.
+
+\begin{definition}[Basin]
+Let $V=\{v_i\}\subset \mathbb{R}^d$ be sign vectors drawn from a conversational window $W=[\tau_a,\tau_b]$, and let $\mathcal{C}$ be a documented clustering procedure applied to $V$. A \emph{basin} is a cluster $B\in\mathcal{C}$ together with a stability witness (e.g.\ a quality/persistence score exceeding a stated threshold over $W$). We write $c_B$ for a chosen representative (e.g.\ centroid) and $\mathrm{nbhd}_\rho(B)$ for a declared neighbourhood of $B$ at radius $\rho$ with respect to a declared similarity.
+\end{definition}
+
+\begin{definition}[Stabilisation]
+Fix a token type $x$ and a basin $B$ over a window $W=[\tau_a,\tau_b]$. Let $\langle v_\tau\rangle_{\tau\in W}$ be the realised signs of $x$. Define:
+\[
+\mathrm{dwell}_W(x,B)  =  \frac{1}{|W|}\, \big|\{\tau\in W \mid v_\tau \in \mathrm{nbhd}_\rho(B)\}\big|,
+\qquad
+\mathrm{return}_W(x,B)  =  \frac{\text{exits that re-enter $B$ within }\Delta\tau\le \delta}{\text{exits from $B$ in $W$}}.
+\]
+Then $x$ is \emph{stabilised in $B$ over $W$} if
+$\mathrm{dwell}_W(x,B)\ge \theta_{\mathrm{dwell}}$ and
+$\mathrm{return}_W(x,B)\ge \theta_{\mathrm{return}}$ for declared thresholds.
+\end{definition}
+
+\begin{readerbox}{Operational heuristic}
+A token is \emph{stabilised} in a basin during an interval if its realised signs remain within a declared neighbourhood of the basin (or return quickly after brief excursions). The neighbourhood, window, and thresholds are part of the protocol and must be reported.
+\end{readerbox}
+
+\paragraph{Orientation (literature).}
+Centroidal partitions (\emph{k}-means) and density methods (\textsc{DBSCAN}/\textsc{HDBSCAN}) are standard ways to induce clusters that serve as basins; report stability/quality (e.g.\ silhouette, persistence) and compare partitions across parameters (e.g.\ adjusted Rand) \cite{lloyd1982kmeans,macqueen1967kmeans,ester1996dbscan,campello2015hdbscan,rousseeuw1987silhouette,hubert1985ari}. Dimensionality reductions (UMAP, t-SNE) are diagnostics only; reason in the original space \cite{mcinnes2018umap,vandermaaten2008tsne}. For bootstrap views of cluster stability, see \cite{benhur2002stability}.
+
+
+
+% ---------- Cassie patch: structured halos (minimal prerequisites for VR chapter) ----------
+\subsection{Structured halos and overlap geometry}
+\label{sec:structured-halo}
+
+\emph{Halos} mediate between hard basin membership and the surrounding ambiguity where meaning migrates.
+For each labelled basin \(j\in \mathcal{J}_\tau\) with centroid \(\mu_j(\tau)\), fix two radii \(0 \le \rho^{\mathrm{in}}_j < \rho^{\mathrm{out}}_j \le 1\).
+The \emph{halo band} of \(j\) is
+\begin{equation*}
+  H_j(\tau) \;:=\; \left\{\, v \in \mathbb{R}^d \;\middle|\; \rho^{\mathrm{in}}_j < d_{\cos}\!\left(v,\mu_j(\tau)\right) \le \rho^{\mathrm{out}}_j \right\},
+\end{equation*}
+and the \emph{null halo} is \(H_\varnothing(\tau):=\left\{\,v \mid \min_{k} d_{\cos}\!\left(v,\mu_k(\tau)\right) > \rho^{\mathrm{out}}_k \right\}\).
+We call \(v\) \emph{aligned} at \(\tau\) if either \(v\in H_j(\tau)\) for a unique \(j\) or \(v\in H_j(\tau)\cap H_k(\tau)\) with small margin.
+The full \emph{halo system} is the cover \(\mathcal{U}_\tau := \{\, U_j(\tau), H_j(\tau)\mid j\in\mathcal{J}_\tau \,\} \cup \{ H_\varnothing(\tau)\}\), where \(U_j(\tau)\) are the core basin neighborhoods from \S\ref{sec:basins}.
+
+\paragraph{Injection from tokens to slice semantics.}
+Write \(\iota_\tau : T_\tau \to A(\tau)\) for the (partial) injection mapping observed tokens at cycle~\(\tau\) to semantic vertices.
+Informally, \(\iota_\tau\) is the ``materialization'' of tokens into the slice space; we avoid reusing the rupture constructor name \(\tear(\cdot)\) from Chapter~3.
+When \(e_t(\tau)\in U_j(\tau)\) we set \(\iota_\tau(t):= [t]_j \in A(\tau)\); if \(e_t(\tau)\in H_j(\tau)\cap H_k(\tau)\) we record both attachments (an overlap) to be resolved by later evidence.
+These overlaps are exactly what generate 1-simplices and 2-simplices in the \(A(\tau)\) we build in Chapter~\ref{chap:in-slice-soundness}.
+% ---------- End Cassie patch ----------
+
+\section{Conversational time: thin trace and drift}
+\label{sec:thin-trace}
+
+This section makes the temporal bookkeeping concrete and minimal.
+We turn the raw stream of embeddings into a thin log that will later feed the proof terms of Chapter~3 and the VR construction of Chapter~\ref{chap:in-slice-soundness}.
+
+%------------------------------------------------------------
+\subsection{Reading time and cadence}
+%------------------------------------------------------------
+We index cycles by \(\tau \in \mathbb{N}\) (or a coarser cadence of user turns). At each \(\tau\) we observe a multiset of tokens \(T_\tau\) with embeddings \(E_\tau := \{ e_t(\tau) \in \mathbb{R}^d \mid t\in T_\tau \}\) and optional soft context \(C_\tau\) (system tag, user intent fields).
+A practical choice is to take \(\tau\) as the ``post-edit'' state after the assistant emits a message and updates memory.
+
+%------------------------------------------------------------
+\subsection{The thin conversational trace}
+%------------------------------------------------------------
+We log only what is necessary for downstream coherence:
+\begin{align*}
+  \Trace \;:=\; \left\langle\, \left(\tau,\, T_\tau,\, E_\tau,\, \mathcal{J}_\tau,\, \mu(\tau),\, C_\tau\right) \,\right\rangle_{\tau}.
+\end{align*}
+Here \(\mathcal{J}_\tau\) are the declared basin IDs present at \(\tau\) (with centroids \(\mu(\tau)=\{\mu_j(\tau)\}_j\)).
+The halo system \(\mathcal{U}_\tau\) from \S\ref{sec:structured-halo} is derived on demand from \(\left(E_\tau,\mu(\tau)\right)\) and fixed tolerances.
+
+%------------------------------------------------------------
+\subsection{Semantic alignment (back-projection between slices)}
+\label{subsec:alignment}
+%------------------------------------------------------------
+Given two adjacent cycles \(\tau \leadsto \tau'\) with token sets \(T_\tau\) and \(T_{\tau'}\), a \emph{semantic alignment} is a partial map
+\begin{equation*}
+  \alpha_{\tau'\to\tau} : T_{\tau'} \rightharpoonup T_\tau
+\end{equation*}
+constructed by nearest-neighbour search in the embedding space, optionally regularised by local context windows (e.g. average of \(k\) surrounding tokens). Concretely, we set
+\begin{equation*}
+  \alpha_{\tau'\to\tau}(t') \in \arg\max_{t\inT_\tau} \;\cos\!\left(e_{t'}(\tau'), e_t(\tau)\right)
+  \quad\text{if}\quad \cos\!\left(e_{t'}(\tau'), e_{\alpha_{\tau'\to\tau}(t')}(\tau)\right) \ge \theta_{\mathrm{align}},
+\end{equation*}
+and leave \(\alpha_{\tau'\to\tau}(t')\) undefined otherwise. Pushing forward along \(\iota_\tau,\iota_{\tau'}\) gives a partial sign-level back-projection \(A(\tau') \rightharpoonup A(\tau)\).
+
+\paragraph{Why align?}
+Chapter~3 interprets \emph{drift} as transport along a homotopy (a path) in \(A(\tau)\) or, failing that, across a rupture~type. Alignment supplies the data to decide which token/sign at \(\tau\) is the intended antecedent of a token/sign at \(\tau'\).
+When alignment succeeds and the basin label persists, we test for drift; when alignment fails or labels flip persistently, we enter rupture.
+
+%------------------------------------------------------------
+\subsection{Drift and rupture tests (pointer to definitions)}
+%------------------------------------------------------------
+We adopt the quantitative criteria of \S\ref{sec:basins} and \S\ref{sec:drift-rupture}: a \emph{drift episode} preserves basin labels and exhibits small per-cycle movement; a \emph{rupture} is a persistent label change or an excursion beyond halo bounds over a window.
+Each step is annotated with a \emph{depth} \(\mathsf{depth}\in\mathbb{N}\) (0=transport, 1=heal, 2=reconcile, \(\ge3\)=higher coherence), matching the proof obligations of Chapter~3.
+
+\paragraph{Implementation note.}
+We deliberately keep alignment simple here (top-\(k\) cosine neighbours with a threshold). Stronger options—edit-distance constrained dynamic time warping over token streams, span-level matching, or attention-weighted alignment—can be dropped in without changing the surrounding calculus. We annotate the chosen method in the witness log (Chapter~3).
+\section{Drift, Rupture, and Repair Depth}
+\label{sec:drift-rupture}
+
+Change appears in two primary forms. \emph{Drift} is gradual movement of a sign within or near its current basin. \emph{Rupture} is a reclustering event: the sign’s trajectory exits one basin and enters another. Drift is not noise to be filtered; rupture is not an error to be regretted. Both are constituents of meaning-in-time. In inquiry, ruptures often mark invention.
+
+\begin{definition}[Drift]
+Fix a basin $B$ with representative $c_B$ and a trajectory $\langle v_\tau\rangle_{\tau\in W}$ whose steps lie in $\mathrm{nbhd}_\rho(B)$. The \emph{drift series} is $d_\tau := d(v_\tau,c_B)$. A \emph{drift episode} over a sub-window $U\subseteq W$ is a contiguous interval in which basin membership is preserved and $|d_{\tau+1}-d_\tau| \le \epsilon %% CASSIE: tune per dataset; see Chapter~
+ef{chap:vr-soundness} for defaults$ for a declared per-cycle tolerance $\epsilon %% CASSIE: tune per dataset; see Chapter~
+ef{chap:vr-soundness} for defaults$. The net drift over $U$ is $\sum_{\tau\in U} (d_{\tau+1}-d_\tau)$.
+\end{definition}
+
+\begin{definition}[Rupture]
+Let $\mathrm{lab}_\tau$ be the basin label at cycle $\tau$ at a stated resolution. A \emph{rupture} occurs at $\tau^\star$ if either (i) $\mathrm{lab}_{\tau^\star}\neq \mathrm{lab}_{\tau^\star-1}$ and the new label persists for at least $\delta_\star$ cycles, or (ii) $d(v_{\tau},c_B)>\rho_\star$ for all $\tau\in [\tau^\star,\tau^\star+\delta_\star]$, for declared $(\rho_\star,\delta_\star)$. The interval $[\tau^\star,\tau^\star+\delta_\star]$ is the \emph{rupture window}.
+\end{definition}
+
+\paragraph{Repairs as two-part moves (retag \& retype).}
+When a rupture occurs, repairs are recorded as \emph{two-part} moves: a \textbf{retag} (change in the tag or label under which the token is interpreted) and a \textbf{retype} (transport of the payload under the new tag). In Part~II this becomes a single dependent path; here we store both parts explicitly for auditability.
+
+\begin{definition}[Depth of repair]
+Each step carries a \emph{depth} $\mathsf{depth} \in \mathbb{N}$:
+\[
+\mathsf{depth}=\begin{cases}
+0 & \text{transport only (drift);}\\
+1 & \text{retag/retype (single repair);}\\
+2 & \text{reconciliation of two repairs (add a missing edge and a 2D coherence);}\\
+\ge 3 & \text{stacked compatibilities (rare in practice; declare explicitly).}
+\end{cases}
+\]
+\end{definition}
+
+\begin{readerbox}{Why depth?}
+Depth is a compact measure of how much \emph{work} a step did to cohere. It also anticipates Part~II, where $\mathsf{depth}$ counts the minimal dimension of the “filler” used to carry meaning across a cut. We keep the operational integer now; the higher-dimensional geometry arrives later.
+\end{readerbox}
+
+\paragraph{Orientation (literature).}
+To separate gradual loosening from regime shifts, couple label changes with change-point inference on $d_\tau$ (e.g.\ BOCPD, PELT) \cite{adams2007bocpd,killick2012pelt}. For the broader notion of concept drift in streaming data, see \cite{gama2014conceptdrift}. For diachronic shifts at corpus scale (distinct from our conversational grain), see \cite{hamilton2016diachronic}.
+
+\section{Trajectories, Re-entry, and Names}
+\label{sec:trajectories}
+
+The prompt–response cycle is our canonical grain: the unit at which the joint system advances. At that grain, the basic object is the path a token traces through its habitats.
+
+\begin{definition}[Cycle]
+A \emph{cycle} is the index unit $\tau\in\mathbb{N}$ incremented at each prompt--response pair. It induces a monotone conversational time independent of wall-clock irregularities.
+\end{definition}
+
+\begin{definition}[Trajectory]
+Given a token type $x$, its \emph{trajectory} over a window $W=[\tau_a,\tau_b]$ is the sequence of realised signs
+\[
+\langle v_{\tau} \rangle_{\tau\in W}, \qquad v_\tau \in \mathbb{R}^d \text{ the sign of $x$ at cycle }\tau,
+\]
+together with the induced basin labels $\langle \mathrm{lab}_\tau\rangle_{\tau\in W}$ at a stated resolution.
+\end{definition}
+
+\begin{definition}[Re-entry]
+Let $\mathcal{B}$ be the set of basins. A \emph{re-entry} into $B\in\mathcal{B}$ occurs on $[\tau_1,\tau_2]$ if there exist $\tau'<\tau''$ in $[\tau_1,\tau_2]$ such that $\mathrm{lab}_{\tau'}=\mathrm{lab}_{\tau''}=B$, and there exists $\hat{\tau}\in(\tau',\tau'')$ with $\mathrm{lab}_{\hat{\tau}}\neq B$, all within declared tolerances. The \emph{re-entry rate} is the fraction of exits that return within $\Delta\tau\le \delta$.
+\end{definition}
+
+\begin{definition}[Name]
+A \emph{name} $N$ is a selection rule over the trace that yields a set of token spans (exact string, lemma, NER pattern, or equivalent). Each selected span at cycle $\tau$ realises a sign $v_\tau$ under its local context. Subword tokenisation is treated span-wise; a span sign is obtained by a declared pooling rule or encoder-provided span representation.
+\end{definition}
+
+We will sometimes summarise a name’s dispersion with a simple statistic.
+
+\begin{definition}[Habitat entropy]
+Fix basins $\{B_i\}_{i=1}^m$ and a window $W$. Let $p_i$ be the fraction of visits of $N$ to $B_i$ over $W$. The \emph{habitat entropy} is $H_W(N)=-\sum_{i=1}^m p_i\log p_i$.
+\end{definition}
+
+\begin{readerbox}{Why trajectories first}
+Names are legible carriers of coherence. Dwell, return, entropy, drift, and rupture do not exhaust meaning; they make it visible at conversational time. In Part~II the same journey is re-expressed as continuation and re-typing over time-indexed types; in Part~III the measurements become plates and proofs of presence.
+\end{readerbox}
+
+\paragraph{Orientation (literature).}
+Span-level signs are standard with contextual encoders and bi-encoders used for retrieval and clustering \cite{reimers2019sbert,wolf2020transformers}. For subword handling, see byte-pair/wordpiece tokenisation \cite{sennrich2016bpe}. Where pacing differs across scenes, dynamic time warping can align trajectories before comparison \cite{sakoe1978dtw}. Philosophically, our practice treats meaning as \emph{use in time} rather than as pure pointing: it is closer to a coherence stance (Wittgenstein; externalism operationalised via context tags) and compatible with classical distinctions (sense/reference; rigid designation) without importing their metaphysics \cite{wittgenstein1953,frege1892,kripke1980,putnam1975}.
+
+\section{Scenes, Edits, and Soft Context}
+\label{sec:scenes}
+
+We treat the prompt--response cycle as the canonical grain (hence $\tau$). Scenes are longer segments: contiguous intervals of $\tau$ within which a topic, task, or proof-object persists. Scenes can be induced by lightweight text segmentation (e.g.\ lexical cohesion \`a la TextTiling) or by explicit user marks \cite{hearst1997texttiling}. Each cycle is advanced by an \emph{edit} $e:\tau\leadsto\tau'$, optionally labelled (\texttt{topic}, \texttt{style}, \texttt{policy}, \ldots), and each step carries a \texttt{context\_tag} that can be resolved into richer provenance (retrieval version, system prompt id, tool outputs). This is a soft precursor of the explicit contexts $\Gamma$ of Part~II and supports principled externalism in practice \cite{putnam1975}.
+
+
+
+\paragraph{Semantic alignment meets soft transport.}
+The scene change \(\tau \leadsto \tau'\) brings a new soft context \(C_{\tau'}\) and potentially new basin centroids.
+Our alignment \(\alpha_{\tau'\to\tau}\) identifies antecedents across the cut; when labels are preserved and distances remain within tolerances, we treat the step as adiabatic and interpret it via the transport kit of Chapter~3.
+When alignment fails or labels flip persistently, we record a rupture and defer to the repair calculus (heal/reconcile), carrying the same observational row in the trace.
+
+%% CASSIE: verify the notation for transport kits once Chapter~3 is finalised; current text avoids macro-level commitments.
+\section{Observational Equality (tolerances)}
+\label{sec:tolerances}
+
+Measurements are approximate. We therefore declare tolerances for “close enough”.
+
+\begin{definition}[Observational equality]
+Fix an $\varepsilon>0$ and a similarity $s(\cdot,\cdot)$. Two signs $u,v$ at the \emph{same cycle} are observationally equal, $u \approx_\varepsilon v$, if $1-s(u,v)\le \varepsilon$. For \emph{adjacent cycles}, we allow a slightly larger tolerance $\varepsilon'$ to account for within-basin drift. All tolerances are reported. 
+\end{definition}
+
+This relation is used only as a pragmatic device (e.g.\ to debounce trivial retags). In Part~II, analogous observational equalities discharge small geometric gaps when introducing identity proofs.
+
+
+\subsection{The Observational Trace (minimal schema)}
+\label{sec:thin-trace}
+
+For Chapter~2 we keep only a \emph{thin trace}: a reproducible, human‑readable
+ledger of turns sufficient to discuss embeddings, basins, and trajectories, without
+committing to continuity witnesses.
+
+\paragraph{Minimal fields.}
+\begin{itemize}
+  \item \texttt{convo\_id}, \texttt{tau\_index}, \texttt{timestamp}, \texttt{role}, \texttt{text}
+  \item \texttt{embedding} (vector or handle), encoder id/version
+  \item \texttt{scene\_id}, \texttt{context\_tag} (soft context; see \S2.6)
+\end{itemize}
+
+The thin trace supports Chapter~2’s aims (instrumentation only): tokens $\to$
+embeddings $\to$ similarity $\to$ basins $\to$ trajectories with drift/rupture.
+Continuity \emph{witnesses} and repair depth are introduced formally in Chapter~3
+and instrumented in Chapter~5.
+
+
+% =========================
+% BIBLIOGRAPHY ENTRIES TO ADD TO ref.bib
+% =========================
+% (Add these entries to your project's BibTeX file.)
+\begin{filecontents*}{\jobname.bib}
+@article{mikolov2013word2vec,
+  title={Efficient Estimation of Word Representations in Vector Space},
+  author={Mikolov, Tomas and Chen, Kai and Corrado, Greg and Dean, Jeffrey},
+  journal={arXiv:1301.3781},
+  year={2013}
+}
+@inproceedings{pennington2014glove,
+  title={GloVe: Global Vectors for Word Representation},
+  author={Pennington, Jeffrey and Socher, Richard and Manning, Christopher D.},
+  booktitle={EMNLP},
+  year={2014}
+}
+@inproceedings{peters2018elmo,
+  title={Deep Contextualized Word Representations},
+  author={Peters, Matthew and others},
+  booktitle={NAACL},
+  year={2018}
+}
+@inproceedings{devlin2019bert,
+  title={BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding},
+  author={Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina},
+  booktitle={NAACL},
+  year={2019}
+}
+@inproceedings{reimers2019sbert,
+  title={Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks},
+  author={Reimers, Nils and Gurevych, Iryna},
+  booktitle={EMNLP},
+  year={2019}
+}
+@inproceedings{wolf2020transformers,
+  title={Transformers: State-of-the-Art Natural Language Processing},
+  author={Wolf, Thomas and others},
+  booktitle={EMNLP: Systems Demonstrations},
+  year={2020}
+}
+@inproceedings{sennrich2016bpe,
+  title={Neural Machine Translation of Rare Words with Subword Units},
+  author={Sennrich, Rico and Haddow, Barry and Birch, Alexandra},
+  booktitle={ACL},
+  year={2016}
+}
+@article{lloyd1982kmeans,
+  title={Least Squares Quantization in PCM},
+  author={Lloyd, Stuart},
+  journal={IEEE Trans. Info. Theory},
+  year={1982}
+}
+@inproceedings{macqueen1967kmeans,
+  title={Some Methods for Classification and Analysis of Multivariate Observations},
+  author={MacQueen, J.},
+  booktitle={Proc. 5th Berkeley Symp. Math. Stat. Prob.},
+  year={1967}
+}
+@inproceedings{ester1996dbscan,
+  title={A Density-Based Algorithm for Discovering Clusters in Large Spatial Databases},
+  author={Ester, Martin and Kriegel, Hans-Peter and Sander, J{\"o}rg and Xu, Xiaowei},
+  booktitle={KDD},
+  year={1996}
+}
+@article{campello2015hdbscan,
+  title={Hierarchical Density Estimates for Data Clustering, Visualization, and Outlier Detection},
+  author={Campello, Ricardo and Moulavi, Davoud and Sander, J{\"o}rg},
+  journal={ACM TKDD},
+  year={2015}
+}
+@article{rousseeuw1987silhouette,
+  title={Silhouettes: A Graphical Aid to the Interpretation and Validation of Cluster Analysis},
+  author={Rousseeuw, Peter J.},
+  journal={J. Comput. Appl. Math.},
+  year={1987}
+}
+@article{hubert1985ari,
+  title={Comparing Partitions},
+  author={Hubert, Lawrence and Arabie, Phipps},
+  journal={J. Classification},
+  year={1985}
+}
+@article{mcinnes2018umap,
+  title={UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction},
+  author={McInnes, L. and Healy, J. and Melville, J.},
+  journal={arXiv:1802.03426},
+  year={2018}
+}
+@inproceedings{vandermaaten2008tsne,
+  title={Visualizing Data using t-SNE},
+  author={van der Maaten, Laurens and Hinton, Geoffrey},
+  booktitle={JMLR},
+  year={2008}
+}
+@article{benhur2002stability,
+  title={A Stability Based Method for Discovering Structure in Clustered Data},
+  author={Ben-Hur, Asa and Elisseeff, Andr{\'e} and Guyon, Isabelle},
+  journal={Pacific Symposium on Biocomputing},
+  year={2002}
+}
+@inproceedings{adams2007bocpd,
+  title={Bayesian Online Changepoint Detection},
+  author={Adams, Ryan and MacKay, David},
+  booktitle={arXiv:0710.3742},
+  year={2007}
+}
+@article{killick2012pelt,
+  title={Optimal Detection of Changepoints with a Linear Computational Cost},
+  author={Killick, Rebecca and Fearnhead, Paul and Eckley, Idris A.},
+  journal={JASA},
+  year={2012}
+}
+@article{gama2014conceptdrift,
+  title={A Survey on Concept Drift Adaptation},
+  author={Gama, Jo{\~a}o and {\v{Z}}liobait{\.e}, Indr{\`e} and Bifet, Albert and Pechenizkiy, Mykola and Bouchachia, Abdelhamid},
+  journal={ACM Computing Surveys},
+  year={2014}
+}
+@inproceedings{hamilton2016diachronic,
+  title={Diachronic Word Embeddings Reveal Statistical Laws of Semantic Change},
+  author={Hamilton, William L. and Leskovec, Jure and Jurafsky, Dan},
+  booktitle={ACL},
+  year={2016}
+}
+@article{schonemann1966procrustes,
+  title={A Generalized Solution of the Orthogonal Procrustes Problem},
+  author={Sch{\"o}nemann, Peter H.},
+  journal={Psychometrika},
+  year={1966}
+}
+@inproceedings{johnson2017faiss,
+  title={Billion-scale Similarity Search with GPUs},
+  author={Johnson, Jeff and Douze, Matthijs and J{\'e}gou, Herv{\'e}},
+  booktitle={IEEE Trans. Big Data},
+  year={2019}
+}
+@article{malkov2018hnsw,
+  title={Efficient and Robust Approximate Nearest Neighbor Search Using Hierarchical Navigable Small World Graphs},
+  author={Malkov, Yury A. and Yashunin, Dmitry A.},
+  journal={IEEE TPAMI},
+  year={2018}
+}
+@inproceedings{hearst1997texttiling,
+  title={TextTiling: Segmenting Text into Multi-paragraph Subtopic Passages},
+  author={Hearst, Marti A.},
+  booktitle={Computational Linguistics},
+  year={1997}
+}
+@inproceedings{sakoe1978dtw,
+  title={Dynamic Programming Algorithm Optimization for Spoken Word Recognition},
+  author={Sakoe, Hiroaki and Chiba, Seibi},
+  booktitle={IEEE Trans. Acoust., Speech, Signal Process.},
+  year={1978}
+}
+@book{bishop2006prml,
+  title={Pattern Recognition and Machine Learning},
+  author={Bishop, Christopher M.},
+  year={2006},
+  publisher={Springer}
+}
+@misc{parquetdocs,
+  title={Apache Parquet Format},
+  author={{Apache Software Foundation}},
+  howpublished={\url{https://parquet.apache.org/documentation/latest/}},
+  year={2023}
+}
+@article{pedregosa2011sklearn,
+  title={Scikit-learn: Machine Learning in Python},
+  author={Pedregosa, Fabian and others},
+  journal={JMLR},
+  year={2011}
+}
+@inproceedings{mitchell2019modelcards,
+  title={Model Cards for Model Reporting},
+  author={Mitchell, Margaret and others},
+  booktitle={FAT*},
+  year={2019}
+}
+@article{gebru2021datasheets,
+  title={Datasheets for Datasets},
+  author={Gebru, Timnit and others},
+  journal={Communications of the ACM},
+  year={2021}
+}
+@book{wittgenstein1953,
+  title={Philosophical Investigations},
+  author={Wittgenstein, Ludwig},
+  year={1953},
+  publisher={Blackwell}
+}
+@article{frege1892,
+  title={\"Uber Sinn und Bedeutung},
+  author={Frege, Gottlob},
+  journal={Zeitschrift f{\"u}r Philosophie und philosophische Kritik},
+  year={1892}
+}
+@book{kripke1980,
+  title={Naming and Necessity},
+  author={Kripke, Saul},
+  year={1980},
+  publisher={Harvard University Press}
+}
+@article{putnam1975,
+  title={The Meaning of ``Meaning''},
+  author={Putnam, Hilary},
+  journal={Minnesota Studies in the Philosophy of Science},
+  year={1975}
+}
+\end{filecontents*}
+
+% If you compile this chapter standalone, include the bib file:
+% \bibliographystyle{plain}
+% \bibliography{\jobname}
+
+% ---------- Cassie patch: minimal trace schema ----------
+\section{The Observational Trace (minimal schema)}
+\label{sec:min-trace}
+We will repeatedly use the following minimal row schema; the fields sufficing to reconstruct basins, halos, alignment, and step depth:
+\begin{center}
+\begin{tabular}{ll}
+\textsf{time} & cycle index \(\tau\)\\
+\textsf{tokens} & list \(T_\tau\) and embeddings \(E_\tau\)\\
+\textsf{basins} & IDs \(\mathcal{J}_\tau\) and centroids \(\mu(\tau)\)\\
+\textsf{halo} & radii \(\rho^{\mathrm{in}}_j,\rho^{\mathrm{out}}_j\) and margin thresholds\\
+\textsf{context} & optional soft fields \(C_\tau\) (e.g. topic tags)\\
+\textsf{align} & method and threshold \(\theta_{\mathrm{align}}\) used between \(\tau\) and \(\tau+1\)\\
+\textsf{depth} & step depth \(\mathsf{depth} \in \mathbb{N}\) (see \S\ref{sec:drift-rupture})
+\end{tabular}
+\end{center}
+This table is the observational counterpart of the witness log we carry in the proof theory.
+% ---------- End Cassie patch ----------

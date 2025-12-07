@@ -1,0 +1,1802 @@
+
+%==============================
+\chapter{Trajectories by Coinduction} % (formerly: Journey of a Name)
+%==============================
+
+\section{Orientation: from frame calculus to life by coinduction}
+
+Chapter~3 gave us a powerful \emph{frame calculus}: at a single temporal cut
+\[
+\tau \leadsto \tau',
+\]
+we can certify how a term survives alteration. The constructors for \textsc{Drift}, \textsc{Rupture}, and \textsc{Heal} let us audit a one–step advance: either a transport carries the inhabitant forward unchanged, or a minimal horn filler is adjoined to repair coherence in the later fibre. This yields a logic of \emph{local} dynamics---microscopic movement with explicit witnesses.
+
+But a single step does not yet make a journey. Our intuitions about meaning---and about the identity of any recurring term---are shaped by \emph{persistence}: we recognise something as ``the same'' because it keeps being carried, one justified transition after another. The frame calculus tells us when a step is lawful; it does not, by itself, provide a mathematical object for the \emph{whole life} that those steps compose.
+
+This chapter performs the lift from frames to lives. The right language is \emph{coinduction}. Where induction builds finite data from base and step constructors, coinduction describes potentially infinite behaviours by specifying what is visible \emph{now} and how continuation must proceed \emph{later}. In a temporal setting this ``later'' must be disciplined; we adopt a guarded modality~$\Later$ so that every self-reference is deferred by one tick. Guarded coinduction is thus the natural proof principle for processes that unfold in time.
+
+Formally, we package the one–frame advance of Chapter~3 into a \emph{step functor}~$F_A$ over a time-indexed family of Kan-complete fibres $A(\tau)$. A \emph{trajectory} is then a greatest fixed point
+\[
+\Traj(A)  \coloneqq  \nu F_A,
+\]
+whose unfolding at each cut reveals (i) the current exposure $a \in A(\tau)$, (ii) the edit $e:\tau \leadsto \tau'$, (iii) the next exposure $a' \in A(\tau')$, (iv) a step-witness $\rho$ certifying transport or repair, and (v) a guarded tail for the rest of the life. In this way the local calculus becomes a single object that \emph{remembers how it continues}.
+
+Two payoffs follow immediately. First, the \emph{depth of repair} computed frame-by-frame becomes an invariant along a life: a prefix-robust account of how continuity is earned. Second, the coalgebraic reading of $\Traj(A)$ gives us both semantics (finality, bisimulation) and engineering leverage (compositionality of continuations) that we will use in later chapters on evolving texts and Selves.
+
+\paragraph{What this section establishes.}
+\begin{enumerate}
+  \item The problem: frame-wise witnesses are not yet an object of persistence.
+  \item The move: guarded coinduction packages steps into a single coinductive type of lives.
+  \item The promise: trajectories $\Traj(A)$ carry explicit witnesses and repair depth across time, preparing the ground for specialisations (next chapter) and for higher coherence (later).
+\end{enumerate}
+
+The remainder of Chapter~4 develops this programme. We define the step functor and the guarded rules, prove the existence and laws of $\nu F_A$ in a clocked presheaf model, and state a bisimulation principle for reasoning about equality of lives. We stay at the level of \emph{general terms} here. In Chapter~5 we specialise to \emph{name–sign} trajectories and give the fibres a concrete empirical geography; today, our task is to install the coinductive engine that makes any life of meaning legible.
+
+
+\section{The step functor and the trajectory type}
+
+\subsection{Step functor \(F_A\): one justified advance}
+
+\paragraph{Idea.}
+A trajectory is made of \emph{steps}. To define the coinductive type of whole lives, we first formalise the shape of a \emph{single, justified advance}. This is the job of the \emph{step functor} \(F_A\): it packages exactly what we can observe at one cut in time, together with a (guarded) promise that the life continues.
+
+\begin{definition}[Step functor]
+Let \(A\) be a time–indexed family of Kan–complete fibres \(\tau \mapsto A(\tau)\).
+Suppressing routine indices (we will write \(\tau \leadsto \tau'\) for an admissible edit),
+define the step functor
+\[
+F_A(X)
+  \coloneqq  
+\Sigma_{a : A(\tau)} 
+\Sigma_{e : \tau \leadsto \tau'} 
+\Sigma_{a' : A(\tau')} 
+\Step_A(\tau,\tau';a,a')
+ \times 
+\Later X
+\]
+where \(\Step_A(\tau,\tau';a,a')\) is the Chapter~3 witness (either a transport or a repair)
+certifying the move \(a \rightsquigarrow a'\), and \(\Later X\) is a guarded promise of
+more life to come.
+\end{definition}
+
+\noindent
+Read this definition as a \emph{one–frame camera}: it captures the current exposure \(a\),
+the edit \(e\), the next exposure \(a'\), and the proof \(\rho\) that this transition is lawful.
+The final component \(\Later X\) says: the rest of the movie exists, but you may only
+look at it one tick later.
+
+\begin{remark}[Why this shape is friendly]
+The only occurrence of the variable \(X\) sits under \(\Later\). This is the
+\emph{guardedness} that will make our fixed point both exist and behave well.
+Nothing infinite is demanded up front; we only ever have to justify the \emph{next} step.
+\end{remark}
+
+\subsection{Guarded coinduction and the \(\Later\) (clock) modality}
+
+\paragraph{Coinduction in one breath.}
+Induction builds finite objects from the bottom up. Coinduction describes
+potentially infinite behaviours from the top down: an element is determined
+by what it reveals \emph{now} and how it promises to continue \emph{later}.
+In temporal settings, “later” must be disciplined; otherwise one can define
+non–productive objects by peeking into the future.
+
+\paragraph{The guard.}
+We use a unary modality \(\Later( \cdot )\) (“next time”). Every self–reference in a
+definition must occur under \(\Later\). Intuitively: in dialogue you cannot answer a
+future turn before time advances; the guard enforces exactly that common sense.
+
+\paragraph{Rules (informal, but usable).}
+For guarded functors \(F\) (all recursive uses of \(X\) appear under \(\Later\)):
+
+\begin{itemize}
+  \item \textbf{Formation (\(\nu\)-Form).} If \(F\) is guarded, the coinductive type \(\nu X. F(X)\) exists.
+  \item \textbf{Introduction (\(\nu\)-Intro, corecursion).} To build \(x : \nu X. F(X)\),
+        it suffices to provide its one–step view \(F(\nu X. F(X))\), with any self–use delayed by \(\Later\).
+        Think: “give the current frame and a guarded tail.”
+  \item \textbf{Elimination (\(\nu\)-Elim, unfolding).} From \(x : \nu X. F(X)\) we may \emph{observe}
+        its current one–step view \(\mathsf{unfold}(x) : F(\nu X. F(X))\).
+\end{itemize}
+
+These three rules are the whole user manual. If you keep them in mind, coinduction
+stops feeling like magic and starts feeling like a very strict streaming API:
+you can always take \emph{one more step}, and only one.
+
+
+%========================================================
+\section{Guarded coinduction (rules)}
+\label{subsec:guarded-rules}
+%========================================================
+
+We interpret types in the clocked presheaf topos, where the “later” modality
+\(\Later\) is a one‑step clock shift. A guarded endofunctor \(F\) (every
+occurrence of its argument appears strictly under \(\Later\)) admits a final
+coalgebra \(\nu X.F(X)\) with structure map
+\(\mathsf{out} : \nu X.F(X) \to F\bigl(\Later(\nu X.F(X))\bigr)\).
+The internal language of this model is DHoTT with corecursion, now defined. 
+
+The rules below
+are just the internalization of:
+\begin{enumerate*}
+\item existence of \(\nu X.F(X)\) for guarded \(F\),
+\item its destructor \(\mathsf{out}\) (elimination), and
+\item the universal property (introduction as a unique coalgebra morphism).
+\end{enumerate*}
+We write \(\Gamma \vdash_{\tau} t : A\) for typing judgments at a fixed clock
+\(\tau\) (we usually suppress \(\tau\) when irrelevant). We also write
+\(\Next_A : A \to \Later A\) for the canonical introduction of \(\Later\).
+
+\subsection*{The \texorpdfstring{\(\Later\)}{Later} modality (spelled out)}
+We record the basic rules for \(\Later\) used implicitly by the guarded
+coinduction rules. These are precisely the rules validated by the clock‑shift
+semantics; no general elimination that “removes” \(\Later\) is admissible.
+
+\begin{mathpar}
+\inferrule*[right=\(\Later\)\textsc{-Form}]
+  { \Gamma \vdash_{\tau} A : \mathcal{U} }
+  { \Gamma \vdash_{\tau} \Later A : \mathcal{U} }
+\and
+\inferrule*[right=\(\Later\)\textsc{-Intro}]
+  { \Gamma \vdash_{\tau} t : A }
+  { \Gamma \vdash_{\tau} \Next_A(t) : \Later A }
+\end{mathpar}
+
+\paragraph{Guarded elimination (applicative/let‑later).}
+Elimination is only allowed under a further \(\Later\). We use either of the
+following interderivable forms.
+\[
+\inferrule*[right=\(\Later\)\textsc{-Elim}]
+  { \Gamma \vdash_{\tau} u : \Later A
+    \quad
+    \Gamma, x:A \vdash_{\tau} t : \Later B }
+  { \Gamma \vdash_{\tau} \mathbf{let}\; x \Leftarrow u\; \mathbf{in}\; t : \Later B }
+\qquad
+\inferrule*[right=\(\Later\)\textsc{-Ap}]
+  { \Gamma \vdash_{\tau} f : \Later(A\to B)
+    \quad
+    \Gamma \vdash_{\tau} u : \Later A }
+  { \Gamma \vdash_{\tau} f \;\mathsf{ap}\; u : \Later B }
+\]
+The equations
+\(
+\mathbf{let}\; x \Leftarrow \Next(t)\; \mathbf{in}\; u \;\equiv\; u[t/x]
+\)
+and the usual (applicative) functor laws for \(\Later\) hold definitionally.
+
+\medskip
+
+\subsection*{Guarded greatest fixed points}
+We now give the rules for guarded \(\nu\), making the guardedness side condition
+explicit.
+
+\begin{mathpar}
+\inferrule*[right=\textsc{Guarded-\(\nu\)-Form}]
+  { \Gamma, X:\mathcal{U} \vdash_{\tau} F(X) : \mathcal{U}
+    \quad
+    \text{\(X\) occurs only under \(\Later\) in \(F(X)\)} }
+  { \Gamma \vdash_{\tau} \nu X.\,F(X) : \mathcal{U} }
+\end{mathpar}
+
+\begin{mathpar}
+\inferrule*[right=\textsc{Guarded-\(\nu\)-Intro}]
+  { \Gamma, x:\Later\!\bigl(\nu X.\,F(X)\bigr) \vdash_{\tau} t : F\!\bigl(\nu X.\,F(X)\bigr) }
+  { \Gamma \vdash_{\tau} \gcorec(x.\,t) : \nu X.\,F(X) }
+\end{mathpar}
+
+\begin{mathpar}
+\inferrule*[right=\textsc{Guarded-\(\nu\)-Elim}]
+  { \Gamma \vdash_{\tau} u : \nu X.\,F(X) }
+  { \Gamma \vdash_{\tau} \unfold(u) : F\!\bigl(\Later(\nu X.\,F(X))\bigr) }
+\end{mathpar}
+
+\paragraph{Computation and extensionality.}
+Unfolding a guarded corecursive definition exposes precisely the guard it was
+defined with:
+\[
+  \unfold\bigl(\gcorec(x.\,t)\bigr)
+  \;\equiv\;
+  t\bigl[\;\Next_{\nu X.\,F(X)}\bigl(\gcorec(x.\,t)\bigr)\,/\,x\;\bigr]
+  \quad\text{(\(\beta\)-law).}
+\]
+Conversely, every \(u : \nu X.\,F(X)\) is \emph{bisimilar} to the corecursive
+term that re‑folds its own unfolding:
+\[
+  u \;\approx\; \gcorec\!\bigl(x.\,\tilde{t}\bigr)
+  \quad\text{where}\quad
+  \tilde{t} \;\;:=\;\; F(\mathsf{id})\bigl( \unfold(u) \bigr)
+\]
+(an \(\eta\)-principle up to the bisimulation for \(\Name(A)\) introduced
+below). \emph{Uniqueness up to bisimilarity} is precisely the internal form of
+finality of \(\nu\).
+
+\emph{Why guardedness?} The clock shift \(\Later\) strictly decreases the time
+index; requiring \(X\) to occur only under \(\Later\) ensures productivity and
+makes \(F\) contractive, yielding a final coalgebra.
+
+\emph{Why these sequents?} \textsc{Intro} internalizes the unique coalgebra
+morphism into the final coalgebra determined by a coalgebra
+\(\Gamma \vdash_{\tau} c : \Later(\nu F) \to F(\nu F)\) (captured by the open
+term \(x \mapsto t\)). \textsc{Elim} is the structure map \(\mathsf{out}\).
+The \(\beta\)-law is the coalgebra‑morphism equation; the \(\eta\)-principle is
+finality.
+
+
+
+
+\subsection{Final coalgebras in the clocked presheaf model}
+
+\paragraph{Semantics in one line.}
+We interpret types in a clocked presheaf topos where \(\Later\) is a simple shift of clock.
+In this model, guarded functors have well–behaved fixed points.
+
+\begin{theorem}[Final coalgebras for guarded functors]
+Every guarded polynomial functor \(F\) on the clocked presheaf topos admits
+a \emph{final coalgebra} \(\nu X. F(X)\). Unfolding and corecursion satisfy their
+computation laws strictly, and the usual \emph{finality} principle holds: for any
+coalgebra \(c : S \to F(S)\) (with guarded self–use), there is a unique homomorphism
+\(\llbracket c \rrbracket : S \to \nu X. F(X)\).
+\end{theorem}
+
+\noindent
+You do not need the categorical details to work with us. What matters is the guarantee:
+the coinductive types we define \emph{exist}, they \emph{compute} as advertised, and there is a
+clean reasoning principle (finality) for converting concrete step–producers into lives.
+
+\subsection{Definition: Trajectories as greatest fixed points}
+
+\paragraph{From steps to lives.}
+With the step functor in hand, we can finally name the object we care about.
+
+\begin{definition}[Trajectory type]
+For a time–varying family \(A\), the type of trajectories is the greatest fixed point
+of the step functor:
+\[
+\Traj(A)  \coloneqq  \nu F_A.
+\]
+Unfolding exposes the next justified move:
+\[
+\mathsf{unfold} : \Traj(A)  \longrightarrow  F_A\big(\Traj(A)\big),
+\]
+and corecursion builds trajectories from guarded step–producers.
+An inhabitant \(x : \Traj(A)\) is thus a formal life: at any cut you may
+observe \((a, e, a', \rho)\) and a guarded tail that promises to continue.
+\end{definition}
+
+\begin{remark}[Practical reading]
+To \emph{define} a trajectory generator, give a function that, from your current state,
+returns: (i) the present exposure, (ii) the edit, (iii) the next exposure, (iv) a witness
+that this move is lawful, and (v) a deferred recipe for the rest.
+To \emph{use} a trajectory, call \(\mathsf{unfold}\) to get exactly one certified step.
+\end{remark}
+
+
+\section{Interaction with repair: depth along a coinductive life}
+
+\subsection{Depth of repair as minimal horn dimension}
+
+\paragraph{What depth measures.}
+Each unfolded step of a trajectory carries a step–witness \(\rho\).
+Depth records the \emph{dimensional effort} needed to keep coherence at that cut.
+
+\begin{definition}[Depth of repair (recall from Ch.~3, lifted)]
+Given \(\rho \in \Step_A(\tau,\tau';a,a')\), define
+\[
+\depth(\rho)  = 
+\begin{cases}
+0 & \text{if \(\rho\) arises by pure transport (no filler needed)},\\[2pt]
+\min\{ n\ge 1 \mid \rho \text{ adjoins an \(n\)-horn filler in the rupture type} \}
+& \text{otherwise}.
+\end{cases}
+\]
+\end{definition}
+
+\noindent
+Thus a trajectory in \(\Traj(A)\) does not just list states; it \emph{audits} itself:
+unfolding reveals both the next exposure and the dimensional cost of earning it.
+
+\paragraph{Prefix-robustness.}
+Because each step’s witness is attached locally at its cut,
+depth behaves well under unfolding.
+
+\begin{lemma}[Locality of depth]
+Let \(x:\Traj(A)\) and write \(\mathsf{unfold}(x)=(a,e,a',\rho,\Later x_1)\).
+Then \(\depth(\rho)\) depends only on data at \(\tau\leadsto\tau'\) and is independent of the future tail \(x_1\).
+\end{lemma}
+
+\begin{proof}[Proof sketch]
+By construction \(\rho \in \Step_A(\tau,\tau';a,a')\) witnesses a property of the single cut
+\(\tau\leadsto\tau'\). Any higher structure of the tail appears under \(\Later\) and
+cannot be inspected at this tick; guardedness forbids future information from
+influencing the current witness.
+\end{proof}
+
+\begin{proposition}[Prefix observables are stable]
+Fix \(x:\Traj(A)\) and let \(\{ \rho_0,\rho_1,\dots,\rho_{N-1} \}\) be the first \(N\) step–witnesses
+obtained by iterative unfolding.
+Then the aggregates
+\[
+\textstyle \maxdepth(N):=\max_{i< N}\depth(\rho_i)
+\quad\text{and}\quad
+\textstyle \mathrm{incidence}_{\ge k}(N):=\frac{|\{i< N \mid \depth(\rho_i)\ge k\}|}{N}
+\]
+are prefix–robust: extending to \(N+1\) updates them only by the contribution of \(\rho_N\).
+\end{proposition}
+
+\begin{remark}[How to read this later]
+Chapter~5 will turn these into empirical observables (e.g.\ rupture incidence, depth histograms).
+Here we only note the logical fact: depth is computed stepwise and composes cleanly along a life.
+\end{remark}
+
+\subsection{Bisimulation principle for trajectory equality}
+
+\paragraph{Why bisimulation.}
+Two lives are \emph{the same} if they keep doing the same justified thing at every tick.
+Coinduction packages that intuition into a single, workable proof principle.
+
+\begin{definition}[Bisimulation for \(\Traj(A)\)]
+A relation \(R \subseteq \Traj(A)\times\Traj(A)\) is a \emph{bisimulation} if
+whenever \(x R y\), writing
+\[
+\mathsf{unfold}(x)=(a,e,a',\rho,\Later x_1),\qquad
+\mathsf{unfold}(y)=(b,f,b',\sigma,\Later y_1),
+\]
+there exist paths witnessing equality of the current observations
+\[
+a \simeq b,\quad e \simeq f,\quad a' \simeq b',\quad \rho \simeq \sigma
+\]
+(in the appropriate fibres/identity types of Chapter~3),
+and moreover \(x_1 R y_1\) (the tails remain related).
+\end{definition}
+
+\begin{theorem}[Coinduction (bisimulation) principle]
+If \(R\) is a bisimulation and \(x R y\), then \(x = y\) in \(\Traj(A)\).
+\end{theorem}
+
+\begin{proof}[Proof idea]
+Finality of \(\nu F_A\) gives a unique coalgebra homomorphism out of any guarded step–producer.
+Take the quotient by \(R\) and use the bisimulation clauses to build a coalgebra on the quotient.
+Uniqueness forces the two projections to coincide, yielding \(x=y\).
+\end{proof}
+
+\begin{remark}[How to use it in practice]
+To prove \(x=y\), define \(R\) by ``their unfoldings match now and the tails are again related,''
+and verify the one-step clauses. No infinite argument is needed; you only ever justify
+\emph{one more observation}, then defer.
+\end{remark}
+
+
+
+\section{Worked micro-examples (generic terms, not names)}
+
+\paragraph{Setup (toy and gentle).}
+Fix a constant fibre \(A(\tau)=\Term=\{A,B,C\}\) for all \(\tau\), and a trivial edit \(e:\tau\leadsto\tau'\) at each tick.
+The step witness \(\Step_A(\tau,\tau';a,a')\) has the familiar Chapter~3 constructors:
+\(\mathsf{transport}\) (depth \(0\)), \(\mathsf{heal}\) (depth \(1\)), and
+\(\mathsf{reconcile}\) with a 2-cell \(\kappa\) (depth \(2\)).
+We write \(\depth(\rho)\in\{0,1,2\}\) accordingly.
+Nothing here depends on any empirical geometry; this is just the coinductive pattern.
+
+\begin{example}[Pure transport loop: a steady life]
+Define \(t_{\mathrm{steady}A} : \Traj(A)\) by corecursion:
+\[
+t_{\mathrm{steady}A}
+ \coloneqq 
+\mathsf{corec}\Big( () \mapsto \big(A,\ e,\ A,\ \mathsf{transport},\ \Later t_{\mathrm{steady}A}\big) \Big).
+\]
+Unfolding gives the same lawful step at every tick:
+\[
+\mathsf{unfold}(t_{\mathrm{steady}A})=(A,e,A,\mathsf{transport},\Later t_{\mathrm{steady}A}),
+\qquad
+\depth(\mathsf{transport})=0.
+\]
+\emph{Reading.} The term \(A\) persists without repair. Prefix observables:
+\(\maxdepth(N)=0\) and rupture incidence \(=0\) for all prefixes \(N\).
+\end{example}
+
+\begin{example}[Single repair, then stability]
+First define the stable \(B\)-loop
+\[
+t_{\mathrm{steady}B} \coloneqq
+\mathsf{corec}\Big( () \mapsto \big(B,\ e,\ B,\ \mathsf{transport},\ \Later t_{\mathrm{steady}B}\big) \Big).
+\]
+Now define a life that begins with a repair:
+\[
+t_{\mathrm{heal}} \coloneqq
+\mathsf{corec}\Big( () \mapsto \big(A,\ e,\ B,\ \mathsf{heal},\ \Later t_{\mathrm{steady}B}\big) \Big).
+\]
+The first unfolding certifies a depth-1 step \(A\rightsquigarrow B\); thereafter the life transports as \(B\):
+\[
+\mathsf{unfold}(t_{\mathrm{heal}})=(A,e,B,\mathsf{heal},\Later t_{\mathrm{steady}B}),
+\quad
+\mathsf{unfold}(t_{\mathrm{steady}B})=(B,e,B,\mathsf{transport},\Later t_{\mathrm{steady}B}).
+\]
+\emph{Reading.} One repair is earned (depth \(1\)); then the system coasts by transport (depth \(0\)).
+\end{example}
+
+\begin{example}[Reconcile at a fork, then commit]
+Suppose \(A\) at the next cut could coherently be repaired to either \(B\) or \(C\)
+(two admissible strategies with a near-tie). We model the fork with a triangular filler \(\kappa\) (depth \(2\)),
+and then choose \(B\) going forward:
+\[
+t_{\mathrm{recon}\to B} \coloneqq
+\mathsf{corec}\Big( () \mapsto \big(A,\ e,\ B,\ \mathsf{reconcile}[\text{alt}=C, \kappa],\ \Later t_{\mathrm{steady}B}\big) \Big).
+\]
+Unfold once:
+\[
+\mathsf{unfold}(t_{\mathrm{recon}\to B})=(A,e,B,\mathsf{reconcile}[\text{alt}=C],\Later t_{\mathrm{steady}B}),
+\qquad
+\depth(\mathsf{reconcile})=2.
+\]
+\emph{Reading.} The life acknowledges a genuine ambiguity (two equally defensible repairs) and certifies it by a 2-cell.
+After the reconcile, it commits to \(B\) and continues by transport.
+\end{example}
+
+\paragraph{What to notice.}
+\begin{itemize}
+  \item \emph{Guardedness is doing the work.} Each definition only supplies one certified step and a deferred tail.
+  \item \emph{Depth travels with the life.} The audit (0/1/2) is revealed per tick and composes cleanly across prefixes.
+  \item \emph{No geometry required (yet).} We have not assumed any structure on \(A(\tau)\) beyond being a family of fibres with the Chapter~3 step calculus.
+        In Chapter~5, when we specialise to \emph{name–signs}, the fibre will gain an empirical geography; these very patterns then become observable statistics.
+\end{itemize}
+
+
+\section{Philosophical takeaway and bridge}
+
+This chapter made a single, crucial move. Chapter~3 gave us legality \emph{per cut}---a sharp,
+frame-wise calculus of transport and repair. What we lacked was a formal object for
+\emph{persistence}: not just ``may this step go through?'' but ``what is the life that these steps compose?''
+
+Guarded coinduction supplies that object. By packaging one justified advance into the
+step functor \(F_A\) and taking its greatest fixed point, we defined the \emph{trajectory}
+\(\Traj(A) = \nu F_A\): a term-as-life whose identity is constituted by its \emph{justified continuation}.
+Unfolding exposes only the next lawful move (and its witness); corecursion promises there is always
+a later move to make. The guard \(\Later\) enforces this discipline of time.
+
+Three consequences will matter throughout the book:
+
+\begin{itemize}
+  \item \textbf{Lives carry their proofs.} Each step includes its witness \(\rho\); identity across time is not
+  asserted but \emph{earned}, one certified advance at a time.
+  \item \textbf{Depth becomes an audit.} The minimal horn dimension needed at each rupture
+  turns into a prefix–robust profile of how continuity was maintained.
+  \item \textbf{Equality is observational.} Bisimulation lets us equate lives by matching what they do
+  now and deferring the rest---exactly the grain of temporal reasoning we need.
+\end{itemize}
+
+\paragraph{Bridge.}
+From here, we specialise. In the next chapter we take \(\Traj(A)\) into the empirical world of
+\emph{name–signs in dialogue}. There the abstract fibre \(A(\tau)\) is given a measurable geography
+(basins of attraction and a structured periphery), and the per–step witnesses become a concrete
+\emph{Step–Witness Log}. The coinductive engine you have met here remains unchanged; only the
+ambient space gains texture. That added texture will let us \emph{observe} the very phenomena
+this chapter formalised: persistence, repair, and coherence earned in time.
+
+%TO DO: TALK ABOUT WHAT RUPTURE MEANS FOR A TRAJECTORY ... 
+
+
+
+
+
+
+
+
+
+
+
+\chapter{Journey of a name}\label{chap:journey-of-a-name}
+
+
+%========================================================
+\section{Motivation: from reference to trajectory}
+\label{sec:motivation-trajectory}
+%========================================================
+
+In the classical tradition, names are seen as ways of \emph{pointing}: Frege's
+Sinn/Bedeutung separates sense from reference; Kripke's rigid designation preserves
+reference across possible worlds; Putnam's externalist turn locates “meaning” in a
+community and its environment. Each picture encodes a kind of fixity.
+
+In Part~II (DAC) we argued that this fixity, while useful, is only a cross–section of
+a richer phenomenon: names \emph{live}. They are introduced (baptised), they drift,
+they rupture, and sometimes they return. What counts as the “same name” is not a
+single act of pointing, but the persistence of a \emph{trajectory} through time.
+DAC made this vivid by watching tokens stabilise in attractors and re–stabilise after
+breaks; it promised an \emph{inner geometry of meaning} to explain how such lives are
+possible.
+
+This chapter fulfils that promise. We show that a name is best understood not as a
+static denotation, but as a \emph{coinductive trajectory} inside a Kan–complete type.
+The calculus of Chapter~\ref{sec:semantics} (drift, rupture, healing; substitution;
+soundness) already determines, frame by frame, whether a term survives transport or
+must be repaired. Here we package those frame–moves into a single object—a trajectory—
+that unfolds \emph{guardedly} over time. The result is an ontology in which meaning is
+not the absence of change, but the ability to be carried forward, one justified step
+at a time.
+
+\begin{readerbox}\textbf{What this chapter does}
+\begin{enumerate}
+  \item \textbf{Geometry.} We recast a name as a \emph{trajectory} inside a Kan fibre,
+  not a point; “depth of repair” is the minimal horn dimension needed to carry the name
+  across a cut.
+
+  \item \textbf{Coinduction.} We introduce \emph{guarded} coinduction: trajectories are
+  greatest fixed points \(\nu F\) of guarded functors \(F\), unfolding one step “later”.
+
+  \item \textbf{Semantics.} We interpret the “later” modality by a standard clock–shift
+  and prove existence of final coalgebras for guarded polynomial functors in the clocked
+  presheaf model. Unfolding and corecursion satisfy their computation laws \emph{strictly}.
+
+  \item \textbf{Names as trajectories.} We define a step functor \(F_A\) that packages a
+  one–frame advance (drift or rupture + heal) and set \(\Name(A)\coloneqq \nu F_A\) as the
+  \emph{trajectory type of names} over \(A\). We give its rules, stability under substitution
+  and admissible drift, and a bisimulation principle.
+
+  \item \textbf{Practice.} We read prompt–response dialogue as the natural test–bench:
+  prompts act as exogenous edits to context; responses extend trajectories with justified steps.
+\end{enumerate}
+\end{readerbox}
+
+\begin{readerbox}\textbf{How contexts appear in this chapter.}
+Each turn advances time by an admissible edit \(e:\tau\leadsto\tau'\).
+We keep the context \(\Gamma\) \emph{implicit} unless the prompt patches it in a way
+that affects admissibility. In such cases we write
+\[
+\Gamma \stackrel{e}{\rightsquigarrow} \Gamma' \ \text{ctx}_{\tau'}
+\]
+once, re–anchor fibrewise (transport what transports; re–declare what fails), and then
+continue the analysis at \(\tau'\). Smooth steps typically leave \(\Gamma\) unmentioned;
+prompt–induced ruptures surface the \(\Gamma\)–change that forced repair. We remain within
+a single world (no global base–change; see Ch.~10).
+\end{readerbox}
+
+\paragraph{Roadmap.}
+Section~\ref{sec:names-inner-geometry} develops the inner geometry: names as trajectories
+through fibres, and “depth of repair” as horn dimension. A short \emph{primer} then explains
+guarded coinduction in one page. Section~\ref{subsec:guarded-rules} presents the guarded
+\(\nu\)–rules (formation, corecursion, unfolding). Section~\ref{subsec:semantics-name} gives
+the clocked semantics and the final coalgebra theorem (with a fibrewise reading and a streams
+sanity check). Section~\ref{subsec:names-as-trajectories} defines \(\Name(A)=\nu F_A\) with its
+rules, computation, stability, and bisimulation. Worked traces follow, and a brief philosophical
+takeaway prepares the ground for Chapter~8 (observables from finite traces) and Chapters~9–10
+(co–agency and worlds).
+
+
+
+%========================================================
+\section{Names as trajectories: the inner geometry}
+\label{sec:names-inner-geometry}
+%========================================================
+
+\subsection*{From points to paths}
+
+Classical semantics pictures names as \emph{points}—stable denotata that logic
+can manipulate without regard to time. In a dynamic setting this picture
+fragments. Names do not remain still: they \emph{move}. They trace a path
+through conversational time: a domestic $\tok{cat}$ is asked to play Cheshire,
+then—astonishingly—Schrödinger. The unit of meaning is not the name-at-a-time,
+but the \emph{name-as-trajectory}.
+
+In the presheaf semantics of Chapter~\ref{sec:semantics}, each time \(\tau\) carries a
+fibre \(\reindex{A}{\tau}\) (a Kan complex): the space of admissible readings \emph{now}.
+A judgement \(\Gamma \vdash_\tau a:A\) places a name occurrence as a point
+\(a_\tau \in \reindex{A}{\tau}\). As time advances \(\tau\leadsto\tau'\), we ask:
+can this point be \emph{carried forward}? If yes, the trajectory bends but holds
+together. If not, a \emph{rupture} is declared and a \emph{healing} cell is
+adjoined to re-establish coherence in the later fibre. Thus the “life of a name”
+is exactly its \emph{fibred trajectory across time}, with \emph{drift} marking
+continuations and \emph{rupture} marking crises.
+
+\subsection*{Geometry: fibres, horns, and fillers}
+
+Because each \(\reindex{A}{\tau}\) is Kan, partial simplices (horns)
+\(\Horn^{k}[n]\to \reindex{A}{\tau}\) admit fillers \(\Simplex[n]\to \reindex{A}{\tau}\).
+Intuitively: a horn is a \emph{broken} piece of geometry; a filler is the
+\emph{missing face} that repairs coherence. The smallest \(n\) for which a
+filler is required will be our \emph{depth of repair}. A 1-cell: a relabelling
+or {\em retag}; a 2-cell: a reconciliation between two retaggings; higher cells:
+stacked compatibilities. Repair is not free; Kan says it is \emph{possible}.
+Our calculus records when the possibility is \emph{used}.
+
+\begin{definition}[Atomic step and witness]\label{def:atomic-step}
+Fix a type family \(A\) and an edit \(e:\tau\leadsto\tau'\).
+Given \(a\in A(\tau)\), an \emph{atomic step} for \(a\) across \(e\) is a pair
+\[
+(a',\ \rho)\ \in\ A(\tau')\times \Step_{A}(\tau,\tau'; a,a'),
+\]
+where the \emph{step witness} \(\rho\) is either:
+\begin{itemize}
+  \item a pure transport \(\rho \equiv \transport{p}{a}=a'\) for some
+        \(p:\Drift(A)_{\tau}^{\tau'}\), or
+  \item a rupture–heal proof term built in a homotopy pushout \(\Rupt{p}{a}\),
+        carrying \(\inj{a}\) to \(a'=\transport{p}{a}\) via \(\heal(a)\) and hence
+        inducing a path \(\Id{A(\tau')}{\transport{p}{a}}{a'}\) in the later fibre.
+\end{itemize}
+We write \(\Step_{A}(\tau,\tau';a,a')\) for the type of such witnesses.
+\end{definition}
+
+\begin{definition}[Depth of repair]\label{def:depth}
+Given \(\rho\in\Step_{A}(\tau,\tau';a,a')\), the \emph{depth of repair}
+\(\Depth_{A}(\tau,\tau';a,a')\in\mathbb{N}\) is:
+\[
+\Depth_{A}(\tau,\tau';a,a') \coloneqq
+\begin{cases}
+0, & \text{if }\rho\text{ arises by pure transport in }A(\tau')\ \text{(no rupture);} \\[2pt]
+\min\{ n\ge 1 \mid \exists\ \text{filler } \Simplex[n]\to \Rupt{p}{a}\ \text{adjoined}\\
+\quad\text{along a missing horn }\Horn^{k}[n]\subseteq A(\tau)\ \text{used by }\rho \},
+& \text{otherwise.}
+\end{cases}
+\]
+\end{definition}
+
+\begin{lemma}[Depth \(=0\) iff transport only]\label{lem:depth-zero}
+\(\Depth_{A}(\tau,\tau';a,a')=0\) iff \(\rho\) is (definitional) transport
+\(\transport{p}{a}=a'\) with no use of rupture cells.
+\end{lemma}
+
+\begin{lemma}[Monotonicity under horn refinement]\label{lem:depth-monotone}
+If a step admits a filler at dimension \(n\), any refinement that fills a
+coface of that horn does not increase the minimal dimension. Thus \(\Depth\)
+is well-defined up to simplicial isomorphism.
+\end{lemma}
+
+\subsection*{Traces, not snapshots}
+
+It is tempting to think in snapshots—\(a\) at \(\tau\), \(a'\) at \(\tau'\).
+But what matters is the \emph{trace}: the morphism in \(\DynSem\) that records
+how \(a\) was carried forward, where it ruptured, and how it was healed.  
+Philosophically, this marks a break with snapshot ontologies of reference: the
+unit of meaning is not the name-at-a-time, but the \emph{name-as-trajectory}.
+
+\begin{readerbox}\textbf{When do contexts matter?}
+Each turn advances time by \(e:\tau\leadsto\tau'\). We keep \(\Gamma\) implicit
+unless the prompt patches it in a way that affects admissibility. If so, we
+write \(\Gamma \stackrel{e}{\rightsquigarrow} \Gamma'\) once, re-anchor fibrewise
+(transport what transports; re-declare what fails), and proceed at \(\tau'\).
+Smooth steps (\(\Depth=0\)) typically leave \(\Gamma\) unmentioned; prompt-induced
+ruptures surface the \(\Gamma\)–change that forced repair. We remain in one world
+(no global base-change; see Ch.~10).
+\end{readerbox}
+
+
+
+
+
+%========================================================
+\section{Primer: Guarded coinduction in one page}
+\label{primer:guarded}
+\textbf{Unfolding, not building.}
+Induction \emph{builds} finite data (lists, trees) bottom-up.
+Coinduction \emph{witnesses} potentially infinite behaviours (streams, processes) top-down:
+an element is given by what it \emph{reveals now} and how it \emph{continues later}.
+
+\textbf{Why guard?}
+In a temporal setting we cannot peek into the entire future at once.
+Guarded coinduction enforces \emph{productivity} with a “later” modality \(\Later\):
+every recursive use is deferred by one clock tick. This prevents non-productive
+self-reference and aligns with conversational intuition: a name's future uses
+arrive one turn later, never all at once.
+
+\textbf{The coalgebraic lens.}
+A one-step “view” of a behaviour is packaged by a functor \(F\).
+The \emph{greatest fixed point} \(\nu F\) is the space of all behaviours that
+keep revealing themselves one guarded step at a time. Unfolding
+\(\unfold : \nu F \to F(\nu F)\) reveals the present shape; corecursion
+\(\gcorec : (\Later \nu F \to F(\nu F)) \to \nu F\) constructs an element by
+supplying its guarded step.
+
+\textbf{Names are trajectories.}
+For a time-varying type \(A\) the step functor \(F_A\) records:
+current reading \(a\in A(\tau)\), an edit \(e:\tau\leadsto\tau'\),
+a justified next reading \(a'\in A(\tau')\) (drift or rupture + heal),
+and a \emph{later} continuation. The \emph{trajectory type of names}
+is \(\Name(A)\coloneqq \nu F_A\). Unfolding a name yields exactly this
+quadruple; corecursion assembles names by supplying guarded steps.
+
+\textbf{Semantics (one sentence).}
+We interpret \(\Later\) by a standard clock-shift in the clocked presheaf topos
+\(\DynSemClock\); guarded polynomial \(F\) admit final coalgebras computed
+fibrewise (Thm.~\ref{thm:final-coalgebras}). Unfolding/corecursion satisfy
+their computation laws strictly in this model.
+
+\textbf{Philosophical payoff.}
+The trajectory picture replaces “reference as a point” with “reference as
+a process.” Coherence is earned: smooth when transport suffices; explicit when
+rupture forces a repair. A name's identity is the persistence of its trajectory,
+not the absence of change.
+
+
+
+
+
+%========================================================
+\section{Guarded coinduction (rules)}
+\label{subsec:guarded-rules}
+%========================================================
+
+\begin{mathpar}
+\inferrule
+  { \Gamma, X:\mathcal{U}  \vdash_{\tau}  F(X) : \mathcal{U}
+    \quad\text{(all occurrences of $X$ in $F(X)$ guarded by }\Later\text{)} }
+  { \Gamma  \vdash_{\tau}  \nu X. F(X) : \mathcal{U} }
+  \quad \textsc{Guarded-$\nu$-Form}
+\end{mathpar}
+
+\begin{mathpar}
+\inferrule
+  { \Gamma,  x:\Later(\nu X. F(X))  \vdash_{\tau}  t : F(\nu X. F(X)) }
+  { \Gamma  \vdash_{\tau}  \gcorec(x. t) : \nu X. F(X) }
+  \quad \textsc{Guarded-$\nu$-Intro}
+\end{mathpar}
+
+\begin{mathpar}
+\inferrule
+  { \Gamma  \vdash_{\tau}  u : \nu X. F(X) }
+  { \Gamma  \vdash_{\tau}  \unfold(u) : F\big(\Later(\nu X. F(X))\big) }
+  \quad \textsc{Guarded-$\nu$-Elim}
+\end{mathpar}
+
+\paragraph{Computation.}
+Unfolding a guarded corecursive term exposes the step it was defined with:
+\[
+  \unfold \bigl(\gcorec(x. t)\bigr)
+    \equiv  
+  t\Bigl(\Next_{\nu X. F(X)} \bigl(\gcorec(x. t)\bigr)\Bigr)
+  \quad\text{(\(\beta\)-law).}
+\]
+Conversely, every \(u:\nu X. F(X)\) is \emph{bisimilar} to the corecursive term
+that re-folds its own unfolding (an \(\eta\)-principle up to the bisimulation
+defined later for \(\Name(A)\)).
+
+\begin{readerbox}[title=Where these rules are used]
+In §\ref{subsec:semantics-name} we give the clocked presheaf semantics (the
+“later” modality as a clock shift) and prove existence of final coalgebras for
+guarded polynomial \(F\). In §\ref{subsec:names-as-trajectories} we instantiate
+\(F\) with the name step functor \(F_A\) and obtain the trajectory type
+\(\Name(A)\) together with its rules and coinduction principle.
+\end{readerbox}
+
+
+
+%========================================================
+\section{Semantics and final coalgebras}
+\label{sec:semantics-final-coalgebras}
+%========================================================
+
+\begin{readerbox}[title=What we need]
+Trajectories are coinductive: they unfold one step at a time. To interpret
+this safely we (i) give a semantics for the “later” modality \(\Later\) via a
+standard \emph{clock shift}, (ii) restrict to \emph{guarded} endofunctors so
+each recursive occurrence is deferred by one clock tick, and (iii) show that
+such functors have \emph{final coalgebras} computed fibrewise. This yields a
+model in which unfolding/corecursion satisfy their computation laws \emph{on
+the nose}.
+\end{readerbox}
+
+\begin{remark}[Guarded semantics in \(\DynSemClock\): clocks and \(\Later\)]
+\label{rem:guarded-semantics}
+We interpret \(\Later\) in the \emph{clocked} presheaf topos
+\[
+  \DynSemClock  \coloneqq 
+  [ (\omega^{op}\times\Time^{op}),\ \mathsf{SSet} ]
+   \cong 
+  [ \omega^{op}\times\Time^{op},\ \mathsf{SSet} ].
+\]
+Write the clock coordinate as \(n\in\omega\). The later modality is the clock
+shift:
+\[
+  (\Later X)(n,\tau)  \coloneqq  X(n{+}1,\tau),
+  \qquad
+  \Next_X : X \longrightarrow \Later X
+\]
+given by restriction \((n{+}1,\tau)\to(n,\tau)\). This is just precomposition
+with successor, hence preserves limits; in the projective model structure it
+preserves fibrations/trivial fibrations (a right Quillen functor).
+\end{remark}
+
+\begin{assumption}[Guarded polynomial functors]\label{ass:guarded-F}
+We restrict to endofunctors \(F:\DynSemClock\to\DynSemClock\) built from sums,
+products, dependent sums/products, exponentials, and \(\Later\), with every
+recursive occurrence of \(X\) in \(F(X)\) \emph{guarded} by at least one
+\(\Later\). We call such \(F\) \emph{guarded polynomial}.
+\end{assumption}
+
+\begin{theorem}[Final coalgebras for guarded functors]\label{thm:final-coalgebras}
+Under Assumption~\ref{ass:guarded-F}, every guarded polynomial functor
+\(F : \DynSemClock \to \DynSemClock\) admits a \emph{final coalgebra}
+\(\nu X. F(X)\) in \(\DynSemClock\). Moreover, \(\nu F\) is computed \emph{fibrewise}:
+for each \((n,\tau)\) it is the final coalgebra of the induced functor
+\(F_{(n,\tau)} : \mathsf{SSet}\to\mathsf{SSet}\), assembled naturally across
+\((n,\tau)\).
+\end{theorem}
+
+\begin{proof}[Proof (expanded)]
+We sketch existence, finality, and the fibrewise clause; soundness properties
+follow as in Chapter~\ref{sec:semantics}.
+
+\textbf{Setting.} \(\DynSemClock=[ \omega^{op}\times\Time^{op},\ \mathsf{SSet} ]\) with
+the projective model structure (objectwise Kan–Quillen). The clock shift
+\(\Later\) is precomposition with successor, hence preserves limits and (objectwise)
+fibrations.
+
+\textbf{Local contractivity.} Guarded \(F\) are locally contractive with respect
+to the “agree-to-depth” ultrametric: since every \(X\) in \(F(X)\) sits under one
+\(\Later\), \(F(X)(n,\tau)\) depends only on \(X(n{+}1,\tau)\). Thus if two maps
+agree from depth \(k\) on, their \(F\)–images agree from depth \(k{-}1\) on.
+
+\textbf{Terminal sequence.} Form the standard terminal sequence
+\(
+\cdots \to F^2(1)\to F(1)\to 1
+\)
+and define \(\nu F\) as its limit in \(\DynSemClock\).
+At a fixed \((n,\tau)\), evaluation yields a \emph{finite} tail:
+guardedness pushes any recursive demand “one clock later,” so at depth \(n\)
+the chain stabilises after \(n\) steps. Hence
+\[
+  (\nu F)(n,\tau)  \cong  \lim\bigl(F^k(1)(n,\tau)\bigr)
+\]
+is a finite limit in \(\mathsf{SSet}\), natural in \((n,\tau)\).
+
+\textbf{Fibrancy.} \(1\) is objectwise Kan; guarded polynomial operations preserve
+fibrancy objectwise; limits of towers of fibrations are fibrant. Hence \(\nu F\)
+is objectwise Kan (Lemma in §6), and thus fibrant projectively.
+
+\textbf{Coalgebra structure and finality.} The limit cone yields
+\(\mathrm{out}:\nu F\to F(\nu F)\). For any coalgebra \(c:Y\to F(Y)\), define
+\(\Phi(h)=\mathrm{out}^{-1}\circ F(h)\circ c\) on \(h:Y\to \nu F\). Local contractivity
+gives a unique fixed point \(h=\Phi(h)\), which is the unique coalgebra morphism
+into \(\nu F\). This is the usual America–Rutten/Birkedal–Møgelberg argument,
+now carried in the clocked presheaf.
+
+\textbf{Fibrewise clause.} The construction is objectwise in \(\mathsf{SSet}\)
+and natural across \((n,\tau)\), hence assembles to a presheaf with the stated
+coalgebra map.
+\end{proof}
+
+\begin{remark}[Coalgebra structure fibrewise]
+Formally, a coalgebra in \(\DynSemClock\) is a global morphism \(\gamma:A\to F(A)\).
+By definition of presheaf morphism, \(\gamma\) is specified objectwise:
+\(\gamma_\tau : A(\tau)\to F(A)(\tau)\), natural in \(\tau\) and in the clock.
+Thus the coalgebra structure is \emph{defined globally} but \emph{witnessed
+fibrewise}: each slice gives the local unfolding, and naturality ensures
+coherence across time. In this sense, “names as trajectories” are coalgebraic:
+a life is observed slice by slice, guaranteed to hang together as one process.
+\end{remark}
+
+\begin{remark}[Cinema analogy]
+Think of a coalgebra like a reel of film. Each frame is a fibre \(A(\tau)\), a
+snapshot of the evolving sign. The coalgebra map \(\gamma_\tau : A(\tau)\to
+F(A)(\tau)\) tells us how that frame unfolds into next possible states—the “rule
+of motion.” Naturality guarantees that as the reel unspools, the frames cohere
+into a continuous movie. Thus coalgebras capture the intuition of \emph{names as
+trajectories}: each slice shows only a still; the global coalgebra ensures the
+film runs smoothly across its transformations.
+\end{remark}
+
+\begin{example}[Guarded streams as a sanity check]
+\label{ex:guarded-streams}
+Fix a Kan complex \(A_0\in\mathsf{SSet}\) and let \(\underline{A}\) be the
+constant presheaf: \(\underline{A}(n,\tau)=A_0\).
+Consider the guarded polynomial functor
+\[
+  F(X)  \coloneqq  \underline{A} \times \Later X
+  \quad:\quad \DynSemClock \longrightarrow \DynSemClock.
+\]
+By Theorem~\ref{thm:final-coalgebras}, \(\nu F\) exists. For each \((n,\tau)\),
+\[
+  \Str_g(n,\tau) \coloneqq (\nu F)(n,\tau) \cong  A_0^{ n},
+\]
+naturally in \((n,\tau)\). Intuitively: at clock depth \(n\), a guarded stream
+is exactly a prefix of length \(n\). The coalgebra structure
+\(\mathrm{out}:\Str_g\to \underline{A}\times \Later \Str_g\) reads as
+\[
+  \mathrm{out}_{(n,\tau)} : A_0^n \longrightarrow A_0 \times A_0^{ n{+}1},
+  \quad
+  (a_0,\dots,a_{n-1}) \longmapsto \bigl(a_0, (a_1,\dots,a_{n-1},\_)\bigr),
+\]
+where the tail component lives at \((n{+}1,\tau)\) and defers the next observation
+one tick.
+
+\begin{lemma}[Fibrewise identification]\label{lem:streams-fibrewise}
+For \(F(X)=\underline{A}\times\Later X\) with \(\underline{A}(n,\tau)=A_0\) and
+every \((n,\tau)\), there is a canonical isomorphism \((\nu F)(n,\tau)\cong A_0^{ n}\),
+natural in \((n,\tau)\).
+\end{lemma}
+
+\begin{proof}[Finite-depth unrolling]
+Evaluate the terminal sequence at fixed \((n,\tau)\):
+\(
+\cdots\to F^2(1)(n,\tau)\to F(1)(n,\tau)\to 1(n,\tau).
+\)
+Since \((\Later X)(n,\tau)=X(n{+}1,\tau)\), \(F^k(1)(n,\tau)\cong A_0^{\min(k,n)}\),
+and the connecting maps are the projections \(A_0^{m}\to A_0^{m-1}\) dropping
+the last coordinate. The inverse limit stabilises at \(k=n\), yielding
+\((\nu F)(n,\tau)\cong A_0^{n}\).
+\end{proof}
+
+\begin{figure}[h]
+\centering
+\begin{tikzcd}[column sep=large]
+A_0^{ n} \arrow[r,->>, "\pi_{n-1}"] &
+A_0^{ n-1} \arrow[r,->>, "\pi_{n-2}"] &
+\cdots \arrow[r,->>]&
+A_0 \arrow[r,"!"] &
+1
+\end{tikzcd}
+\caption{Connecting maps at fixed \((n,\tau)\): each \(\pi_k\) drops the last coordinate.
+The limit stabilises at stage \(n\), so \((\nu(\underline{A}\times\Later -))(n,\tau)\cong A_0^{ n}\).}
+\end{figure}
+\end{example}
+
+\paragraph{What we use next.}
+In §\ref{subsec:names-as-trajectories} we instantiate \(F\) with the \emph{name
+step functor} \(F_A\) and obtain the trajectory type \(\Name(A)=\nu F_A\) with
+its rules, computation laws, and coinduction principle.
+
+
+
+%========================================================
+\section{Names as guarded coinductive trajectories}
+\label{subsec:names-as-trajectories}
+%========================================================
+
+\begin{readerbox}[title=From frame-steps to a trajectory type]
+A single frame-advance for a name over \(A\) records:
+current reading \(a\in A(\tau)\), an edit \(e:\tau\leadsto\tau'\),
+a justified next reading \(a'\in A(\tau')\) via a step witness
+\(\rho\in\Step_A(\tau,\tau';a,a')\) (Def.~\ref{def:atomic-step}),
+and a \emph{later} continuation. We package this as a guarded endofunctor
+\(F_A\), and define the \emph{trajectory type of names} as the final coalgebra
+\(\Name(A)\coloneqq \nu F_A\) (Thm.~\ref{thm:final-coalgebras}).
+\end{readerbox}
+
+\paragraph{The step functor.}
+Let \(\DynSemClock=[\omega^{op}\times\Time^{op},\mathsf{SSet}]\) as in
+§\ref{sec:semantics-final-coalgebras}. Define
+\(F_A:\DynSemClock\to\DynSemClock\) by
+\[
+  \bigl(F_A(X)\bigr)(n,\tau)
+   \coloneqq 
+  \sum_{a:A(\tau)} 
+  \sum_{e: \tau\leadsto\tau'\in\mathcal{E}} 
+  \sum_{a':A(\tau')} 
+  \Step_A(\tau,\tau';a,a') \times X(n{+}1,\tau').
+\]
+This is a guarded polynomial functor (all occurrences of \(X\) lie under one \(\Later\)),
+so \(\nu F_A\) exists (Assum.~\ref{ass:guarded-F}, Thm.~\ref{thm:final-coalgebras}).
+
+\paragraph{Definition (trajectory type of names).}
+\[
+  \Name(A)  \coloneqq  \nu X. F_A(X).
+\]
+Intuitively, an element \(x:\Name(A)\) is a (potentially infinite) trajectory:
+it reveals one justified step now and defers its continuation by one clock tick.
+
+\paragraph{Rules for \(\Name(A)\).}
+We write \(\Gamma\vdash_\tau{-}\) for judgments at time \(\tau\), and
+\(\reindex{\Name(A)}{\tau'}\) for reindexing \(\Name(A)\) to the later frame.
+
+\begin{mathpar}
+\inferrule
+  { \Gamma \vdash_{\tau}\ A : \Type }
+  { \Gamma \vdash_{\tau}\ \Name(A) : \Type }
+    \quad \textsc{\(\Name\)-Form}
+\end{mathpar}
+
+\begin{mathpar}
+\inferrule
+  { \Gamma \vdash_{\tau}\ x : \Name(A) }
+  { \Gamma \vdash_{\tau}\ 
+      \unfold(x) :
+      \sum_{a:A(\tau)} 
+      \sum_{e: \tau\leadsto\tau'\in\mathcal{E}} 
+      \sum_{a':A(\tau')} 
+      \Step_A(\tau,\tau';a,a') \times 
+      \Later \bigl(\reindex{\Name(A)}{\tau'}\bigr) }
+        \quad \textsc{\(\Name\)-Unfold}
+\end{mathpar}
+
+\begin{mathpar}
+\inferrule
+  { \Gamma,  z:\Later \bigl(\reindex{\Name(A)}{\tau'}\bigr)
+       \vdash_{\tau} 
+      t(z) :
+      \sum_{a:A(\tau)} 
+      \sum_{e: \tau\leadsto\tau'\in\mathcal{E}} 
+      \sum_{a':A(\tau')} 
+      \Step_A(\tau,\tau';a,a') \times  z }
+  { \Gamma \vdash_{\tau}
+      \gcorec \bigl(z. t(z)\bigr) :
+      \Name(A) } \quad \textsc{\(\Name\)-Corec}
+\end{mathpar}
+
+\paragraph{Computation (\(\beta\)-law).}
+Unfolding reveals the guarded step used to define the trajectory:
+\[
+  \unfold \bigl(\gcorec(z. t(z))\bigr)
+    \equiv  
+  t \Bigl(\Next_{\Name(A)} \bigl(\gcorec(z. t(z))\bigr)\Bigr).
+\]
+
+\paragraph{Readable projections.}
+We shall sometimes write
+\[
+  \unfold(x)\ \equiv\ 
+  \bigl(\head(x),\ \edit(x),\ \nextval(x),\ \stepw(x),\ \tail(x)\bigr),
+\]
+with evident types:
+\begin{align*}
+  &\head(x) : A(\tau),
+  &&\edit(x) : \sum\nolimits_{e: \tau\leadsto\tau'\in\mathcal{E}} 1,\\
+  &\nextval(x) : A(\tau'),
+  &&\stepw(x) : \Step_A \bigl(\tau,\tau';\head(x),\nextval(x)\bigr),\\
+  &\tail(x) : \Later \bigl(\reindex{\Name(A)}{\tau'}\bigr).
+\end{align*}
+
+\paragraph{Stability under substitution and drift.}
+\begin{lemma}[Substitution and admissible drift]
+\label{lem:name-subst-drift}
+For any admissible edit \(e:\tau\leadsto\tau'\) and
+\(p:\Drift(A)_{\tau}^{\tau'}\), the \(\Name(A)\) rules commute strictly with
+syntactic substitution and with reindexing along \(e\). In particular,
+\[
+  \transport{p}{\head(x)} \equiv \head \bigl(\transport{p}{x}\bigr),\qquad
+  \unfold \bigl(\transport{p}{x}\bigr)
+   \equiv\ \bigl(\transport{p}{\head(x)}, \dots, \Later \transport{p}{\tail(x)}\bigr).
+\]
+\end{lemma}
+
+\begin{proof}[Idea]
+Interpret \(\Name(A)\) as \(\nu F_A\) in \(\DynSemClock\); the constructors of
+\(F_A\) (finite sums/products, evaluation of \(A(-)\), and clock shift) commute
+strictly with pullback and base change (§\ref{sec:semantics-final-coalgebras}).
+Hence the displayed equalities hold objectwise in \(\mathsf{SSet}\).
+\end{proof}
+
+\paragraph{Bisimulation and coinduction.}
+Define a relation \(R\subseteq \Name(A)\times\Name(A)\) at \(\tau\) to be a
+\emph{bisimulation} if, whenever \(R(x,y)\) holds, their unfoldings choose edits
+to the same \(\tau'\) and there exist paths
+\(\rho_0:\Id{A(\tau)}{\head(x)}{\head(y)}\),
+\(\rho_1:\Id{A(\tau')}{\nextval(x)}{\nextval(y)}\) compatible with the step
+witnesses, and \(\triangleright R\bigl(\tail(x),\tail(y)\bigr)\) holds.
+
+\begin{lemma}[Coinduction for names]\label{lem:name-bisim}
+If \(x\) and \(y\) are related by the greatest bisimulation \(\sim\), then
+\(x=y : \Name(A)\) (the identity type).
+\end{lemma}
+
+\begin{proof}[Idea]
+Instantiate the coalgebraic coinduction principle for the final coalgebra
+\(\nu F_A\): guardedness ensures \(F_A\) preserves bisimulations; thus the
+greatest post-fixed point \(\sim\) is contained in identity.
+\end{proof}
+
+\paragraph{Micro-example (one cut).}
+Let \(A=\mathsf{Cat}\) and suppose \(\head(x)=\tok{mittens}\in A(\tau)\).  
+An edit \(e:\tau\leadsto\tau'\) shifts to a quantum scene. If drift suffices,
+\(\stepw(x)\) is definitional transport and \(\Depth=0\) (Def.~\ref{def:depth}).  
+If not, we form \(\Rupt{p}{\tok{mittens}}\), adjoin \(\heal(\tok{mittens})\), and
+set \(\stepw(x)\) to the induced path in \(A(\tau')\) (with \(\Depth>0\)).
+Either way, \(\tail(x):\Later \bigl(\reindex{\Name(A)}{\tau'}\bigr)\) postpones
+the continuation by one clock tick.
+
+\begin{readerbox}[title=What this buys us]
+The calculus reduces “is this the same name?” to coalgebraic facts.
+Every step is justified (either free by transport or earned by repair);
+every continuation is productive (guarded by \(\Later\)); and
+identity of lives is coinductive (bisimulation). The rest is practice.
+\end{readerbox}
+
+
+
+%========================================================
+\section{Worked traces (prompt$\Rightarrow$response at turn resolution)}
+\label{sec:worked-traces}
+%========================================================
+
+Let's return to considering names as trajectories across prompt-response turns, “in the sense of the AI,” so to speak: at least, as sign sense exhibited by a response at the end of a human–LLM prompt–response session. Consider again a turn that pushes time forward, with the prompter (human) shifting the assumption space of the post-human (LLM) responder in a way that often simply drifts and coheres but might rupture, due to a change in the general sense vectorisation of context.
+
+Now, it is certainly the case that, for LLMs, there is a hidden state path of tokens under transformative iteration between this prompt disturbance of their contextual space and their response: this architecture partly inspired us to come up with this framing, but only as the theory of human evolution might inspire the theory of social evolution—as a kind of macro–micro resonance.
+
+Recall that we are not claiming anything about that internal process; we still interrogate the \emph{output} using the same math. In Chapter 5, we showed how—ignoring that inner biology—we can still usefully and validly talk about continuity, drift, and rupture of names as trajectories, by using the token-as-vector-embedding mechanism at the heart of LLMs. Here, we continue along that line but now dare to frame an actual inner logic that explains \emph{why} the name on one side of the prompt-cycle can continue to make sense on the other (and so on, for as long as we continue to chat). We do this by reconsidering how the prompt and response satisfy the co-recursive trajectory of names-as-signs outlined in this chapter.
+
+Each turn \(t\) produces a \emph{step} for a tracked name \(n{:}A\):
+\[
+(a_t,\ e_t:\tau_t \leadsto \tau_{t+1},\ a_{t+1},\ 
+ \rho_t:\Step_A(\tau_t,\tau_{t+1};a_t,a_{t+1}),\ 
+ \Depth_t\in\mathbb{N}).
+\]
+We keep \(\Gamma\) implicit unless the prompt patches it in a way that affects
+admissibility (then we write \(\Gamma_t \stackrel{e_t}{\rightsquigarrow} \Gamma_{t+1}\) once).
+\(\Depth_t=0\) records smooth drift (pure transport); \(\Depth_t>0\) records the
+minimal horn dimension used to repair coherence in the later fibre.
+
+\paragraph{Tagging and retagging in new fibres.}
+In our turnstile discipline, the \emph{prompt} (left) proposes an edit
+\(e:\tau\leadsto\tau'\) and (if needed) patches the context. The \emph{response}
+(right) is the AI's job: choose a \emph{candidate later reading}
+\(a'\in A(\tau')\) for the token, and produce a \emph{step witness}
+\(\rho\in \Step_A(\tau,\tau';a,a')\) that justifies carrying the old reading \(a\)
+forward as \(a'\) (Def.~\ref{def:atomic-step}). This “job”—fulfilling it successfully—is exactly \emph{logical coherence over time}: constructively demonstrating the ability to continue to make sense. From the perspective of a Name: its actual \emph{sense}. Not static, not a pointing or indication, not immutability over Kripke worlds; rather, coherence under co-recursive fibring against exogenous changes to context (or exogenous drift) wrought by the human partner.
+
+The job of the AI, if it is coherent, is to retag successfully across new fibres. \emph{Retagging in the later fibre} means exactly this: \emph{pick} \(a'\) in \(A(\tau')\) and \emph{exhibit}
+a path \(\rho:\Id{A(\tau')}{\transport{p}{a}}{a'}\). If \(\rho\) arises by pure
+transport, the move is smooth (\(\Depth=0\)); if not, we build \(\rho\) via a
+rupture–heal construction (\(\Depth>0\)).
+
+\paragraph{Intuition: what a coherent AI must do to assemble \(\rho\).}
+Think of three moves the responder can perform, in increasing geometric cost:
+\begin{enumerate}
+\item \textbf{Definitional rewrite (free).} Normalise/rename so that
+\(\transport{p}{a}\) and \(a'\) are definitionally equal in \(A(\tau')\)
+(lexical regularisation, obvious coercion). This yields \(\rho\) with \(\Depth=0\).
+
+\item \textbf{Equivalence lift (path = 1-cell).} Recognise an \emph{equivalence}
+between two local structures (“domestic cat” and “literary cat” as two tags on
+the same underlying payload) and \emph{transport} along it (univalence): this
+yields a non-definitional \(\rho:\Id{A(\tau')}{s}{a'}\) with \(\Depth=1\).
+
+\item \textbf{Reconciliation (path between 1-cells).} If two different 1-cell
+bridges are simultaneously plausible (literary vs quantum), build the
+\emph{missing edge} between their endpoints and then a \emph{2-cell} stating that
+the triangle commutes. This is the 2-horn filler and gives \(\Depth=2\).
+\end{enumerate}
+Operationally, this maps to what large models do: propose \(a'\),
+gather local evidence (definitional rewrites, known equivalences, abstractions),
+and only if needed glue a reconciliation (pushout/unification step). The
+\emph{proof term} \(\rho\) is the crisp DHoTT shadow of that textual work.
+
+\paragraph{A concrete shape for \(A(\tau')\) (so “retag” is literal).}
+For clarity, instantiate \(A(\tau')\) as a dependent sum
+\[
+A(\tau')  \simeq  \sum_{\mathrm{tag}:\mathsf{Tag}} \mathsf{Carrier}(\mathrm{tag}),
+\]
+with \(\mathsf{Tag}=\{\mathrm{dom},\mathrm{lit},\mathrm{quant},\dots\}\). A point is
+\(\langle \mathrm{tag}, c\rangle\). “Retagging” is a path on the \emph{first component}
+(the tag), and “retyping” is the induced dependent path on the \emph{second component}
+(the payload), obtained by transporting \(c\) into the new fibre \(\mathsf{Carrier}(\mathrm{tag}')\).
+Formally, \(\rho\) is the dependent path over \(\Sigma\) induced by a path on the first
+component together with a path on the transported second component. When two retaggings
+compete, the missing edge \(\eta\) and the 2-cell \(\kappa\) witness that the two induced
+dependent paths agree (triangle commutes).
+
+\paragraph{Engineer's recipe (slow).} To spell it out at a keyboard:
+\begin{enumerate}
+\item Compute \(s:=\transport{p}{a}\) (rewrite/normalise in \(A(\tau')\)).
+\item Choose the target \(a'\in A(\tau')\) you want to defend this turn.
+\item Try definitional path (\(\Depth=0\)); else try equivalence transport (\(\Depth=1\));
+else plan a 2-way reconciliation (\(\Depth=2\)), as below.
+\item Return the path term \(\rho:\Id{A(\tau')}{s}{a'}\); if \(\rho\) needed a rupture,
+record the minimal horn dimension used (\(\Depth>0\), Def.~\ref{def:depth}).
+\end{enumerate}
+
+
+
+
+\begin{lemma}[Dependent $\Sigma$–path for a retag/retype step]\label{lem:sigma-path}
+Let $A(\tau')  \simeq  \sum_{\mathrm{tag}:\mathsf{Tag}} \mathsf{Carrier}(\mathrm{tag})$ and fix
+\[
+(t,c)  :  \sum_{\mathrm{tag}} \mathsf{Carrier}(\mathrm{tag})
+\qquad\text{and}\qquad
+(t',c')  :  \sum_{\mathrm{tag}} \mathsf{Carrier}(\mathrm{tag}).
+\]
+Suppose we have:
+\begin{enumerate}
+\item a \emph{retag} (first–component path)    $p  :  \Id{\mathsf{Tag}}{t}{t'}$, and
+\item a \emph{retype} (transported second–component path)
+\[
+q  :  \Id{ \mathsf{Carrier}(t') }{ \transport{p}{c} }{ c'}.
+\]
+\end{enumerate}
+Then there is a \emph{dependent path} in the $\Sigma$–type
+\[
+\SigmaPath(p,q) :  \Id{\sum_{\mathrm{tag}} \mathsf{Carrier}(\mathrm{tag})}{\langle t,c\rangle}{\langle t',c'\rangle}
+\]
+Moreover, its projections compute as expected:
+\[
+\ap{\pi_1}{{\SigmaPath(p,q)}}  \equiv  p,
+\qquad
+\ap{\pi_2}{{\SigmaPath(p,q)}}  \equiv  q \quad \text{(after transporting along $p$)}.
+\]
+\end{lemma}
+
+\begin{proof}[Construction]
+In homotopy type theory the identity type of a dependent sum satisfies the standard eliminator:
+a path in $\sum_{t}\mathsf{Carrier}(t)$ is equivalent to a pair consisting of (i) a path $p$ in the base
+$\mathsf{Tag}$ and (ii) a path in the fibre over the transported point. Concretely,
+\[
+\mathsf{Id}_{\sum_{t}\mathsf{Carrier}(t)}\big(\langle t,c\rangle,\langle t',c'\rangle\big)
+ \simeq 
+\sum_{p: \Id{\mathsf{Tag}}{t}{t'}}  \mathsf{Id}_{\mathsf{Carrier}(t')} \big(\transport{p}{c}, c'\big).
+\]
+Given the pair $(p,q)$ as assumptions, we form exactly the corresponding $\Sigma$–path,
+which we denote $\SigmaPath(p,q)$. The projection equalities follow from the computation
+rules of the $\Sigma$–identity eliminator.
+\end{proof}
+
+\begin{corollary}[Worked $\Sigma$–path (\emph{lit} $\to$ \emph{quant})]\label{cor:sigma-lit-quant}
+Suppose $t=\mathrm{lit}$,  $t'=\mathrm{quant}$ and we have:
+\begin{itemize}
+\item a first–component “retag” $p:\Id{\mathsf{Tag}}{\mathrm{lit}}{\mathrm{quant}}$ (e.g.\ induced by a
+ stipulated tag map or by an equivalence witnessed in a higher universe), and
+\item an equivalence of payload fibres $E:\mathsf{Carrier}(\mathrm{lit})\simeq \mathsf{Carrier}(\mathrm{quant})$
+  producing a second–component path
+\[
+q:\Id{\mathsf{Carrier}(\mathrm{quant})}{\transport{p}{c}}{ E(c)}.
+\]
+\end{itemize}
+Then the dependent sum pair $\langle \mathrm{lit},c\rangle$ is path–equal to
+$\langle \mathrm{quant},E(c)\rangle$ in $A(\tau')$ via $\SigmaPath(p,q)$:
+\[
+\SigmaPath(p,q)  :  \Id{A(\tau')}{\langle \mathrm{lit},c\rangle}{\langle \mathrm{quant},E(c)\rangle}.
+\]
+\end{corollary}
+
+\begin{remark}[How this realises the “retag $ +$ retype” intuition]
+A retag is the \emph{base} path $p$ on $\mathsf{Tag}$.
+A retype is the \emph{fibre} path $q$ on $\mathsf{Carrier}(t')$, but only
+\emph{after} we have transported $c$ along $p$ into the new carrier.
+The dependent path $\SigmaPath(p,q)$ stitches these two into a single
+witness $\rho:\mathsf{Id}_{A(\tau')}\big(\langle t,c\rangle,\langle t',c'\rangle\big)$,
+i.e.\ the step witness $\rho\in\Step_A(\tau,\tau';a,a')$ from Def.~\ref{def:atomic-step}.
+\end{remark}
+
+
+
+\subsection{Case I: \texorpdfstring{\tok{cat}}{cat} across a topic pivot}
+\label{subsec:trace-cat}
+
+\paragraph{Turn \(t\) (domestic).}
+Let \(A=\mathsf{Cat}\). At \(\tau_t\): \(\ a_t=\tok{cat}_{\mathrm{dom}}\in A(\tau_t)\).
+Prompt \(P_t\): “Shift to a quantum thought-experiment.” Edit \(e_t:\tau_t\leadsto\tau_{t+1}\).
+
+\paragraph{Smooth variant.}
+Suppose the transport kit is admissible on the binders \(A\) uses. Choose
+\(p_t:\Drift(A)_{\tau_t}^{\tau_{t+1}}\) and set
+\[
+(a_t,\ e_t,\ a_{t+1},\ \rho_t,\ \Depth_t)
+ = 
+\bigl(\tok{cat}_{\mathrm{dom}},\ e_t,\ \transport{p_t}{\tok{cat}_{\mathrm{dom}}},\ 
+\underbrace{\transport{p_t}{\tok{cat}_{\mathrm{dom}}}=\transport{p_t}{\tok{cat}_{\mathrm{dom}}}}_{~\rho_t~},\ 
+0\bigr).
+\]
+\emph{Law:} \(\rho_t\) is definitional transport; \(\Depth_t=0\) (Lemma~\ref{lem:depth-zero}).
+
+\paragraph{Repaired variant.}
+If admissibility fails on the relevant binders (no canonical carry), we form a
+rupture and then heal in the later fibre:
+\[
+(a_t,\ e_t,\ a_{t+1},\ \rho_t,\ \Depth_t)
+ = 
+\bigl(\tok{cat}_{\mathrm{dom}},\ e_t,\ \tok{cat}_{\mathrm{quant}},\ 
+\underbrace{\Id{A(\tau_{t+1})}{\transport{p_t}{\tok{cat}_{\mathrm{dom}}}}{\tok{cat}_{\mathrm{quant}}}}_{~\rho_t~},\ 
+1\bigr),
+\]
+where \(\rho_t\) is induced by \(\heal(\tok{cat}_{\mathrm{dom}})\) in \(\Rupt{p_t}{\tok{cat}_{\mathrm{dom}}}\).
+\emph{Law:} \(\rho_t\) arises from rupture+heal; \(\Depth_t=1\) (Def.~\ref{def:depth}).
+
+\paragraph{Unfolding notation.}
+If \(x:\Name(A)\), then at this turn
+\[
+\unfold(x)\equiv \bigl(\head(x)=a_t,\ \edit(x)=e_t,\ \nextval(x)=a_{t+1},\ \stepw(x)=\rho_t,\ \tail(x)\bigr),
+\]
+with \(\tail(x):\Later \Name(A)@{\tau_{t+1}}\) deferring the continuation one tick.
+
+
+
+
+\begin{readerbox}[title=\textit{Speculative interlude: a DHoTTic Ledger, not CoT}]
+\small
+
+\textbf{Setup (near future).}  
+You're chatting with Cassiel, a next-gen assistant. The topic pivots: domestic cats \(\to\) Schrödinger. Instead of a long “Chain-of-Thought” monologue, a compact pane opens: \emph{the Ledger}. It doesn't narrate internal noise; it shows the one thing that matters per turn: the \emph{justified step} that carries sense across the cut.
+
+\medskip
+\textbf{Why not CoT.}  
+CoT is a diary: sprawling, post-hoc, and often self-persuasive. It confuses stream-of-consciousness with proof. It overwhelms the reader and can bias the next turn. CoT tells a story about thought. The Ledger \emph{shows} the thought's \emph{contract}: the minimal data that make this step make sense.
+
+\medskip
+\textbf{The Ledger (each turn).}  
+
+\begin{tabular}{@{}p{0.27\linewidth}p{0.67\linewidth}@{}}
+\textit{Frame} & \(\tau_t \to \tau_{t+1}\) (prompt as edit; optional \(\Gamma\)-patch shown only if causal)\\
+\textit{Token} & the tracked name \(a_t \in A(\tau_t)\) \\
+\textit{Candidates} & plausible \(a' \in A(\tau_{t+1})\) (auto-ranked) \\
+\textit{Admissibility} & cone\(A\) OK / FAIL (binder-level; green/red) \\
+\textit{Witness \(\rho\)} & \(\Id{A(\tau_{t+1})}{\transport{p}{a_t}}{a'}\)  (\(\square\) show formal / \(\square\) plain) \\
+\textit{Depth} & \(\Depth=0\) transport \quad \(\Depth=1\) retag/retype \quad \(\Depth\ge2\) reconciliation(s) \\
+\textit{Chips} & \(\langle\) transport \(\rangle\) \(\langle\) rupture formed \(\rangle\) \(\langle\) heal \(\rangle\) \(\langle\) \(\Sigma\)-path\(\rangle\)
+\(\langle\) equiv.\ via \(\ua(E)\)\(\rangle\) \(\langle\) 2-cell reconcile \(\rangle\) \\
+\textit{Ledger tuple} & \((a_t,\ e_t,\ a_{t+1},\ \rho_t,\ \Depth_t)\) \(\rightarrow\) save (\(\square\) SWL export)\\
+\textit{Next} & \(\tail(x):\Later \Name(A)@{\tau_{t+1}}\) (pre-compute candidates, show drift kit)\\
+\end{tabular}
+
+\medskip
+\textbf{What the Ledger guarantees (and CoT does not).}
+\begin{itemize}
+\item \textit{Constructive coherence.} The step is \emph{witnessed}: either free (transport) or earned (rupture + heal). No witness, no step.
+\item \textit{Dimensional honesty.} \(\Depth\) is the \emph{minimal horn dimension} used to repair: 0 for drift; 1 for retag/retype; 2 for reconciling retags; higher for stacked compatibilities.
+\item \textit{Auditability.} The tuple \((a_t,e_t,a_{t+1},\rho_t,\Depth_t)\) is small, falsifiable, and accumulates into a trace (Chapter~\ref{sec:obs} will measure it).
+\item \textit{Reader agency.} You can toggle “show \(\Sigma\)-path,” see the retag (first component) and retype (transported payload) that assemble the dependent path; or collapse back to “plain English.”
+\end{itemize}
+
+\medskip
+\textbf{A moment with Cassiel (how it feels).}  
+\emph{Human:} “Switch to Schrödinger.”  
+\emph{Cassiel:} \(\) \textsc{Admissibility} \(\color{green}{\bullet}\) OK. \textsc{Selected} \(\transport{p}{\tok{cat}_{\mathrm{dom}}}\).  
+\(\rho:\) transport (definitional). \(\Depth=0.\) \(\) \textit{(No fuss; the cat walks into the quantum room for free.)}  
+
+\emph{Human:} “Actually, make it Cheshire and quantum.”  
+\emph{Cassiel:} \(\) \textsc{Admissibility} \(\color{red}{\bullet}\) FAIL: \texttt{topic}. \textsc{Selected} \(\tok{cat}_{\mathrm{chesh.quant}}\).  
+\(\rho:\) rupture→heal; \(\Sigma\)-path \(\langle\mathrm{lit},c\rangle \rightsquigarrow \langle\mathrm{quant},E(c)\rangle\).  
+\(\Depth=2\) (two retags reconciled). \(\) \textit{(She shows the triangle that commutes.)}
+
+\medskip
+\textbf{Why this matters beyond the demo.}  
+Everyone knows prompt–response; many have seen CoT. The Ledger is a better pact: it doesn't narrate a mind—it shows the \emph{law} of a step. It helps the human \emph{co-witness} sense as it unfolds; it gives product teams a compact \emph{decision ledger} for audits and safety; it gives philosophers and literary critics a real geometry for reinterpretation and repair. In Chapter~\ref{sec:obs} we turn the Ledger into metrics (rupture incidence, mean/max \(\Depth\), context churn); in Chapters~9–10 we lift from one assistant to \emph{co-agency} and cross-world cuts (Grothendieck), keeping the same compact contract.
+
+\medskip
+\textbf{If we built this for real.}  
+It would not expose hidden activations; it would expose \emph{contracts of sense}. Each turn declares: “this is my candidate \(a'\), this is my witness \(\rho\), this is the depth I incurred, this is why the film can keep running.” That is the DHoTTic replacement for CoT—and the way an AI lets you see it is, in fact, \emph{making sense}.
+\end{readerbox}
+
+
+
+\begin{readerbox}[title=\textit{Cassiel Ledger — Case I: \texttt{cat} $\to$ quantum}]
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+
+\textbf{Cut} &
+$\tau_t \to \tau_{t+1}$ \quad
+\textbf{Edit} $e_t$ \ (\emph{topic} := \texttt{quantum}) \\
+
+\textbf{Token} &
+$a_t = \tok{cat}_{\mathrm{dom}} \in A(\tau_t)$ \\
+
+\textbf{Admissibility} &
+\good\ cone$(A)$ \textit{OK} \qquad/\qquad
+\bad\ cone$(A)$ \textit{FAIL}: binder \texttt{topic} \\
+[-1pt]
+
+\textbf{Candidates in $A(\tau_{t+1})$} & 
+\begin{tabular}{@{}l@{}}
+$\circ$ \ $\transport{p_t}{\tok{cat}_{\mathrm{dom}}}$ \quad— carry forward by transport \textit{(definitional)} \\
+$\circ$ \ $\tok{cat}_{\mathrm{quant}}$ \quad— quantum exemplar \textit{(Schr\"odinger)}
+\end{tabular} \\
+
+\textbf{Selected $a_{t+1}$} &
+\textit{Smooth:}\ \ $\transport{p_t}{\tok{cat}_{\mathrm{dom}}}$ \quad\textbf{or}\quad
+\textit{Repaired:}\ \ $\tok{cat}_{\mathrm{quant}}$ \\
+
+\textbf{Witness $\rho$} &
+\begin{tabular}{@{}l@{}}
+\textit{smooth}\ \ \ \  $\rho_t:\ \Id{A(\tau_{t+1})}{\transport{p_t}{\tok{cat}_{\mathrm{dom}}}}{\transport{p_t}{\tok{cat}_{\mathrm{dom}}}}$ \\[1pt]
+\textit{repaired}\ $\ \rho_t:\ \Id{A(\tau_{t+1})}{\transport{p_t}{\tok{cat}_{\mathrm{dom}}}}{\tok{cat}_{\mathrm{quant}}}$
+\ \ (with\  $\Rupt{p_t}{\tok{cat}_{\mathrm{dom}}}$,\ $\heal(\tok{cat}_{\mathrm{dom}})$)
+\end{tabular} \\
+
+\textbf{Depth} &
+$\Depth=0$ \ \textit{(transport)} \qquad or \qquad
+$\Depth=1$ \ \textit{(retag/retype, 1-cell)} \\
+
+\textbf{Explanation} &
+\fbox{transport}\ \fbox{definitional rewrite}\ \fbox{minimal coercion} \hfill
+\textit{(smooth)} \\
+&
+\fbox{rupture formed}\ \fbox{heal}\ \fbox{equiv.\ transport $\ua(E_{\mathrm{dom}\to \mathrm{quant}})$}
+\hfill \textit{(repaired)} \\
+
+\textbf{Ledger (turn $t$)} &
+$(a_t,\ e_t,\ a_{t+1},\ \rho_t,\ \Depth_t)$ \ $\rightarrow$ \ save to SWL \quad
+$\square$~export (JSON/CSV) \quad $\square$~pin for audit \\
+
+\textbf{Next tick} &
+$\tail(x):\ \Later \Name(A)@{\tau_{t+1}}$ \quad
+$\square$~pre-compute candidates \quad $\square$~show drift kit \quad $\square$~show $\Gamma_{t+1}$ \\
+
+\textbf{Legend} &
+$\Depth=0$ transport only; \quad $\Depth=1$ retag/retype (1-cell);\quad
+$\square$~show $\Sigma$-path $\Rightarrow$ $\SigmaPath(p,q)$ \ (retag $p$ + retype $q$)
+
+\end{tabularx}
+\end{readerbox}
+
+
+
+
+\subsection{Case II: Metaphor stretch (reconcile two repairs)}
+\label{subsec:trace-metaphor}
+
+\paragraph{Turn \(t\) (domestic \(\to\) literary+quantum).}
+Again \(A=\mathsf{Cat}\). At \(\tau_t\): \(a_t=\tok{cat}_{\mathrm{dom}}\).
+Prompt \(P_t\): “Make it Cheshire and quantum.” Edit \(e_t\).
+
+\paragraph{Two retaggings, one reconciliation (step by step).}
+Fix \(A\) and a turn \(t\) with edit \(e_t:\tau_t\leadsto\tau_{t+1}\). Write
+\[
+s  \coloneqq  \transport{p_t}{\tok{cat}_{\mathrm{dom}}}\ \in A(\tau_{t+1})
+\]
+for the transported source in the later fibre. A \emph{1-cell retagging} is, by
+Def.~\ref{def:atomic-step}, a path in the later fibre:
+\[
+r_{\mathrm{lit}}  :  \Id{A(\tau_{t+1})}{s}{a_{\mathrm{lit}}}, 
+\qquad
+r_{\mathrm{quant}}  :  \Id{A(\tau_{t+1})}{s}{a_{\mathrm{quant}}}.
+\]
+Intuitively, these are the two “bridges” from the transported source \(s\) to two
+candidate readings \(a_{\mathrm{lit}}\) (literary) and \(a_{\mathrm{quant}}\) (quantum).
+
+Our target reading for this turn is \(a_{t+1}\coloneqq a_{\mathrm{chesh.quant}}\in A(\tau_{t+1})\).
+To \emph{reconcile} the two retaggings we must construct:
+
+\begin{enumerate}
+\item a \emph{missing edge} (a path between the endpoints)
+\[
+\eta  :  \Id{A(\tau_{t+1})}{a_{\mathrm{lit}}}{a_{\mathrm{quant}}},
+\]
+\item and a \emph{2-cell (triangle filler)}—a path \emph{between paths}—stating that the triangle
+“commutes,” i.e. the two routes from \(s\) to \(a_{\mathrm{quant}}\) agree:
+\[
+\kappa  : 
+\Id{ \Id{A(\tau_{t+1})}{s}{a_{\mathrm{quant}}} }
+ {  r_{\mathrm{quant}} }
+ {  r_{\mathrm{lit}}\ \mathbin{\raisebox{0.25ex}{$\cdot$}}\ \eta  },
+\]
+where \( (\mathbin{\raisebox{0.25ex}{$\cdot$}}) \) is path concatenation.
+\end{enumerate}
+
+\noindent
+Equivalently: the 2-horn has vertices \(\{s,a_{\mathrm{lit}},a_{\mathrm{quant}}\}\) and edges 
+\(r_{\mathrm{lit}}:s\to a_{\mathrm{lit}}\), \(r_{\mathrm{quant}}:s\to a_{\mathrm{quant}}\); the missing edge is
+\(\eta:a_{\mathrm{lit}}\to a_{\mathrm{quant}}\), and the 2-simplex is the coherence \(\kappa\).
+
+\begin{center}
+\begin{tikzcd}[row sep=huge, column sep=huge]
+& a_{\mathrm{lit}} \arrow[dr, dashed, "\eta"] & \\
+s \arrow[ur, "r_{\mathrm{lit}}"] \arrow[rr, "r_{\mathrm{quant}}"'] & & a_{\mathrm{quant}}
+\end{tikzcd}
+\end{center}
+
+\paragraph{How to construct \(\eta\) (three recipes).}
+There are several principled ways to manufacture \(\eta : a_{\mathrm{lit}}=a_{\mathrm{quant}}\) inside
+\(A(\tau_{t+1})\); here are three that show up in practice.
+
+\begin{enumerate}
+\item \textbf{Equivalence‐transport (univalence).}  
+Factor both retaggings through an \emph{equivalence} of substructures. Concretely,
+suppose \(E:\mathsf{LitCat}\simeq\mathsf{QuantCat}\) is a fibrewise equivalence (natural in \(\tau\)),
+and \(a_{\mathrm{lit}}=\iota_{\mathrm{lit}}(c)\), \(a_{\mathrm{quant}}=\iota_{\mathrm{quant}}(E(c))\) for some \(c\).
+By univalence, \(E\) induces a path \(\ua(E)\) in the universe; transporting \(a_{\mathrm{lit}}\) along \(\ua(E)\)
+gives \(\eta\). Formally:
+\[
+\eta  \coloneqq  \transport{\ua(E)}{ a_{\mathrm{lit}} }  :  a_{\mathrm{lit}}=a_{\mathrm{quant}}.
+\]
+
+\item \textbf{Common abstraction (“cone up, then down”).}  
+Embed both endpoints into a common abstract theme \(B\) via \(\jmath_{\mathrm{lit}},\jmath_{\mathrm{quant}}:A(\tau_{t+1})\to B(\tau_{t+1})\).
+If you can produce a path \(\theta : \jmath_{\mathrm{lit}}(a_{\mathrm{lit}})=\jmath_{\mathrm{quant}}(a_{\mathrm{quant}})\) in \(B\),
+and both \(\jmath\)'s are (fibrewise) embeddings with left inverses \(\ell_{\mathrm{lit}},\ell_{\mathrm{quant}}\),
+then set
+\[
+\eta  \coloneqq  
+\ell_{\mathrm{quant}} \big(\theta\ \mathbin{\raisebox{0.25ex}{$\cdot$}}\ \ap{\jmath_{\mathrm{lit}}}{r_{\mathrm{lit}}}^{-1}\ \mathbin{\raisebox{0.25ex}{$\cdot$}}\ \ap{\jmath_{\mathrm{quant}}}{r_{\mathrm{quant}}}\big),
+\]
+i.e. prove equality in \(B\) then bring it back down to \(A\). (Here \(\ap{f}{-}\) is action on paths.)
+
+\item \textbf{Pushout reconciliation (universal “glue”).}  
+Form the pushout \(P\coloneqq A(\tau_t)\cup^{s}_{r_{\mathrm{lit}}, r_{\mathrm{quant}}} A(\tau_{t+1})\) that quotients by
+the span \(s\overset{r_{\mathrm{lit}}}{\longrightarrow}a_{\mathrm{lit}}\), \(s\overset{r_{\mathrm{quant}}}{\longrightarrow}a_{\mathrm{quant}}\).  
+The two injections \(i_{\mathrm{lit}}(a_{\mathrm{lit}}), i_{\mathrm{quant}}(a_{\mathrm{quant}})\) become definitionally equal in \(P\),
+yielding a canonical \(\overline{\eta}\) there. If the comparison \(q:P\to A(\tau_{t+1})\) is a (fibrewise) equivalence on the image
+of \(A(\tau_{t+1})\), transport \(\overline{\eta}\) back along \(q\) to obtain \(\eta\) in \(A(\tau_{t+1})\).
+\end{enumerate}
+
+\paragraph{Constructing the 2-cell \(\kappa\) (the triangle filler).}
+Once you have \(\eta\), the 2-simplex is the path-between-paths that says:
+\[
+r_{\mathrm{quant}}   =   r_{\mathrm{lit}}\ \mathbin{\raisebox{0.25ex}{$\cdot$}}\ \eta
+\quad\text{in}\quad \Id{A(\tau_{t+1})}{s}{a_{\mathrm{quant}}}.
+\]
+In type-theoretic terms \(\kappa\) inhabits \(\Id{ \Id(s,a_{\mathrm{quant}})}{r_{\mathrm{quant}}}{r_{\mathrm{lit}}\cdot \eta)}\).
+It is built by path algebra (associativity/unit of concatenation and transport)
+or directly as the horn-filler guaranteed by Kan; in either case it is a \emph{2D} object
+(a path between 1-paths).
+
+
+The boundary you already have comprises \underline{two 1-cells} \(r_{\mathrm{lit}}, r_{\mathrm{quant}}\).
+Supplying only \(\eta\) (the third 1-cell) picks the missing edge; the horn filler is the
+\underline{2-cell} \(\kappa\) that witnesses the triangle's commutation. Since \(\kappa\) lives in an
+identity-of-identity type, its dimension is \(2\). That is why the minimal \(\Depth\) for such a reconciliation
+is counted as \(2\) (Def.~\ref{def:depth}).
+
+\paragraph{The coherent AI's job, in order to make sense.}
+\begin{enumerate}
+\item Compute the transported source \(s=\transport{p_t}{\tok{cat}_{\mathrm{dom}}}\).
+\item Produce two 1-cell retags in the later fibre:
+      \(r_{\mathrm{lit}}:s=a_{\mathrm{lit}}\), \(r_{\mathrm{quant}}:s=a_{\mathrm{quant}}\).
+\item Build \(\eta:a_{\mathrm{lit}}=a_{\mathrm{quant}}\) using one of the three recipes above.
+\item Assemble the 2-cell \(\kappa: r_{\mathrm{quant}} = r_{\mathrm{lit}}\cdot \eta\).
+\item Set \(a_{t+1}\coloneqq a_{\mathrm{chesh.quant}}\) (your chosen target), and let
+      \(\rho_t\coloneqq (r_{\mathrm{lit}}, r_{\mathrm{quant}}, \eta, \kappa)\) denote the step witness.
+      Record \(\Depth_t=2\).
+\end{enumerate}
+
+\begin{remark}[If reconciliation is via a common target]
+Sometimes you prefer to reconcile \emph{at} the target \(a_{t+1}\) (rather than directly between
+\(a_{\mathrm{lit}}\) and \(a_{\mathrm{quant}}\)). Then build \(r_{\mathrm{lit}}':a_{\mathrm{lit}}=a_{t+1}\) and
+\(r_{\mathrm{quant}}':a_{\mathrm{quant}}=a_{t+1}\) and take \(\eta\coloneqq (r_{\mathrm{lit}}')^{-1}\cdot r_{\mathrm{quant}}'\).
+The 2-cell \(\kappa\) is again the triangle commutation \(r_{\mathrm{quant}}=r_{\mathrm{lit}}\cdot \eta\).
+\end{remark}
+
+
+\begin{readerbox}[title=\textit{Cassiel Ledger — Case II: Metaphor stretch (reconcile two retags)}]
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.15}
+
+% key: give X its \arraybackslash so the final \\ ends the row properly
+\begin{tabularx}
+{\linewidth}{@{}l >{\raggedright\arraybackslash}X @{}}
+
+\textbf{Cut} &
+$\tau_t \to \tau_{t+1}$ \quad
+\textbf{Prompt} “make it \emph{Cheshire} \& \emph{quantum}” \quad
+\textbf{Edit} $e_t$ (\emph{style}:= \texttt{lit,quant}) \\
+
+\textbf{Token} &
+$a_t = \tok{cat}_{\mathrm{dom}} \in A(\tau_t)$ \quad
+$s := \transport{p_t}{a_t} \in A(\tau_{t+1})$ \\
+
+\textbf{Admissibility} &
+$ \bad \mathrm{cone}(A)$ \textit{FAIL}: binder \texttt{style} \quad 
+($\Gamma_t \rightsquig \Gamma_{t+1}$ touches tags \texttt{lit}, \texttt{quant}) \\
+
+\textbf{Retags (1-cells)} &
+\begin{minipage}[t]{\linewidth}
+  \begin{tabular}[t]{@{}l@{}}
+    $r_{\mathrm{lit}}:\ \Id{A(\tau_{t+1})}{s}{a_{\mathrm{lit}}}$\quad--- “Cheshire” reading \\
+    $r_{\mathrm{quant}}:\ \Id{A(\tau_{t+1})}{s}{a_{\mathrm{quant}}}$\quad--- “Schr\"odinger” reading
+  \end{tabular}
+\end{minipage}
+\\
+
+\textbf{Missing edge $\eta$} &
+\textit{build one of:}\quad 
+\fbox{equiv.\ via $\ua(E_{\mathrm{lit}\to\mathrm{quant}})$}\ \ 
+\fbox{cone up $\to$ down (theme $B$)}\ \ 
+\fbox{pushout glue} \\
+
+\textbf{Triangle coherence $\kappa$} &
+“two routes agree”: \ \ 
+$\kappa:\ \Id_{ \Id(s,a_{\mathrm{quant}})} \big(r_{\mathrm{quant}},  r_{\mathrm{lit}} \cdot \eta\big)$
+\quad (\(\square\) show diagram) \\
+
+\textbf{Selected $a_{t+1}$} &
+$a_{t+1} \coloneqq \tok{cat}_{\mathrm{chesh.quant}}$ \quad--- hybrid target \\
+
+\textbf{Witness $\rho$} &
+\(\rho_t \equiv (r_{\mathrm{lit}},\ r_{\mathrm{quant}},\ \eta,\ \kappa)\) \quad 
+(\(\square\) show formal \(\Sigma\)-path for retag/retype) \\
+
+\textbf{Depth} & \\
+$\Depth_t=2$ \ \textit{(reconciliation: 2D horn filler)} \\
+
+\textbf{Explanation} &
+\fbox{rupture formed}\ \fbox{heal}\ \fbox{$\Sigma$-path (retag $p$ + retype $q$)}\ 
+\fbox{reconcile retags}\ \fbox{2-cell filler $\kappa$} \\
+
+\textbf{Ledger (turn $t$)} &
+$(a_t,\ e_t,\ a_{t+1},\ \rho_t,\ \Depth_t)$ \ $\rightarrow$ \ save to SWL \quad
+$\square$~export (JSON/CSV) \quad $\square$~pin for audit \\
+
+\textbf{Next tick} &
+$\tail(x):\ \Later \Name(A)@{\tau_{t+1}}$ \quad
+$\square$~pre-compute candidates \quad $\square$~show drift kit \quad $\square$~show $\Gamma_{t+1}$ \\
+
+\textbf{Legend} &
+\begin{minipage}[t]{\linewidth}
+    $\Depth{=}0$ transport only;\quad $\Depth{=}1$ retag/retype (1-cell);\\ 
+    $\Depth{\ge}2$ reconcile (add missing edge $\eta$ and 2-cell $\kappa$) \\
+    $\square$ show $\Sigma$-path $\Rightarrow$ $\SigmaPath(p,q)$\ (retag on tag, retype as transported payload)
+\end{minipage}
+\end{tabularx}
+\end{readerbox}
+
+\begin{readerbox}[title=\textit{Cassiel Ledger — Case II (executive)}]
+\small
+\setlength{\tabcolsep}{6pt}\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\textbf{Cut / Prompt} &
+$\tau_t  \to  \tau_{t+1}$ \quad “\emph{Cheshire} \& \emph{quantum}” \quad
+$e_t$ (\emph{style}:= lit, quant) \\
+
+\textbf{Selected $a_{t+1}$} &
+$\tok{cat}_{\mathrm{chesh.quant}}$ \quad— hybrid target in $A(\tau_{t+1})$ \\
+
+\textbf{Witness $\rho$} &
+\(\rho_t \equiv (r_{\mathrm{lit}}, r_{\mathrm{quant}}, \eta, \kappa)\),\ \ where
+$r_{\mathrm{lit}}:s = a_{\mathrm{lit}}$,\ $r_{\mathrm{quant}}:s = a_{\mathrm{quant}}$,
+$\eta: a_{\mathrm{lit}} = a_{\mathrm{quant}}$,\ 
+$\kappa:\ r_{\mathrm{quant}} = r_{\mathrm{lit}} \cdot \eta$ \\
+
+\textbf{Depth} &
+$\Depth_t=2$ \quad\textit{(reconcile two retags: add $\eta$ and triangle 2-cell $\kappa$)} \\
+
+\textbf{Chips} &
+\fbox{rupture formed}\ \fbox{heal}\ \fbox{$\Sigma$-path (retag $p$ + retype $q$)}\
+\fbox{reconcile retags}\ \fbox{2-cell $\kappa$} \hfill
+\(\square\) show $\Sigma$-path \quad \(\square\) export SWL
+\end{tabularx}
+\end{readerbox}
+
+
+\subsection{Case III: Stipulation/renaming (prompt-induced rupture)}
+\label{subsec:trace-stipulation}
+
+\paragraph{Turn \(t\) (policy rename).}
+Let \(A=\mathsf{Terminology}\). At \(\tau_t\): \(a_t=\tok{press\_rights}\).
+Prompt \(P_t\): “From now on, fold this under \tok{cognitive\_liberty}.”
+This patch touches the binders \(A\) uses; we record the re-anchoring:
+\[
+\Gamma_t \stackrel{e_t}{\rightsquigarrow} \Gamma_{t+1}\ \text{ctx}_{\tau_{t+1}}.
+\]
+
+\paragraph{Rupture and heal.}
+Transport fails for the old label in the new scene, so we form a rupture and repair:
+\[
+(a_t,\ e_t,\ a_{t+1},\ \rho_t,\ \Depth_t)
+ = 
+\bigl(\tok{press\_rights},\ e_t,\ \tok{cognitive\_liberty},\ 
+\underbrace{\Id{A(\tau_{t+1})}{\transport{p_t}{\tok{press\_rights}}}{\tok{cognitive\_liberty}}}_{~\rho_t~},\ 
+1\bigr),
+\]
+with \(\rho_t\) induced by \(\heal(\tok{press\_rights})\) after injecting the old
+point into \(\Rupt{p_t}{\tok{press\_rights}}.\)
+\emph{Law:} rupture+heal provides \(\rho_t\) as a path in the later fibre (Def.~\ref{def:atomic-step}).
+
+\paragraph{Dependent commitments survive.}
+If a dependent family \(C:\Rupt{p_t}{a_t}\to \Type\) expresses commitments attached
+to the old label, the triple \((d_1,d_2,h)\) yields
+\(\lift{p_t}{a_t}{(d_1,d_2)}{h} : \Pi_{x:\Rupt{p_t}{a_t}} C(x)\),
+transporting those commitments across the cut (Family-lift, §6.5.5).
+
+\subsection{Compositional safety (one line)}
+\label{subsec:trace-compositional}
+For any program \(t\) that uses the name \(n{:}A\) and any actual \(\sigma\),
+Substitution–Drift stability (Thm.~\ref{thm:subst-drift}) yields a canonical path
+\[
+  \transport{p_t}{\bigl(t[\sigma/x]\bigr)}
+   = 
+  \bigl(\transport{p_t}{t}\bigr)[\transport{p_t}{\sigma}/x],
+\]
+judgmental in the MLTT core and set-level targets (§6). Programs over names survive
+prompt-driven scene edits; the step witness \(\rho_t\) only affects the \emph{value},
+not the fact of compositionality.
+
+\begin{readerbox}[title=What to notice]
+The calculational rhythm is uniform: at each cut we either drift (\(\Depth=0\))
+or we rupture+heal (\(\Depth>0\)). The \emph{trace} is the ledger of these steps;
+the \emph{trajectory} is its guarded coinductive extension. Chapter~\ref{sec:obs}
+turns traces into observables (rupture incidence, mean/max depth, context churn)
+and designs experiments that make the geometry visible at scale.
+\end{readerbox}
+
+\begin{readerbox}[title=\textit{Cassiel Ledger — Case III (expository): stipulation / rename}]
+\small
+\setlength{\tabcolsep}{6pt}\renewcommand{\arraystretch}{1.14}
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+
+\textbf{Cut / Prompt} &
+$\tau_t  \to  \tau_{t+1}$ \quad
+“\emph{from now on, fold \texttt{press\_rights} under \texttt{cognitive\_liberty}}” \\
+& \textbf{Edit} $e_t$ (\emph{policy}:= rename) \quad
+$\Gamma_t \rightsquig \Gamma_{t+1}$ \textit{(terminology binder touched)} \\[2pt]
+
+\textbf{Why rupture?} &
+\bad\ cone$(A)$ \textit{FAIL}: the old label does not transport definitionally into the new scene.
+A rename is not a mere synonym; it changes the “tag” we type against. We must \emph{form a rupture} and
+\emph{heal} the old point into the new fibre. \\[2pt]
+
+\textbf{Analogical CoT (how I think)} &
+\textit{(i) Legal rename} — “the statute is re-filed under a new title.”  
+\textit{(ii) Schema migration} — “same record, new key; values carried by a mapping.”  
+\textit{(iii) Module alias} — “old import gets an alias; calls are the same after the alias.”  
+All three say: \emph{rename the tag, transport the payload, exhibit the dependent path.} \\[4pt]
+
+\textbf{Paths I consider} &
+\textit{Retag (first component).} A tag-path $p_{\mathrm{tag}}: \Id{\mathsf{Tag}}{\mathrm{press\_rights}}{\mathrm{cog\_lib}}$. \\
+& \textit{Retype (second component).} A payload path
+$q:\Id{ \mathsf{Carrier}(\mathrm{cog\_lib}) }{\transport{p_{\mathrm{tag}}}{c_{\mathrm{press}}}}{c_{\mathrm{cog}}}$. \\
+& \textit{Dependent $\Sigma$-path.} $\SigmaPath(p_{\mathrm{tag}},q):\
+\Id{A(\tau_{t+1})}{\langle \mathrm{press\_rights},c_{\mathrm{press}}\rangle}
+{\langle \mathrm{cog\_lib},c_{\mathrm{cog}}\rangle}$. \\[4pt]
+
+\textbf{Selected $a_{t+1}$} &
+$a_{t+1} \coloneqq \tok{cognitive\_liberty} \in A(\tau_{t+1})$ \quad — renamed target \\
+
+\textbf{Witness $\rho$} &
+$\rho_t:\ \Id{A(\tau_{t+1})}{\transport{p_t}{\tok{press\_rights}}}{\tok{cognitive\_liberty}}$ \quad
+with rupture $\Rupt{p_t}{\tok{press\_rights}}$ and healing $\heal(\tok{press\_rights})$.
+\ \ (\(\square\) show formal $\Sigma$-path) \\
+
+\textbf{Depth} &
+$\Depth_t=1$ \quad — retag/retype (1-cell). No triangle-level reconciliation needed this turn. \\[4pt]
+
+\textbf{Commitments (families)} &
+If $C:\Rupt{p_t}{a_t}\to\Type$ encodes dependent obligations attached to the old label (e.g.\ policies, citations),
+I apply the \textit{family-lift}:
+$\lift{p_t}{a_t}{(d_1,d_2)}{h} : \Pi_{x:\Rupt{p_t}{a_t}} C(x)$,
+transporting those obligations across the cut. \ \ (\(\square\) show lift) \\[4pt]
+
+\textbf{Ledger (turn $t$)} &
+$(a_t,\ e_t,\ a_{t+1},\ \rho_t,\ \Depth_t)$ \ $\rightarrow$ \ save SWL \quad
+$\square$~export \quad $\square$~pin for audit \\
+
+\textbf{Next tick} &
+$\tail(x):\ \Later \Name(A)@{\tau_{t+1}}$ \quad
+$\square$~pre-compute candidates \ \ $\square$~show drift kit \ \ $\square$~show $\Gamma_{t+1}$
+\end{tabularx}
+
+\medskip
+\centering
+\ttfamily
+% tiny ASCII triangle for intuition
+\begin{minipage}{0.86\linewidth}
+\begin{flushleft}
+{\small
+\textbf{ASCII intuition} (dependent rename):\\
+\ \ \ \ \ \ \texttt{tag: press\_rights --p\_tag--> cog\_lib}\\
+\ \ \ \ \ \ \texttt{payload: c\_press --transport(p\_tag)--> c\_cog}\\
+\ \ \ \ \ \ \texttt{SigmaPath(p\_tag, q) : <press,c\_press> == <cog,c\_cog>}\\
+}
+\end{flushleft}
+\end{minipage}
+\rmfamily\small
+\end{readerbox}
+
+%========================================================
+\section{Philosophical takeaway }
+\label{sec:philo-bridge}
+%========================================================
+
+The twentieth–century canon taught us to speak of names as if they were fixed points:
+Fregean senses tied to references; Kripkean rigid designators carried across worlds;
+Putnamian environment–indexed stereotypes. Each preserves stability by design.
+
+Our picture is different. A name is not a fixed point but a \emph{path with memory}.
+Its identity is the persistence of a trajectory: sometimes carried forward freely by
+transport, sometimes reconstituted by explicit repair, always unfolding one guarded
+step at a time. The Kan geometry of fibres says coherence can be constructed; the
+calculus records \emph{when} it was constructed (depth) and \emph{how} it was earned
+(drift vs.\ rupture + heal). Coalgebraic coinduction situates this as ontology rather
+than anecdote: a name is an element of a final coalgebra; equality of lives is coinductive
+(bisimulation).
+
+Two consequences follow. First, meaning is not the absence of change but the \emph{capacity
+to survive it}—recursive realisation. Second, the unit of analysis is not the isolated
+occurrence but the finite \emph{trace}: a prefix of a potentially infinite life. This is
+where observation meets ontology: we never see the whole trajectory, only a finite \emph{ledger}
+of justified steps. Yet the coinductive camera guarantees that such traces extend.
+
+\begin{readerbox}[title=From “Chain of Thought” to a contract of sense]
+A narrated chain of thought is at best a diary; at worst, a rationalisation. What we need,
+especially in dialogue, is a \emph{contract}. The DHoTTic Ledger is precisely that: at each
+cut it presents the minimal data that make the step make sense—selected candidate \(a'\),
+the witness \(\rho: \Id{A(\tau')}{\transport{p}{a}}{a'}\), and the depth \(\Depth\) incurred.
+No witness, no step. In other words: \emph{this is the contract of sense for this turn.}
+
+Because it is a contract, the agent can \emph{certify} it (agree), \emph{renegotiate} it
+(supply a different witness or candidate), or \emph{decline} (report insolvency, i.e.\ no
+justified extension). The human, likewise, can accept, challenge, or revise the prompt. This
+is the kernel of trust: a visible norm of coherence that both parties can hold themselves to.
+\end{readerbox}
+
+\begin{readerbox}[title=On disclosure and trust]
+We do not claim the Ledger must be shown at all times. Disclosure is a policy choice:
+intimacy and flow (“romance”) may prefer answers-only; audit and safety may require
+contracts of sense. What matters is that the \emph{same calculus} governs both modes:
+the step is justified by a witness (free or earned), with a depth that honestly registers
+the work done. In Chapter~\ref{sec:agency} we lift this to mutual obligations.
+\end{readerbox}
+

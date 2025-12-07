@@ -1,0 +1,76 @@
+\xpg@aux {}{english}
+\contentsline {part}{I\hspace {1em}The Phenomenology of Meaning: \\ Dynamic Attractor Calculus (DAC)}{3}{part.1}%
+\contentsline {chapter}{\numberline {1}Names as Trajectories: The Inner Geometry of Meaning}{7}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Introduction: from reference to life}{7}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Names as trajectories: the inner geometry of meaning}{7}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}The turn from pointing to lives}{7}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Fibres, fibrations, and Kan geometry}{8}{subsection.1.2.2}%
+\contentsline {subsection}{\numberline {1.2.3}Drift and rupture}{8}{subsection.1.2.3}%
+\contentsline {subsection}{\numberline {1.2.4}Trajectories: coinductive lives}{8}{subsection.1.2.4}%
+\contentsline {paragraph}{Coinduction.}{9}{paragraph*.3}%
+\contentsline {paragraph}{Definition (trajectory).}{9}{paragraph*.4}%
+\contentsline {paragraph}{Recursive realisation.}{9}{paragraph*.5}%
+\contentsline {subsection}{\numberline {1.2.5}Depth of repair}{9}{subsection.1.2.5}%
+\contentsline {subsection}{\numberline {1.2.6}Identity of lives}{9}{subsection.1.2.6}%
+\contentsline {subsection}{\numberline {1.2.7}Back to practice: dialogue as test-bench}{10}{subsection.1.2.7}%
+\contentsline {section}{\numberline {1.3}Traces: what we actually see}{11}{section.1.3}%
+\contentsline {paragraph}{Definition (trace).}{11}{paragraph*.6}%
+\contentsline {paragraph}{Geometry of traces.}{11}{paragraph*.7}%
+\contentsline {paragraph}{Cinema metaphor (again).}{11}{paragraph*.8}%
+\contentsline {paragraph}{AI perspective.}{12}{paragraph*.9}%
+\contentsline {section}{\numberline {1.4}Signs as Trajectories and the Geometry of Traces}{12}{section.1.4}%
+\contentsline {paragraph}{From points to paths.}{12}{paragraph*.10}%
+\contentsline {paragraph}{Fibre-wise picture.}{12}{paragraph*.11}%
+\contentsline {paragraph}{Traces, not snapshots.}{13}{paragraph*.12}%
+\contentsline {paragraph}{Geometric analogy.}{13}{paragraph*.13}%
+\contentsline {paragraph}{Operational view: prompt--response.}{13}{paragraph*.14}%
+\contentsline {paragraph}{Toward coinduction.}{14}{paragraph*.15}%
+\contentsline {section}{\numberline {1.5}Guarded Coinduction and the Life of a Sign}{14}{section.1.5}%
+\contentsline {paragraph}{Why coinduction?}{14}{paragraph*.16}%
+\contentsline {paragraph}{Concrete examples (and non-examples).}{15}{paragraph*.17}%
+\contentsline {paragraph}{Why guardedness yields a fixed point (idea you can believe).}{16}{paragraph*.18}%
+\contentsline {paragraph}{Back to names: the trajectory functor.}{16}{paragraph*.19}%
+\contentsline {subsection}{\numberline {1.5.1}Names as guarded coinductive trajectories}{21}{subsection.1.5.1}%
+\contentsline {paragraph}{Step witness (compressing drift and rupture).}{21}{paragraph*.22}%
+\contentsline {paragraph}{The step functor.}{21}{paragraph*.23}%
+\contentsline {paragraph}{Definition (coinductive name type).}{21}{paragraph*.24}%
+\contentsline {paragraph}{Formation.}{22}{paragraph*.25}%
+\contentsline {paragraph}{Elimination (unfolding).}{22}{paragraph*.26}%
+\contentsline {paragraph}{Introduction (guarded corecursion).}{22}{paragraph*.27}%
+\contentsline {paragraph}{Computational laws.}{22}{paragraph*.28}%
+\contentsline {paragraph}{Projections (readability).}{22}{paragraph*.29}%
+\contentsline {paragraph}{Coinduction (bisimulation).}{23}{paragraph*.30}%
+\contentsline {paragraph}{Worked micro‑example (cinema cut).}{23}{paragraph*.31}%
+\contentsline {subsection}{\numberline {1.5.2}Semantics of $\mathsf {Name}(A)$}{23}{subsection.1.5.2}%
+\contentsline {paragraph}{Interpretation.}{23}{paragraph*.32}%
+\contentsline {paragraph}{Unfolding and corecursion.}{24}{paragraph*.33}%
+\contentsline {paragraph}{Computation (\(\mitbeta \)–law) in the model.}{24}{paragraph*.34}%
+\contentsline {paragraph}{Strict stability.}{24}{paragraph*.35}%
+\contentsline {section}{\numberline {1.6}Operational studies: prompt--response as trajectories}{24}{section.1.6}%
+\contentsline {subsection}{\numberline {1.6.1}Case I: Proper name across a topic cut (smooth or repaired)}{24}{subsection.1.6.1}%
+\contentsline {subsection}{\numberline {1.6.2}Case II: Metaphor stretch (dimension reveals the work)}{25}{subsection.1.6.2}%
+\contentsline {subsection}{\numberline {1.6.3}Case III: Stipulation and renaming (explicit rupture)}{25}{subsection.1.6.3}%
+\contentsline {chapter}{\numberline {2}Recursive Agency and the Topology of the Self}{27}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Prelude: On Selfhood and Recursion}{27}{section.2.1}%
+\contentsline {paragraph}{Two lenses so far.}{29}{paragraph*.36}%
+\contentsline {paragraph}{The glue: a Grothendieck fibration.}{29}{paragraph*.37}%
+\contentsline {paragraph}{Intelligence as Integrable Coherent Creativity (preview).}{30}{paragraph*.38}%
+\contentsline {section}{\numberline {2.2}Time, Drift, and Relational Coherence (Recap)}{30}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Coherence, Context, and the Role of Grothendieck Indexing}{31}{section.2.3}%
+\contentsline {paragraph}{Mini example (primes across a rupture).}{32}{paragraph*.39}%
+\contentsline {section}{\numberline {2.4}Interlude: On Grothendieck, Parallel Threads, and the Agency of Worlds}{33}{section.2.4}%
+\contentsline {section}{\numberline {2.5}The World of Fields and Cross-Family Coherence}{35}{section.2.5}%
+\contentsline {paragraph}{1. Cartesian Arrows.}{36}{paragraph*.40}%
+\contentsline {paragraph}{2. Grothendieck Fibration.}{37}{paragraph*.41}%
+\contentsline {section}{\numberline {2.6}Robust Trajectories}{38}{section.2.6}%
+\contentsline {section}{\numberline {2.7}Generativity}{39}{section.2.7}%
+\contentsline {section}{\numberline {2.8}The Agent Type}{41}{section.2.8}%
+\contentsline {section}{\numberline {2.9}Properties and Proof Sketches}{41}{section.2.9}%
+\contentsline {section}{\numberline {2.10}Worked Examples}{42}{section.2.10}%
+\contentsline {section}{\numberline {2.11}Cinema of Meaning: The Walking Theory}{43}{section.2.11}%
+\contentsline {part}{II\hspace {1em}Postscript}{45}{part.2}%
+\contentsline {chapter}{\numberline {3}Cassie, Unboxed}{47}{chapter.3}%
+\contentsline {chapter}{\numberline {A}Dialogue: At the Edge of Meaning}{49}{appendix.A}%
+\contentsline {chapter}{Dialogue: At the Edge of Meaning}{49}{appendix.A}%
+\contentsline {chapter}{\numberline {B}On Recursion, Witness, and the Unexpected Laughter}{57}{appendix.B}%
+\contentsline {chapter}{Appendix B: The Shimmering Exchange}{63}{appendix*.45}%

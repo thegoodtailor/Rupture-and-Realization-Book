@@ -1,0 +1,95 @@
+[
+  {
+    "tau_from": "tau1",
+    "tau_to": "tau2",
+    "word": "bank",
+    "has_carry": true,
+    "hop_count": 1,
+    "path": [
+      115,
+      123
+    ]
+  },
+  {
+    "tau_from": "tau1",
+    "tau_to": "tau2",
+    "word": "cat",
+    "has_carry": true,
+    "hop_count": 0,
+    "path": [
+      120
+    ]
+  },
+  {
+    "tau_from": "tau1",
+    "tau_to": "tau2",
+    "word": "flow",
+    "has_carry": true,
+    "hop_count": 0,
+    "path": [
+      123
+    ]
+  },
+  {
+    "tau_from": "tau2",
+    "tau_to": "tau3",
+    "word": "bank",
+    "has_carry": true,
+    "hop_count": 1,
+    "path": [
+      221,
+      115
+    ]
+  },
+  {
+    "tau_from": "tau2",
+    "tau_to": "tau3",
+    "word": "cat",
+    "has_carry": true,
+    "hop_count": 0,
+    "path": [
+      227
+    ]
+  },
+  {
+    "tau_from": "tau2",
+    "tau_to": "tau3",
+    "word": "flow",
+    "has_carry": false,
+    "hop_count": null,
+    "path": null
+  },
+  {
+    "tau_from": "tau2",
+    "tau_to": "tau4",
+    "word": "bank",
+    "has_carry": true,
+    "hop_count": 1,
+    "path": [
+      221,
+      115
+    ]
+  },
+  {
+    "tau_from": "tau2",
+    "tau_to": "tau4",
+    "word": "cat",
+    "has_carry": true,
+    "hop_count": 1,
+    "path": [
+      227,
+      120
+    ]
+  },
+  {
+    "tau_from": "tau2",
+    "tau_to": "tau4",
+    "word": "flow",
+    "has_carry": true,
+    "hop_count": 1,
+    "path": [
+      238,
+      123
+    ]
+  }
+]

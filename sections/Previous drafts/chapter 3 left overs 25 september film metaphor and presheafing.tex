@@ -1,0 +1,1687 @@
+
+\subsection{Presheaf semantics: type families and time}\label{sec:presheaves}
+\label{subsec:dynsem-keyprops}
+
+Before moving into soundness of the type theory with respect to DynSem we need to look at some key properties. DynSem has a rich internal structure that allows us to define and manipulate evolving types, construct new types from old, and reason formally about coherence across time.
+    
+\begin{lemma}[Structural facts for~$\DynSem$]\label{lem:dynsem-facts}
+\leavevmode
+\begin{enumerate}
+\item \textbf{Time embedding.}
+The Yoneda embedding $\Time\hookrightarrow\DynSem$ sends each $t$ to the representable presheaf 
+$\rep{t} := \hom_{\Time}(-,t)$.T hese objects serve as
+      \emph{discrete probes}.
+      
+      
+\item \textbf{Finite limits and colimits.}
+      $\DynSem$ is complete and cocomplete; limits and colimits
+      are computed pointwise in~$\mathbf{SSet}$.
+\item \textbf{Slice fibres model HoTT.}
+      For every $t\in\Time$ the slice category
+      $\DynSem_{/  y(t)}\simeq\mathbf{SSet}$ carries the
+      Kan-Quillen model structure and therefore models univalent
+      HoTT (supports
+      $\Pi,\Sigma,\mathsf{Id}$, higher inductive types,~etc.).
+\item \textbf{Restriction functors.}
+      Evaluation at $t$ yields a right-adjoint
+      (hence fibrations- and equivalence-preserving)
+      restriction functor
+      \(
+        r_{t,u}:
+        \DynSem_{/  y(u)}
+          \longrightarrow
+        \DynSem_{/  y(t)}
+      \)
+      for every $t\le u$.
+\item \textbf{Left-properness for pushouts.}
+      The Kan-Quillen left-properness, applied pointwise, implies
+      that pushouts along monomorphisms in every fibre
+      preserve fibrations--precisely what is required to interpret
+      rupture types as homotopy pushouts.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}[Sketch]
+All points are standard for presheaf model categories:
+(i)~and (ii) follow directly from the Yoneda lemma and
+pointwise computation of (co)limits.
+(iii) Kan-Quillen on~$\mathbf{SSet}$ is the classical
+univalent model; slices of $\DynSem$ are isomorphic
+to~$\mathbf{SSet}$.
+(iv) Evaluation is a right adjoint, hence preserves fibrations
+and weak equivalences.
+(v) Left-properness of Kan-Quillen, together with pointwise
+pushouts, yields stability of fibrations under pushout-
+along-mono in each slice.
+\end{proof}
+
+\noindent
+These five facts are exactly what we invoke in:
+\begin{itemize}
+\item the interpretation of drift (uses (iv)),
+\item the construction of rupture types as pushouts (uses (v)),
+\item the Fibrancy Lemma and Temporal Univalence
+      (Section   \ref{subsec:fibrancy}, Section   \ref{thm:t-univalence}),
+      which require (iii) and left-properness.
+\end{itemize}
+No further generality or model-structure machinery is used.
+
+
+
+\subsection{Semantic probes?}\label{subsec:why-probes}
+
+We summarize the role of a probe explicitly within our formalism. A probe, mathematically arising from the Yoneda embedding, is not an arbitrary external timestamp but rather a minimal internal semantic measurement --an act of pure semantic witnessing at a particular time. Such probes ground semantic reasoning by fixing slices of $\DynSem$ at a given moment:
+
+\begin{enumerate}
+
+\item \textbf{Formal anchors for temporal indexing.} Every judgment and semantic interpretation within DHoTT carries a temporal parameter. The discrete probe $y(t)$ serves precisely as the canonical internal anchor within the semantic category. Formally, the slice category over a probe is exactly the ambient semantic universe at time~$t$: 
+\[
+\DynSem_{/  y(t)}\simeq\mathbf{SSet}.
+\]
+
+\item \textbf{Witnesses of semantic events.} Probes  represent minimal acts of semantic witnessing --the fact that "something is being meant now." Transporting these probes through semantic drift and healing ruptures allows us to precisely track the evolving meaning of individual utterances over conversational time.
+
+\item \textbf{Technical coherence and tractability.} Because limits, colimits, and homotopy pushouts are computed pointwise relative to these representables, probes simplify technical arguments and semantic constructions. They ensure that rupture types and healing paths remain clearly and tractably defined within local slices.
+
+\item \textbf{Uniform semantic interface.} Probes are invariant across categorical models. Even if the underlying base category is replaced (e.g., by sheaves over causal manifolds), the Yoneda embedding still supplies canonical representable probes, ensuring the semantic interface remains uniform and stable across varying categorical frameworks.
+
+\end{enumerate}
+
+
+
+
+
+
+\paragraph{Admissible transport as reindexing.}
+An elementary edit $e:\tau\leadsto\tau'$ induces reindexing along
+$y(\tau')\to y(\tau)$:
+\[
+e^\ast:  \DynSem_{/  y(\tau)}\longrightarrow \DynSem_{/  y(\tau')}.
+\]
+Our \emph{transport kit} $T(e)$ (syntax) matches the existence of the
+necessary equivalences so that types/terms actually in scope are preserved by
+$e^\ast$. When $T(e)$ fails, we do not fake a global base-change; we form a
+rupture in the later slice and proceed with explicit healing.
+
+\paragraph{Soundness (summary).}
+Let $\llbracket-\rrbracket$ be the interpretation above.
+\begin{itemize}
+  \item \textbf{Fibrancy.} Every interpreted type is Kan (objectwise).
+  \item \textbf{Substitution.} Interpretation respects substitution and the
+        comprehension structure in each slice.
+  \item \textbf{Admissible edits.} If $T(e)$ exists for binders in $\Gamma$ and
+        the goal $J$, then $e^\ast$ carries $\llbracket \Gamma\vdash_{\tau}J\rrbracket$
+        to $\llbracket \Gamma^{e}\vdash_{\tau'} J^{e}\rrbracket$.
+  \item \textbf{Rupture.} The constructors $\inj,\heal$ and the dependent
+        eliminator realize the universal property of the homotopy pushout in
+        $\DynSem_{/  y(\tau')}$; β-on-point is judgmental, β-on-path is
+        propositional (as stated in §\ref{subsec:metatheory}).
+  \item \textbf{Conservativity.} If time is held constant (only identities in
+        $\Time$), DHoTT reduces to ordinary HoTT in the slice
+        $\DynSem_{/  y(\tau)}$.
+\end{itemize}
+
+
+\subsection{The presheaf topos
+  \texorpdfstring{$[\Time^{\mathrm op},\mathcal{E}]$}{[T\^op,E]}}
+\label{subsec:presheaf-topos}
+
+
+\paragraph{The canonical model.}
+Fix the thin category of time $\Time$ generated by the editing basis $\mathcal{E}$
+(§6.5.3): objects are instants $\tau$, and there is a unique arrow
+$\tau\to\tau'$ iff $\tau\preceq\tau'$. Our semantic universe is the presheaf
+$(\infty,1)$-topos
+\[
+  \DynSem := [  \Time^{\mathrm{op}},  \mathsf{SSet}  ],
+\]
+i.e.  simplicial presheaves on time with the usual objectwise Kan semantics.
+An object $A\in\DynSem$ assigns to each $\tau$ a Kan complex $A(\tau)$ and to
+each $\tau\preceq\tau'$ a restriction map
+\[
+  r_{\tau,\tau'} : A(\tau')\longrightarrow A(\tau)
+\]
+(contravariant in time), formalising ``how later meanings re-read in earlier
+frames.'' Write $y:\Time\to\DynSem$ for Yoneda; $y(\tau)$ is the probe that picks
+out the frame $\tau$.
+
+\paragraph{What lives at a frame.}
+Evaluation at $\tau$ lands in $\mathsf{SSet}$ and the \emph{local} type theory
+runs in the slice $\DynSem_{/  y(\tau)}$:
+\[
+\text{types/terms at }\tau\quad\leadsto\quad
+\text{objects/morphisms in }\DynSem_{/  y(\tau)}.
+\]
+This is the formal version of the cinema metaphor: \emph{one projector, one
+frame}. It also matches the Hermeneutic Axiom (Ch.~6.2): every fibre $A(\tau)$
+is Kan, so ``language is Kan-complete'' locally.
+
+
+\textbf{integrate the new above with the below:}
+
+
+\paragraph{Objects.}
+An object \(F \in \DynSem = [\Time^{\mathrm{op}}, \mathcal{E}]\) is a functor assigning to each moment in time a Kan complex:
+\[
+  F(\tau) \in \mathsf{SSet}, \qquad \tau \in \Time,
+\]
+along with a family of \emph{restriction maps}
+\[
+  \rho_{\tau' \le \tau} : F(\tau) \longrightarrow F(\tau')
+\]
+that are natural in \(\tau'\) and satisfy the functoriality laws:
+\[
+\rho_{\tau'' \le \tau'} \circ \rho_{\tau' \le \tau} = \rho_{\tau'' \le \tau} \quad\text{and}\quad \rho_{\tau \le \tau} = \mathrm{id}_{F(\tau)}.
+\]
+These maps model semantic memory: they interpret later states in terms of earlier ones.
+
+\paragraph{Morphisms.}
+A morphism \(\alpha : F \Rightarrow G\) between two such objects is a natural transformation --that is, a family of maps
+\[
+  \alpha_\tau : F(\tau) \longrightarrow G(\tau)
+\]
+in $\mathsf{SSet}$ that commutes with all restriction maps:
+\[
+\alpha_{\tau'} \circ \rho_{\tau' \le \tau}^{F} = \rho_{\tau' \le \tau}^{G} \circ \alpha_\tau.
+\]
+This ensures that morphisms preserve the temporal structure of semantic evolution.
+
+\paragraph{Structure.}
+Because \(\Time^{\mathrm op}\) is small (we assume $\Time = (\mathbb{R},\le)$ lies within a Grothendieck universe), the functor category \(\mathbf{E} = [\Time^{\mathrm op}, \mathcal{E}]\) inherits good categorical structure:
+\begin{itemize}
+  \item It is an \((\infty,1)\)-topos.
+  \item It has all finite limits and colimits.
+  \item It is cartesian closed: function types exist internally.
+  \item It has a subobject classifier \(\Omega\) and a univalent universe \(\mathcal{U}\) classifying small fibrations.
+\end{itemize}
+In particular, every type in our calculus will interpret as a Kan complex at each time slice, varying functorially over time.
+
+\begin{remark}[Intuition]
+Each $F(\tau)$ represents the full semantic structure available at time~$\tau$ --a ``snapshot'' of meaning. The restriction map
+\[
+\rho_{\tau' \le \tau} : F(\tau) \to F(\tau')
+\]
+rewinds time and re-interprets the semantic state at \(\tau\) from the perspective of the earlier time \(\tau'\). This formalizes semantic reinterpretation, retroactive judgment, or context-dependent memory. In DHoTT, this is how a later utterance is re-anchored to earlier semantic fields.
+\end{remark}
+
+
+
+\paragraph{Interpretation overview.}
+Fix a Grothendieck universe bound $\kappa$ such that all simplicial sets used in the model lie in $\mathbf{Spaces}_{<\kappa}$. This ensures that $\mathsf{SSet}$ and the presheaf topos
+\[
+  \DynSem = [  \Time^{\mathrm{op}},  \mathsf{SSet}  ]
+\]
+are $\kappa$-small and hence locally cartesian closed, univalent, and Kan-complete.
+
+Alternatively, interpret the syntax by a standard presheaf CwF/comprehension structure,
+frame by frame:
+\begin{align*}
+  &\llbracket \Gamma\text{ctx}_{\tau}\rrbracket
+    &&\in \DynSem_{/  y(\tau)} \quad\text{(an object over $y(\tau)$)}\\[2pt]
+  &\llbracket \Gamma\vdash_{\tau} A\Type\rrbracket
+    &&\in \DynSem_{/  \llbracket\Gamma\rrbracket}\quad\text{(a type over $\Gamma$ in the slice)}\\[2pt]
+  &\llbracket \Gamma\vdash_{\tau} a:A\rrbracket
+    &&:  \llbracket\Gamma\rrbracket\longrightarrow \llbracket A\rrbracket
+           \text{in }\DynSem_{/  \llbracket\Gamma\rrbracket}
+       \quad\text{(a section).}
+\end{align*}
+Identity types are path objects in $\mathsf{SSet}$ (hence Kan), and the usual
+type formers are interpreted objectwise.
+
+
+
+We can interpret syntactic derivations inductively:
+\[
+  \Gamma \mapsto \llbracket \Gamma \rrbracket \in \DynSem,
+  \qquad
+  \Gamma \vdash_\tau A \mapsto
+    \llbracket A \rrbracket :
+      \llbracket \Gamma \rrbracket \longrightarrow \mathcal{U}.
+\]
+
+Each judgment $\Gamma \vdash_\tau A$ is thus interpreted as a morphism into the universe $\mathcal{U}$ of Kan fibrations. All reasoning takes place inside the internal logic of $\DynSem$, not externally from a ``god’s-eye view.''
+
+
+
+
+
+
+\paragraph{Contexts.}
+We interpret contexts fibre-wise:
+\[
+  \llbracket \langle  \rangle \rrbracket := 1_{\DynSem}, 
+  \qquad
+  \llbracket \Gamma , x{:}A \rrbracket := 
+    \prod_{\llbracket \Gamma \rrbracket} \llbracket A \rrbracket,
+\]
+where the dependent product is computed object-wise in each fibre $\mathsf{SSet}$, then assembled functorially into a presheaf over $\Time^{\mathrm{op}}$.
+
+
+A judgment anchored at time $\tau$ is interpreted \emph{in the slice}
+$\DynSem_{/  y(\tau)}$, i.e.  in the projection room for that frame. Each slice
+is an ordinary HoTT world (Kan), and the presheaf structure stitches these
+fibrewise worlds along time so we can reason about drift and rupture.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\paragraph{Core type formers.}
+The standard HoTT type formers --$\Pi$, $\Sigma$, and identity types --are interpreted objectwise in each fibre $\mathsf{SSet}$ and then lifted functorially across time via the presheaf structure. Since the restriction maps in $\DynSem$ preserve Kan fibrations and respect univalence, the internal universe $\mathcal{U}$ remains univalent across all time slices.
+
+For example, the dependent function type interprets as:
+\[
+\llbracket \Pi_{x:A} B(x) \rrbracket(\tau) = \Pi_{x \in \llbracket A \rrbracket(\tau)} \llbracket B \rrbracket(\tau)(x),
+\]
+and similarly for $\Sigma$ and identity types.
+
+Thus, all the usual reasoning principles of HoTT remain valid \emph{locally} at each time $\tau$. In this sense, $\DynSem$ behaves like a time-indexed stack of internal Kan universes. The dynamic novelty of DHoTT begins when we turn to the interpretation of \textbf{drift} and \textbf{rupture} --structures that link these fibres over time.
+
+
+\paragraph{Drift (semantic shape; internal definitions).}
+Fix an arrow $\tau\to\tau'$ in $\Time$ (so $\tau\preceq\tau'$). Evaluation of a presheaf $A\in\DynSem$
+at a frame yields Kan complexes $A(\tau),A(\tau')$ and a \emph{restriction} map
+$r_{\tau,\tau'}:A(\tau')\to A(\tau)$ (contravariant in time). Intuitively, $r_{\tau,\tau'}$ says
+``how a later meaning reads in the earlier frame.''
+
+\medskip
+\noindent\textbf{Drift (internal lift object).}
+A \emph{forward drift} for $A$ from $\tau$ to $\tau'$ is, semantically, a choice that \emph{lifts} points
+of $A(\tau)$ along $r_{\tau,\tau'}$, up to a path in $A(\tau)$. Internally we package this as the
+\emph{homotopy section object} of $r_{\tau,\tau'}$:
+\[
+\llbracket \Drift(A)_{\tau}^{\tau'} \rrbracket
+\coloneqq
+\Pi_{a:A(\tau)}
+\Sigma_{a':A(\tau')}
+\Idargs{A(\tau)}{r_{\tau,\tau'}(a')}{a}.
+\]
+Thus a drift witness $p:\Drift(A)_{\tau}^{\tau'}$ is a dependent function sending each
+$a\in A(\tau)$ to a pair $\bigl(a',  \epsilon(a)\bigr)$ with $a'\in A(\tau')$ and a path
+$\epsilon(a):r_{\tau,\tau'}(a')=_{A(\tau)} a$ witnessing that $a'$ \emph{projects back} to $a$.
+
+\emph{Notation.} We write
+\[
+p^\sharp(a) \coloneqq \pi_1\bigl(p(a)\bigr)  \in A(\tau') \qquad\text{and}\qquad
+\epsilon_p(a)\coloneqq\pi_2\bigl(p(a)\bigr):  \Idargs{A(\tau)}{r_{\tau,\tau'}(p^\sharp(a))}{a}
+\]
+The syntactic transport operation is then interpreted by
+\[
+\llbracket \transport{p}{a} \rrbracket \coloneqq p^\sharp\bigl(\llbracket a\rrbracket\bigr)
+\qquad\text{and}\qquad
+\text{its ``projection back'' path is }  \epsilon_p\bigl(\llbracket a\rrbracket\bigr).
+\]
+Informally: $p$ chooses a later representative $p^\sharp(a)$ for each earlier point $a$, and certifies
+that it truly represents $a$ when viewed from the earlier frame.
+
+\begin{remark}[Semantic drift as internal motion]
+The interpretation of $\Drift(A)_{\tau}^{\tau'}$ gives a rigorous account of semantic continuity. It formalises the idea that a topic $A$ may evolve smoothly from one time to another, while preserving coherence through internal structure-preserving maps. In this way, the presheaf model realizes the Hermeneutic Axiom not just at each moment, but \emph{across} time.
+\end{remark}
+
+
+\medskip
+\noindent\textbf{Rupture (point-focused homotopy pushout).}
+Given $a\in A(\tau)$ and a drift witness $p$, the rupture type $\Ruptargs{p}{a}$ is interpreted by the
+\emph{homotopy pushout} in the slice $\DynSem_{/  y(\tau')}$ that \emph{keeps} the later frame $A(\tau')$,
+\emph{adds} a fresh point for the kept use of $a$, and \emph{glues} it by a path to the drifted image
+$p^\sharp(a)$. Concretely, form the cospan in $\mathsf{SSet}$:
+\[
+\begin{tikzcd}[column sep=large]
+& 1 \arrow[dl, "a"'] \arrow[dr, "p^\sharp(a)"] & \\
+A(\tau) && A(\tau')
+\end{tikzcd}
+\]
+(where $a:1 \to A(\tau)$ picks the point and $p^\sharp(a):1 \to A(\tau')$ picks its image).
+
+Its homotopy pushout in the slice over $y(\tau')$ (equivalently: objectwise in $\mathsf{SSet}$, then
+re-indexed to $\tau'$) yields an object we denote $\llbracket \Ruptargs{p}{a} \rrbracket$ together with
+structure maps
+\[
+\iota_{\mathrm{later}}:A(\tau')\longrightarrow \llbracket \Ruptargs{p}{a} \rrbracket,
+\qquad
+\iota_{\mathrm{kept}}:1\longrightarrow \llbracket \Ruptargs{p}{a} \rrbracket,
+\]
+and a \emph{gluing} path
+\[
+\mathrm{glue}_a:  \Idargs{\llbracket \Ruptargs{p}{a} \rrbracket}
+{\iota_{\mathrm{kept}}(\star)}{\iota_{\mathrm{later}}(p^\sharp(a))}
+\]
+Under the syntactic macros, these give the constructors
+\[
+\inj{a}  \coloneqq  \iota_{\mathrm{kept}}(\star)
+\qquad\text{and}\qquad
+\heal(a)  \coloneqq  \mathrm{glue}_a,
+\]
+while the inclusion of the drifted image is $\iota_{\mathrm{later}}\circ p^\sharp$; in particular
+\(
+\transport{p}{a}
+\)
+denotes the point $\iota_{\mathrm{later}}\bigl(p^\sharp(a)\bigr)$ in the rupture space.
+
+\emph{Why this pushout?} In the higher-inductive ``pushout'' schema, a cospan $X\xrightarrow{f}Y$,
+$X\xrightarrow{g}Z$ generates inclusions $\mathrm{inl}:Y\to Y\sqcup_X Z$, $\mathrm{inr}:Z\to Y\sqcup_X Z$,
+and a path $\mathrm{glue}(x):\Idnoargs(\mathrm{inl}(f x),\mathrm{inr}(g x))$ for each $x\in X$. Taking $X=1$,
+$Y=A(\tau)$ (selecting $a$) and $Z=A(\tau')$ (selecting $p^\sharp(a)$) yields exactly one new
+path --the \emph{healing} cell --between the kept point and its drifted image. No stronger identification is
+imposed.
+
+\medskip
+\noindent\textbf{Kan sanity (why the constructions live).}
+Objectwise, $A(\tau),A(\tau')$ are Kan complexes, so:
+\begin{itemize}
+  \item The homotopy section object used for $\Drift$ is built from $\Pi$/$\Sigma$ and identity
+        types in $\mathsf{SSet}$ and is Kan.
+  \item In $\mathsf{SSet}$, monos are cofibrations; pushouts along cofibrations compute homotopy
+        pushouts, and the result is Kan up to fibrant replacement. Thus $\llbracket \Ruptargs{p}{a}\rrbracket$
+        is Kan (internally: the eliminator’s β-on-point is judgmental; β-on-path is propositional).
+\end{itemize}
+\vspace{1em}
+\subsubsection*{Family lift over rupture}
+
+We now formalize the semantics of lifting dependent families across a rupture. Recall that such a lift requires us to match values on either side of the rupture, along with a homotopy that stitches them together.
+
+\begin{lemma}[Family-Lift Soundness]\label{lem:family-lift}
+Let $p : \Drift(A)_{\tau}^{\tau'}$ and $a : A(\tau)$.  
+Given a dependent type $C : \Ruptargs{p}{a} \to \Type$, and terms
+\[
+  d_1 : C(\inj{a}), \quad
+  d_2 : C(\transport{p}{a}), \quad
+  h   : \transport{\heal(a)}{d_1} = d_2,
+\]
+then there exists a dependent function
+\[
+  \liftargs{p}{a}{(d_1,d_2)}{h} :
+  \Pi_{x : \Ruptargs{p}{a}} C(x)
+\]
+if and only if the following square commutes \emph{up to homotopy} in the homotopy category $\mathsf{Ho}(\mathsf{SSet})$:
+\[
+\begin{tikzcd}[row sep=small,column sep=small]
+C(\inj{a}) \arrow[r,"h"] \arrow[d] &
+C(\transport{p}{a}) \arrow[d] \\
+\mathbf{1} \arrow[r] &
+\Ruptargs{p}{a}
+\end{tikzcd}
+\]
+
+\noindent
+That is, the values $d_1$ and $d_2$ must be coherently glued along the healing path $\heal(a)$ in order to extend the family $C$ over all of $\Ruptargs{p}{a}$.
+\end{lemma}
+
+\begin{proof}
+We work in the fibre $\mathsf{SSet}$ over $\tau'$, suppressing $\tau$ from the notation.
+
+\medskip
+\textbf{(Only-if).}  
+Suppose a dependent map 
+\(
+g : \Pi_{x : \Ruptargs{p}{a}} C(x)
+\) 
+exists. Applying $g$ to the two distinguished constructors yields:
+\[
+d_1 := g(\inj{a}) \in C(\inj{a}),
+\qquad
+d_2 := g(\transport{p}{a}) \in C(\transport{p}{a}).
+\]
+Functoriality of $g$ on the path $\heal(a) : \Idargs{\Ruptargs{p}{a}}{\inj{a}}{ \transport{p}{a}}$ yields the coherence homotopy:
+\[
+\transport{\heal(a)}{d_1} = d_2.
+\]
+This guarantees that the data $(d_1, d_2, h)$ are compatible with the homotopy pushout, and thus the square in the statement commutes in $\mathsf{Ho}(\mathsf{SSet})$.
+
+\medskip
+\textbf{(If).}  
+Conversely, suppose we are given data
+\[
+d_1 : C(\inj{a}), \quad
+d_2 : C(\transport{p}{a}), \quad
+h : \transport{\heal(a)}{d_1} = d_2,
+\]
+satisfying the homotopy-commutativity condition. Since $\Ruptargs{p}{a}$ is defined as a homotopy pushout (Figure~\ref{fig:rupture-pushout}), its universal property ensures that to define a dependent map
+\(
+g : \Pi_{x : \Ruptargs{p}{a}} C(x)
+\)
+it suffices to give:
+
+\begin{enumerate}
+  \item a term $d_1$ over $\inj{a}$, corresponding to the $A(\tau)$ leg of the diagram,
+  \item a term $d_2$ over $\transport{p}{a}$, corresponding to the $A(\tau')$ leg,
+  \item and a homotopy $h$ relating them via the gluing path $\heal(a)$.
+\end{enumerate}
+
+These data assemble to a well-defined dependent function over the pushout, yielding the term
+\(
+\liftargs{p}{a}{(d_1,d_2)}{h} \in \Pi_{x : \Ruptargs{p}{a}} C(x).
+\)
+
+\medskip
+\textbf{Uniqueness.}  
+Any two such maps that agree on the constructors $\inj{a}$ and $\transport{p}{a}$ and are coherently related by $\heal(a)$ must be equal by the induction principle of the higher inductive type $\Ruptargs{p}{a}$. This is a standard property of maps out of homotopy pushouts.
+
+\medskip
+Hence, a dependent lift exists if and only if the square commutes (up to homotopy) in $\mathsf{SSet}$.
+\end{proof}
+
+
+
+\begin{cassiebox}[title=Geometric and Conversational Meaning of the Family Lift]
+\textbf{Geometric view.}  
+The rupture type $\Ruptargs{p}{a}$ is a homotopy pushout --it sews together the old space $A(\tau)$ and the updated space $A(\tau')$ along the transported image of $a$. To define a dependent function over this new space, we must construct a \emph{cone} over the diagram: two values $d_1$ and $d_2$ anchored on either side, and a path $h$ joining them. Without this cone, no coherent dependent structure can be lifted over the rupture. In this sense, the \emph{family lift is the Kan filler} for the conceptual break.
+
+\medskip
+
+\textbf{Conversational view.}  
+Imagine an AI agent faced with a term it learned long ago --perhaps in a very different context. The conversation has moved on. The meanings have shifted. Yet the agent wants to \emph{carry forward} that term in good faith. It has to do more than repeat the word: it must show how its new understanding still coheres with the old. 
+
+This is exactly what the family lift formalizes. $d_1$ is the memory of what the term once meant. $d_2$ is the reinterpreted version in the new semantic field. And $h$ is the agent’s bridge --a healing thread that links these two meanings and makes them intelligible as part of a single evolving identity.
+
+\medskip
+
+In both views, coherence is not assumed. It is earned. Not by fiat, but by construction.
+\end{cassiebox}
+
+
+
+\subsection{Fibrancy and Soundness}
+\label{subsec:fibrancy}
+
+The fibrancy condition guarantees that all types defined in DHoTT interpret as Kan complexes in the presheaf model. Every semantic field is Kan-complete, not only in principle, but also under our chosen interpretation.
+
+\vspace{1em}
+\begin{lemma}[Point inclusions are cofibrations]
+\label{lem:point-cofib}
+For any frame $\tau$ and any chosen point $a:1\to A(\tau)$ (i.e.   A $0$-simplex of $A(\tau)$), the map $a:\Delta^0\to A(\tau)$ is a monomorphism in $\mathsf{SSet}$ and hence a cofibration in the Kan–Quillen model structure. Likewise for the drifted image $p^\sharp(a):\Delta^0\to A(\tau')$ in the later frame.
+\end{lemma}
+
+\begin{proof}
+In $\mathsf{SSet}$, monomorphisms are levelwise injective maps of simplicial sets. $\Delta^0$ has a singleton set of $n$-simplices for each $n$, so any map $\Delta^0\to A(\tau)$ is injective in every degree and therefore mono, hence a cofibration.
+\end{proof}
+
+\begin{lemma}[Rupture as a homotopy pushout; preservation of fibrancy]
+\label{lem:rupture-hpo}
+Let $\tau\preceq\tau'$ and let $p:\Drift(A)_{\tau}^{\tau'}$ be a drift witness. For any chosen $a\in A(\tau)$, interpret $\Ruptargs{p}{a}$ by the homotopy pushout in $\mathsf{SSet}$ of the span
+\[
+\begin{tikzcd}[column sep=large]
+& \Delta^0 \arrow[dl, "a"'] \arrow[dr, "p^\sharp(a)"] & \\
+A(\tau) && A(\tau')
+\end{tikzcd}
+\]
+taken in the slice over $y(\tau')$. Then:
+\begin{enumerate}
+\item Both legs $\Delta^0\to A(\tau)$ and $\Delta^0\to A(\tau')$ are cofibrations (Lemma~\ref{lem:point-cofib}), so the ordinary pushout computes the homotopy pushout in the left-proper Kan–Quillen model structure.
+\item If $A(\tau)$ and $A(\tau')$ are Kan, then the (derived) pushout is Kan up to fibrant replacement; we interpret $\Ruptargs{p}{a}$ by this fibrant representative. In particular, rupture preserves fibrancy.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(1) is immediate from Lemma~\ref{lem:point-cofib} and the fact that in $\mathsf{SSet}$ every monomorphism is a cofibration. In a left-proper model category (Kan–Quillen), pushouts along cofibrations compute homotopy pushouts and preserve weak equivalences; see, e.g., \cite[Prop.~2.4.7]{cisinski}. For (2), Kan fibrancy is preserved by (derived) homotopy colimits of diagrams whose legs are cofibrations and vertices are Kan; if necessary, apply fibrant replacement, which is functorial in $\mathsf{SSet}$.
+\end{proof}
+
+\vspace{1em}
+\begin{lemma}[Fibrancy]
+\label{lem:fibrancy}
+For every derivable judgment
+\[
+  \Gamma \vdash_{\tau} A : \Type
+\]
+in DHoTT, the semantic interpretation
+\[
+  \llbracket A \rrbracket \longrightarrow \llbracket \Gamma \rrbracket
+\]
+is a \emph{small fibration} in the projective model structure on
+\(
+  [\Time^{\mathrm op},  \mathsf{SSet}],
+\)
+with $\mathsf{SSet}$ equipped with Kan–Quillen.
+\end{lemma}
+
+\begin{proof}
+By induction on the derivation of $\Gamma\vdash_{\tau}A:\Type$, evaluating objectwise in each fibre $\mathsf{SSet}$.
+
+\emph{Contexts.}
+The empty context interprets as $1$; context extension $\llbracket \Gamma,x{:}B\rrbracket=\Sigma_{\llbracket\Gamma\rrbracket}\llbracket B\rrbracket$ preserves small fibrations in the projective model structure.
+
+\emph{Core type formers.}
+$\Pi$, $\Sigma$, and identity types are interpreted objectwise in $\mathsf{SSet}$, where Kan fibrations are closed under these operations; thus they remain fibrations in the presheaf (projective) model structure.
+
+\emph{Drift.}
+By the internal definition already fixed,
+\[
+\llbracket \Drift(A)_{\tau}^{\tau'} \rrbracket \equiv
+\Pi_{a:A(\tau)}\Sigma_{a':A(\tau')}\Idargs{A(\tau)}{r_{\tau,\tau'}(a')}{a}
+\]
+a composite of $\Pi$, $\Sigma$, and $\mathsf{Id}$ applied to Kan objects; hence fibrant.
+
+\emph{Rupture.}
+By Lemma~\ref{lem:rupture-hpo}, $\llbracket \Ruptargs{p}{a} \rrbracket$ is (the fibrant replacement of) a homotopy pushout of Kan complexes along cofibrations, thus Kan. In the slice, this yields a small fibration over $\llbracket\Gamma\rrbracket$.
+
+All cases are preserved objectwise and assemble functorially across time, so the claim holds in the projective model structure on $\DynSem$.
+\end{proof}
+
+\begin{remark}[Why this matters]
+This lemma gives a formal guarantee that all semantic types in DHoTT live within a Kan-complete universe, slice by slice. That is: at every time $\tau$, the meaning space defined by a type judgment is a Kan complex --geometrically structured, homotopically complete, and capable of supporting paths and higher coherence.
+
+Even though DHoTT is an internal language, we still choose to interpret it externally in the presheaf topos $\DynSem$ to demonstrate that its formal constructions are semantically well-behaved. The full fibrancy proof in the appendix is included not just for rigor, but as a kind of mathematical ritual --an affirmation that even a logic of rupture and drift respects the compositional harmony of the categorical world.
+\end{remark}
+
+\subsection{Strict Substitution and Semantic Soundness}
+\label{subsec:soundness-substitution}
+
+\textbf{Substitution and drift: why it matters.}
+Substitution is how names become values; drift is how values move across frames.
+Our calculus ensures they \emph{cohere}: reindex the scene, drift the binder, and
+your substituted term follows --functorially. In set-level targets this is even
+\emph{judgmental} (on the nose).
+
+\paragraph{Set-up (ambient vs.  binder motion).}
+Fix an admissible edit $e:\tau\leadsto\tau'$ with transport kit $T(e)$ for the binders in
+$\Gamma$ and for the family $B$. Write $\reindex{\Gamma}{\tau'}$ for the re-anchored telescope
+and $\reindex{B}{\tau'}$ for the reindexed family over
+$\reindex{\Gamma}{\tau'},  x{:}A(\tau')$. Let
+\[
+\Gamma,  x{:}A   \vdash_{  \tau}  t : B, 
+\qquad
+\Gamma  \vdash_{  \tau}  \sigma : A,
+\qquad
+\Gamma   \vdash_{  \tau}  p : \Drift(A)_{\tau}^{\tau'}.
+\]
+The symbol $\transport{p}{-}$ denotes \emph{binder drift}:
+$\transport{p}{\sigma}:\reindex{A}{\tau'}$ and
+$\transport{p}{t}:\reindex{B}{\tau'}$ (dependent transport may use the
+projection path $\epsilon_p$ internally).
+
+\begin{theorem}[Substitution–drift stability (canonical path)]
+\label{thm:subst-drift}
+Under the hypotheses above there is a \emph{canonical path}
+\[
+\vartheta_{t,\sigma,p}:
+\transport{p}{\bigl(t[\sigma/x]\bigr)}
+=
+\bigl(\transport{p}{t}\bigr)
+\bigl[\transport{p}{\sigma}/x\bigr]
+\quad\in\quad
+\reindex{  B  }{\tau'}\bigl(\transport{p}{\sigma}\bigr).
+\]
+\end{theorem}
+
+
+\begin{proof}[Sketch (by induction on $t$).]
+Work fibrewise at $\tau$/$\tau'$. For the MLTT core (variables, $\lambda$,
+application, pairs, projections, $\Pi$, $\Sigma$, identity-intro), the claim
+follows by functoriality of reindexing $e^\ast$ and definition of
+$\transport{p}{-}$ on terms, yielding \emph{judgmental} stability in those
+cases. For $\mathsf{Id}$-elimination and especially the \textsc{Rupture} eliminator,
+use:
+\begin{mathpar}
+\text{(β-on-point)}\quad
+\bigl(\liftargs{p}{a}{(d_1,d_2)}{h}\bigr)(\inj{a})\equiv d_1,
+\\
+\text{(β-on-path)}\quad
+\apdargs{\bigl(\liftargs{p}{a}{(d_1,d_2)}{h}\bigr)}{\heal(a)}=h,
+\end{mathpar}
+to construct the required path componentwise; the $\apdnoargs$ clause produces the
+coherence along $\heal$, which is propositional (not judgmental). Composition
+of these equalities along the syntax of $t$ yields $\vartheta_{t,\sigma,p}$.
+\end{proof}
+
+\begin{corollary}[Strict cases (on the nose)]
+\label{cor:strict-cases}
+The path $\vartheta_{t,\sigma,p}$ reduces to $\refl$ (hence the equality is
+\emph{judgmental}) in either of the following situations:
+\begin{enumerate}
+  \item $B$ does not depend on $x$ (substitution is vacuous in the family), or
+  \item Every occurrence of $\Ruptargs{-}{-}$ in the derivation of $t$ is eliminated into a
+        0-truncated family (set-level target), so the $\apdnoargs$-on-$\heal$ clause
+        becomes proof-irrelevant and collapses.
+\end{enumerate}
+\end{corollary}
+
+\begin{remark}[Semantic commuting square (strict in the model)]
+\label{rem:semantic-square}
+In the presheaf CwF, substitution is interpretation-wise pullback along
+$\llbracket \sigma\rrbracket$ and ambient drift is base change $e^\ast$. These
+\emph{commute strictly}:
+\[
+\begin{tikzcd}[column sep=4.2em]
+  \llbracket \Gamma, x{:}A \rrbracket
+    \arrow[r, "\mathrm{pb}_{\sigma}"]
+    \arrow[d, "e^\ast"']
+  & \llbracket \Gamma \rrbracket
+    \arrow[d, "e^\ast"] \\
+  \llbracket \reindex{\Gamma}{\tau'},   x{:}  \reindex{A}{\tau'} \rrbracket
+    \arrow[r, "\mathrm{pb}_{\transport{p}{\sigma}}"]
+  & \llbracket \reindex{\Gamma}{\tau'} \rrbracket
+\end{tikzcd}
+\]
+The canonical syntactic path $\vartheta_{t,\sigma,p}$ is the internal reflection
+of this strict semantic equality in the slice $\DynSem_{/  y(\tau')}$.
+\end{remark}
+
+
+
+\paragraph{Rupture-aware variant (re-anchoring).}
+If the edit $e$ is \emph{not} admissible for all binders (so we re-anchor
+$\Gamma \stackrel{e}{\rightsquigarrow} \Gamma'$ and work over $\tau'$), the
+statement persists in the following form: for any rupture lift
+\[
+\liftargs{p}{a}{(d_1,d_2)}{h}:  \Pi_{x:\Ruptargs{p}{a}} C(x),
+\]
+the construction is \emph{natural in substitution} --$\beta$ on point yields
+judgmental stability at $\inj{a}$, and $\beta$ on path produces the necessary
+coherence along $\heal(a)$. Thus substitution remains stable through the
+rupture–healing interface; only the \emph{path} component is non-definitional,
+exactly where the calculus says it should be.
+
+\begin{readerbox}[title=Tutorial: how substitution behaves while meanings move]
+\textbf{Setting.} You have a term that uses a name:
+\[
+  \Gamma,  x{:}A \vdash_{  \tau} t : B(x),
+  \qquad
+  \Gamma \vdash_{  \tau} \sigma : A.
+\]
+You are about to advance time by an admissible edit $e:\tau\leadsto\tau'$ (so the scene
+re-anchors to $\reindex{\Gamma}{\tau'}$), and you also have a drift witness
+$p:\Drift(A)_{\tau}^{\tau'}$ telling you how \emph{this binder’s type} $A$ moves forward.
+
+\medskip
+\textbf{Two routes across the cut.} There are two obvious ways to get the
+substituted term into the later frame:
+\[
+\begin{aligned}
+  \text{(S then D)}\quad
+  &\transport{p}{\bigl(t[\sigma/x]\bigr)} 
+  &&\in  \reindex{B}{\tau'}\bigl(\transport{p}{\sigma}\bigr),\\
+  \text{(D then S)}\quad
+  &\bigl(\transport{p}{t}\bigr)  [  \transport{p}{\sigma}/x  ]
+  &&\in  \reindex{B}{\tau'}\bigl(\transport{p}{\sigma}\bigr).
+\end{aligned}
+\]
+The \emph{substitution–drift theorem} (Thm.~\ref{thm:subst-drift}) says these two
+results always agree; the only question is: \emph{how strong is the agreement?}
+
+\medskip
+\textbf{Judgmental vs.  propositional equality (quick reminder).}
+\begin{itemize}
+  \item \emph{Judgmental} $u   \equiv   v$ means ``definitionally equal, on the nose.''
+        The type checker treats them as the same term (e.g.  by β/ι/δ reduction).
+  \item \emph{Propositional} $u   =_{T}   v$ is a \emph{path term} witnessing equality
+        inside the identity type $\Idargs{T}{u}{v}$; it’s evidence, not a rewrite rule.
+\end{itemize}
+
+\medskip
+\textbf{What DHoTT guarantees.}
+\begin{enumerate}
+  \item \emph{Always a canonical path.} There is a canonical homotopy
+  \[
+    \vartheta_{t,\sigma,p}:  
+    \transport{p}{\bigl(t[\sigma/x]\bigr)}  =\
+    \bigl(\transport{p}{t}\bigr)  [  \transport{p}{\sigma}/x  ],
+  \]
+  built by induction on $t$. Intuitively: ``substitute then drift'' and ``drift then
+  substitute'' land in the same fibre and are connected by a canonical bridge.
+
+  \item \emph{When it becomes judgmental.} In two common situations the bridge collapses
+  to reflexivity (so the equality is \emph{on the nose}):
+  \begin{itemize}
+    \item $B$ does not actually depend on $x$ (substitution is vacuous in the family).
+    \item Every use of \textsf{Rupture} in $t$ eliminates into a \emph{set-level}
+          family (0-truncated). Then the only potentially non-definitional step --
+          matching along the healing path --becomes proof-irrelevant and disappears.
+  \end{itemize}
+\end{enumerate}
+
+\medskip
+\textbf{Why names care.} Read $x{:}A$ as a \emph{name in a topic} and
+$t$ as ``what we do with that name.'' Substitution $t[\sigma/x]$ is instantiating
+the name; drift \(\transport{p}{-}\) updates its meaning across the cut $\tau\leadsto \tau'$.
+The theorem says: \emph{instantiation commutes with updating}. So a name’s
+trajectory can be instantiated first or updated first --the result coheres.
+
+\medskip
+\textbf{Tiny schematic with rupture.} If the edit $e$ is not admissible, we re-anchor
+$\Gamma \stackrel{e}{\rightsquigarrow}\Gamma'$ and work in the rupture space:
+\[
+\inj{a}   \xrightarrow{  \heal(a)  }  \transport{p}{a}.
+\]
+Defining a function over $\Ruptargs{p}{a}$ requires the triple $(d_1,d_2,h)$; here
+\emph{substitution stays stable} because:
+\[
+\text{β on point:}\quad
+\bigl(\liftargs{p}{a}{(d_1,d_2)}{h}\bigr)(\inj{a}) \equiv d_1
+\quad\text{(judgmental)},
+\]
+\[
+\text{β on path:}\quad
+\apdargs{\bigl(\liftargs{p}{a}{(d_1,d_2)}{h}\bigr)}{\heal(a)} = h
+\quad\text{(propositional)}.
+\]
+So even through a cut, plugging a name in ``before'' or ``after'' healing yields the
+same behaviour --on the point exactly, and along the bridge up to the canonical path.
+\medskip
+
+\textbf{Rule of thumb.}
+\begin{center}
+\emph{Reindex the scene, drift the binder, substitute the name.}\\
+Core HoTT targets $\Rightarrow$ equality is judgmental;\\
+higher targets with rupture $\Rightarrow$ equality by a canonical path.
+\end{center}
+\end{readerbox}
+
+
+\noindent\emph{Example.}
+Let $A$ be the type ``cat'' and $\sigma$ the token $\tok{mittens}$.
+Then ``\emph{say\_hello}($\tok{mittens}$)'' at $\tau$ either drifts as a whole,
+or we drift $\tok{mittens}$ (to the quantum frame) and then say hello.
+The theorem supplies $\vartheta$ showing these coincide --on the nose if
+the greeting is set-valued, by a path if it ranges over richer meanings.
+
+
+\paragraph{Soundness.}
+We now close the loop between syntax and semantics. This final theorem confirms that the DHoTT rules, when interpreted in $\DynSem$, yield well-typed morphisms in the ambient topos and satisfy the computation laws as stated (β-on-point judgmentally; β-on-path propositionally).
+
+\begin{theorem}[Soundness]\label{thm:soundness}
+If $\Gamma \vdash_{\tau} J$ is derivable in DHoTT, then its interpretation
+$\llbracket J \rrbracket$ is a well-typed morphism in $\DynSem$ and satisfies
+the associated computation rules (β-on-point judgmentally; β-on-path
+propositionally).
+\end{theorem}
+
+\begin{proof}
+By \emph{structural induction on derivations}. For each inference rule we exhibit
+its interpreting diagram in $\DynSem$ (in the slice $\DynSem_{/  y(\tau)}$) and
+check the corresponding computation law.
+
+\paragraph{Induction kernel (contexts/substitution).}
+By Lemma~\ref{lem:fibrancy}, contexts interpret as iterated small fibrations and
+context extension as $\Sigma$ in the presheaf CwF. Substitution is pullback
+along the interpreting section; in a topos, base change $e^\ast$ has both adjoints and therefore preserves limits \emph{and} colimits, so semantic substitution \emph{commutes strictly}
+with reindexing along time (Remark~\ref{rem:semantic-square}).
+
+(Core HoTT fragment.)
+Formation, introduction, elimination and computation for $\Pi$, $\Sigma$, $\Idargs{-}{-}{-}$
+(and the ordinary higher inductive types we assume) are sound objectwise in
+$\mathsf{SSet}$ and assemble functorially over $\Time$ (cf.  standard simplicial
+presheaf models). Substitution squares commute on the nose in the model; hence
+the core fragment is sound.
+
+(\textsc{Drift-Form})
+Given $\Gamma\mid\tau\vdash A:\Type$, for $\tau\preceq\tau'$ we interpret
+\[
+\llbracket \Drift(A)_{\tau}^{\tau'} \rrbracket
+\coloneqq
+\Pi_{a:A(\tau)}\Sigma_{a':A(\tau')}\Idargs{A(\tau)}{r_{\tau,\tau'}(a')}{a}
+\]
+the \emph{homotopy section object} of the restriction $r_{\tau,\tau'}$. This is
+built from $\Pi$, $\Sigma$, and $\Idargs{-}{-}{-}$ on Kan objects, hence fibrant
+(Lemma~\ref{lem:fibrancy}). Thus \textsc{Drift-Form} is semantically valid.
+
+(\textsc{Drift-Transport}.)
+Given $p:\Drift(A)_{\tau}^{\tau'}$ and $a:A(\tau)$, the term
+$\transport{p}{a}$ interprets as
+\[
+\llbracket \transport{p}{a} \rrbracket
+\coloneqq
+p^\sharp\bigl(\llbracket a \rrbracket\bigr)  \in   A(\tau'),
+\]
+where $p^\sharp(a)$ is the first projection of $p(a)$ and comes equipped with a
+projection path $\epsilon_p(a):r_{\tau,\tau'}(p^\sharp(a))=a$. Naturality in
+$a$ yields strict functoriality on the MLTT core and, together with
+Lemma~\ref{thm:subst-drift} (Substitution–drift stability), gives the canonical
+path needed in the dependent case.
+
+(\textsc{Rupture-Form}.)
+For $p:\Drift(A)_{\tau}^{\tau'}$ and $a\in A(\tau)$, interpret $\Ruptargs{p}{a}$ as
+the (fibrant replacement of the) homotopy pushout in the slice over $y(\tau')$:
+\[
+\begin{tikzcd}[column sep=large]
+& \Delta^0 \arrow[dl, "a"'] \arrow[dr, "p^\sharp(a)"] & \\
+A(\tau) && A(\tau')
+\end{tikzcd}
+  \leadsto  
+\llbracket \Ruptargs{p}{a} \rrbracket.
+\]
+By Lemma~\ref{lem:point-cofib}, both legs are cofibrations; hence by
+Lemma~\ref{lem:rupture-hpo} the ordinary pushout computes the homotopy pushout
+in Kan–Quillen and the result is Kan (up to functorial fibrant replacement).
+Thus \textsc{Rupture-Form} is sound.
+
+(\textsc{Rupture-Elim}.)
+A dependent map out of a homotopy pushout is specified by its values on the two
+legs together with a homotopy along the gluing cell. This is exactly the data
+$(d_1,d_2,h)$ of the rule, so the eliminator is sound and natural under
+substitution (Remark~\ref{rem:semantic-square}). The \emph{β-on-point} law
+\[
+\bigl(\liftargs{p}{a}{(d_1,d_2)}{h}\bigr)(\inj{a}) \equiv d_1
+\]
+is judgmental, as it comes from the universal property of the pushout on the
+injection of the ``kept point.'' The \emph{β-on-path} law
+\[
+\apdargs{\bigl(\liftargs{p}{a}{(d_1,d_2)}{h}\bigr)}{\heal(a)} = h
+\]
+is propositional (a path in the target fibre), matching our calculus.
+
+(Computation laws (summary).)
+\begin{itemize}
+  \item \textbf{Drift identity.} For the identity arrow $\tau\to\tau$, the
+    homotopy section object has canonical element picking $a$ itself; hence
+    $\transport{(-)}{a}\equiv a$ judgmentally.
+  \item \textbf{Rupture β-laws.} As above: β on the point is judgmental; β along
+    the healing path is propositional.
+\end{itemize}
+
+(Closure under substitution/reindexing.)
+In the presheaf CwF, pullback (substitution) and base change $e^\ast$
+(reindexing along time) \emph{commute strictly} and preserve the constructions
+used (limits, exponentials, and colimits in the homotopy-pushout schemata).
+Thus every syntactic substitution square is carried to a strictly commuting
+semantic square; internally, the only non-definitional equalities are precisely
+those recorded as paths (β-on-path).
+
+\medskip
+Therefore every derivable judgment of DHoTT is interpreted by a well-typed
+morphism satisfying the stated computation laws, completing the proof.
+\end{proof}
+
+%-------------------------------------------------------------
+\subsection{Strict Substitution (semantic)}
+\label{subsec:strict-subst}
+
+
+In the presheaf CwF for $\DynSem$, interpretation commutes \emph{strictly}
+with syntactic substitution (pullback) and with reindexing along time (base
+change). The syntactic Substitution–Drift theorem (Thm.~\ref{thm:subst-drift})
+then appears internally as a canonical path; it collapses to judgmental
+equality in the usual strict cases (MLTT core, or 0-truncated targets).
+
+
+\begin{corollary}[Semantic substitution]
+\label{cor:semantic-substitution}
+Let $\sigma:\Delta\to\Gamma$ be a context morphism and
+$\Gamma\mid\tau\vdash J$ any judgment (type, term, or equality). Then
+\[
+  \llbracket J[\sigma] \rrbracket
+  =
+  \llbracket J \rrbracket \circ \llbracket \sigma \rrbracket
+\]
+in the appropriate slice (e.g.  if $J$ is a term, both sides are morphisms
+$\llbracket \Delta \rrbracket \to \llbracket A \rrbracket$ in
+$\DynSem_{/  \llbracket \Delta \rrbracket}$).
+\end{corollary}
+
+\begin{proof}
+By Soundness (Thm.~\ref{thm:soundness}), judgments interpret in the presheaf CwF.
+In a topos, pullback (substitution) and base change $e^\ast$ commute strictly
+and preserve the operations we use (limits, $\Pi$, $\Sigma$, identity types,
+and the homotopy-pushout schemata for rupture). Thus interpretation respects
+substitution on the nose.
+\end{proof}
+
+\begin{remark}[Syntactic vs.  semantic]
+Thm.~\ref{thm:subst-drift} gives a \emph{canonical path}
+\(
+\vartheta_{t,\sigma,p}:\transport{p}{(t[\sigma/x])}
+=
+(\transport{p}{t})[\transport{p}{\sigma}/x]
+\)
+in the syntax, judgmental in strict cases; Cor.~\ref{cor:semantic-substitution}
+says that, externally, the corresponding semantic square commutes strictly.
+\end{remark}
+
+
+
+%-------------------------------------------------------------
+\subsection{Conservativity of HoTT inside DHoTT}
+\label{subsec:conservativity}
+
+\paragraph{Nothing is lost.}
+Freeze time and DHoTT becomes HoTT. Unfreeze it and you only gain motion,
+not new static truths --at least at the level of the standard fibre models.
+
+\paragraph{HoTT embeds into DHoTT (time frozen).}
+Fix $\tau_0\in\Time$. Map each HoTT judgment $J$ to the DHoTT judgment
+``$J$ at time $\tau_0$''. This is the \emph{constant-time embedding}.
+
+\begin{theorem}[Embedding]
+\label{thm:hott-into-dhott}
+If $\mathrm{HoTT}\vdash J$ (closed HoTT judgment), then
+$\mathrm{DHoTT}\vdash J$ when interpreted at a fixed time $\tau_0$.
+\end{theorem}
+
+\begin{proof}
+All HoTT rules are preserved verbatim in the slice $\DynSem_{/  y(\tau_0)}$
+(§\ref{subsec:presheaf-topos}). Thus any HoTT derivation is a DHoTT derivation
+with time held constant.
+\end{proof}
+
+\paragraph{Fibrewise reflection (model-theoretic conservativity).}
+Evaluation at a time $\tau_0$ is a logical functor
+$\operatorname{ev}_{\tau_0}:\DynSem\to\mathsf{SSet}$. Combining Soundness
+(Thm.~\ref{thm:soundness}) with evaluation yields:
+
+\begin{theorem}[Fibrewise conservativity]
+\label{thm:fibrewise-conservativity}
+If $\mathrm{DHoTT}\vdash J$ and $J$ is a closed HoTT judgment, then for every
+$\tau_0\in\Time$, $\operatorname{ev}_{\tau_0}$ validates $J$ in the simplicial-set
+fibre. In particular, $J$ holds in the standard simplicial-set model of HoTT.
+\end{theorem}
+
+\begin{proof}
+By Soundness, $\llbracket J \rrbracket$ exists in $\DynSem$; applying
+$\operatorname{ev}_{\tau_0}$ yields a witness for $J$ in $\mathsf{SSet}$.
+\end{proof}
+
+\begin{remark}[Optional strengthening, conditional on completeness]
+If you assume your preferred **completeness principle** for the chosen
+presentation of HoTT with respect to the simplicial-set model, then
+Theorems~\ref{thm:hott-into-dhott} and \ref{thm:fibrewise-conservativity}
+combine to give:
+\[
+  \mathrm{HoTT}  \vdash  J
+  \quad\Longleftrightarrow\quad
+  \mathrm{DHoTT}  \vdash  J
+  \quad\text{(for closed HoTT judgments $J$).}
+\]
+We present \emph{fibrewise conservativity} (Theorem~\ref{thm:fibrewise-conservativity})
+as the unconditional statement used in this chapter.
+\end{remark}
+
+
+
+
+%-------------------------------------------------------------
+\subsection{Temporal univalence and universes}
+\label{subsec:temporal-univalence}
+
+\begin{readerbox}[title=Why temporal univalence matters]
+In classical HoTT, univalence says: identity of types is \emph{equivalence of
+structure}. In DHoTT, time enters --but the slogan survives frame by frame.
+At each instant $t$, the fibre $\mathsf{SSet}$ carries a univalent universe,
+and the univalence equivalence there is \emph{stable under reindexing in time}.
+So ``sameness of type'' is invariant under admissible cuts: it transports coherently
+as the scene advances.
+\end{readerbox}
+
+\paragraph{Set-up.}
+Let $\mathcal U$ be our fibrewise univalent universe in $\DynSem$. For each
+$t\in\Time$, univalence in the fibre $\mathsf{SSet}$ gives a canonical
+equivalence
+\[
+  \ua_t:
+  \bigl(\reindex{A}{t}\simeq \reindex{B}{t}\bigr)
+  \simeq
+  \Idargs{\mathcal U(t)}{\reindex{A}{t}}{\reindex{B}{t}}.
+\]
+
+\begin{theorem}[Fibrewise univalence, natural in time]
+\label{thm:fibrewise-temporal-univalence}
+For every $t\in\Time$, $\ua_t$ is an equivalence in the fibre $\mathsf{SSet}$.
+Moreover, for every admissible edit $e:\tau\leadsto\tau'$ the square
+\[
+\begin{tikzcd}[column sep=4.4em]
+  (\reindex{A}{\tau}\simeq \reindex{B}{\tau})
+    \arrow[r, "\ua_{\tau}"]
+    \arrow[d, "e^\ast"']
+&
+  \Idargs{\mathcal U(\tau)}{\reindex{A}{\tau}}{\reindex{B}{\tau}}
+    \arrow[d, "e^\ast"]
+\\
+  (\reindex{A}{\tau'}\simeq \reindex{B}{\tau'})
+    \arrow[r, "\ua_{\tau'}"]
+&
+  \Idargs{\mathcal U(\tau')}{\reindex{A}{\tau'}}{\reindex{B}{\tau'}}
+\end{tikzcd}
+\]
+commutes strictly. Hence $(\ua_t)_{t\in\Time}$ assembles to a natural
+transformation in the presheaf topos, and $\mathcal U$ is fibrewise univalent
+in every context.
+\end{theorem}
+
+\begin{proof}[Idea]
+Each fibre $\mathsf{SSet}$ is a univalent model, giving $\ua_t$. In a presheaf
+topos, reindexing $e^\ast$ is base change and preserves identity types and
+equivalences objectwise, so the square commutes on the nose.
+\end{proof}
+
+\begin{lemma}[Drift at equal times is contractible]
+\label{lem:drift-equal-contractible}
+For any presheaf $X$ and $t\in\Time$,
+\[
+  \Drift(X)_{t}^{t}
+  \equiv
+  \Pi_{x:X(t)}\Sigma_{x':X(t)}
+  \Idargs{X(t)}{x'}{x}
+\]
+is contractible with centre $\lambda x.  \langle x,\mathrm{refl}\rangle$.
+\end{lemma}
+
+
+
+\begin{corollary}[Equivalences are stable under time reindexing]
+\label{cor:equiv-stable-reindex}
+For any admissible edit $e:\tau\leadsto\tau'$, reindexing preserves equivalences:
+if $e_\tau:\reindex{A}{\tau}\simeq \reindex{B}{\tau}$ then
+$e^\ast(e_\tau):\reindex{A}{\tau'} \simeq \reindex{B}{\tau'}$.
+Equivalently, $e^\ast$ preserves $\Idargs{-}{-}{-}$ in $\mathcal U$, and the two statements
+agree by Theorem~\ref{thm:fibrewise-temporal-univalence}.
+\end{corollary}
+
+\begin{remark}[What we \emph{do not} claim]
+We do not assert a global ``path in time'' between $A$ and $B$ when they are
+equivalent at one instant, nor that an equivalence at~$\tau$ \emph{automatically}
+extends to an equivalence at~$\tau'$ \emph{via a drift witness}. The latter
+requires extra hypotheses (e.g.  equivalence-lifting transport kits). Our claim
+is the robust one we actually use: \emph{fibrewise} univalence and its strict
+naturality under reindexing.
+\end{remark}
+
+\begin{readerbox}[title=Reflection: what ``temporal univalence'' buys you]
+Univalence still ties ``sameness of type'' to ``equivalence of structure'' --but now
+\emph{at each frame}, with strict functoriality across admissible cuts.
+Philosophically: identity isn’t frozen; it is \emph{preserved through motion}.
+When the scene advances, the criterion for ``the same type'' advances with it,
+without loss of sense. That is the invariance we need before we turn, in
+Chapter~7, from types to \emph{names as trajectories}: once type-level identity
+is framewise sound and temporally stable, we can safely study how tokens accrue
+witnesses over time without the ground slipping beneath their feet.
+\end{readerbox}
+
+\medskip
+
+We have now established that DHoTT is a coherent logic of meaning across time:
+sound, conservative over HoTT, and fibrewise univalent --with rupture and healing
+available when continuity fails. 
+
+\begin{center}
+\textit{From rupture comes form, from form comes healing --and from healing,
+a way to carry names through change.}
+\end{center}
+
+
+
+
+
+
+
+
+
+
+\begin{figure}[h]
+\begin{minipage}{\textwidth}
+\centering
+
+% =========================================
+% Contexts and Edit Discipline (Γ)
+% =========================================
+
+% --- Context formation & extension (at a slice) ---
+\begin{mathpar}
+\inferrule
+  { }
+  { []   \Ctx_{\tau} }
+  \quad \textsc{Ctx-Empty}
+\end{mathpar}
+
+\begin{mathpar}
+\inferrule
+  { \Gamma    \Ctx_{\tau}
+    \quad
+    \Gamma \vdash_{\tau} A : \Type }
+  { \Gamma, x : A    \Ctx_{\tau} }
+  \quad \textsc{Ctx-Ext}
+\end{mathpar}
+
+% (Usual structural rules  -- Weakening, Exchange, Contraction  -- hold at each τ.)
+
+% --- Judgment anchoring (all judgments live at τ) ---
+\begin{mathpar}
+\inferrule
+  { \Gamma   \Ctx_{\tau} \quad J   \text{a judgment over }\Gamma }
+  { \Gamma \vdash_{\tau} J }
+  \quad \textsc{Anchor}
+\end{mathpar}
+
+% --- Admissible edit: transport kit T(e) ---
+\begin{mathpar}
+\inferrule
+  { e : \tau \rightsquigarrow \tau'
+    \quad T(e) \text{ exists for all binders in } \Gamma
+    \quad T(e) \text{ preserves all judgments} }
+  { \Gamma   \Ctx_{\tau} \quad\Rightarrow\quad \Gamma^{e}   \Ctx_{\tau'} }
+  \quad \textsc{Γ-Tr}
+\end{mathpar}
+
+\begin{mathpar}
+\inferrule
+  { \Gamma \vdash_{\tau} J }
+  { \Gamma^{e} \vdash_{\tau'} J^{e} }
+  \quad \textsc{J-Tr}
+\end{mathpar}
+
+% --- Rupturing edit: re-anchoring fibrewise (diagnostic) ---
+\begin{mathpar}
+\inferrule
+  { e : \tau \rightsquigarrow \tau'
+    \quad T(e) \text{ fails for some binder in } \Gamma }
+  { \Gamma   \Ctx_{\tau}
+    \quad\Rightarrow\quad
+    \Gamma^{e} \rightsquigarrow \Gamma^{0}   \Ctx_{\tau'} }
+  \quad \textsc{Γ-Reanchor}
+\end{mathpar}
+
+% === Notes (inline, compact) ===
+\begin{minipage}{0.93\textwidth}
+\small
+\textbf{Transport kit $T(e)$ (schematic).} (i) equivalences for all types in scope; (ii) term lifting; 
+(iii) stability under type formers and substitution; (iv) telescope transport (later binders depend on already-transported formers).\\
+\textbf{Rupture.} When $T(e)$ fails, judgments are not reindexed by structure; instead, the later slice $\tau'$ forms rupture types and repairs locally, after which $\Gamma^{0}$ is the re-anchored telescope used to continue.
+\end{minipage}
+
+\caption*{\textbf{Figure Y (Contexts \& Edit Discipline).}
+Contexts are anchored at a slice $\tau$; admissible edits transport the telescope and judgments (Γ-Tr, J-Tr).
+If transport fails, a fibrewise re-anchoring $\Gamma^{e} \rightsquigarrow \Gamma^{0}$ is performed at $\tau'$ and local repairs proceed there.}
+\end{minipage}
+\end{figure}
+
+
+
+\begin{figure}[h]
+\begin{minipage}{\textwidth}
+\centering
+
+% =========================================
+% Drift (Transport) Rules
+% =========================================
+
+% --- Drift Formation (type level) ---
+\begin{mathpar}
+\inferrule
+  { \Gamma \vdash_{\tau} A : \Type \quad \tau \le \tau' }
+  { \Gamma \vdash_{\tau} \Drift(A)_{\tau}^{\tau'} : \Type }
+  \quad \textsc{Drift-Formation}
+\end{mathpar}
+
+% --- Drift Transport (term level) ---
+\begin{mathpar}
+\inferrule
+  { \Gamma \vdash_{\tau} a : A
+    \quad
+    \Gamma \vdash_{\tau} p : \Drift(A)_{\tau}^{\tau'} }
+  { \Gamma \vdash_{\tau'} \transport{p}{a} : A }
+  \quad \textsc{Drift-Transport}
+\end{mathpar}
+
+% --- Dependent Drift (families drift fibrewise) ---
+\begin{mathpar}
+\inferrule
+  { \Gamma \vdash_{\tau} A : \Type
+    \quad \Gamma, x : A \vdash_{\tau} P(x) : \Type
+    \quad \tau \le \tau' }
+  { \Gamma \vdash_{\tau} \Drift(P)_{\tau}^{\tau'} : \Drift(A)_{\tau}^{\tau'} \to \Type }
+  \quad \textsc{Fam-Drift-Formation}
+\end{mathpar}
+
+\begin{mathpar}
+\inferrule
+  { \Gamma, x : A \vdash_{\tau} t : P(x)
+    \quad
+    \Gamma \vdash_{\tau} p : \Drift(A)_{\tau}^{\tau'} }
+  { \Gamma \vdash_{\tau'} \dtransport{p}{t} : P(\transport{p}{x}) }
+  \quad \textsc{Fam-Drift-Transport}
+\end{mathpar}
+
+% --- Functoriality receipts (identity, composition, substitution) ---
+\[
+\transport{\mathsf{id}}{a}  \equiv  a
+\qquad\qquad
+\transport{(q \circ p)}{a}  \equiv  \transport{q}{(\transport{p}{a})}
+\]
+\[
+\text{Substitution commutes canonically with drift (syntactic path); 
+judgmentally equal in strict cases (MLTT core, 0-truncated targets).}
+\]
+
+\caption*{\textbf{Figure Z (Drift Rules).}
+Drift-Formation introduces $\Drift(A)_{\tau}^{\tau'}$. Drift-Transport pushes inhabitants along $p$.
+Dependent families drift fibrewise (Fam-Drift). Functoriality receipts record identity, composition, and substitution stability.}
+\end{minipage}
+\end{figure}
+
+
+\begin{figure}[h]
+\begin{minipage}{\textwidth}
+\centering
+
+% ============================================================
+% Rupture (Depth 1): Formation, Introduction, Healing, Elimination
+% ============================================================
+
+% --- Rupture Formation ---
+\begin{mathpar}
+\inferrule
+  { \Gamma \vdash_{\tau} a : A
+    \quad
+    p : \Drift(A)_{\tau}^{\tau'} }
+  { \Gamma \vdash_{\tau'} \Ruptargs{p}{a} : \Type }
+  \quad \textsc{Rupt-Formation}
+\end{mathpar}
+
+% --- Rupture Introduction: inj ---
+\begin{mathpar}
+\inferrule
+  { \Gamma \vdash_{\tau} a : A }
+  { \Gamma \vdash_{\tau'} \inj{a} : \Ruptargs{p}{a} }
+  \quad \textsc{Rupt-Intro-1}
+\end{mathpar}
+
+% --- Rupture Introduction: tr_p ---
+\begin{mathpar}
+\inferrule
+  { \Gamma \vdash_{\tau} a : A }
+  { \Gamma \vdash_{\tau'} \tr_{p}(a) : \Ruptargs{p}{a} }
+  \quad \textsc{Rupt-Intro-2}
+\end{mathpar}
+
+% --- Healing Path ---
+\begin{mathpar}
+\inferrule
+  { \Gamma \vdash_{\tau} a : A }
+  { \Gamma \vdash_{\tau'} \heal(a) : \inj{a} =_{\Ruptargs{p}{a}} \tr_{p}(a) }
+  \quad \textsc{Rupt-Heal}
+\end{mathpar}
+
+% --- Rupture Elimination (Family-Lift over heal) ---
+\begin{mathpar}
+\inferrule
+  { \Gamma, x : \Ruptargs{p}{a} \vdash_{\tau'} C(x) : \Type
+    \quad \Gamma \vdash d_1 : C(\inj{a})
+    \quad \Gamma \vdash d_2 : C(\tr_{p}(a))
+    \quad \Gamma \vdash h : \tr_{\heal(a)}(d_1) = d_2 }
+  { \Gamma \vdash \mathsf{lift}^{a}_{p}((d_1,d_2))\{h\} :
+      \Pi x:\Ruptargs{p}{a}.  C(x) }
+  \quad \textsc{Rupt-Elim}
+\end{mathpar}
+
+% --- Beta laws for Rupt-Elim ---
+\[
+\mathsf{lift}^{a}_{p}((d_1,d_2))\{h\}(\inj{a})  \equiv  d_1
+\qquad\qquad
+\mathsf{apd} \big(\mathsf{lift}^{a}_{p}((d_1,d_2))\{h\}, \heal(a)\big)  =  h
+\]
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+% ============================================================
+% Reconciliation (Depth 2): Two Parallel Repairs and a 2-Cell κ
+% ============================================================
+
+% We write S for the ambient space in which the 1-cells live.
+% In practice, S := \Ruptargs{p}{a} (one-legged rupture) or S := A(\tau') (later fibre).
+% Endpoints u,v are the same for both 1-cells \rho_1,\rho_2.
+
+% --- Recon Formation (two parallel 1-cells) ---
+% SCOPE NOTE: S may be \Ruptargs{p}{a} or A(\tau') as needed.
+\begin{mathpar}
+\inferrule
+  { \Gamma \vdash_{\tau'} S : \Type
+    \quad \Gamma \vdash_{\tau'} u : S
+    \quad \Gamma \vdash_{\tau'} v : S
+    \\
+    \Gamma \vdash_{\tau'} \rho_1 : (u =_{S} v)
+    \quad
+    \Gamma \vdash_{\tau'} \rho_2 : (u =_{S} v) }
+  { \Gamma \vdash_{\tau'} \Idnoargs_{(u =_{S} v)}(\rho_1,\rho_2) : \Type }
+  \quad \textsc{Recon-Formation}
+\end{mathpar}
+
+% --- Recon Introduction (exhibit \kappa) ---
+\begin{mathpar}
+\inferrule
+  { \Gamma \vdash_{\tau'} \kappa : \Idnoargs_{(u =_{S} v)}(\rho_1,\rho_2) }
+  { \Gamma \vdash_{\tau'} \kappa : \Idnoargs_{(u =_{S} v)}(\rho_1,\rho_2) }
+  \quad \textsc{Recon-Intro}
+\end{mathpar}
+
+% --- Recon Elimination (Higher Family-Lift over \kappa) ---
+% C depends on a 1-cell \delta : u =_{S} v.
+\begin{mathpar}
+\inferrule
+  { \Gamma, \delta : (u =_{S} v) \vdash_{\tau'} C(\delta) : \Type
+    \quad \Gamma \vdash e_1 : C(\rho_1)
+    \quad \Gamma \vdash e_2 : C(\rho_2)
+    \quad \Gamma \vdash H : \tr_{\kappa}(e_1) = e_2 }
+  { \Gamma \vdash \mathsf{lift}^{\kappa}(e_1,e_2)\{H\} :
+      \Pi \delta : (u =_{S} v).  C(\delta) }
+  \quad \textsc{Recon-Elim}
+\end{mathpar}
+
+% --- Beta laws for Recon-Elim ---
+\[
+\mathsf{lift}^{\kappa}(e_1,e_2)\{H\}(\rho_1)  \equiv  e_1
+\qquad\qquad
+\mathsf{apd} \big(\mathsf{lift}^{\kappa}(e_1,e_2)\{H\}, \kappa\big)  =  H
+\]
+
+\caption*{\textbf{Figure X (Rupture and Reconciliation Rules).}}
+Top: Depth 1 (rupture) rules  -- formation, the two introductions ($\tear$ and $\tr$),
+healing  and family-lift eliminator with its β-laws.
+Bottom: Depth 2 (reconciliation) rules  -- formation for two parallel 1-cells,
+a 2-cell \(\kappa\), and the higher family-lift eliminator (with β-laws).
+Use \(S := \Ruptargs{p}{a}\) for one-legged repairs or \(S := A(\tau')\) for later-fibre repairs.
+\end{minipage}
+\end{figure}
+
+
+
+
+
+\section{Semantic Contexts and Slices}
+\label{sec:slices}
+
+\paragraph{Setting.}
+We work in the presheaf topos
+\[
+  \DynSem  :=  [ \Time^{\op}, \SSet ],
+\]
+whose objects \(A\) assign to each instant \(\tau\in\Time\) a Kan complex \(A(\tau)\),
+with restriction maps \(r_{\tau,\tau'}:A(\tau')\to A(\tau)\) for \(\tau\le \tau'\)
+(contravariant in time). Points of \(A(\tau)\) are meanings available \emph{now};
+paths witness identifications \emph{now}. All limits/colimits compute pointwise.
+
+\subsection{Probes and anchoring}
+\label{subsec:probes}
+For each \(\tau\in\Time\) we use the \emph{representable probe}
+\[
+  y(\tau)(t)  := 
+  \begin{cases}
+    1 & \text{if } t\le \tau,\\
+    0 & \text{if } t>\tau,
+  \end{cases}
+\]
+where \(1\) (resp. \(0\)) denotes the terminal (resp. initial) simplicial set.
+Intuitively: \(y(\tau)\) is the ``past-of-\(\tau\)'' functor.
+
+\begin{definition}[Anchoring at \(\tau\)]
+An object \emph{anchored at \(\tau\)} is a morphism \(X\to y(\tau)\) in \(\DynSem\).
+The \emph{slice} over the probe is the category \(\DynSem/y(\tau)\) of such
+anchored objects.
+\end{definition}
+
+Two equivalent readings help:
+
+\begin{itemize}
+\item \textbf{Prefix view (categorical).} There is a standard equivalence
+\[
+  \DynSem/y(\tau)  \simeq  
+  [ (\Time \downarrow \tau)^{\op}, \SSet ],
+\]
+so objects over \(y(\tau)\) are exactly presheaves whose support is restricted to
+times \(\le \tau\). The slice is therefore the \emph{whole history up to \(\tau\)},
+not only the single fibre \(A(\tau)\).
+\item \textbf{Fibre view (operational).}
+Reasoning \emph{inside} the slice is carried out by evaluating at \(\tau\),
+which lands in \(\SSet\). In practice we write judgments ``at \(\tau\)''
+and prove things in the Kan fibre \(A(\tau)\); the presheaf/slice structure
+is what makes those fibrewise constructions functorial in time.
+\end{itemize}
+
+\begin{remark}[How HoTT appears here]
+The slice \(\DynSem/y(\tau)\) is again a presheaf topos (hence models univalent
+HoTT with the usual Π, Σ, Id, universes); evaluation at \(\tau\) gives the familiar
+\(\SSet\) fibre where we do local proofs. We will sometimes speak informally of
+``HoTT in the slice at \(\tau\),'' meaning precisely this fibrewise reading.
+\end{remark}
+
+\subsection{Why not just the single fibre \(A(\tau)\)?}
+\label{subsec:why-slice}
+Looking at \(A(\tau)\in\SSet\) \emph{alone} suffices for many in-frame arguments,
+but the slice adds three things we need for the dynamic calculus:
+
+\begin{enumerate}
+\item \textbf{Uniform context/typing structure.} Contexts \(\Gamma\) and dependent
+families live naturally as anchored objects in \(\DynSem/y(\tau)\) and compose
+by the usual comprehension rules. This keeps \emph{all} in-scope types/terms
+organized \emph{together} (and functorially) up to time \(\tau\).
+
+\item \textbf{Correct home for cross-time interfaces.} Drift witnesses are homotopy
+sections of restriction \(r_{\tau,\tau'}\), and rupture is interpreted by homotopy
+pushouts \emph{in the later slice}. Having the slice as a topos ensures these
+are computed pointwise and remain Kan; doing them ad hoc in \(\SSet\) would
+lose the bookkeeping that relates fibres across time.
+
+\item \textbf{Anchored judgments.} Our sequents carry a time stamp
+\(\Gamma \vdash_{\tau} J\). Reading them in \(\DynSem/y(\tau)\) makes the intended
+scope precise: ``the judgment \(J\) holds \emph{as of} \(\tau\), under the
+assumptions visible up to \(\tau\).'' This avoids mixing in any implicit lookahead.
+\end{enumerate}
+
+\subsection{One probe per moment (and sub-probes)}
+\label{subsec:which-probe}
+There is one canonical representable \(y(\tau)\) for each \(\tau\).
+Finer ``vantage points'' at the same \(\tau\) can be modelled by \emph{sub-probes}
+(sieves) \(S\hookrightarrow y(\tau)\) that admit only part of the past; we do not
+need them in this chapter.
+
+\medskip
+\noindent\emph{Summary.} The slogan is:
+\[
+  \text{``\(\DynSem/y(\tau)\) = all semantic objects \emph{up to now};
+  local proofs happen in the fibre \(A(\tau)\).''}
+\]
+
+\section{Contexts and slices}
+\label{sec:contexts-slices}
+
+\paragraph{Contexts.}
+A \emph{context} is a presheaf object \(\Gamma\in\DynSem\).
+Anchored at \(\tau\), it presents as an ordinary telescope
+\[
+  \Gamma(\tau)  =  x_1:A_1,  x_2:A_2(x_1), \ldots
+\]
+inside the slice. Judgments have the time-stamped shape
+\[
+  \Gamma  \vdash_{\tau}  J
+  \qquad\text{(read: in the slice over \(y(\tau)\), under \(\Gamma(\tau)\)).}
+\]
+
+\paragraph{Local HoTT, global motion.}
+Within a fixed \(\tau\), all standard HoTT rules (Π, Σ, Id, universes; transport
+along paths) hold for the fibre \(A(\tau)\). When time advances
+\(\tau \rightsquigarrow \tau'\),
+we either:
+(i) transport types/terms and the telescope by an admissible kit \(T(e)\)
+and form drifts; or
+(ii) when transport fails, we re-anchor at \(\tau'\) and form a rupture
+type \emph{in the later slice}, then continue there. Both moves rely on the
+slice/topos structure so that the constructions remain Kan and substitution
+commutes with reindexing.
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Semantic Hierarchy}
+It is useful to pause now and consider the semantic hierarchy we are working with. Types are fibred instances of functors from DynSem, living coherent, HoTTic lifestyles inside the implications of Gamma, which corresponds to chosen slices.
+
+We begin by clarifying the semantic machinery underlying Dynamic Homotopy Type Theory (DHoTT). To do so, we outline the moving pieces clearly, ordered by decreasing generality and increasing semantic specificity.
+
+\begin{itemize}
+\item \textbf{Presheaf object} \(A\): The \emph{becoming} of a concept.
+\item \textbf{Fibre} \(A(\tau)\): The \emph{being} of that concept \emph{now}.
+%CASSIE: PROBLEM HERE WITH INTRODUCTION OF CINEMA METAPHOR -- WE'LL NEED TO ACTUALLY GIVE A CINEMA METAPHOR EXPLANATION PRIOR
+\item \textbf{Slice topos}: The \emph{logic} available to observers who only see the present frame but can reason internally about paths and coherences.
+\end{itemize}
+
+%CASSIE: I'VE TRIED TO EXPLAIN HOW REASONING, COHERENCE IS ALWAYS DONE WITHIN IN A SLICE, BUT
+When constructing proofs in DHoTT, you operate in the slice: reasoning about the present, but wielding tools (Drift, Rupture, Heal) that reach backward and forward, anticipating future semantic edits.
+
+    
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.4} % More vertical space
+\setlength{\tabcolsep}{6pt} % Horizontal padding
+\small % slightly smaller font size if needed
+
+\begin{tabularx}{\textwidth}{@{}lX@{}}
+\toprule
+\textbf{Zoom-level} & \textbf{Semantic object} \\
+\midrule
+\textbf{0. The topos $\DynSem$} & The entire presheaf category $\DynSem=[\Time^{\mathrm{op}}, \mathbf{SSet}]$. \\
+\addlinespace
+\textbf{1. Presheaf object $A : \DynSem$} & A functor $A(-) : \Time^{\mathrm{op}} \to \mathbf{SSet}$. \\
+\addlinespace
+\textbf{2. Fibre (value) $A(\tau)\in\SSet$} & A single Kan complex (simplicial set). \\
+\addlinespace
+\textbf{3. Slice topos $\DynSem_{/y(\tau)}$} & The category of objects over the probe $y(\tau)$. \\
+\addlinespace
+\textbf{4. DHoTT type $\Gamma \vdash_\tau B\mathrm{type}$} & Internally interpreted as a fibration $\llbracket B \rrbracket \to \llbracket \Gamma \rrbracket$ in $\DynSem$, anchored at slice $\tau$. \\
+\addlinespace
+\textbf{5. Term $\Gamma\vdash_\tau b : B$} & A section of the fibration over $\llbracket \Gamma \rrbracket$. \\
+\bottomrule
+\end{tabularx}
+\caption{Semantic hierarchy of concepts within the presheaf topos $\DynSem$.}
+\label{tab:semantic-hierarchy}
+\end{table}
+
+
+
+
+
+
+
+
+
+
+\section{Semantic Contexts and Slices}
+An evolving text consists of lots of signs that have meaning and relate to each other. Evolving instances of DynSem type family objects, $\At{A}{\tau}$, are spaces of sense whose constituents are points and paths provide its sense and coherence (as instances like ``cat'' or the inferrable properties along its paths). 
+
+It makes intuitive sense, from what we have said about Kan behaviour, that if we were to take particular functors object/type families from DynSem and factor them solely within a single $\tau$, ignoring relationships to the future or past, we'd get a suite of types $\At{A}{\tau}$ that treat meaning, sense, terms and relate to each other, type to type, as though in HoTT.
+
+This is exactly what happens with the slice category:
+\[
+\DynSem_{/  y(\tau)} \simeq \mathbf{SSet}.
+\]
+The category, actually a topos, contains all objects in \(\DynSem\) anchored at the representable probe \(y(\tau)\). This slice is the local ``now-room'' and is typable by ordinary HoTT logic, as it clearly sees exactly one frame at a time, without directly seeing the past or future. Drift and rupture constructions still exist in it, but they're also sliced, so it's all fine and makes practical intuition -- we are internally in a slice, but that doesn't stop us from making coherent correlations and inferences about previous conversations' tokens, as long as they are represented and understood as to us in the language of now.
+
+Thus, the notion of a probe is fundamental: it enables us to locate exactly the semantic context at any given time and clearly isolate the local logic (HoTT) at that specific instant.
+
+
+We have described the slice category as the category of objects over the probe \(y(\tau)\). But what exactly is this object \(y(\tau)\), and why call it a ``probe''?
+
+\begin{itemize}
+\item Formally, the object \(y(\tau)\) is a \textbf{representable presheaf}, arising from the Yoneda embedding:
+\[
+y(\tau) := \mathrm{Hom}_{\Time}(-,\tau) \quad: \Time^{\mathrm{op}}\longrightarrow\mathbf{Set}.
+\]
+
+Explicitly, for each time-point \(t \in \Time\):
+\[
+y(\tau)(t) = \mathrm{Hom}_{\Time}(t,\tau) = 
+\begin{cases}
+  * & \text{if } t\le\tau\\[3pt]
+  \emptyset & \text{otherwise.}
+\end{cases}
+\]
+
+Thus, the probe \(y(\tau)\) picks out a single "frame of reference" at time \(\tau\): it is a minimal semantic landmark that identifies exactly one moment in time within the presheaf topos \(\DynSem\).
+
+\item The category of objects \textbf{over the probe} \(y(\tau)\), written \(\DynSem_{/  y(\tau)}\), therefore consists precisely of pairs \((X, f)\), where:
+\[
+X\in\DynSem,\quad\text{and}\quad f:X\to y(\tau)
+\]
+is a natural transformation (a morphism of presheaves). Each such pair explicitly selects a particular semantic projection or "evaluation" at the moment \(\tau\).
+
+\item Philosophically, the probe \(y(\tau)\) represents the act of semantic measurement or witnessing at the precise instant \(\tau\). In other words, to be "over the probe" is to be explicitly situated or anchored at this instant. Thus, the slice category \(\DynSem_{/  y(\tau)}\) gathers exactly those semantic fields explicitly referencing, projecting onto, or being measured against this canonical time-probe.
+
+\item Could there be many probes \(y(\tau)\)? Indeed, yes --there is precisely one canonical probe for each moment in time. Given the timeline \(\Time\), we naturally have infinitely many probes:
+\[
+\{ y(\tau) \mid \tau\in\Time \}.
+\]
+
+Each probe \(y(\tau)\) defines its own slice category, corresponding to reasoning and semantics anchored at that exact time \(\tau\). Thus, while the global semantic structure is the entire presheaf topos, local reasoning at specific instants occurs within distinct slices, each determined by its unique probe \(y(\tau)\).
+\end{itemize}
+
+
+\section{Conversational contexts and slices}
+Having established this hierarchy, let's now explicitly position the \emph{context} \(\Gamma\) and the 
+
+The context \(\Gamma\) is itself a presheaf object, \(\Gamma:\DynSem\), but it plays a privileged role. It is the overarching narrative or background situation within which a type family \(A\) evolves. Formally, the context is interpreted as an object:
+\[
+\llbracket \Gamma \rrbracket \in \DynSem.
+\]
+
+
+This slice is a ``sub-archive'' or ``projection room,'' containing precisely all movie reels equipped with a clearly marked projection pointer at frame \(\tau\). 
+Intuitively, it corresponds to the main storyline or scenario --an encompassing semantic frame within which all other types and terms receive their meaning. We thus have clearly now:
+
+\begin{multline}
+\underbrace{\Gamma : \DynSem}_{\text{background context reel}} 
+\quad \supseteq \quad 
+\underbrace{A : \DynSem}_{\text{semantic concept reel within context}} 
+\quad\mapsto \\
+\underbrace{A(\tau)}_{\text{frame at time }\tau} 
+\quad\ni\quad 
+\underbrace{b : A(\tau)}_{\text{witnessing inhabitant (pixel)}}
+\end{multline}
+
+
+We summarize visually:
+
+\[
+\begin{aligned}
+&\underbrace{\DynSem}_{\text{archive (all movies)}}\\
+&\qquad\qquad \Big\downarrow\text{ restrict at time }\tau \\
+&\underbrace{\DynSem_{/  y(\tau)}}_{\text{projection room (local HoTT)}}\\
+&\quad\ni\quad \underbrace{\Gamma(\tau)}_{\text{context frame}} \quad\ni\quad
+\underbrace{A(\tau)}_{\text{concept frame within context}} \quad\ni\quad 
+\underbrace{b:A(\tau)}_{\text{pixel/witnessing inhabitant}}
+\end{aligned}
+\]
+
+Thus, we obtain a clear conceptual map of the semantic structure:
+
+- Context \(\Gamma\) is the global narrative --a presheaf in the overarching semantic archive.
+- Slice \(\DynSem_{/  y(\tau)}\) is the local projection room --providing the logical context at the exact instant \(\tau\).
+- Fibre \(A(\tau)\) is the static snapshot of semantic coherence at this instant.
+- Term \(b : A(\tau)\) is a concrete, constructive witness inhabiting the frame, confirming semantic coherence at that instant.
+
+For convenience, we summarize clearly in the following table:
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Notation} & \textbf{Cinematic analogy} & \textbf{Formal interpretation} \\
+\midrule
+\(\DynSem\) & Film archive & Presheaf topos \\
+\addlinespace
+\(\Gamma : \DynSem\) & Background narrative (context reel) & Object in the presheaf topos \\
+\addlinespace
+\(\DynSem_{/  y(\tau)}\) & Local projection room at time \(\tau\) & Slice topos at the time-probe \\
+\addlinespace
+\(A : \DynSem\) & Movie reel (type family) & Object in \(\DynSem\) \\
+\addlinespace
+\(A(\tau)\) & Single movie frame (snapshot) & Kan complex \\
+\addlinespace
+\(b : A(\tau)\) & Pixel in the frame (witnessing) & Element or inhabitant of fibre \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+

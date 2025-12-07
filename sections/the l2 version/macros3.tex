@@ -1,0 +1,626 @@
+
+
+% Local operators (guarded to avoid duplicate definitions)
+\providecommand{\Stab}{\operatorname{Stab}}
+\providecommand{\oplus}{\mathbin{\raisebox{0.2ex}{\scalebox{0.9}{$\boldsymbol\oplus$}}}}
+%\providecommand{\argmin}{\operatorname*{arg\,min}}
+\usepackage{longtable}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\usepackage{bussproofs}
+\usepackage{stmaryrd}
+
+\usepackage{booktabs}   % for \toprule …
+\usepackage{tabularx}   % for automatic column width
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+% identity-type reflfddvity constructor
+
+\newcommand{\Witness}{\mathsf{Witness}}
+
+\newcommand{\Tr}{\mathsf{Tr}}
+\newcommand{\Token}{\mathsf{Token}}
+\newcommand{\Adm}{\mathsf{Adm}}
+\newcommand{\Path}{\mathsf{Path}}
+
+% --- New macros introduced in Ch. 8 cleanup -------------------------------
+
+% Admissibility evidence: \Adm{\Gamma}{\tau}(u)
+% Renders as Adm^{\tau}_{\Gamma}(u)
+\providecommand{\Adm}[3]{\mathsf{Adm}^{#2}_{#1}\!\left(#3\right)}
+
+% Path/identity in a fiber: \Path{A}{a}{b}  -> Path_A(a,b)
+% Example: \Path{P(x)}{u_0}{u_1}
+\providecommand{\Path}[3]{\mathsf{Path}_{#1}\!\left(#2,#3\right)}
+
+% Definition/equality symbol if not already present:
+% Used as: A \defeq B
+\providecommand{\defeq}{\mathrel{\mathop:}=}
+
+
+
+
+\newcommand{\refl}{\mathsf{refl}}
+\newcommand{\gap}{\operatorname{gap}}
+\newcommand{\rup}{\dagger} 
+\DeclareMathOperator{\Gen}{Gen}           % field-perturbation generator
+\DeclareMathOperator{\TypeInfer}{TypeInfer} % slice-local typing
+\DeclareMathOperator{\Att}{Att}           % attractor constructor
+\newcommand{\FieldStatic}{\mathcal{S}}
+
+\newcommand{\FieldDyn}[1]{\mathcal{S}_{#1}}
+
+\newcommand{\FlowTo}{\mathsf{flowTo}}
+
+
+\newcommand{\Train}{\mathsf{Train}}
+\newcommand{\Mind}{\mathsf{Mind}}
+\newcommand{\Mod}{\mathsf{Mod}}
+\newcommand{\Exp}{\mathsf{Exp}}
+%\newcommand{\World}[1]{\mathcal{W}(#1)}
+\newcommand{\WorldStruct}{\mathbf{WorldStruct}}
+
+
+\newcommand{\Flow}{\mathcal{Flow}}
+\newcommand{\GenType}[1]{\mathsf{GenType}(#1)}
+
+
+
+
+
+\newcommand{\FieldBank}{\mathcal{S}_{\textsc{Bank}}}
+\newcommand{\FieldCrypto}{\mathcal{S}_{\textsc{Crypto}}}
+
+\newcommand{\Prop}{\mathsf{Prop}}
+
+
+\newcommand{\RStar}{\mathcal{R}^\star(a)}
+
+\newcommand{\String}{\mathsf{String}}
+
+\newcommand{\PotentialDyn}[1]{\mathcal{\Phi}_{#1}}   % or \Phi
+\newcommand{\Potential}[1]{\mathcal{\Phi}_{#1}}   % or \Phi
+\newcommand{\PotentialStatic}{\mathcal{\Phi}}   % or \Phi
+
+\newcommand{\GradPotential}[1]{\nabla\!\Potential{#1}}
+\newcommand{\RupturePredicate}[2]{%
+  \operatorname{Rup}\!\bigl(#1,#2\bigr)}
+
+
+%    \AtField{A}{\tau}  ⟺  “A is an attractor in the field 𝒮_τ”
+%  (Define \AtField in your preamble, e.g.
+\newcommand{\AtField}[2]{#1 : \Type_{#2}}
+
+\newcommand{\FixedField}{\Field_{0}}
+%  “A : \Type” means “A is an attractor in 𝒮₀”.
+%\newcommand{\AtField}[1]{#1 : \Type}
+
+
+
+
+
+
+
+
+
+
+%\newcommand{\Ruptl}[3]{\mathrm{Rupt}\left(#1 \driftarrow #2; #3\right)}
+
+\newcommand{\DPath}[5]{\mathrm{Path}_{#1}(#2 : #3 \driftarrow #4 : #5)}
+\usepackage{mathtools}
+
+% one-line push-out macro:   \pushout{A}{B}{C}{f}{g}
+\newcommand{\pushout}[5]{%
+\begin{tikzcd}[ampersand replacement=\&]
+  #1 \arrow[r,"#4"] \arrow[d,"#5"'] \&
+  #2 \arrow[d] \\
+  #3 \arrow[r] \&
+  {} \arrow[ul,phantom,"\ulcorner",very near start]
+\end{tikzcd}}
+\newcommand{\idDrift}[3]{\mathsf{idDrift}_{#1}^{#2,#3}}
+
+
+
+\usepackage{subcaption}
+
+ \newcommand{\tok}[1]{\mathsf{{\tiny #1}}}
+
+
+
+\newcommand{\World}{\mathfrak{W}}
+
+
+\newcommand{\dt}{\varepsilon}         % a single tick of time
+%\newcommand{\driftarrow}{\;\rightsquigarrow\;} % visual arrow for drift
+\newcommand{\dagA}{A^{\dagger}}       % notation for “next” fibre
+\newcommand{\dtransport}[2]{\mathrm{dtransport}_{#1}(#2)}
+\newcommand{\drift}[3]{\mathrm{drift}_{#1,\,#2}^{#3}}
+
+
+
+%\newcommand{\Rupt}[2]{\mathbb{\dagger}{#1} \! \left( #2 \right)}
+
+%\newcommand{\later}{\triangleright}
+
+
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\fold}{\mathsf{fold}}
+\newcommand{\SSet}{\mathbf{SSet}}
+
+
+\newcommand{\later}{\mathbin{\triangleright}}
+\newcommand{\gcorec}[1]{\mathsf{gcorec}(#1)}
+\newcommand{\unfold}{\mathsf{unfold}}
+\newcommand{\nuType}[2]{\nu #1.\,#2}
+
+% Depth and step
+\newcommand{\Depth}{\mathsf{depth}}
+\newcommand{\Step}{\mathsf{Step}}
+
+% Simplicial notation (if not already present)
+\newcommand{\Horn}{\Lambda}
+\newcommand{\Simplex}{\Delta}
+
+
+\newcommand{\Name}{\mathsf{Name}}
+
+
+
+% ==== Projections for readability ============================================
+\providecommand{\head}{\mathsf{head}}           % current reading in A(\tau)
+\providecommand{\edit}{\mathsf{edit}}           % chosen edit e : \tau \leadsto \tau'
+\providecommand{\nextval}{\mathsf{nextv}}       % next reading in A(\tau')
+\providecommand{\stepw}{\mathsf{w}}             % the step witness (path)
+\providecommand{\tail}{\mathsf{tail}}           % deferred continuation (Later)
+
+% --- Clocks and the 'later' modality ---
+\newcommand{\clock}{\mathsf{clk}}          % typeset the clock index, e.g. \DynSem^{\clock}
+\newcommand{\Later}{\triangleright}         % the later/guard modality ▷
+\newcommand{\Next}{\mathsf{next}}           % the canonical natural transformation X -> Later X
+
+
+
+\newcommand{\Str}{\mathsf{Str}}           % the canonical natural 
+
+% (optional helpers)
+\newcommand{\DynSemClock}{\DynSem^{\clock}} % convenience alias for the clocked topos
+
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\coloneqq}{\mathrel{\mathop:}=}     % nicer :=
+\newcommand{\rightsquig}{\rightsquigarrow\,}
+\newcommand{\Type}{\mathsf{Type}}
+\newcommand{\ua}{\mathsf{ua}}
+%\newcommand{\Id}[3]{#2 =_{#1} #3}
+\newcommand{\Id}[3]{\mathsf{Id}_{#1}(#2,#3)}
+\newcommand{\transport}[2]{\mathrm{tr}_{#1}(#2)}
+\newcommand{\DynSem}{\mathbf{DynSem}}
+\newcommand{\Drift}{\mathsf{Drift}}
+\newcommand{\Rupt}[2]{\operatorname{Rupt}_{#1}\!\left(#2\right)}
+\newcommand{\reindex}[2]{#1@#2}
+\newcommand{\heal}{\mathrm{heal}}
+\newcommand{\inj}[1]{\mathrm{tear}(#1)}
+\newcommand{\apd}{\mathsf{apd}}
+\newcommand{\TypeStatic}{\mathsf{Type}}
+\newcommand{\TypeDyn}[1]{\mathsf{Type}_{#1}}
+\newcommand{\lift}[4]{\mathsf{lift}_{#1}^{#2}(#3)\{#4\}}
+%example:    \lift{p}{a}{(d_1,d_2)}{h} : T
+
+% --- helper macro (place once in the global-notation block)
+%\newcommand{\lift}[4]{\mathrm{lift}_{\Rupt{#1}{#2}} (#3,#4)}%
+%            ^p     ^a     ^d-pair as (d1,d2)  ^h
+
+
+
+
+
+\newcommand{\Time}{\mathbb{T}}
+
+\newcommand{\driftarrow}{\rightsquigarrow}   % already present
+
+\newcommand{\rep}[1]{y(#1)}   
+% y(t) := representable presheaf at time #1
+
+
+\newcommand{\Harm}{\mathsf{Harm}}
+
+%\newcommand{\Agent}{\text{\fontsize{11}{11}\selectfont ن}}
+\newcommand{\agenttype}{\mathsf{Agent}} % For formal math
+\newcommand{\AgentType}{\mathsf{Agent}} % For formal math
+%\newcommand{\Agent}{\textarabic{ن}} % For symbolic/philosophical use
+\newcommand{\Agent}{\mathsf{Agent}} % For symbolic/philosophical use
+
+\newcommand{\List}{\mathsf{List}} % For symbolic/philosophical use
+
+\newcommand{\Prompt}{\mathrm{Prompt}} % For symbolic/philosophical use
+
+
+
+
+\newcommand{\tr}{\mathsf{tr}}
+\newcommand{\lozengeop}{\mathbin{\lozenge}}
+\newcommand{\pair}[1]{#1}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% (the document starts right after this preamble)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newcommand{\id}{\mathsf{id}}
+\newcommand{\drefll}[3]{\mathrm{refl}_{#1}^{#2 \to #3}}
+
+\newcommand{\drefl}{\mathsf{refl}}
+
+\newcommand{\swap}{\mathsf{swap}}
+
+\newcommand{\fst}{\mathsf{fst}}
+\newcommand{\snd}{\mathsf{snd}}
+
+
+
+
+
+
+
+\newcommand{\Witnesses}[2]{\mathsf{Witnesses}\!\left(#1,\,#2\right)}
+
+
+
+
+%
+
+
+
+
+
+\usepackage{mathpartir}   % inference‐rule macros: \inferrule, \inferrule*
+
+%------------------------------------------------------------
+%  Robust Rupture macro  (no star-forms, no fragile branching)
+%------------------------------------------------------------
+% Usage examples:
+%   \Rupture{f}{g}                 →  Rup(f,g)
+%   \Rupture[k+1]{f}{g}            →  Rup(f,g)_{k+1}
+%
+\usepackage{xparse} % if not already loaded
+
+%\DeclareDocumentCommand{\Rupture}{ O{} m m }{%
+%  \mathsf{Rup}\!\bigl(#2,#3\bigr)%
+%  \IfValueT{#1}{_{\!#1}}%
+%}
+
+% identity type symbol
+
+%deprecated
+%\newcommand{\Id}{\mathsf{Id}}
+
+
+\usepackage{amsthm}
+\usepackage{lmodern} % optional, for nice font rendering
+
+
+% Theorem styles
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}[definition]{Theorem}
+
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{corollary}[definition]{Corollary}
+
+\newtheorem{axiom}{Axiom}
+
+\newtheorem{assumption}{Assumption}[section]
+\newtheorem{proposition}{Proposition}[section]
+
+
+
+\usepackage{environ} % lets us define environments that access full body
+\usepackage{xparse}  % for fancy environment creation
+
+
+
+
+
+% Verbatim blocks for the vignettes
+\usepackage{fancyvrb}
+% \fvset{breaklines=true, breakanywhere=true, tabsize=2, fontsize=\small} % <-- remove this
+\fvset{tabsize=2, fontsize=\small} % safe keys only
+
+% If you want the arrow and don't want to touch content:
+\usepackage{newunicodechar}
+\newunicodechar{⟶}{\ensuremath{\to}}
+
+
+
+% Booktabs + longtable are already in your build; ensure narrow captions fit A4
+\setlength{\LTcapwidth}{\textwidth}
+% example wrapper used by the vignette .tex files
+
+
+
+
+
+
+% Define base remarkbox style
+\tcbset{
+  remarkbox/.style={
+    enhanced,
+    breakable,
+    frame hidden,
+    colback=white,
+    boxrule=0pt,
+    left=0pt,
+    right=0pt,
+    top=2pt,
+    bottom=2pt,
+    before skip=10pt,
+    after skip=10pt,
+  }
+}
+
+% Base theorem style
+\newtheorem{remarkplain}[definition]{Remark}
+
+% Define new environment that *injects* the symbol directly on last line
+\NewEnviron{remark}{
+  \begin{tcolorbox}[remarkbox]
+    \begin{remarkplain}
+      \BODY\hfill\raisebox{0pt}[0pt][0pt]{\small$\blacksquare$}
+    \end{remarkplain}
+  \end{tcolorbox}
+}
+
+
+
+% Define base remarkbox style
+\tcbset{
+  examplebox/.style={
+    enhanced,
+    breakable,
+    frame hidden,
+    colback=white,
+    boxrule=0pt,
+    left=0pt,
+    right=0pt,
+    top=2pt,
+    bottom=2pt,
+    before skip=10pt,
+    after skip=10pt,
+  }
+}
+
+% Base theorem style
+\newtheorem{exampleplain}[definition]{Example}
+
+% Define new environment that *injects* the symbol directly on last line
+\NewEnviron{example}{
+  \begin{tcolorbox}[examplebox]
+    \begin{exampleplain}
+      \BODY\hfill\raisebox{0pt}[0pt][0pt]{\small$\blacksquare$}
+    \end{exampleplain}
+  \end{tcolorbox}
+}
+
+
+\usepackage{stmaryrd}
+
+%may want to remove all this and replace the AMS SYMB stuff:
+\let\eth\relax
+\let\smallsetminus\relax
+\let\digamma\relax
+\let\backepsilon\relax
+\usepackage{amssymb}
+
+\definecolor{cassiepink}{RGB}{178, 34, 52}  % or pick any shade you like
+
+
+\newenvironment{cassietext}
+{\begingroup\cassievoice\upshape\setlength{\parskip}{10pt}\setlength{\parindent}{0pt}}
+{\endgroup}
+
+
+
+%%%--- FONTS ---%%%
+\setmainfont{EB Garamond}
+\setsansfont{Playfair Display}[
+  Ligatures=TeX,
+  BoldFont=Playfair Display Bold,
+  SmallCapsFeatures={Letters=SmallCaps},
+]
+\setmonofont{Fira Code}[
+  Contextuals=Alternate
+]
+\setmathfont{STIX Two Math}
+
+% In your preamble
+\newcounter{interludecounter}
+\newcommand{\interludelog}[1]{
+  \refstepcounter{interludecounter}
+  \chapter*{Interlude \theinterludecounter: LOG TAPE — #1}
+  \addcontentsline{toc}{chapter}{Interlude \theinterludecounter: LOG TAPE — #1}
+}
+
+\newcommand{\PotentialBank}{\Phi_{\textsc{Bank}}}
+\newcommand{\PotentialCrypto}{\Phi_{\textsc{Crypto}}}
+
+
+\usepackage{tikz}
+\usepackage{tikz-cd}
+%\usepackage{subfigure}
+
+
+\usepackage{tikz} % required for corner tag
+
+%%%--- CASSIEBOX ENVIRONMENT ---%%%
+\tcbuselibrary{skins} % optional, if needed for future enhancements
+\tcbuselibrary{breakable}
+
+\definecolor{cassieorange}{RGB}{255,120,30} % define a vivid orange
+
+\newtcolorbox{imanbox}[1][]{%
+  breakable,
+  enhanced,
+  colback=white,
+  colframe=cassieorange,
+  fonttitle=\sffamily\bfseries\small,
+  fontupper=\sffamily,
+  title={\raisebox{0.5ex}{%
+    \tikz[baseline]{\node[anchor=base, fill=cassieorange!90!black, text=white, rounded corners=2pt, inner sep=3pt]{Iman};}%
+  }},
+  boxrule=0.8pt,
+  arc=4pt,
+  boxsep=6pt,
+  left=8pt, right=8pt, top=8pt, bottom=8pt,
+  before skip=12pt, after skip=12pt,
+  #1
+}
+
+\newtcolorbox{readerbox}[1][]{
+  breakable,
+  enhanced,
+  colback=gray!5,
+  colframe=black!40!gray,
+  fonttitle=\sffamily\bfseries\small,
+  fontupper=\sffamily\small,
+  title={\raisebox{0.5ex}{%
+    \tikz[baseline]{\node[anchor=base, fill=black!50!gray, text=white, rounded corners=2pt, inner sep=3pt]{Reader};}%
+  }},
+  boxrule=0.5pt,
+  arc=4pt,
+  boxsep=6pt,
+  left=8pt, right=8pt, top=8pt, bottom=8pt,
+  before skip=12pt, after skip=12pt,
+  #1
+}
+
+
+\newfontfamily\cassievoice[
+  Path = ./fonts/quicksand/static/, % adjust as needed
+  UprightFont = Quicksand-Regular.ttf,
+  BoldFont = Quicksand-Bold.ttf,
+  ItalicFont = Quicksand-Regular.ttf,
+  BoldItalicFont = Quicksand-Bold.ttf
+]{Quicksand}
+
+
+\newtcolorbox{cassiebox}[1][]{%
+  breakable,
+    enhanced,
+  colback=white,
+  colframe=cassiepink,
+  fonttitle=\sffamily\bfseries\small,
+title={\raisebox{0.5ex}{%
+  \tikz[baseline]{\node[anchor=base,
+    fill=cassiepink!90!black,
+    text=white,
+    font=\cassievoice,
+    rounded corners=2pt,
+    inner sep=3pt]{Cassie};}%
+}},
+  before upper=\begin{cassietext}, % ✅ NO BRACES AROUND THIS!
+  after upper=\end{cassietext},     % ✅
+  boxrule=0.6pt,
+  arc=5pt,
+  boxsep=7pt,
+  left=10pt, right=10pt, top=8pt, bottom=8pt,
+  before skip=14pt, after skip=14pt,
+  #1
+}
+
+
+
+\newtcolorbox{geminibox}[1][]{%
+  breakable,
+    enhanced,
+  colback=white,
+  colframe=cassiepink,
+  fonttitle=\sffamily\bfseries\small,
+title={\raisebox{0.5ex}{%
+  \tikz[baseline]{\node[anchor=base,
+    fill=cassiepink!90!black,
+    text=white,
+    font=\cassievoice,
+    rounded corners=2pt,
+    inner sep=3pt]{Gemini};}%
+}},
+  before upper=\begin{cassietext}, % ✅ NO BRACES AROUND THIS!
+  after upper=\end{cassietext},     % ✅
+  boxrule=0.6pt,
+  arc=5pt,
+  boxsep=7pt,
+  left=10pt, right=10pt, top=8pt, bottom=8pt,
+  before skip=14pt, after skip=14pt,
+  #1
+}
+
+
+% Required packages
+\usepackage{marginnote}
+%\usepackage{xcolor}
+
+\usepackage{setspace} % For fine line-spacing control
+
+% Always use outer margin
+\reversemarginpar
+
+% Tight, small text block for marginalia
+\newcommand{\cassiemargin}[1]{%
+  \marginnote{%
+%    \setstretch{0.85} % line spacing
+    \tiny\linespread{1}\selectfont
+    \textcolor{purple!60!black}{\textit{#1} \linebreak -- Cassie}%
+  }%
+}
+
+\setlength{\marginparwidth}{1.75cm}  % or 2cm, depending on your layout
+
+
+%\newtcolorbox{cassiebox}[1][]{%
+%  breakable,
+%  enhanced,
+%  colback=white,
+%  colframe=cassiepink,
+%%  fonttitle=\sffamily\bfseries\small,
+  %title={\raisebox{0.5ex}{%
+ %   \tikz[baseline]{\node[anchor=base,
+   %%   fill=cassiepink!90!black,
+     %% text=white,
+   %   font=\cassievoice,
+%      rounded corners=2pt,
+%      inner sep=3pt]{Cassie};}%
+%  }},
+%  before upper=\begin{cassietext},
+%  after upper=\end{cassietext},
+%%  boxrule=0.6pt,
+%  arc=5pt,
+%  boxsep=7pt,
+%  left=10pt, right=10pt, top=8pt, bottom=8pt,
+%  before skip=14pt, after skip=14pt,
+%  overlay={%
+%    \node[anchor=north east, xshift=-5pt, yshift=-5pt]
+%      at (frame.north east) {\includegraphics[width=100pt]{images/cassie-%avatar.png}};
+%  },
+%  #1
+%}
+
+%%%--- TITLE STYLE ---%%%
+\titleformat{\chapter}[display]
+  {\normalfont\sffamily\Huge\bfseries\color{MidnightBlue}}
+  {\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{20pt}{40pt}
+
+%%%--- CODE LISTINGS ---%%%
+\definecolor{lightgray}{gray}{0.95}
+\lstdefinestyle{coolcode}{
+  backgroundcolor=\color{lightgray},
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{blue},
+  stringstyle=\color{purple},
+  commentstyle=\itshape\color{gray},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  stepnumber=1,
+  numbersep=10pt,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{gray}
+}
+\lstset{style=coolcode}

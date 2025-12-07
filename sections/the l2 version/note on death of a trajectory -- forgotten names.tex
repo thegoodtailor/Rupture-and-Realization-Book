@@ -1,0 +1,36 @@
+Yes, this is one of those subtle but critical design decisions where we have to be very clear what is **assumption for names (Ch. 8)** and what is **reserved for selves (Ch. 10)**. Let me try to set it up in a way that is rigorous but also leaves the door open:
+
+---
+
+### Proposed solution (for Ch. 8 — *names only*)
+
+* **Assumption A (default in Ch. 8).**
+  A name trajectory in $\Name(A)$ **does not terminate just because the surface token goes silent.** In DHoTT, the coinductive definition $\nu F_A$ keeps unfolding: silence is just the absence of realised occurrences in the SWL, not the collapse of the trajectory.
+
+* **Silent drift.**
+  Empirically, DAC still moves the embedding vector under $\FieldDyn{\tau}$. We simply don’t emit SWL rows during silence unless a basin boundary is crossed (rupture). In other words: “no mention” = “no log entry,” not “death.”
+
+* **Optional decay annotation.**
+  For pragmatic corpus analysis, we may annotate **decay heuristics** (e.g., a weight that decreases when a name hasn’t been realised for $N$ scenes). This is not part of DHoTT proper — it’s an **engineering layer** we can add to approximate “entropy of silence.”
+
+* **Death vs silence.**
+  We explicitly defer *death of a trajectory* to Chapter 10, where names are bundled into Selves. There, silence matters existentially: without re-realisation by co-witnessing, the bundle may fail. For names, silence = latent continuation; death = not modelled.
+
+---
+
+### How to phrase it in Chapter 8
+
+* In the main text:
+
+  > For the journey of a single name, silence is not death. The coinductive unfolding continues whether or not the token is realised in every scene. The Step–Witness Log is sparse: rows appear only when a name is re-mentioned or ruptured. Any notion of “entropy of silence” is a heuristic annotation, not part of the DHoTT calculus. The stronger question of whether a trajectory can *die* belongs to Chapter 10, when names are bundled into Selves.
+
+* In a **readerbox**:
+  we can spell out exactly what you just worried about: *isn’t silence in practice the slow fading of a name?* And we answer: yes, empirically we can measure decay of recall, but formally the name type never dies; only Selves do.
+
+---
+
+Would you like me to draft **§ 8.5.3 Name tracking across cuts** in LaTeX with:
+
+1. the silent drift vs entropy distinction (DHoTT vs DAC vs heuristic),
+2. a worked miniature (e.g. “cat” mentioned at $\tau_0$, absent for 3 turns, reappears at $\tau_4$),
+3. and a readerbox clarifying “silence ≠ death (for names)” but “death via entropy is reserved for Selves”?

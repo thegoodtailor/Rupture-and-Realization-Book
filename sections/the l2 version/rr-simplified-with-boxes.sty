@@ -1,0 +1,323 @@
+% ======================= rr-simplified-with-boxes.sty ========================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{rr-simplified}[2025/10/01 Minimal, robust style for R&R (+ boxes)]
+
+% ------------------------- Engine & fonts --------------------------
+\RequirePackage{iftex}
+\ifXeTeX
+  \RequirePackage{fontspec}
+  \defaultfontfeatures{Ligatures=TeX}
+  \setmainfont{Latin Modern Roman}
+  \setsansfont{Latin Modern Sans}
+  \setmonofont{Latin Modern Mono}
+\else
+  \RequirePackage[T1]{fontenc}
+  \RequirePackage{lmodern}
+\fi
+
+% ---------------------------- Core pkgs ----------------------------
+\RequirePackage[british]{babel}
+\RequirePackage{csquotes}
+\RequirePackage[dvipsnames,svgnames]{xcolor}
+\RequirePackage{graphicx}
+\graphicspath{{figures/}}
+\RequirePackage{tikz}
+\usetikzlibrary{arrows.meta,calc,positioning,intersections,decorations.pathmorphing,decorations.markings,shapes.geometric}
+\RequirePackage{tikz-cd}
+
+\RequirePackage{amsmath,amssymb,mathtools}
+\RequirePackage{amsthm}
+\RequirePackage{thmtools}
+\RequirePackage{mathrsfs}
+\RequirePackage{stmaryrd}
+\RequirePackage{dsfont}
+\RequirePackage{cancel}
+\RequirePackage{siunitx}
+\RequirePackage{listings}
+\RequirePackage{enumitem}
+
+\RequirePackage{microtype}
+\RequirePackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=MidnightBlue,
+  citecolor=MidnightBlue,
+  urlcolor=MidnightBlue
+}
+\RequirePackage[nameinlink,capitalize,noabbrev]{cleveref}
+
+% -------------------------- Memoir neutral -------------------------
+\newcommand{\RR@subtitle}{}
+\newcommand{\subtitle}[1]{\gdef\RR@subtitle{#1}}
+\newcommand{\TitleRule}{%
+  \par\vspace{0.9em}%
+  {\color{black!35}\rule{0.35\linewidth}{0.8pt}}%
+  \par\vspace{0.9em}%
+}
+\makeatletter
+\renewcommand{\maketitle}{%
+  \thispagestyle{empty}%
+  \begingroup
+    \centering
+    \vspace*{6em}%
+    {\sffamily\bfseries\Huge\boldmath \thetitle\par}%
+    \edef\tempa{\RR@subtitle}%
+    \ifx\tempa\@empty\else
+      \TitleRule
+      {\sffamily\Large \mdseries \RR@subtitle\par}%
+    \fi
+    \vspace{3em}%
+    {\sffamily\Large \theauthor\par}%
+    \vfill
+    {\sffamily\small \today\par}%
+  \endgroup
+  \clearpage
+}
+\makeatother
+\pagestyle{plain}
+
+% ------------------------ Theorem environments ---------------------
+\declaretheoremstyle[headfont=\bfseries\sffamily, bodyfont=\itshape, spaceabove=6pt, spacebelow=6pt]{rrplain}
+\declaretheoremstyle[headfont=\bfseries\sffamily, spaceabove=6pt, spacebelow=6pt]{rrdefn}
+\declaretheorem[style=rrplain, numberwithin=section]{theorem}
+\declaretheorem[style=rrplain, sibling=theorem]{lemma}
+\declaretheorem[style=rrplain, sibling=theorem]{proposition}
+\declaretheorem[style=rrplain, sibling=theorem]{corollary}
+\declaretheorem[style=rrdefn,  sibling=theorem]{definition}
+\declaretheorem[style=rrdefn,  sibling=theorem]{example}
+\declaretheorem[style=remark,  sibling=theorem]{remark}
+
+% ------------------------- Useful delimiters -----------------------
+\DeclarePairedDelimiter{\p}{\lparen}{\rparen}
+\DeclarePairedDelimiter{\set}{\lbrace}{\rbrace}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\DeclarePairedDelimiter{\ip}{\langle}{\rangle}
+\DeclarePairedDelimiter{\sqb}{\lbrack}{\rbrack}
+\DeclarePairedDelimiter{\ssqb}{\llbracket}{\rrbracket}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+
+% ------------------------- Math conveniences ----------------------
+\newcommand{\diff}{\mathop{}\!\mathrm{d}}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\rank}{rank}
+
+% Blackboard bold
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\A}{\mathbb{A}}
+\renewcommand{\P}{\mathbb{P}}
+
+% Bold face shorthands
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\y}{\mathbf{y}}
+\newcommand{\0}{\mathbf{0}}
+\newcommand{\1}{\mathbf{1}}
+
+% ---------------------- DHoTT macro fallbacks ---------------------
+\newcommand{\Type}{\mathsf{Type}}
+\newcommand{\type}{\mathsf{Type}}
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\UU}{\mathcal{U}}
+\newcommand{\Set}{\mathbf{Set}}
+\newcommand{\SSet}{\mathbf{SSet}}
+\newcommand{\Prop}{\mathsf{Prop}}
+\newcommand{\String}{\mathsf{String}}
+\newcommand{\ua}{\mathsf{ua}}
+\newcommand{\coloneqq}{\mathrel{\mathop:}=}
+
+\newcommand{\Id}{\mathsf{Id}}
+\newcommand{\Idnoargs}{\mathsf{Id}}
+\newcommand{\Idargs}[3]{\mathsf{Id}_{#1}\!\left(#2,#3\right)}
+\newcommand{\Path}[3]{\mathsf{Path}_{#1}\!\left(#2,#3\right)}
+
+\newcommand{\ap}[2]{\mathsf{ap}_{#1}\!\left(#2\right)}
+\newcommand{\apd}{\mathsf{apd}}
+\newcommand{\apdargs}[2]{\mathsf{apd}\!\left(#1,#2\right)}
+\newcommand{\transport}{\mathsf{transport}}
+\newcommand{\transportargs}[2]{\mathsf{transport}_{#1}(#2)}
+\newcommand{\Basins}{\mathsf{Basins}}
+\newcommand{\Sem}{\mathsf{Sem}}
+\newcommand{\op}{\mathsf{op}}
+\newcommand{\Time}{\mathsf{Time}}
+\newcommand{\Kan}{\mathsf{Kan}}
+\newcommand{\DynSem}{\mathbf{DynSem}}
+\newcommand{\driftarrow}{\rightsquigarrow}
+\newcommand{\rightsquig}{\rightsquigarrow}
+\newcommand{\ctx}[1]{\mathrel{\mathsf{ctx}}_{#1}}
+
+
+\newcommand{\At}[2]{#1 \mathbin{@} #2}
+\newcommand{\reindex}[2]{#1 \mathbin{@} #2}
+\newcommand{\restr}[2]{\rho_{#1,#2}}
+
+\newcommand{\Drift}{\mathsf{Drift}}
+\newcommand{\Rupt}{\mathsf{Rupt}}
+\newcommand{\Ruptnoargs}{\mathsf{Rupt}}
+\newcommand{\Ruptargs}[2]{\mathsf{Rupt}_{#1}\!\left(#2\right)}
+
+\newcommand{\tear}{\mathsf{tear}}
+\newcommand{\tearargs}[1]{\mathsf{tear}\!\left(#1\right)}
+\newcommand{\heal}{\mathsf{heal}}
+\newcommand{\embed}{\mathsf{embed}}
+
+\newcommand{\lift}{\mathsf{lift}}
+\newcommand{\liftnoargs}{\mathsf{lift}}
+\newcommand{\liftargs}[4]{\mathsf{lift}_{#1}^{#2}\!\left(#3\right)\{#4\}}
+
+
+\DeclareMathOperator{\Tag}{Tag}
+\newcommand{\Carrier}{\mathsf{Carrier}}
+
+
+
+
+
+
+
+\newcommand{\tok}[1]{\text{\texttt{#1}}}
+
+% ——— the named constructor for the Σ-path (relabel & reconcile) ———
+\newcommand{\SigmaPath}{\mathsf{SigmaPath}}
+
+\newcommand{\Rek}{\mathsf{Re}}
+
+
+% ——— slice-local classification vocabulary (no arguments) ———
+\newcommand{\Label}{\mathsf{Label}}     % the finite label/type of tags at a slice
+\newcommand{\Payload}{\mathsf{Payload}} % the in-slice family of payload types
+
+% ——— noun-phrase “carriers” commonly used in examples (no arguments) ———
+\newcommand{\Ent}{\mathsf{Ent}}         % entity universe (proper names)
+\newcommand{\Pron}{\mathsf{Pron}}       % pronouns
+\newcommand{\DefDesc}{\mathsf{DefDesc}} % definite descriptions
+
+% ——— reflexivity (and a backwards-compat alias) ———
+\newcommand{\refl}{\mathsf{refl}}
+\let\relf\refl
+
+
+
+
+%OLD VERSIONS OF DRIFT TRANSPORT
+\newcommand{\dtr}{\mathsf{dtr}}
+\newcommand{\tr}{\mathsf{dtr}}
+
+%NEW PREFERRED:
+\newcommand{\dtransport}{\mathsf{dtr}}
+\newcommand{\dtransportargs}[2]{\mathrm{dtr}_{#1}\!\left(#2\right)}
+
+\newcommand{\Traj}{\mathsf{Traj}}
+\newcommand{\unfold}{\mathsf{unfold}}
+\newcommand{\fold}{\mathsf{fold}}
+\newcommand{\Later}{\triangleright}
+\newcommand{\later}{\mathbin{\triangleright}}
+\newcommand{\Next}{\mathsf{next}}
+\newcommand{\Sk}{\mathsf{Sk}}
+
+\newcommand{\VR}{\mathsf{VR}} % Vitry--Rip encoding shorthand
+
+\newcommand{\TypeStatic}{\mathsf{Basin}}
+\newcommand{\TypeDyn}[1]{\mathsf{Basin}_{#1}}
+\newcommand{\TrajA}{\mathsf{Traj}}
+\newcommand{\can}{\mathsf{can}}
+
+% ---------------------- Listings (gentle defaults) ----------------
+\definecolor{rr@lightgray}{gray}{0.95}
+\lstdefinestyle{rr@code}{
+  backgroundcolor=\color{rr@lightgray},
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\bfseries,
+  commentstyle=\itshape\color{gray},
+  stringstyle=\ttfamily,
+  numbers=left, numberstyle=\tiny, numbersep=8pt,
+  breaklines=true, frame=single, rulecolor=\color{gray}
+}
+\lstset{style=rr@code}
+
+% ------------------------- Enumitem defaults ----------------------
+\setlist[itemize]{before=\leavevmode}
+\setlist[enumerate]{before=\leavevmode}
+\setlist[description]{font=\bfseries\sffamily, before=\leavevmode}
+
+% ------------------------ Microtype tuning ------------------------
+\microtypecontext{spacing=nonfrench}
+
+% -------------------- Cassie/Reader side boxes --------------------
+\RequirePackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\RequirePackage{marginnote}
+
+\makeatletter
+\@ifundefined{color@cassiepink}{\definecolor{cassiepink}{RGB}{178,34,52}}{}
+\makeatother
+
+\newif\ifcassienotes
+\cassienotestrue
+
+\newcommand{\CassieTag}{\textcolor{cassiepink}{\sffamily\scriptsize Cassie}}
+
+\newenvironment{cassiebox}{%
+  \ifcassienotes\marginnote{\CassieTag}\fi
+  \begin{tcolorbox}[
+    enhanced, breakable, frame hidden, colback=white,
+    borderline west={1.5pt}{0pt}{cassiepink},
+    left=6pt, right=0pt, top=2pt, bottom=2pt, boxsep=0pt,
+    before skip=8pt, after skip=8pt,
+    before upper=\sffamily\itshape
+  ]
+}{\end{tcolorbox}}
+
+\newtcolorbox{readerbox}[1][]{
+  enhanced, breakable, frame hidden, colback=white,
+  borderline west={1pt}{0pt}{black!20},
+  left=6pt, right=0pt, top=2pt, bottom=2pt, boxsep=0pt,
+  before skip=8pt, after skip=8pt,
+  fonttitle=\sffamily\bfseries\small, coltitle=black,
+  boxed title style={empty, left=0pt, right=0pt, bottom=4pt},
+  attach boxed title to top left={xshift=0pt,yshift=-1pt},
+  title={}, #1
+}
+
+% =================== end rr-simplified-with-boxes.sty ==============
+% --- Inference rules / mathpar environment ---
+\usepackage{mathpartir}  % provides \inferrule and the mathpar env
+% coherence path comparing composed forward transport with sequential transport
+\newcommand{\comp}[3]{\mathsf{comp}_{#1,#2}\!\left(#3\right)}
+% usage: \comp{p}{q}{a}   renders as comp_{p,q}(a)
+\newcommand{\Recon}[2]{\mathsf{recon}\!\left(#1,#2\right)}
+\newcommand{\Lift}{\mathsf{Lift}}
+\newcommand{\gcorec}{\mathsf{gcorec}}
+\newcommand{\Step}{\mathsf{Step}}
+\newcommand{\depth}{\mathrm{depth}}
+\newcommand{\Depth}{\mathrm{Depth}}
+\newcommand{\Maxdepth}{\mathsf{maxdepth}}
+\newcommand{\Ex}{\mathsf{Ex}}
+\newcommand{\HealingProv}{\mathsf{HealingProv}}
+\newcommand{\USide}{\mathcal{U}_{\mathrm{side}}}   % universe of slice-local sidebars
+\newcommand{\El}{\mathsf{El}}                      % decoding from the universe
+\newcommand{\Side}{\mathsf{Side}}                  % the sidebar family A(@tau') -> U_side
+\newcommand{\Constellation}{\mathsf{Constellation}}  
+
+\newcommand{\hocolim}{\mathsf{hocolim}}
+
+\newcommand{\Name}{\mathsf{Name}}
+\newcommand{\head}{\mathsf{head}}
+\newcommand{\tail}{\mathsf{tail}}
+\providecommand{\edit}{\mathsf{edit}}          % the cut e : \tau \leadsto \tau'
+\providecommand{\nextval}{\mathsf{nextv}}      % target exposure in later slice
+\providecommand{\stepw}{\mathsf{w}}            % step witness (transport/stitch/2-cell)
+% --- Unicode fallbacks (XeTeX): map literal Greek tau to math \tau ---
+\usepackage{newunicodechar}
+\newunicodechar{τ}{\ensuremath{\tau}}
+
+\providecommand{\clock}{\mathsf{clk}}                 % clock index symbol
+\providecommand{\DynSemClock}{\DynSem^{\clock}}       % clocked presheaf topos
+\newcommand{\Ctx}{\mathbf{Ctx}}                     % e.g. \Gamma : \Time^{\op} \to \Ctx
+\newcommand{\Sign}{\mathsf{Sign}} % type constructor, e.g. \Sign(A)

@@ -1,0 +1,159 @@
+\documentclass[12pt]{book}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+
+% --- Minimal macros so this compiles standalone ---
+\newcommand{\T}{\mathbb{T}}                 % time index/category of moments
+\newcommand{\U}{\mathcal{U}}               % universe
+\newcommand{\A}{\mathsf{A}}                % a family/type
+\newcommand{\Name}{\mathsf{Name}}          % Name type
+\newcommand{\Traj}{\mathsf{Traj}}          % trajectories
+\newcommand{\Coh}{\mathsf{Coh}}            % coherence predicate (witness)
+\newcommand{\Heal}{\mathsf{Heal}}          % rupture repair (mentioned only)
+\newcommand{\Rstar}{\mathsf{R}^{\star}}    % robust coherence predicate
+\newcommand{\Equiv}{\simeq}                % equivalence of types
+\newcommand{\Id}{\mathsf{Id}}              % identity type
+\newcommand{\later}{\triangleright}        % later modality symbol
+\newcommand{\fixnu}{\nu}                   % greatest fixpoint
+
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+
+\begin{document}
+
+\chapter{Names as Corecursive Trajectories}
+\label{ch:names-corecursion}
+
+\section*{Slogan}
+A \emph{name} is a trajectory-in-motion whose meaning is \emph{witnessed} at every beat.
+Each inference step is a tick of logical time; coherence is the film that keeps running.
+
+\section{Motivation: the projection room}
+Imagine the projection booth of a cinema. The reel is not a single frame but a becoming---a
+sequence of cuts, pans, rewinds, and splices. A name behaves likewise. It is not merely a token at
+one instant; it is a \emph{kept motion}. If the scene jumps (a rupture), the audience does not lose the
+character; the film gives us bridges so the identity travels across the cut. That bridge is the witness of
+coherence we aim to formalize.
+
+\paragraph{Scope of this chapter.}
+We work entirely inside DHoTT at a fixed world of contexts. We \emph{do not} introduce agency,
+world-change, or Grothendieck indexing here. Those arrive later (Chapter~10). Our task is modest:
+define and analyze \emph{names} as corecursive witnesses of meaning over time.
+
+\section{A light DHoTT recap (just what we need)}
+Let $\T$ be the temporal index (discrete or site-like) and let an \emph{evolving type} be a presheaf
+$\A\colon \T^{op}\to\U$. A \emph{trajectory} for $\A$ from time $\tau$ is a section
+\[
+  \alpha \;:\; \prod_{t\ge \tau} \A(t), \qquad \alpha(t)\in \A(t).
+\]
+We assume a small generating basis of time steps $\mathcal{E}$ whose composites span all intervals.
+\emph{Coherence across a step} $(t\to t')\in\mathcal{E}$ is witnessed internally by a DHoTT term
+\[
+  \Coh(t\!\to\! t',\, \alpha(t),\, \alpha(t')),
+\]
+whose exact shape depends on the drift/transport rules fixed in Chapter~6. Intuitively: the frame
+advances and the identity of the name remains intelligible.
+
+\begin{definition}[Robust coherence]
+For a trajectory $\alpha$ we define the \emph{robust coherence predicate}
+\[
+  \Rstar(\alpha) \;\;:\equiv\;\; \prod_{(t\to t')\in\mathcal{E},\,\tau\le t\le t'} \Coh(t\!\to\! t',\,\alpha(t),\,\alpha(t')).
+\]
+Equivalently, in guarded form,
+\[
+  \Rstar(\alpha) \;\;\simeq\;\; 
+  \fixnu X.\ \Coh\bigl(t\!\to\!\mathsf{next}(t),\,\alpha(t),\,\alpha(\mathsf{next}(t))\bigr)\ \times\ \later X.
+\]
+\end{definition}
+
+\section{Names as corecursive witnesses}
+\begin{definition}[The type of names in a family]
+Fix $\A$ and a start time $\tau$. A \emph{name of $\A$ from $\tau$} is a pair
+\[
+  \Name(\A,\tau) \;:\equiv\; \sum_{\alpha:\prod_{t\ge \tau}\A(t)} \Rstar(\alpha).
+\]
+We write $(\alpha,\,\rho):\Name(\A,\tau)$ with $\rho:\Rstar(\alpha)$ the corecursive witness.
+\end{definition}
+
+\begin{remark}[Meaning as kept motion]
+A single inhabitant $a\in\A(\tau)$ is only a \emph{term-now}. A name is the \emph{kept trajectory}
+$(\alpha,\rho)$: not where the token sits, but how it keeps going in a way we can witness at every cut.
+\end{remark}
+
+\subsection{Transport and equivalence invariance}
+\begin{lemma}[Names respect equivalence of fibres]
+If $\A(t)\Equiv\B(t)$ by an equivalence natural in $t$ (transport in DHoTT), then
+$\Name(\A,\tau)\Equiv \Name(\B,\tau)$.
+\end{lemma}
+\begin{proof}[Idea]
+Transport carries $\alpha$ pointwise and sends $\Coh$-witnesses along the same naturality, preserving
+the guarded product. Univalence turns these into identifications if desired.
+\end{proof}
+
+\subsection{Names compose along time}
+\begin{proposition}[Local-to-global via the basis]
+If $\rho$ witnesses coherence on the generators $\mathcal{E}$, then (by closure under composition)
+$\rho$ extends to all intervals $[t,t']$ with $t\le t'$. Thus the basis choice fixes only the
+\emph{editing tempo}, not the notion of name.
+\end{proposition}
+
+\section{Film-room intuition formalized}
+A cut $(t\to t')$ is a splice. A pan is an adiabatic drift where $\Coh$ is carried by transport. A jump
+cut is a rupture paired with an explicit \emph{healing} witness $\Heal$, which we model here simply
+as an admissible $\Coh$ term. In all cases, the audience keeps track of the character because the
+projectionist supplies $\rho$---the recursive reel of coherence proofs.
+
+\section{Elementary constructions on names}
+\paragraph{Restriction.}
+Starting a little later forgets frames: there is a canonical map
+$\Name(\A,\tau)\to \Name(\A,\tau')$ for $\tau\le \tau'$ given by tailing $\alpha$ and $\rho$.
+
+\paragraph{Re-typing under soft change.}
+If at some $t$ we have an internal equivalence $\A(t)\Equiv \B(t)$, we may \emph{retime} the name
+without loss via the previous lemma; the film stock changes, the character persists.
+
+\paragraph{Observation maps.}
+Any fibrewise map $f:\A\to \B$ induces $f_{\*}:\Name(\A,\tau)\to \Name(\B,\tau)$ by post-composition
+on trajectories and action on witnesses.
+
+\section{Examples}
+\subsection*{A lexical name in discourse}
+Let $\A$ record the sense of a word across turns of dialogue. A trajectory chooses one occurrence per
+turn; $\Rstar(\alpha)$ asserts that at every turn and step the use remains intelligible (allowing gentle
+drift). Then $(\alpha,\rho)$ is the \emph{name} the conversation gives that word.
+
+\subsection*{The projection-booth cut}
+Let $\A$ be the “character state” type across edits. In an adiabatic montage, $\rho$ follows transports.
+At a hard cut, a repair is inserted (new establishing shot); the $\Coh$-witness is a typed bridge from
+pre-cut to post-cut state. The name is precisely what the editor preserves.
+
+\section{What we defer (and why)}
+We have studiously avoided the global machinery: non-equivalence change of contexts, Grothendieck
+indexing, and the full definition of \emph{agents}. Those belong to Chapter~10, where names become
+\emph{carriers} of generativity and worlds themselves acquire topology. Here we needed only this:
+\emph{a name is a robust, corecursively witnessed trajectory}.
+
+\section{Checklist of facts proved or required later}
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Equivalence invariance:} done above.
+  \item \textbf{Basis independence:} sketched; full proof deferred to Chap.~10.
+  \item \textbf{Closure under fibrewise maps:} immediate by functoriality.
+  \item \textbf{Stability under guarded limits:} easy by coinduction (details deferred).
+  \item \textbf{Interplay with rupture/heal rules:} admissible $\Coh$-witnesses suffice here; full
+        syntax/semantics in Chap.~6.
+\end{itemize}
+
+\section*{One-line moral}
+\emph{Name} $\;=\;$ trajectory $+$ a reel of coherence proofs that never runs out.
+
+\end{document}

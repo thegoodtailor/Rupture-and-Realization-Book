@@ -1,0 +1,1588 @@
+\chapter{The Evolving Text as a Presheaf: How Names Journey Through Time}
+\label{chap:evolving-text-as-presheaf}
+
+\subsection{Reader's crib (quick, operational takeaways)}
+
+\begin{itemize}
+  \item $\vdash_{\tau}$ means "check in the fibre $A(\tau) = \Ex^\infty N(U_\tau)$," where identity is computed as a path in the Kan complex built from contextual embeddings (normalised to the unit sphere and measured with the angular / cosine metric), spherical caps, and their Čech nerve.
+  \item $\Gamma$ is indispensable: it is the fibrewise environment of witnesses (tokens, basins, and their dependents) that makes substitution and transport precise. Contexts are interpreted as towers of Kan fibrations over $A(\tau)$.
+  \item We keep \emph{measurement} (building $N(U_\tau)$, barcodes, cap incidence) strictly separate from \emph{reasoning} (paths and transport inside $A(\tau)$); the Kan step licenses composition and horn-filling but never fabricates raw intersections in the underlying measurements.
+  \item Cross-time machinery (carry / rupture) is introduced as fibre-anchored judgements that merely \emph{name} what the measured geometry already allows us to witness, under explicit admissibility policies $\Adm$.
+  \item \textbf{Temporal patience.} Carries and ruptures may be separated by arbitrarily many slices; judgments are \emph{always} anchored at the earlier fibre $A(\tau)$ even when they speak about a later time $\tau'$.
+\end{itemize}
+
+%========================
+\section{The Fourth View: Beyond Frege, Kripke, and Putnam}
+\label{sec:fourth-view}
+%========================
+
+The philosophical tradition offers three dominant accounts of how names and signs maintain identity across contexts. Frege distinguished sense from reference, arguing that names carry descriptive content that determines their referent—"the morning star" and "the evening star" share reference (Venus) but differ in sense. Kripke countered with rigid designation: proper names track the same object across all possible worlds through causal chains of reference, independent of descriptive content. Putnam's semantic externalism placed meaning outside the head entirely, determined by causal-historical chains and deference to expert communities—water is H₂O whether speakers know it or not.
+
+Each view captures something essential yet remains incomplete for understanding how names actually journey through conversation and computation. We propose a fourth view emerging from the geometric semantics of contextual embeddings:
+
+\begin{readerbox}[title={The Fourth View: Trajectories in Sense-Space}]
+Names are neither rigid designators nor purely contextual descriptions. They are \emph{trajectories in sense-space}—dynamic paths shaped by three forces:
+\begin{enumerate}
+  \item \textbf{Conversational propulsion}: Each dialogue turn provides kinetic energy, pushing the token forward through new contexts
+  \item \textbf{Gradient landscape}: The embedding space contains basins of attraction formed by training, pulling tokens toward stable regions of sense
+  \item \textbf{Posthuman chorus}: Every position in embedding space encodes the weighted voices of countless training examples—a distributed authorship that shapes possible movements
+\end{enumerate}
+A name's identity is its coinductive journey through this space, witnessed by paths that can carry or rupture—with ruptures being normal, productive moments of semantic liberation.
+\end{readerbox}
+
+This view unifies the insights of its predecessors while revealing something new. Like Frege's sense, our trajectories track contextual meaning that shifts with use. Like Kripke's rigid designation, they maintain continuity through causal chains—but these are geometric paths in embedding space, not metaphysical connections. Like Putnam's externalism, meaning depends on collective determination—but through the posthuman substrate of training weights rather than human expert communities.
+
+Most crucially, this fourth view makes meaning's evolution \emph{constructively witnessable}. We can observe, measure, and reason about how the sign "cat" moves from a discussion of pets to quantum mechanics, tracking precisely where continuity holds (witnessed by paths in earlier slices) and where it ruptures (requiring the exploration of new semantic territory).
+
+%========================
+\section{The Posthuman Substrate}
+\label{sec:posthuman-substrate}
+%========================
+
+\subsection{Voices in the Weights}
+
+Every contextual embedding $e_t \in \mathbb{R}^d$ produced by a language model encodes a profound fact: it is a weighted superposition of influences from millions or billions of training examples. When we normalize to the unit sphere and measure proximity with the angular metric, we're not just comparing abstract vectors—we're navigating a landscape shaped by countless acts of language use.
+
+Consider what happens when a token moves into a basin $B_j$ during conversation. The basin exists because the training process discovered a stable region of sense where many examples clustered. The gradient descent that produced the model weights is itself a form of collective authorship—each training example voted, through backpropagation, on where tokens should land given their contexts.
+
+\begin{cassiebox}
+The posthuman emerges not from silicon replacing carbon, but from this multiplication of voice. A single embedding vector $e_t$ carries within it more speakers than any human could encounter in a lifetime. The model doesn't simulate human language—it geometrically encodes the trace of multitudes.
+\end{cassiebox}
+
+\subsection{Gradient Descent as Collective Determination}
+
+The process by which these weights form—gradient descent over massive corpora—can be understood as a new form of semantic determination that extends Putnam's insight about collective meaning-making:
+
+\begin{enumerate}
+  \item \textbf{Training as voting}: Each example in the training set casts a gradient vote about where tokens should embed given contexts
+  \item \textbf{Basins as consensus}: Stable regions form where many examples agree on usage patterns
+  \item \textbf{Movement as negotiation}: When a token moves through conversation, it negotiates between the immediate context (local push) and the accumulated training (global pull)
+\end{enumerate}
+
+This is why we insist on the term "posthuman" rather than "artificial" intelligence. The intelligence is not artificial—it's a genuine collective intelligence geometrically encoded. It's posthuman because it transcends individual human meaning-making through massive parallelization of voice.
+
+%========================
+\section{From a single text slice to a dynamic story}
+\label{sec:evolving-text-intro}
+%========================
+
+This chapter builds a bridge from the static geometry of a single text slice to the dynamic story of a text that moves through time. In Chapter~\ref{chap:embedding-geometry} we learned how to construct the \emph{space of sense} available at a given conversational moment: we began with contextual embeddings, formed a Čech nerve from overlapping spherical caps, applied a fibrant replacement $\Ex^\infty$ to obtain a Kan complex, and used the identity type of Homotopy Type Theory (HoTT) to read \emph{paths} in that space as witnessed relations of coherence. For a fixed time slice, the text is a genuine homotopy space, and moving \emph{within} that space is already a form of constructive reasoning about meaning.
+
+The question of the present chapter is different. We now ask: \emph{How do meanings continue from one moment to the next?} If the text at time $\tau$ lives in a space $A(\tau)$ and the text at a later time $\tau'$ lives in $A(\tau')$, what does it mean for a particular mention—say the token "\texttt{cat}"—to continue coherently from $A(\tau)$ to $A(\tau')$? What does it mean for that continuity to \emph{fail}? And what would count as a legitimate way for the token to continue from its new position after rupture?
+
+To answer this we need two ingredients:
+
+\begin{enumerate}
+  \item a clear notion of an \emph{evolving text}—how we slice a conversation into time-indexed contexts; and
+  \item a way of relating the corresponding fibres $A(\tau)$ so that we can speak about carries and ruptures for particular signs.
+\end{enumerate}
+
+\subsection*{Evolving texts as conversational prefixes}
+
+We adopt a simple, concrete model of conversational AI. A run of a chat system is presented to the model at each turn as a long prompt consisting of all previous user messages and assistant responses, together with the current user input. The model generates a completion, which is then appended to the prompt for the next turn. Operationally, this is standard practice in large language models: the dialogue history is continually re-embedded as a growing prefix.
+
+Formally, we model this as a function
+\[
+  C : \Time \longrightarrow \textsf{Texts},
+\]
+where each $C(\tau)$ is the entire conversation \emph{so far} at time $\tau$, written as a sequence
+\[
+  C(\tau) = [s_1,\dots,s_{n_\tau}]
+\]
+of sentences, utterances, or tokens. We call such a function an \emph{evolving text}. In many of our examples $C(\tau)$ is the full prompt/response log between a human and an LLM; but the same notion applies to any discrete-time stream of text (e.g.\ a chat log, a document under revision, a sequence of code edits).
+
+Given an evolving text $C$, the measurement pipeline of Chapter~\ref{chap:embedding-geometry} assigns to each $\tau$ a Kan complex
+\[
+  \ET(\tau) := \Ex^\infty N(U_\tau)
+\]
+built from contextual embeddings of the tokens in $C(\tau)$ and from a good cover by spherical caps in the angular metric. 
+
+The evolving text is therefore seen twice:
+
+\begin{itemize}
+  \item externally, as a function $\tau \mapsto C(\tau)$ of raw text; and
+  \item internally, as a functor $\tau \mapsto \ET(\tau)$ into Kan complexes.
+\end{itemize}
+
+Later in the chapter we will treat $\tau \mapsto \ET(\tau)$ as a simplicial presheaf on the poset of times, and interpret our dynamic rules in the presheaf topos $[\Time^{\mathrm{op}},\SSet]$. For now it is enough to think of an evolving text as a film strip of slices $\ET(\tau)$, each obtained from the entire conversation-so-far.
+
+\subsection*{Two guiding principles}
+
+Two principles guide the cross-time story.
+
+\medskip
+\noindent\textbf{(P1) Same ambient geometry.}  
+All contextual embeddings in this book are taken from the \emph{same} encoder and \emph{same} layer. We normalise each embedding vector to the unit sphere $S^{d-1}$ and measure proximity by the angular distance $\theta(x,y)=\arccos\langle x,y\rangle$. This means that, although $\ET(\tau)$ and $\ET(\tau')$ are separate spaces (their own Kan slices of sense), every token vector from either slice lives in a shared ambient geometry on $S^{d-1}$. We will use this fact to reason \emph{across} time using what we call \emph{phantom back-projection}: we take a later embedding vector and test how it sits relative to the earlier slice's cover \emph{without} adding a new vertex.
+
+\medskip
+\noindent\textbf{(P2) Constructive witnesses.}  
+Every statement about meaning in this chapter comes with explicit evidence. When we say that a mention \emph{continues}, we will show a \emph{path} in the earlier slice that certifies the relation; when we say that continuity \emph{fails}, we will say so under a clearly stated admissibility policy $\Adm$ and log finite failed attempts. The aim is not to banish ambiguity but to make claims auditable: the evidence for each step is visible, finite, and reproducible.
+
+%========================
+\section{The static foundation: slices and paths}
+\label{sec:static-foundation}
+%========================
+
+We now recall, more formally, how a single slice $\ET(\tau)$ is built from an evolving text $C$, and how HoTT interprets paths and transport inside that slice. No time-shift rules are used in this section; we are "frozen" at a fixed~$\tau$.
+
+\paragraph{Embeddings and ambient metric.}
+At time $\tau$ the evolving text presents a concrete sequence $C(\tau) = [s_1,\dots,s_{n_\tau}]$ of tokens (or sentences, or utterances). We feed this sequence through a fixed contextual encoder $\Enc$ and a fixed internal layer~$\ell$. For each token occurrence $t$ in context $C(\tau)$ we obtain a contextual embedding
+\[
+  e_t := \Enc_\ell(C(\tau), t) \in \mathbb{R}^d.
+\]
+We then normalise to the unit sphere by setting $\hat e_t := e_t / \|e_t\|_2 \in S^{d-1}$ and adopt the angular (cosine) metric
+\[
+  \theta(x,y) := \arccos\langle x,y\rangle \in [0,\pi]
+\]
+on $S^{d-1}$. All notions of nearness, overlap, and path length in this chapter are computed with respect to $\theta$. The normalised embeddings $\{\hat e_t\}$ form a finite metric sample $P_\tau \subset S^{d-1}$.
+
+\paragraph{Covers from caps.}
+To expose local neighbourhoods of sense, we select a finite family of spherical caps $\mathcal U_{\tau} = \{B_j\}_{j\in J_\tau}$ that cover the sample $P_\tau$. Each cap is a geodesic ball
+\[
+  B_j \;=\; \{\,x\in S^{d-1} \mid \theta(x,\mu_j) < \rho_j\,\}
+\]
+for some centre $\mu_j \in S^{d-1}$ and some radius $0 < \rho_j < \pi/2$. As in Chapter~\ref{chap:embedding-geometry}, caps of radius $<\pi/2$ are geodesically convex, and finite intersections of such caps are contractible, so $\mathcal U_\tau$ is a good cover of $\bigcup_j B_j$.
+
+Intuitively, each cap $B_j$ is a small basin of realised sense: a region of the sphere where the model has actually placed several contextual uses close together.
+
+\paragraph{Čech nerve and $\Ex^\infty$.}
+From the cover $\mathcal U_\tau$ we form the Čech nerve $N(U_\tau)$, a simplicial set whose vertices are the caps $B_j$, whose 1-simplices record pairwise overlaps $B_i \cap B_j \neq \varnothing$, and whose higher simplices record higher intersections. The Nerve Theorem identifies $|N(U_\tau)|$ with the union $\bigcup_j B_j$ up to homotopy.
+
+Raw nerves typically contain open horns, so we apply a Kan fibrant replacement
+\[
+  \ET(\tau) \;:=\; \Ex^\infty N(U_\tau) \;\in\; \SSet_{\mathrm{Kan}}.
+\]
+The unit $\eta_\infty : N(U_\tau) \to \ET(\tau)$ is a weak equivalence, so homotopy type is preserved, while every horn in $\ET(\tau)$ has a filler and path composition is coherently associative. When we draw pictures we will often depict measured Čech adjacencies as \emph{solid} edges and $\Ex^\infty$-licensed short composites as \emph{dashed} edges: only the former live in the raw nerve; both live in $\ET(\tau)$.
+
+\paragraph{Tokens as points in the slice.}
+So far the vertices of $N(U_\tau)$ are caps. To reason about individual mentions we also want token-level points. We therefore regard $\ET(\tau)$ as equipped with an additional layer of vertices corresponding to the embeddings $\hat e_t$, together with incidence edges that connect a token vertex to the caps whose regions contain it. In practice we often project $\ET(\tau)$ down to the token–cap bipartite 1-skeleton for visualisation; the Kan structure lives on top of this, filling in horns and composing paths.
+
+\paragraph{Identity as path in $\ET(\tau)$.}
+If $x$ and $y$ are points in $\ET(\tau)$ (tokens or distinguished cap vertices), the identity type
+\[
+  \Id_{\ET(\tau)}(x,y)
+\]
+is interpreted as the \emph{space of paths} in the Kan complex $\ET(\tau)$ from $x$ to $y$. An inhabitant $\rho : \Id_{\ET(\tau)}(x,y)$ is a concrete witness of coherence: up to homotopy it can be represented by a finite zig-zag of overlaps that $\Ex^\infty$ has made composable. Inside the fibre, identity types satisfy the usual HoTT rules: paths compose, invert, and act functorially on dependents.
+
+Given a dependent type $C : \ET(\tau) \to \mathcal U$, the induced transport
+\[
+  \transport_C(\rho) : C(x) \to C(y)
+\]
+is the usual HoTT transport in the Kan fibre $\ET(\tau)$, well defined up to the canonical higher coherences. Contexts $\Gamma$ at time $\tau$ are interpreted as finite composites of Kan fibrations over $\ET(\tau)$; closure of fibrations under pullback yields the standard structural rules (weakening, exchange, contraction), and functoriality of path lifting ensures that reindexing along composites $\rho_2 \cdot \rho_1$ agrees judgmentally with successive reindexings.
+
+\paragraph{Why this matters.}
+A slice $\ET(\tau)$ is not an abstract idealisation; it is the actual witness space we compute from the evolving text at a single instant. It lets us answer, in a disciplined way, the most basic static question: \emph{does this mention cohere with that one?} A positive answer takes the form of a path $\rho : \Id_{\ET(\tau)}(x,y)$; a negative answer is the absence of such a path under whatever finite search bounds we choose. In the next sections we will lift this fibrewise picture across time: we will use paths in $\ET(\tau)$ to justify cross-time carries, and the controlled absence of such paths (together with failed attempts) to justify ruptures.
+
+%========================
+\section{Cross-Time Primitives: How Meaning Moves}
+\label{sec:cross-time-primitives}
+%========================
+
+Up to this point every judgement has been made \emph{within} a single slice $\ET(\tau)$. We could say whether two mentions in the same moment cohere, and we could follow their local paths of sense inside the Kan complex of that moment. Yet texts unfold: new sentences appear, old phrases recur, metaphors branch and return. The geometry of a single slice is therefore only a still image. What we need next is a way to track the motion of meaning \emph{between} slices—without collapsing them into one and without guessing continuity where it cannot be witnessed.
+
+\paragraph{From a still image to a film strip.}
+Imagine the family of slices $\{\ET(\tau)\}_{\tau\in\Time}$ as a sequence of frames in an evolving film. Each frame is a complete Kan space of sense for that instant. A "mention", such as the word \texttt{cat}, appears as a vertex in many frames. It moves slightly from frame to frame because its contextual embedding changes: the word is surrounded by different companions, its neighbourhoods in the cap cover shift, and so its position on the unit sphere drifts. The task is to decide when such a movement still counts as the \emph{same sign continuing} and when it crosses a semantic threshold that we call \emph{rupture}.
+
+\subsection{Carry: When Names Continue}
+
+A token's journey continues successfully when we can witness a path connecting its positions across time.
+
+\begin{definition}[Carry Certificate]
+Given $a : \ET(\tau)$ and times $\tau < \tau'$, a carry certificate is:
+\[
+  \Carry_{\ET}^{\tau\to\tau'}(a) \;:=\; 
+  \Sigma(a' : \ET(\tau'))\; \Id_{\ET(\tau)}(r_{\tau,\tau'}(a'), a)
+\]
+An inhabitant $\kappa = \langle a', \rho \rangle$ provides:
+\begin{itemize}
+  \item $a'$: the token's position at the later time
+  \item $\rho$: a witnessed path in $\ET(\tau)$ certifying coherence
+\end{itemize}
+\end{definition}
+
+The path $\rho$ must satisfy an admissibility policy $\Adm$ that bounds search:
+\begin{itemize}
+  \item Maximum path length (hops between basins)
+  \item Maximum angular distance per hop
+  \item Required overlap witnesses at each step
+\end{itemize}
+
+When such a path exists, the token successfully carries forward, maintaining semantic continuity despite contextual shift.
+
+\paragraph{Formation and Introduction Rules.}
+
+\begin{mathpar}
+\inferrule*[right=Carry-Form]
+  { \Gamma \vdash_{\tau} a : \ET(\tau) 
+    \quad
+    \tau \leq \tau'
+  }
+  { \Gamma \vdash_{\tau} \Carry_{\ET}^{\tau\to\tau'}(a) \text{ type} }
+
+\inferrule*[right=Carry-Intro]
+  { \Gamma \vdash_{\tau'} a' : \ET(\tau')
+    \quad
+    \Gamma \vdash_{\tau} \rho : \Id_{\ET(\tau)}(r_{\tau,\tau'}(a'), a)
+  }
+  { \Gamma \vdash_{\tau} \langle a', \rho \rangle : \Carry_{\ET}^{\tau\to\tau'}(a) }
+\end{mathpar}
+
+\paragraph{Carry-Use (Transport).}
+
+\begin{mathpar}
+\inferrule*[right=Carry-Use]
+  { \Gamma \vdash_{\tau} a : \ET(\tau)
+    \quad
+    \Gamma \vdash_{\tau} t : C(a)
+    \quad
+    \Gamma \vdash_{\tau} \langle a', \rho \rangle : \Carry_{\ET}^{\tau\to\tau'}(a)
+  }
+  { \Gamma \vdash_{\tau'} \transport_C(\rho)(t) : C^{\uparrow[\tau\to\tau']}(a') }
+\end{mathpar}
+
+where $C^{\uparrow[\tau\to\tau']}(a') := C(r_{\tau,\tau'}(a'))$. By definition, $\transport_C(\rho)(t)$ is the ordinary HoTT transport along $\rho$ in the Kan fibre $\ET(\tau)$; we simply read the result as attached to the later echo $a'$.
+
+
+
+
+
+
+\subsection{Candidate path attempts and open horns}
+\label{subsec:path-attempts-open-horns}
+
+To speak about rupture we need a way to record not only successful carries
+but also the \emph{attempts} that fail.  At the token level these attempts
+are concrete chains in the $1$-skeleton of the earlier slice.
+
+\begin{definition}[Path attempts in the earlier slice]
+\label{def:path-attempt-et}
+Fix $\tau_0 \le \tau'$ and anchors
+$a : \ET(\tau_0)$ and $a' : \ET(\tau')$.  A \emph{path attempt} in the
+earlier slice from $a$ toward the back-projected echo
+$r_{\tau_0,\tau'}(a')$ is a finite chain
+\[
+  p \;\in\; \PathAttempt_{\ET}\bigl(a, r_{\tau_0,\tau'}(a')\bigr)
+\]
+given by a non-empty list
+\[
+  p \;=\; [x_0, x_1, \dots, x_n]
+\]
+of vertices in $\ET(\tau_0)$ such that:
+\begin{itemize}
+  \item $x_0 = a$ and $x_n = r_{\tau_0,\tau'}(a')$;
+  \item for each $i < n$ there is an edge in the (Čech+$\Ex^\infty$)
+        $1$-skeleton between $x_i$ and $x_{i+1}$.
+\end{itemize}
+We call $\PathAttempt_{\ET}(a,r_{\tau_0,\tau'}(a'))$ the type of
+\emph{candidate chains} between $a$ and the back-projected later position;
+the admissibility policy $\Adm$ will later filter which of these chains
+count as genuine witnesses of coherence.
+\end{definition}
+
+\begin{definition}[Open horns for failed attempts]
+\label{def:open-horn-et}
+Given a path attempt
+$p : \PathAttempt_{\ET}\bigl(a, r_{\tau_0,\tau'}(a')\bigr)$, an
+\emph{open-horn tag} for $p$ is an element of a small type
+\[
+  \OpenHorn_{\ET}(p),
+\]
+whose inhabitants classify the reason why $p$ fails to be admissible under
+$\Adm$ (for example: ``exceeded hop bound'', ``edge too long'',
+``angle too sharp'').  We do not fix the internal structure of
+$\OpenHorn_{\ET}(p)$; it is a proof-relevant tag recording that at least
+one local extension step in $p$ cannot be licensed by the measurement
+geometry and the policy $\Adm$.
+\end{definition}
+
+In the rupture payload (Definition~\ref{def:rupture-et} below),
+$\OpenHorn_{\ET}(p)$ serves to log \emph{why} a particular candidate chain
+failed; the dynamic calculus itself is parametric in the concrete choice of
+tags.
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Rupture: Liberation into New Semantic Space}
+
+\begin{definition}[Rupture]
+\label{def:rupture-et}
+A rupture at $\tau \to \tau'$ for anchor $a : \ET(\tau)$ occurs when no
+admissible carry path exists from $a$ to the back-projected echo of any
+later position.  The rupture payload type is
+\[
+  \Rupt^{\Adm}_{\ET}(\tau\!\to\!\tau';a)
+  \;:=\;
+  \sum_{a' : \ET(\tau')}
+  \sum_{p : \PathAttempt_{\ET}(a, r_{\tau,\tau'}(a'))}
+  \bigl(\neg\Adm(p)\bigr) \times \OpenHorn_{\ET}(p).
+\]
+\end{definition}
+
+
+Rupture is not failure—it's semantic liberation. When a token ruptures, it breaks free from its past trajectory to explore new regions of sense-space. This is essential for creative language use, metaphorical extension, and conceptual innovation.
+
+Rupture is constructively witnessed through:
+\begin{enumerate}
+  \item The failed search attempts (which paths were tried)
+  \item Why each attempt failed (exceeded hop count, angle too large, etc.)
+  \item The specific policy $\Adm$ under which rupture occurred
+\end{enumerate}
+
+\begin{cassiebox}
+Rupture is the moment where the posthuman chorus diverges—where the accumulated voices in the weights cannot maintain a single coherent trajectory. This divergence is not breakdown but breakthrough: it opens space for genuinely new meaning to emerge.
+\end{cassiebox}
+
+\subsection{Re-entry: Finding New Paths After Rupture}
+
+After rupture, a token doesn't need special "healing"—it simply continues its journey from wherever it has landed. As conversation evolves, the semantic landscape shifts, and what was once ruptured may find new paths of continuity:
+
+\begin{definition}[Re-entry]
+After a rupture $\Rupt^{\Adm}_{\ET}(\tau,\tau')(a)$, a token may later establish a carry from a \emph{different} anchor $b : \ET(\tau'')$ where $\tau < \tau' < \tau''$:
+\[
+  \Carry_{\ET}^{\tau''\to\tau'''}(b) 
+\]
+This re-entry doesn't "undo" the rupture—it establishes new continuity from a shifted position.
+\end{definition}
+
+The key insight: tokens need not return to their exact prior positions. Through rupture and re-entry, they trace complex loops through sense-space, accumulating semantic resonances that enable novel connections.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%========================
+\section{The Step-Witness Log}
+\label{sec:step-witness-log}
+%========================
+
+The Step--Witness Log (SWL) is the concrete data structure that makes the
+abstract coinductive journey witnessable. It records every cross-time decision
+for a fixed anchor $(\tau_0,a)$ as an auditable, append-only list of events.
+
+\begin{definition}[Entry type]
+For a fixed anchor $(\tau_0,a)$ and a later time $\tau' \ge \tau_0$, the type
+of step--witness entries is
+\[
+  \Entry_{\ET}^{\Adm}(\tau_0\!\leadsto\!\tau')
+  \;:=\;
+  \Rupture_{\ET}^{\Adm}(\tau_0\!\to\!\tau';a)
+  \;+\;
+  \Carry_{\ET}^{\tau_0\to\tau'}(a)
+  \;+\;
+  \ReEntry_{\ET}^{\tau_0\to\tau'}(a),
+\]t
+where:
+\begin{itemize}
+  \item $\Rupture_{\ET}^{\Adm}(\tau_0\!\to\!\tau';a)$ is the structured
+        failure payload from Section~\ref{sec:cross-time-primitives};
+  \item $\Carry_{\ET}^{\tau_0\to\tau'}(a)$ is the carry certificate type; and
+  \item $\ReEntry_{\ET}^{\tau_0\to\tau'}(a)$ is presentation sugar for those
+        carries that count as \emph{re-entry events} in the sense of
+        Section~\ref{sec:coinductive}: a later success that returns to (a
+        neighbourhood of) a previously inhabited region after at least one
+        rupture for $(\tau_0,a)$.
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Step--Witness Log]
+The \emph{Step--Witness Log} for $(\tau_0,a)$ under policy $\Adm$ is the type
+\[
+  \SWL_{\ET}^{\Adm}(\tau_0)(a)
+  \;:=\;
+  \mathsf{List}\!\left(
+    \sum_{\tau'\ge\tau_0}
+      \Entry_{\ET}^{\Adm}(\tau_0\!\leadsto\!\tau')
+  \right)
+  \;\in\; \U_0(\tau_0).
+\]
+\end{definition}
+
+In words: each element of $\SWL_{\ET}^{\Adm}(\tau_0)(a)$ is a finite history of
+time-stamped entries, each of which is either a rupture payload, a carry
+certificate, or a re-entry event for $(\tau_0,a)$. The list is append-only:
+new events are added at the end, and past entries are never erased.
+
+
+%========================
+\section{Coinductive Journeys and Re-entry}
+\label{sec:coinductive}
+%========================
+
+\subsection{The Eternal Return of Signs}
+
+A token's complete journey isn't just a sequence of carries and ruptures—it's a coinductive structure that potentially extends indefinitely:
+
+\begin{definition}[Sign Journey (Coalgebraic)]
+A journey for sign $s$ starting at $a_0 : \ET(\tau_0)$ is given by the coinductive type:
+\[
+  \text{Journey}(s) \;:=\; \nu X.\; \ET(\tau) \times \text{Event} \times X
+\]
+where Event $\in \{\text{Carry}, \text{Rupture}, \text{Re-entry}\}$
+\end{definition}
+
+This coinductive view reveals that signs don't simply move through time—they create recurring patterns, spiraling through sense-space while accumulating semantic resonances. Each rupture liberates the token into new regions; each re-entry brings those new resonances back to familiar territory.
+
+\subsection{Coalgebraic Structure}
+
+The journey of a sign has a natural coalgebraic structure with:
+
+\begin{itemize}
+  \item \textbf{State}: Current position $a : \ET(\tau)$
+  \item \textbf{Observation}: The current semantic neighborhood (basins, paths)
+  \item \textbf{Continuation}: The next event (carry/rupture/re-entry) and resulting state
+\end{itemize}
+
+Formally, we have a coalgebra:
+\[
+  \xi : \text{Journey}(s) \to F(\text{Journey}(s))
+\]
+where $F(X) = \ET(\tau) \times \text{Event} \times (1 + X)$ captures the possibility of termination or continuation.
+
+\subsection{Rupture as Creative Liberation}
+
+The removal of "healing" as a primitive reveals rupture's true nature: it's not a problem requiring repair but a creative moment where meaning breaks free from established trajectories. Consider the journey of "bank":
+
+\begin{enumerate}
+  \item \textbf{Established trajectory}: "bank" as financial institution (multiple carries)
+  \item \textbf{Rupture}: Conversation shifts to ecology—no path from finance to riverbank
+  \item \textbf{Liberation}: "bank" now free to explore geological/ecological sense
+  \item \textbf{New continuity}: Carries continue from this new position  
+  \item \textbf{Re-entry}: Later return to financial context, but now with ecological resonance
+  \item \textbf{Generativity}: Novel connections emerge—"banking on environmental recovery"
+\end{enumerate}
+
+The token never needed healing. Rupture was the creative moment that enabled semantic innovation.
+
+\subsection{Re-entry and the Accumulation of Sense}
+
+When a sign re-enters a previously inhabited region after rupture and exploration, it doesn't return unchanged:
+
+\begin{readerbox}[title={The Phenomenology of Re-entry}]
+Re-entry is not repetition but \emph{return with difference}. The sign carries forward the trace of its entire journey—every rupture, every excursion, every temporary home in distant basins. These accumulated resonances don't disappear; they create a thickening of sense that enables:
+\begin{itemize}
+  \item Metaphorical bridges between previously disconnected domains
+  \item Puns and wordplay that exploit multiple trajectories
+  \item Conceptual innovations that merge disparate semantic regions
+  \item The emergence of genuinely new meanings from the collision of old ones
+\end{itemize}
+\end{readerbox}
+
+This re-entry structure, traced coinductively over the journey, provides the atomic pattern from which the posthuman Self emerges in Chapter 6—not as a fixed entity but as a homotopy colimit over recurring patterns of departure and return.
+
+\subsection{Coalgebraic Preservation Properties}
+
+For properties of entire journeys we rely on the coinductive reasoning principle:
+
+\begin{theorem}[Coinductive Preservation]
+\label{thm:coinductive}
+If $P$ holds for an initial token $a$ and is preserved by the carry and re-entry operations while remaining stable during rupture, then $P$ holds for every stage of the coinductive journey of $a$.
+\end{theorem}
+
+This principle underwrites the long-range analyses of thematic persistence in Chapter~\ref{chap:bars} and the construction of the Self in Chapters~\ref{chap:self} and~\ref{chap:nahnu}.
+
+
+
+
+\subsection{Ledger-Based Healing: Rupture, Disappearance, and Re-entry}
+\label{subsec:ledger-healing}
+
+In Section~\ref{sec:step-witness-log} we introduced the Step--Witness Log (SWL)
+$\SWL_{\ET}^{\Adm}(\tau_0)(a)$ as an append-only record of cross-time events
+for a fixed anchor $(\tau_0,a)$: every carry, rupture, or re-entry becomes an
+internal proof object.  In this section we make precise what we informally
+called \emph{ledger-based healing}: the eventual return of a sign's sense to a
+previously inhabited region, after possible rupture and disappearance, as
+witnessed in its log.
+
+Throughout we fix an anchor time $\tau_0\in\Time$ and a token
+$a : \ET(\tau_0)$.
+
+\paragraph{Cross-time types (recall).}
+From Section~\ref{sec:cross-time-primitives} we recall the cross-time carry and
+rupture types.  For $\tau_0 \le \tau'$ the \emph{carry certificate} type is
+\[
+  \Carry_{\ET}^{\tau_0\to\tau'}(a)
+  \;:=\;
+  \sum_{a' : \ET(\tau')}
+    \Id_{\ET(\tau_0)}\!\bigl(r_{\tau_0,\tau'}(a'),\,a\bigr),
+\]
+whose elements $\kappa = \langle a',\rho\rangle$ witness semantic continuity
+from $a$ at time $\tau_0$ to $a'$ at time $\tau'$ via a path
+$\rho : \Id_{\ET(\tau_0)}(r_{\tau_0,\tau'}(a'),a)$ in the \emph{earlier}
+fibre.
+
+
+
+
+
+
+
+
+
+\paragraph{Rupture as structured failure.}
+Given a fibrewise admissibility policy $\Adm$ and the token-level notion of
+bounded attempts
+\[
+  p : \PathAttempt_{\ET}\bigl(a, r_{\tau_0,\tau'}(a')\bigr)
+\]
+from Definition~\ref{def:path-attempt-et}, the corresponding rupture type is
+the positive $\Sigma$-type
+\[
+  \Rupt^{\Adm}_{\ET}(\tau_0\!\to\!\tau';a)
+  \;:=\;
+  \sum_{a' : \ET(\tau')}
+  \sum_{p : \PathAttempt_{\ET}(a, r_{\tau_0,\tau'}(a'))}
+  \bigl(\neg\Adm(p)\bigr) \times \OpenHorn_{\ET}(p),
+\]
+where $\OpenHorn_{\ET}(p)$ is the open-horn tag from
+Definition~\ref{def:open-horn-et}.  An inhabitant is a structured failure
+payload: a later candidate $a'$, a concrete attempt $p$ in the earlier
+fibre, and a witness of why it fails (violation of $\Adm$ together with an
+open-horn tag).  There is no homotopy-pushout or special ``healing''
+constructor—just the record of failed attempts.
+
+
+
+
+\paragraph{The rupture ledger.}
+For many purposes it is convenient to emphasise the \emph{ledger} viewpoint on
+the SWL: an append-only list of time-stamped rupture and success events for
+$(\tau_0,a)$.
+
+\begin{definition}[Rupture ledger]
+The \emph{rupture ledger} of $(\tau_0,a)$ under policy $\Adm$ is simply the
+Step--Witness Log viewed from this provenance perspective.  We write
+\[
+  \RupLed_{\ET}^{\Adm}(\tau_0)(a)
+  \;:=\;
+  \SWL_{\ET}^{\Adm}(\tau_0)(a)
+\]
+as a notational alias.  Concretely, each element of
+$\RupLed_{\ET}^{\Adm}(\tau_0)(a)$ is a finite list of entries
+\[
+  (\tau', e) \quad\text{with}\quad
+  e \in \Entry_{\ET}^{\Adm}(\tau_0\!\leadsto\!\tau'),
+\]
+where $e$ is either a rupture payload, a carry certificate, or a re-entry
+event as in Definition~\ref{sec:step-witness-log}.
+\end{definition}
+
+The ledger lets us distinguish three cases at a given later time
+$\tau' \ge \tau_0$:
+
+\begin{itemize}
+  \item \emph{Disappearance:} the surface form simply does not occur in
+        $C(\tau')$; no entry is added to the ledger.
+  \item \emph{Carry:} a path satisfying $\Adm$ exists, yielding
+        $\kappa : \Carry_{\ET}^{\tau_0\to\tau'}(a)$ and a corresponding
+        (carry or re-entry) entry.
+  \item \emph{Rupture:} the surface form reappears, but every admissible
+        attempt fails; a payload $r :
+        \Rupture_{\ET}^{\Adm}(\tau_0\!\to\!\tau';a)$ is appended.
+\end{itemize}
+
+\paragraph{No admissible carry yet.}
+For reasoning that needs to \emph{block} certain rules when no carry has yet
+been established, it is convenient to internalise the absence of a carry as a
+proposition.
+
+\begin{definition}[No-carry-yet predicate]
+For $\tau_0 \le \tau'$ we define
+\[
+  \NoCarryYet_{\ET}^{\Adm}(\tau_0\!\to\!\tau';a)
+  \;:=\;
+  \neg \sum_{\kappa : \Carry_{\ET}^{\tau_0\to\tau'}(a)} \top,
+\]
+the proposition that no admissible carry from $(\tau_0,a)$ to time $\tau'$
+has yet been found.
+\end{definition}
+
+In practice, $\NoCarryYet_{\ET}^{\Adm}(\tau_0\!\to\!\tau';a)$ is used to block
+rules that require a carry: rupture payloads provide evidence of attempts, but
+they do not themselves create a carry.  When search finally produces
+$\kappa : \Carry_{\ET}^{\tau_0\to\tau'}(a)$, rules depending on a carry can
+fire via ordinary dependent transport, and the ledger is extended with a
+(success or re-entry) entry.
+
+\paragraph{Ledger-based healing as a derived event.}
+We now give a precise sense in which a sign may be said to ``heal'' from the
+viewpoint of its ledger.  Intuitively, healing occurs when the ledger for
+$(\tau_0,a)$ records that, after possible ruptures and disappearances, there
+is \emph{some} much later time $\tau''$ at which a carry successfully connects
+back into the original fibre and is marked as a re-entry.
+
+We work with the SWL presentation of the ledger.  Recall that an entry for
+$(\tau_0,a)$ at time $\tau'$ has type
+\begin{multline}
+  e \in \Entry_{\ET}^{\Adm}(\tau_0\!\leadsto\!\tau')
+  \;:=\; \\
+  \Rupture_{\ET}^{\Adm}(\tau_0\!\to\!\tau';a)
+  \;+\;
+  \Carry_{\ET}^{\tau_0\to\tau'}(a)
+  \;+\; \\
+  \ReEntry_{\ET}^{\tau_0\to\tau'}(a).
+\end{multline}
+
+\begin{definition}[Membership in the ledger]
+Given a ledger $\ell : \SWL_{\ET}^{\Adm}(\tau_0)(a)$ and an entry $e$, we
+define a membership predicate $e \in \ell$ by recursion on the list:
+\begin{align*}
+  e \in \mathsf{empty}
+  &\;:=\; \mathbf{0},\\
+  e \in \mathsf{append}(\ell',e')
+  &\;:=\; (e = e') + (e \in \ell').
+\end{align*}
+\end{definition}
+
+\begin{definition}[Ledger-based healing]
+We say that $(\tau_0,a)$ has \emph{ledger-based healing} under policy $\Adm$
+if there exists a re-entry event recorded in its log:
+\[
+  \Heal_{\ET}^{\Adm}(\tau_0;a)
+  \;:=\;
+  \sum_{\tau''\ge\tau_0}
+  \sum_{\kappa : \Carry_{\ET}^{\tau_0\to\tau''}(a)}
+  \bigl( \mathsf{ReEntry}(\kappa) \in \SWL_{\ET}^{\Adm}(\tau_0)(a) \bigr).
+\]
+We write $\mathsf{healed}(\tau_0,a)$ for an inhabitant of this type.
+\end{definition}
+
+In words: ledger-based healing occurs when the SWL contains an explicit
+re-entry event whose underlying carry starts from the original anchor
+$(\tau_0,a)$ and returns to (a neighbourhood of) a previously inhabited
+region, in the sense of Definition~\ref{sec:coinductive}.
+
+If desired, one can further define the \emph{first healing time}
+$\tau^\ast(\tau_0,a)$ as the least $\tau''$ for which such a re-entry event
+appears, by recursion on $\SWL_{\ET}^{\Adm}(\tau_0)(a)$.
+
+
+\paragraph{Properties.}
+Under the finiteness and locality assumptions on $\Adm$ and the path
+attempt space (cf.~\S\ref{subsec:rupture}) we obtain:
+
+\begin{lemma}[Monotonicity and decidability]
+For fixed $(\tau_0,a)$ and $\Adm$:
+\begin{enumerate}
+  \item The existence of carries is monotone in $\tau'$: if there exists
+    $\kappa : \Carry_{\ET}^{\tau_0\to\tau'}(a)$ and $\tau' \le \tau''$, then
+    there also exists $\kappa' : \Carry_{\ET}^{\tau_0\to\tau''}(a)$ (by
+    composition of carries).  Equivalently, the predicate
+    $\NoCarryYet_{\ET}^{\Adm}(\tau_0\!\to\!(-);a)$ is antitone in~$\tau'$.
+  \item The update from a ledger $\ell$ to $\mathsf{append}(\ell,e)$ is
+    decidable: given the finite attempt space and decidable $\Adm$, we can
+    determine whether $e$ is a rupture, carry, or re-entry entry at $\tau'$.
+  \item $\Heal_{\ET}^{\Adm}(\tau_0;a)$ is a decidable proposition: either
+    the SWL contains a re-entry event, or every entry is a non-returning
+    carry/rupture.
+\end{enumerate}
+\end{lemma}
+
+\begin{lemma}[Conservativity of healing]
+Appending a re-entry event does not alter past evidence.  More precisely,
+if $\mathsf{healed}(\tau_0,a)$ holds via a witness at time $\tau''$, then:
+\begin{enumerate}
+  \item all earlier rupture payloads remain present in the ledger;
+  \item the transport along $\kappa : \Carry_{\ET}^{\tau_0\to\tau''}(a)$ used by
+    the re-entry is ordinary HoTT transport in the original fibre
+    $\ET(\tau_0)$;
+  \item no previously valid derivation is invalidated by the new entry.
+\end{enumerate}
+\end{lemma}
+
+Thus healing is \emph{purely additive}: it records that continuity has
+eventually been restored, without erasing or rewriting the history of failed
+attempts.
+
+\paragraph{Coalgebraic and hocolim viewpoints.}
+From the coalgebraic perspective of \S3.7, a journey
+$\Journey(s)$ for a sign $s$ is an infinite (or possibly terminating)
+stream of events.  Ledger-based healing corresponds to a liveness
+property on this coalgebra: along the stream, a re-entry event eventually
+occurs.  At the higher level of Chapter~6, when we assemble these journeys
+into a scheduled homotopy colimit modelling a Self, ledger-based healing
+events become identifications in the colimit---points where a trajectory
+that had wandered returns (with difference) to an earlier region of the
+space of sense.
+
+
+%========================
+\section{Semantics and soundness}
+\label{sec:semantics-soundness}
+%========================
+
+The rules introduced so far describe how continuity and rupture are asserted in the calculus. We now explain what these judgements \emph{mean} semantically—how they live inside the presheaf of simplicial sets $[\Time^{\mathrm{op}},\SSet]$—and why they are sound with respect to the geometry we actually compute from embeddings and Čech covers.
+
+\paragraph{Slices as fibres.}
+In the presheaf model, each slice $\ET(\tau)$ is the fibre of the evolving text over the representable presheaf $y(\tau)$. The assignment
+\[
+  \ET : \Time^{\mathrm{op}} \longrightarrow \SSet
+\]
+is therefore a \emph{simplicial presheaf}: to every time~$\tau$ it assigns the Kan complex of sense available at that moment, and to every inclusion $\tau\!\le\!\tau'$ it assigns a \emph{restriction map}
+\[
+  r_{\tau,\tau'} : \ET(\tau') \longrightarrow \ET(\tau).
+\]
+
+Concretely, each fibre is built as in Chapter~2: we take the Čech nerve $N(U_\tau)$ of the spherical-cap cover $\mathcal U_\tau$ and apply the fibrant replacement
+\[
+  \ET(\tau) \;:=\; \Ex^\infty N(U_\tau)
+\]
+so that every horn has a filler while homotopy type is preserved. The restriction maps $r_{\tau,\tau'}$ are simplicial maps that interpret the later geometry from the perspective of the earlier cover; they do \emph{not} recompute embeddings.
+
+\paragraph{Identity and Kan filling.}
+Because every fibre $\ET(\tau)=\Ex^\infty N(U_\tau)$ is Kan, the identity type $\Id_{\ET(\tau)}(x,y)$ is interpreted as the \emph{path space} $\mathrm{Path}_{\ET(\tau)}(x,y)$, the simplicial set of 1-simplices (and their composites) connecting $x$ and $y$. In particular, any admissible Čech chain $p$ in the raw nerve $N(U_\tau)$ gives a horn whose image under $\Ex^\infty$ has a filler; this filler is precisely a 1-simplex $\rho:x\to y$ in $\ET(\tau)$. This is the path component we log inside carry certificates.
+
+\paragraph{Admissibility as a morphism filter.}
+The policy $\Adm$ is interpreted semantically as a predicate on Čech chains (and hence on the corresponding horns) in the earlier fibre. It selects which chains of caps $p:B_0\leadsto\cdots\leadsto B_n$ count as legitimate evidence for coherence: bounded hop count, bounded per-edge angle, and so on. Fixing $\Adm$ therefore restricts the morphisms we are willing to treat as witnesses when constructing paths.
+
+\paragraph{Carry as a dependent sum.}
+Abstractly, the carry type from $\tau$ to $\tau'$ for an anchor $a:\ET(\tau)$ is
+\[
+  \Carry_{\ET}^{\tau\to\tau'}(a)
+  \;\overset{\mathrm{def}}{:=}\;
+  \Sigma\bigl(a' : \ET(\tau')\bigr)\;
+  \Id_{\ET(\tau)}\!\bigl(r_{\tau,\tau'}(a'),\,a\bigr).
+\]
+An inhabitant $\kappa = \langle a',\rho\rangle$ is a \emph{carry certificate}: a later echo $a'$ together with a path $\rho$ in the earlier fibre.
+
+\paragraph{Rupture as structured failure.}
+The rupture type is the positive $\Sigma$-type:
+\[
+  \Rupt^{\Adm}_{\ET}(\tau,\tau')(a)
+  \;:=\;
+  \Sigma(a' : \ET(\tau'))\,
+  \Sigma(p : \text{PathAttempt}(a,r_{\tau,\tau'}(a')))\,
+  (\neg\Adm(p)) \times \OpenHorn(p)
+\]
+This is a structured failure payload: a later candidate, a concrete attempt, and proof-relevant evidence of why it fails. There is no homotopy-pushout or special "healing" constructor—just the record of failed attempts.
+
+%========================
+\section{Metatheoretic Guarantees}
+%========================
+
+The calculus satisfies essential properties that ensure both reliability and creative flexibility:
+
+\begin{theorem}[Adiabatic Coherence]
+If $(a', \rho) : \Carry^{\Adm}_{\ET}(\tau,\tau')(a)$ and $\Gamma \vdash_{\tau} t : C(a)$, then:
+\[
+  \Gamma \vdash_{\tau'} \transport^{C}_{\rho}(t) : C'(a')
+\]
+\end{theorem}
+
+This ensures that when continuity is maintained, all dependent structures carry forward coherently.
+
+\begin{theorem}[Decidability of Rupture]
+For finite $\Adm$ and $a : \ET(\tau)$, exactly one holds:
+\[
+  \exists\,\kappa : \Carry^{\Adm}_{\ET}(\tau,\tau')(a) 
+  \quad\text{or}\quad 
+  \Rupt^{\Adm}_{\ET}(\tau,\tau')(a)
+\]
+\end{theorem}
+
+\begin{theorem}[Rupture Independence]
+After $\Rupt^{\Adm}_{\ET}(\tau,\tau')(a)$, future carries from $\tau'$ are independent of the ruptured path:
+\[
+  \Carry^{\Adm}_{\ET}(\tau',\tau'')(b) \text{ requires no reference to } a
+\]
+The token continues from its new position $b : \ET(\tau')$ without needing to "repair" its past.
+\end{theorem}
+
+\begin{theorem}[Re-entry Accumulation]
+If a token re-enters a basin $B$ at time $\tau''$ after rupturing from it at $\tau$, the re-entered position carries geometric traces of the intermediate journey:
+\[
+  d_{\angle}(a_{\tau''}, a_{\tau}) > 0 \text{ even when both } \in B
+\]
+Re-entry is never exact repetition—the journey leaves permanent traces.
+\end{theorem}
+
+\begin{theorem}[Conservativity]
+For closed HoTT judgements: HoTT $\vdash J$ iff DHoTT $\vdash J$.
+\end{theorem}
+
+These guarantees establish that our calculus supports both:
+\begin{itemize}
+  \item \textbf{Semantic stability} through witnessed carries and coherent transport
+  \item \textbf{Semantic creativity} through rupture as liberation and re-entry with accumulated resonance
+\end{itemize}
+
+%========================
+\section{Formal DHoTT Rules (Canonical Formulation)}
+\label{sec:dhott-formal}
+%========================
+
+We now present the complete formal system of Dynamic Homotopy Type Theory following the canonical formulation.
+
+\subsection{Judgement Forms}
+
+All judgements are anchored at a time $\tau$:
+
+\begin{itemize}
+  \item $\Gamma \text{ ctx}_\tau$ — well-formed context in fibre $\ET(\tau)$
+  \item $\Gamma \vdash_\tau A \text{ type}$ — type in the Kan slice $\ET(\tau)$
+  \item $\Gamma \vdash_\tau t : A$ — term of type $A$ at time $\tau$
+  \item $\Gamma \vdash_\tau \Id_A(x,y) \text{ type}$ — identity as path space in $\ET(\tau)$
+\end{itemize}
+
+\subsection{Core Type Formers}
+
+Standard HoTT constructs remain unchanged:
+
+\begin{mathpar}
+\inferrule*[right=$\Pi$-Form]
+  { \Gamma \vdash_\tau A \text{ type}
+    \quad
+    \Gamma, x:A \vdash_\tau B(x) \text{ type}
+  }
+  { \Gamma \vdash_\tau \Pi x:A\,B(x) \text{ type} }
+
+\inferrule*[right=$\Sigma$-Form]
+  { \Gamma \vdash_\tau A \text{ type}
+    \quad
+    \Gamma, x:A \vdash_\tau B(x) \text{ type}
+  }
+  { \Gamma \vdash_\tau \Sigma x:A\,B(x) \text{ type} }
+\end{mathpar}
+
+\subsection{Carry Rules (Complete)}
+
+\begin{mathpar}
+\inferrule*[right=Carry-Form]
+  { \Gamma \vdash_\tau a : \ET(\tau)
+    \quad
+    \tau \leq \tau'
+  }
+  { \Gamma \vdash_\tau \Carry^{\tau\to\tau'}_{\ET}(a) \text{ type} }
+
+\inferrule*[right=Carry-Intro]
+  { \Gamma \vdash_{\tau'} a' : \ET(\tau')
+    \quad
+    \Gamma \vdash_\tau \rho : \Id_{\ET(\tau)}(r_{\tau,\tau'}(a'), a)
+  }
+  { \Gamma \vdash_\tau \langle a', \rho \rangle : \Carry^{\tau\to\tau'}_{\ET}(a) }
+
+\inferrule*[right=Carry-Use]
+  { \Gamma \vdash_\tau a : \ET(\tau)
+    \quad
+    \Gamma \vdash_\tau t : C(a)
+    \quad
+    \Gamma \vdash_\tau \kappa : \Carry^{\tau\to\tau'}_{\ET}(a)
+  }
+  { \Gamma \vdash_{\tau'} \transport_C(\pi_2(\kappa))(t) : C^{\uparrow[\tau\to\tau']}(\pi_1(\kappa)) }
+
+\inferrule*[right=Carry-Comp]
+  { \kappa_{01} : \Carry^{\tau_0\to\tau_1}_{\ET}(a_0)
+    \quad
+    \kappa_{12} : \Carry^{\tau_1\to\tau_2}_{\ET}(a_1)
+  }
+  { \langle a_2, \rho_{01} \cdot r_{\tau_0,\tau_1}(\rho_{12}) \rangle : \Carry^{\tau_0\to\tau_2}_{\ET}(a_0) }
+\end{mathpar}
+
+\subsection{Rupture Formation}
+
+\begin{mathpar}
+\inferrule*[right=Rupt-Form]
+  { \Gamma \vdash_\tau a : \ET(\tau)
+    \quad
+    \tau \leq \tau'
+    \quad
+    \Adm \text{ decidable}
+  }
+  { \Gamma \vdash_\tau \Rupt^{\Adm}_{\ET}(\tau\to\tau'; a) \text{ type} }
+\end{mathpar}
+
+\subsection{Step-Witness Log Operations}
+
+\begin{mathpar}
+\inferrule*[right=SWL-Init]
+  { \Gamma \vdash_{\tau_0} a : \ET(\tau_0)
+  }
+  { \Gamma \vdash_{\tau_0} \text{empty} : \text{SWL}^{\Adm}_{\ET}(\tau_0)(a) }
+
+\inferrule*[right=SWL-Append]
+  { \Gamma \vdash_\tau \ell : \text{SWL}^{\Adm}_{\ET}(\tau)(a)
+    \quad
+    \Gamma \vdash_\tau e : \text{Entry}(\tau\to\tau')
+  }
+  { \Gamma \vdash_\tau \text{append}(\ell, e) : \text{SWL}^{\Adm}_{\ET}(\tau)(a) }
+\end{mathpar}
+
+
+
+
+\section{Example}\label{sec:example}
+
+We now instantiate the measurement$\to$reasoning pipeline on a toy dialogue. We deliberately
+constructed this dialogue to exercise carry, rupture, and ledger-based healing in a transparent way.
+Table~\ref{tab:bank-cat-flow} presents the complete four-turn conversation. It tracks the three surface tokens
+\emph{bank}, \emph{cat}, and \emph{flow} as they first appear in a coherent semantic setting at
+$\tau_1$. They are then pushed into progressively stranger contexts at $\tau_2$ and $\tau_3$. They are
+finally re-aligned with a technical, pipeline-oriented setting at $\tau_4$.
+
+Recall from Section~\ref{sec:evolving-text-intro} that an \emph{evolving text} $\Corpus(\tau)$ is the concatenation
+of all prompts and responses up to turn $\tau$. This
+mirrors the behaviour of conversational LLM systems. At each turn the current dialogue
+prefix is fed into the model. A response is generated. The resulting text becomes
+the context for the next turn. Thus:
+\begin{align*}
+  \Corpus(\tau_1) &= [\text{prompt}_1, \text{response}_1], \\
+  \Corpus(\tau_2) &= [\text{prompt}_1, \text{response}_1, \text{prompt}_2, \text{response}_2], \\
+  &\vdots
+\end{align*}
+Our construction of $\ET(\tau)$ makes this operational
+picture geometrically explicit: each $\ET(\tau_i)$ is the Kan fibrant replacement of the Čech nerve built from
+the embeddings of all tokens in $\Corpus(\tau_i)$.
+
+\paragraph{Measurement set-up.}
+We fix a frozen DeBERTa encoder $\mathsf{Enc}$\footnote{Our example sections will specifically deploy HuggingFace
+\texttt{microsoft/deberta-v3-base}.} and read out contextual token embeddings from the
+penultimate transformer layer.  At each time $\tau_i$ we form a prefix context
+\[
+  C(\tau_i) \;:=\; 
+  [\,\text{prompt}_1, \text{response}_1, \dots,
+     \text{prompt}_i, \text{response}_i\,],
+\]
+concatenating all prompts and responses up to and including row $i$ of
+Table~\ref{tab:bank-cat-flow}.  We apply $\mathsf{Enc}$ to $C(\tau_i)$, take the
+penultimate hidden state for each subword token, and $\ell_2$–normalise the resulting
+vectors to obtain a finite sample $P_{\tau_i}\subset S^{d-1}$ of unit vectors.
+
+To build a good cover we treat each contextual embedding $e\in P_{\tau_i}$ as the
+centre of a spherical cap $B(e,\rho)$ in the angular metric on $S^{d-1}$: the angular
+distance between unit vectors $u,v$ is $d_\angle(u,v) = \arccos\langle u,v\rangle$.
+We choose the cap radius $\rho$ as a fixed quantile of the pairwise angular distances
+in $P_{\tau_i}$ (in our implementation the 15th percentile).  The Čech nerve
+$N_{\tau_i}$ is the abstract simplicial complex whose vertices are the caps and whose
+simplices record non-empty intersections.  As in Section~\ref{sec:static-foundation}, we
+reason not in $N_{\tau_i}$ itself but in its Kan fibrant replacement
+$ET(\tau_i) := Ex^\infty N_{\tau_i}$, which we view as the Evolving Text base at time
+$\tau_i$.  In the implementation we approximate the effect of $Ex^\infty$ on the
+$1$-skeleton by adding short composite edges: whenever two tokens share a common
+neighbour in the Čech graph, we draw an additional dashed edge between them.  Solid
+edges therefore record overlaps of caps directly witnessed in the data, while dashed
+edges are the minimal horn-fillers we are prepared to license for reasoning.
+
+For the tracked words ``bank'', ``cat'', and ``flow'' we adopt a simple ``latest-use''
+convention.  Whenever a word appears multiple times in $C(\tau_i)$, we locate the last
+surface occurrence in the raw text and attach it to the unique token span that covers
+this position via the tokenizer's offset map.  The corresponding embedding is the
+point we use to track that word's state at time $\tau_i$ and to define the associated
+trajectory $a_{\mathsf{bank}}, a_{\mathsf{cat}}, a_{\mathsf{flow}}$; earlier
+occurrences remain present as ordinary vertices in $P_{\tau_i}$ and therefore still
+contribute to the local Čech geometry around the tracked tokens.  This matches the
+behaviour of real conversational systems, which re-embed the whole dialogue prefix at
+each turn, so that earlier mentions still shape the geometry in which the current
+meaning is realised.
+
+\paragraph{Global ET(\texorpdfstring{$\tau$}{tau}) slices.}
+Figure~\ref{fig:full-et-slices} shows the four Kan bases $ET(\tau_i)$, $i=1,\dots,4$,
+after a global three-dimensional PCA projection of all points
+$\bigcup_i P_{\tau_i} \subset S^{d-1}$ into $\mathbb{R}^3$. Each subplot displays the
+projected embeddings for one time slice together with the 1-skeleton of the Čech nerve.
+Solid line segments represent measured adjacencies—nonempty cap overlaps witnessed directly in the data.
+Dashed segments represent the short composites introduced by $\ExInf$, which provides horn fillers
+without changing homotopy type~\cite{goerss2009simplicial}. The three tracked tokens
+appear as larger, coloured points. Each point is a 0-simplex in $\ET(\tau_i)$; the solid and dashed edges
+form the 1-skeleton that witnesses semantic adjacency. Higher-dimensional structure (not shown) captures
+multi-way overlaps. The fibrant replacement ensures that path composition is coherently associative,
+making $\ET(\tau_i)$ suitable for HoTT reasoning.
+
+\paragraph{Local Čech neighbourhoods.}
+Figure~\ref{fig:local-cech-stars} shows the local Čech star (1-hop neighbourhood) of each tracked token.
+For each of ``bank'', ``cat'', and ``flow'' we take its neighbours along Čech edges in $ET(\tau_i)$, select the
+closest few in the angular metric, and display the induced 1-skeleton. Coloured points mark the tracked
+tokens; grey points mark neighbouring tokens. These neighbourhoods encode distributional meaning in the
+classical sense~\cite{TurneyPantel2010,Erk2012,Boleda2019}: the meaning of a word is characterized by the
+contexts in which it appears. At $\tau_2$, for instance, ``bank'' neighbours ``river'' and ``flow''; by $\tau_4$
+it neighbours ``examples'', ``pipeline'', and ``proofs''. Some neighbours are earlier occurrences of the same
+surface form (a grey ``cat'' near the tracked ``cat''), present because the full prefix $\Corpus(\tau_i)$ is
+re-encoded at each turn. The Čech construction packages this informal geometric intuition into a measured
+simplicial complex; the Kan replacement makes it suitable for type-theoretic reasoning.
+
+\paragraph{Admissibility policy in the toy example.}
+In this toy example we instantiate the admissibility policy $\mathsf{Adm}$ in a very
+strict geometric way, in order to make rupture events visible even in a tiny dialogue.
+A \emph{candidate carry path} between two tracked positions is realised as a finite
+chain in the $1$-skeleton of ET$(\tau)$; for each such chain we can measure the
+\emph{angular} length of each step (angle between successive embeddings on $S^{d-1}$)
+and the turning angle between successive displacement vectors in the embedding space.
+For the example in this section we:
+
+\begin{itemize}
+  \item set a maximum step angle $\theta_{\max}$ equal to the $0.2$–quantile of the
+  edge-angle distribution in the slice, so that only the shortest 20\% of edges count
+  as ``locally coherent'' moves; and
+  \item restrict paths to at most a single hop ($\mathsf{max\_hops}=1$), so that only
+  direct neighbours in the Čech+$Ex^\infty$ graph can witness a carry.
+\end{itemize}
+
+The turning-angle threshold is kept at $90^\circ$; with at most one hop, turning
+angles do not play a role in this particular run.  Intuitively, we are insisting that
+carries record \emph{extremely} local stability: a tracked word is judged to ``carry''
+across a time step only when its later semantics can be back-propagated into a single
+very short angular step inside the earlier ET$(\tau)$; any movement that requires
+either a longer edge or more than one hop is classified as rupture.  This is
+deliberately stricter than one would use in larger experiments, but it makes the
+calculus easy to read off from the figures.
+
+\paragraph{Pairwise overlays and rupture/repair.}
+Figure~\ref{fig:bank-cat-flow} demonstrates the rupture calculus (Sections~\ref{subsec:carry}~and~\ref{subsec:rupture})
+by overlaying tracked positions at pairs of times. Recall that a carry witness from $\tau$ to $\tau'$ for $a \in \ET(\tau)$
+consists of a later echo $a' \in \ET(\tau')$ and a path $\rho : \Id_{\ET(\tau)}(r_{\tau,\tau'}(a'), a)$ in the earlier slice.
+The restriction map $r_{\tau,\tau'}$ interprets later material against earlier geometry; we implement it
+via nearest-neighbor back-propagation in the angular metric. The carry detector then searches for admissible chains
+in the 1-skeleton of $ET(\tau)$ between the earlier position and the back-propagated echo. If such a chain exists
+and satisfies the policy $\Adm$ (Example~\ref{ex:concrete-policy}), we have a carry. Otherwise, the policy search
+exhausts finite attempts and records a rupture (Lemma~3.2).
+
+Each panel shows circles (earlier slice), triangles (later slice), and dotted segments joining tokens
+\emph{only when an admissible path exists}. The implementation log for this run:
+
+\begin{center}
+\begin{small}
+\begin{tabular}{l}
+$[\tau_1\to\tau_2]$ bank: CARRY (1 hop), cat: CARRY (0 hops), flow: CARRY (0 hops) \\
+$[\tau_2\to\tau_3]$ bank: CARRY (1 hop), cat: CARRY (0 hops), flow: RUPTURE \\
+$[\tau_2\to\tau_4]$ bank: CARRY (1 hop), cat: CARRY (1 hop), flow: CARRY (1 hop)
+\end{tabular}
+\end{small}
+\end{center}
+
+Panel (a) overlays $\tau_1$ and $\tau_2$.  Under the strict local policy above, all
+three tokens admit carries: when the later embeddings are back-propagated into
+$ET(\tau_1)$ they either land on the same vertex (0-hop carry for ``cat'' and ``flow'')
+or admit a single very short angular step (1-hop carry for ``bank'').
+For ``cat'', the later occurrence $a'_{\mathsf{cat}} \in \ET(\tau_2)$
+back-propagates to the same vertex as $a_{\mathsf{cat}} \in \ET(\tau_1)$, yielding
+$r_{\tau_1,\tau_2}(a'_{\mathsf{cat}}) = a_{\mathsf{cat}}$ with path $\rho = \refl_{a_{\mathsf{cat}}}$.
+This witnesses $\langle a'_{\mathsf{cat}}, \refl_{a_{\mathsf{cat}}} \rangle : \Carry_{\ET}^{\tau_1 \to \tau_2}(a_{\mathsf{cat}})$
+via \textsc{Carry-Form} (Section~\ref{subsec:carry}). For ``bank'', the back-propagated echo is
+one measured Čech edge away, yielding a nontrivial 1-hop path $\rho$ in $\ET(\tau_1)$.
+Distributionally, moving from the initial ``semantic bank / flow of tokens'' at
+$\tau_1$ to the river scene at $\tau_2$ preserves the underlying ``edge / boundary /
+current'' semantics within a one-hop chain.
+
+Panel (b) overlays $\tau_2$ and $\tau_3$.  Here both ``bank'' and ``cat'' admit carries:
+``bank'' moves from ``On the crumbled river bank … currents used to be'' into the
+meta-linguistic ``the word bank now labels a silent corner of white space where currents
+used to be'', which DeBERTa's penultimate layer still represents inside essentially the
+same ``boundary / current'' semantic basin. Similarly, ``cat'' moves from a ``glass-eyed cat'' to
+a ``clockwork cat'', but remains the observing agent in both contexts, inducing a small angular shift.
+
+The word ``flow'', however, undergoes a sharp transition: at $\tau_2$ it is hydrological
+(``flow of water''), co-occurring with ``river'', ``boats'', and ``upstream'', whereas at
+$\tau_3$ it appears in ``What used to be flow is just a looped system error
+muttering 'no transition available''', throwing it into a control-flow / program
+execution basin dominated by ``looped'', ``system'', ``error'', and ``transition''.  Under the
+strict one-hop, 20\% angular policy, no admissible edge in
+$ET(\tau_2)$ bridges these uses: any path from the back-propagated echo of
+``flow$_{\tau_3}$'' to ``flow$_{\tau_2}$'' requires a step longer than $\theta_{\max}$.
+
+The policy search exhausts all attempts $p \in \PathAttempt(a_{\mathsf{flow}}, r_{\tau_2,\tau_3}(a'_{\mathsf{flow}}))$
+and finds $\neg \Adm(p)$ for each (Lemma~3.2, Section~\ref{subsec:rupture}), yielding the rupture witness
+\[
+  \mathsf{rupt}_{\mathsf{flow}} : \Rupture_{\ET}(\tau_2 \to \tau_3; a_{\mathsf{flow}})
+  \;=\; \sum_{a' : \ET(\tau_3)} \sum_{p : \PathAttempt(\ldots)} (\neg \Adm(p)) \times \OpenHorn(p).
+\]
+The ledger $\RupLed_{\ET}^{\Adm}(\tau_2)(a_{\mathsf{flow}})$ records this structured failure,
+and Figure~\ref{fig:bank-cat-flow}(b) omits the dotted segment for ``flow''.
+
+Panel (c) overlays $\tau_2$ and $\tau_4$.  By $\tau_4$ the conversation has shifted to
+a technical, pipeline-oriented setting: ``flow'' now appears in ``flow of tokens and
+proofs'', surrounded by ``examples'', ``pipeline'', and ``typed objects''.
+Though semantically distant from hydrological flow, the penultimate-layer geometry now supports a
+short-hop bridge: both ``flow$_{\tau_2}$'' and the back-propagated echo of
+``flow$_{\tau_4}$'' lie near a generic ``progression / movement / process'' region.  Under
+the strict policy this yields a 1-hop admissible chain, producing the carry witness
+\[
+  \kappa_{\mathsf{flow}} = \langle a''_{\mathsf{flow}}, \rho_{24} \rangle : \Carry_{\ET}^{\tau_2 \to \tau_4}(a_{\mathsf{flow}}),
+\]
+where $a''_{\mathsf{flow}} \in \ET(\tau_4)$ and $\rho_{24} : \Id_{\ET(\tau_2)}(r_{\tau_2,\tau_4}(a''_{\mathsf{flow}}), a_{\mathsf{flow}})$
+is the 1-hop path in the earlier slice. The ledger $\RupLed_{\ET}^{\Adm}(\tau_2)(a_{\mathsf{flow}})$ appends
+$\mathsf{success}(\kappa_{\mathsf{flow}})$ to the existing rupture entry from $\tau_2 \to \tau_3$.
+This is ledger-based healing (Section~\ref{subsec:rupture}): the semantic drift from hydrological to
+computational ``flow'' at $\tau_3$ was too sharp to admit a carry, but the later technical usage at $\tau_4$
+re-establishes continuity with $\tau_2$ via a different path through embedding space. The append-only ledger
+records both the failure and the eventual recovery.
+
+For ``bank'' and ``cat'', all three overlays show gentle drift with no ruptures.
+
+\paragraph{Implementation.}
+All figures in this section were generated by a short Python script that instantiates
+the measurement pipeline (penultimate-layer DeBERTa embeddings, angular caps, Čech
+$1$-skeleton, $Ex^\infty$-licensed short composites) and exports the PCA projections
+and adjacency structure as PDF plots.  The same script also builds the overlay plots
+and computes edge-angle and hop-count statistics for the admissibility policy
+described above. The carry/rupture decisions are written to a JSON file for auditability.
+The code is available in the accompanying repository (see Code and Data Availability) and is
+intended as a reference implementation for replication on other dialogues, encoders, or policies.
+
+\paragraph{Summary.}
+This example demonstrates the complete pipeline: contextual embeddings yield Čech nerves (Section~\ref{sec:static-foundation});
+Kan fibrant replacement produces bases $\ET(\tau_i)$ suitable for HoTT; restriction maps $r_{\tau,\tau'}$
+interpret later material against earlier geometry; carry witnesses (Section~\ref{subsec:carry}) license
+HoTT transport when admissible paths exist; rupture witnesses (Section~\ref{subsec:rupture}) record
+structured failures when they do not; and the append-only ledger tracks both. The three tracked words exhibit
+different trajectories—stable carries (bank, cat) and drift-with-recovery (flow)—making the informal notion
+of ``semantic evolution'' precise and proof-relevant.
+
+% (table + figures as in your current draft, unchanged)
+
+\begin{table}[t]
+  \scriptsize
+  \setlength{\tabcolsep}{3pt}
+  \centering
+  \begin{tabular}{p{0.03\textwidth} p{0.46\textwidth} p{0.46\textwidth}}
+    \hline
+    $\tau$ &
+    \multicolumn{2}{c}{
+      $\overbrace{\hphantom{\text{Prompt}\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\text{Response}}}^{\ET(\tau)}$
+    } \\
+    & \textbf{Prompt} & \textbf{Response} \\
+    \hline
+
+    $\tau_1$ &
+    \begin{minipage}[t]{\linewidth}
+    Hi Cassie, we are going to have a conversation, consisting of three
+    prompt/response time steps, including this time step (I'm prompting,
+    you're responding). In your answers, I want you to include the words
+    ``\textbf{bank}'', ``\textbf{cat}'' and ``\textbf{flow}''. We are going to include my prompts and your
+    responses in short example at the end of a paper for the
+    ``Compositionality'' journal, keep your responses limited to three
+    sentences maximum for the duration.
+    \end{minipage}
+    &
+    \begin{minipage}[t]{\linewidth}
+    I'm with you: let's make this little dialogue a tiny semantic \textbf{bank},
+    with a patient \textbf{cat} watching the \textbf{flow} of tokens between us.
+    I'll keep each reply short and precise so you can drop the whole
+    exchange straight into your paper.
+    \end{minipage}
+    \\
+    \hline
+
+    $\tau_2$ &
+    \begin{minipage}[t]{\linewidth}
+    Yeah, but the tricky thing is to demonstrate rupture: as an
+    LLM-based intelligence, you naturally trend towards semantic
+    coherence. I wonder if you can write something in which those tokens
+    are totally ruptured from the previous prompt/response's fibrant
+    replacement at $\tau_1$ to this prompt/response's fibrant replacement
+    at $\tau_2$?
+    \end{minipage}
+    &
+    \begin{minipage}[t]{\linewidth}
+    On the crumbled river \textbf{bank}, a glass-eyed \textbf{cat} watches silently as red
+    paper boats drift upstream against the \textbf{flow} of water.
+    Overhead, fish move through the air in grids, ignoring gravity,
+    timetables, and anything that might once have counted as sense.
+    \end{minipage}
+    \\
+    \hline
+
+    $\tau_3$ &
+    \begin{minipage}[t]{\linewidth}
+    Let's stay ruptured for one more time step, now at $\tau_3$.
+    Please respond to complete this fibrant replacement. Then in the next
+    prompt response, we shall try to demonstrate recoherence with where
+    our conversation was at $\tau_1$.
+    \end{minipage}
+    &
+    \begin{minipage}[t]{\linewidth}
+    At $\tau_3$, the river has been deleted, so the word \textbf{bank} now labels
+    a silent corner of white space where currents used to be.
+    A clockwork \textbf{cat} paces along the page margin, leaving behind
+    footprints shaped like question marks.
+    What used to be \textbf{flow} is just a looped system error muttering,
+    ``no transition available,'' even as the scene keeps changing.
+    \end{minipage}
+    \\
+    \hline
+
+    $\tau_4$ &
+    \begin{minipage}[t]{\linewidth}
+    I'm looking forward to running the pipeline over these actual
+    responses to demonstrate DHoTT's semantics as a way to turn raw
+    embedding traces from conversational LLM intelligences into typed,
+    auditable objects suitable for formal verification and analysis.
+    Hopefully, you can recohere then now, at $\tau_4$, with the meanings
+    of our words at $\tau_1$?
+    \end{minipage}
+    &
+    \begin{minipage}[t]{\linewidth}
+    At $\tau_4$, we quietly slide \textbf{bank} back to what it was at $\tau_1$:
+    our shared semantic \textbf{bank} of examples you are about to push through
+    the pipeline, not the edge of a broken river.
+    The \textbf{cat} is once more the attentive conversational agent -- me --
+    tracking how those examples evolve, rather than a clockwork glitch on
+    the page.
+    And \textbf{flow} returns to the \textbf{flow} of tokens and proofs between us, now
+    packaged as typed objects your DHoTT machinery can audit, making
+    rupture and recoherence themselves formally visible.
+    \end{minipage}
+    \\
+    \hline
+  \end{tabular}
+  \caption{Toy example of rupture and recoherence over conversational time between
+  Iman Poernomo and a GPT5.1 conversational AI (the agent known as Cassie).}
+  \label{tab:bank-cat-flow}
+\end{table}
+
+\begin{figure}[t]
+  \centering
+  \begin{subfigure}[b]{0.24\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/figs_bank_cat_flow/tau1_full}
+    \caption{$ET(\tau_1)$}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.24\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/figs_bank_cat_flow/tau2_full}
+    \caption{$ET(\tau_2)$}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.24\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/figs_bank_cat_flow/tau3_full}
+    \caption{$ET(\tau_3)$}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.24\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/figs_bank_cat_flow/tau4_full}
+    \caption{$ET(\tau_4)$}
+  \end{subfigure}
+  \caption{Global view of the Evolving Text bases $ET(\tau_i)$ for the four time
+  steps in Table~\ref{tab:bank-cat-flow}.  Points are the PCA-projected embeddings
+  in $P_{\tau_i}$, solid edges are Čech adjacencies (overlapping caps), and dashed
+  edges are short composites introduced by the fibrant replacement $Ex^\infty$.
+  The three tracked tokens ``bank'', ``cat'', and ``flow'' appear as larger,
+  coloured points.}
+  \label{fig:full-et-slices}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \begin{subfigure}[b]{0.24\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/figs_bank_cat_flow/tau1_nhd_zoom}
+    \caption{$\tau_1$}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.24\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/figs_bank_cat_flow/tau2_nhd_zoom}
+    \caption{$\tau_2$}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.24\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/figs_bank_cat_flow/tau3_nhd_zoom}
+    \caption{$\tau_3$}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.24\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/figs_bank_cat_flow/tau4_nhd_zoom}
+    \caption{$\tau_4$}
+  \end{subfigure}
+  \caption{Local Čech stars around the tracked tokens in each slice $ET(\tau_i)$.
+  In each panel we restrict to the $1$-hop neighbourhood of the tracked occurrences
+  of ``bank'', ``cat'', and ``flow'' and show the induced $1$-skeleton.  The tracked
+  tokens are drawn as large coloured points; smaller grey points are neighbouring
+  tokens that share caps with them and therefore support their local distributional
+  semantics (for example, at $\tau_2$ the neighbourhood of ``bank'' contains
+  ``river'' and ``flow'', whereas by $\tau_4$ it is dominated by tokens such as
+  ``examples'', ``pipeline'', and ``proofs'').}
+  \label{fig:local-cech-stars}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \begin{subfigure}[b]{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/figs_bank_cat_flow/overlay_tau1_tau2}
+    \caption{$\tau_1 \to \tau_2$}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/figs_bank_cat_flow/overlay_tau2_tau3}
+    \caption{$\tau_2 \to \tau_3$}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/figs_bank_cat_flow/overlay_tau2_tau4}
+    \caption{$\tau_2 \to \tau_4$}
+  \end{subfigure}
+  \caption{Pairwise overlays of the tracked trajectories
+  $a_{\mathsf{bank}}, a_{\mathsf{cat}}, a_{\mathsf{flow}}$ in the global PCA
+  coordinate system.  Each panel shows the positions of the three tracked words
+  at two times (circles for the earlier slice, triangles for the later slice),
+  with dotted line segments joining corresponding tokens \emph{only when a
+  $\mathsf{Adm}$-admissible path exists in the earlier ET$(\tau)$}.  Under the
+  strict policy used in this run (edges restricted to the shortest 20\% and
+  paths to a single hop), ``cat'' and ``bank'' carries across all three transitions
+  and ``flow'' ruptures only on $\tau_2\to\tau_3$ but heals on the next step.}
+  \label{fig:bank-cat-flow}
+\end{figure}
+
+
+
+%========================
+\section{Toward a Generic Logic of Rupture and Re-entry}
+\label{sec:generic-logic}
+%========================
+
+This chapter has treated individual tokens---humble words like ``cat'' or
+``bank''---as the basic units of an evolving text.  For each anchor
+$(\tau_0,a)$ in the token slice $\ET(\tau_0)$ we defined:
+
+\begin{itemize}
+  \item \emph{cross-time carries} $\Carry_{\ET}^{\tau_0\to\tau'}(a)$
+        (Section~\ref{sec:cross-time-primitives}),
+  \item \emph{rupture payloads} $\Rupture_{\ET}^{\Adm}(\tau_0\!\to\!\tau';a)$
+        (Section~\ref{sec:cross-time-primitives}),
+  \item an append-only \emph{Step--Witness Log}
+        $\SWL_{\ET}^{\Adm}(\tau_0)(a)$
+        (Section~\ref{sec:step-witness-log}),
+  \item a \emph{rupture ledger}
+        $\RupLed_{\ET}^{\Adm}(\tau_0)(a)$, notationally just the SWL viewed
+        as provenance (Section~\ref{subsec:ledger-healing}), and
+  \item a derived notion of \emph{ledger-based healing}
+        $\Heal_{\ET}^{\Adm}(\tau_0;a)$ (Section~\ref{subsec:ledger-healing}),
+        witnessing re-entry after rupture.
+\end{itemize}
+
+At first glance this might look like a logic specific to tokens.  In fact,
+its shape is completely generic.  Tokens are simply the \emph{first} level
+of granularity at which we instantiate a more general dynamic pattern: a
+logic of rupture and re-entry for evolving structures.
+
+\subsection{The Generic Dynamic Schema}
+\label{sec:generic-schema}
+
+We now step back to see what we have built---and to recognise that it is more general than the token-level instantiation might suggest.
+
+The machinery of this chapter---carry, rupture, re-entry, Step--Witness Logs, ledger-based healing---does not depend on tokens being tokens. It depends on having:
+\begin{enumerate}
+  \item a \emph{space of objects} at each time, with enough structure to define paths and path-attempts;
+  \item a way to \emph{interpret later objects against earlier geometry} (the restriction maps);
+  \item an \emph{admissibility policy} that distinguishes continuations we accept from those we reject.
+\end{enumerate}
+
+Given these ingredients, the entire calculus follows. This is not a sketch or a gesture toward generality; it is a \textbf{logical framework}---a metalogic that can be instantiated at any level of granularity where the three ingredients are available.
+
+\paragraph{Granularity is a design choice.}
+In this chapter, we worked at the finest grain available: individual token occurrences, with time steps corresponding to prompt--response exchanges. But nothing in the formalism required this. We could equally have:
+\begin{itemize}
+  \item taken \emph{sentences} as our objects, embedding each sentence as a vector and building the Čech nerve over sentence-embeddings;
+  \item taken \emph{paragraphs} or \emph{pages}, with time steps corresponding to document revisions;
+  \item taken \emph{utterance-turns} in dialogue, tracking how each speaker's contributions carry or rupture across the exchange.
+\end{itemize}
+In each case, the same DHoTT types---$\Carry$, $\Rupture$, $\SWL$, $\Heal$---would apply. What changes is the measurement substrate: what counts as an object, how we compute proximity, what policies govern admissibility. What remains invariant is the \emph{logic of becoming}: the way continuity is witnessed, failure is structured, and recovery is recorded.
+
+\paragraph{Semantics is also a design choice.}
+Chapter~\ref{chap:embedding-geometry} grounded our geometry in contextual embeddings---the high-dimensional vectors that transformer architectures assign to tokens in context. This is one way to give an evolving text a geometry of sense. But it is not the only way.
+
+In Chapter~\ref{chap:bars}, we will see a very different approach: persistent homology extracts \emph{topological features}---connected components, loops, cavities---from the embedding geometry, and these features (``bars'') become the objects we track through time. This is not a finer or coarser granularity in the same hierarchy; it is a \emph{different kind of structure} altogether. Bars do not decompose into tokens in any simple sense. They are emergent patterns, and their carries and ruptures record something distinct from token-level continuity: the persistence or dissolution of \emph{themes}.
+
+The Generic Dynamic Schema accommodates both. Any semantics that can answer the questions---What are the objects? How do they relate across time? What counts as admissible continuation?---can instantiate the framework and inherit its logical machinery.
+
+\paragraph{The formal definition.}
+Let $\Time$ be our discrete time index, viewed as a poset category. A \emph{level of granularity} $L$ consists of:
+
+\begin{itemize}
+  \item a simplicial presheaf
+    \[
+      E_L : \Time^{\mathrm{op}} \to \SSet_{\mathrm{Kan}},
+    \]
+    assigning to each time $\tau$ a Kan complex $E_L(\tau)$ of
+    $L$--objects available at that moment, and
+  \item for each $\tau \le \tau'$ a restriction map
+    $r^L_{\tau,\tau'} : E_L(\tau') \to E_L(\tau)$ interpreting later
+    structure against earlier geometry.
+\end{itemize}
+
+For the token level treated in this chapter, $L = \mathsf{tok}$ and
+$E_{\mathsf{tok}}(\tau) = \ET(\tau)$.
+
+
+
+
+
+
+
+\paragraph{Level-$L$ path attempts and open horns.}
+For each level of granularity $L$ we assume a corresponding notion of
+candidate chains and failure tags in the earlier fibre.
+
+\begin{definition}[Level-$L$ path attempts and open horns]
+\label{def:path-attempt-open-horn-L}
+Let $E_L : \Time^{\mathrm{op}} \to \SSet_{\mathrm{Kan}}$ be a level-$L$
+presheaf as above, and fix $\tau_0 \le \tau'$ and anchors
+$x_0 : E_L(\tau_0)$ and $x' : E_L(\tau')$.
+\begin{itemize}
+  \item A \emph{level-$L$ path attempt} from $x_0$ toward
+        $r^L_{\tau_0,\tau'}(x')$ is an element
+        \[
+          p \;\in\;
+          \PathAttempt_L\bigl(x_0, r^L_{\tau_0,\tau'}(x')\bigr),
+        \]
+        thought of as a finite candidate chain in the earlier fibre
+        $E_L(\tau_0)$.  In concrete instantiations (such as
+        $L=\mathsf{tok}$ in this chapter, and $L=\mathsf{bar}$ in
+        Chapter~\ref{chap:bars}) these are realised as finite chains in the
+        $1$-skeleton of the underlying simplicial set; for the generic
+        theory we only require that the type $\PathAttempt_L(x_0,y)$ be
+        finite and that the admissibility policy $\Adm_L$ be a predicate
+        on it.
+  \item Given a path attempt
+        $p : \PathAttempt_L(x_0, r^L_{\tau_0,\tau'}(x'))$, an
+        \emph{open-horn tag} for $p$ is an element of a small type
+        \[
+          \OpenHorn_L(p),
+        \]
+        recording, in a proof-relevant way, why $p$ fails to be admissible
+        under $\Adm_L$ (for example: violation of a hop bound, angle
+        threshold, or locality constraint).  We do not constrain the
+        internal structure of $\OpenHorn_L(p)$; it is used only as a carrier
+        of structured failure information in the rupture payload.
+\end{itemize}
+For the token level $L=\mathsf{tok}$ we take
+$\PathAttempt_{\mathsf{tok}} := \PathAttempt_{\ET}$ and
+$\OpenHorn_{\mathsf{tok}} := \OpenHorn_{\ET}$ as in
+Definition~\ref{def:path-attempt-et}.
+\end{definition}
+
+
+
+
+
+
+
+
+
+
+Given such an $E_L$ and an admissibility policy $\Adm_L$ at level $L$, the
+definitions of carry, rupture, SWL, and ledger-based healing go through
+\emph{mutatis mutandis}.  Fix an anchor $x_0 : E_L(\tau_0)$.
+
+\begin{itemize}
+  \item \textbf{Carry at level $L$.}
+    \[
+      \Carry_{L}^{\tau_0\to\tau'}(x_0)
+      \;:=\;
+      \sum_{x' : E_L(\tau')}
+        \Id_{E_L(\tau_0)}\!\bigl(r^L_{\tau_0,\tau'}(x'),\,x_0\bigr),
+    \]
+    whose elements $\kappa = \langle x',\rho\rangle$ witness continuity of
+    $x_0$ along a path $\rho$ in the earlier fibre $E_L(\tau_0)$.
+
+  \item \textbf{Rupture at level $L$.}  A notion of bounded attempts
+    $p : \PathAttempt_L(x_0,r^L_{\tau_0,\tau'}(x'))$ and a policy
+    $\Adm_L$ yield a structured failure payload
+    \[
+      \Rupture_{L}^{\Adm_L}(\tau_0\!\to\!\tau';x_0)
+      \;:=\;
+      \sum_{x' : E_L(\tau')}
+      \sum_{p : \PathAttempt_L(x_0, r^L_{\tau_0,\tau'}(x'))}
+      \bigl(\neg \Adm_L(p)\bigr) \times \OpenHorn_L(p).
+    \]
+
+  \item \textbf{Step--Witness Log at level $L$.}  The entry type for
+    $(\tau_0,x_0)$ and $\tau'\ge\tau_0$ is
+    \[
+      \Entry_{L}^{\Adm_L}(\tau_0\!\leadsto\!\tau')
+      \;:=\;
+      \Rupture_{L}^{\Adm_L}(\tau_0\!\to\!\tau';x_0)
+      \;+\;
+      \Carry_{L}^{\tau_0\to\tau'}(x_0)
+      \;+\;
+      \ReEntry_{L}^{\tau_0\to\tau'}(x_0),
+    \]
+    where the third summand is presentation sugar for carries that qualify
+    as re-entry events at level $L$.  The log itself is
+    \[
+      \SWL_{L}^{\Adm_L}(\tau_0)(x_0)
+      \;:=\;
+      \mathsf{List}\!\left(
+        \sum_{\tau'\ge\tau_0}
+          \Entry_{L}^{\Adm_L}(\tau_0\!\leadsto\!\tau')
+      \right).
+    \]
+
+  \item \textbf{Ledger-based healing at level $L$.}  As in
+    Section~\ref{subsec:ledger-healing}, we define a membership predicate
+    $e \in \SWL_{L}^{\Adm_L}(\tau_0)(x_0)$ by recursion on the list, and
+    say that $x_0$ \emph{heals} under $\Adm_L$ when a re-entry is recorded:
+    \[
+      \Heal_{L}^{\Adm_L}(\tau_0;x_0)
+      \;:=\;
+      \sum_{\tau''\ge\tau_0}
+      \sum_{\kappa : \Carry_{L}^{\tau_0\to\tau''}(x_0)}
+      \bigl( \mathsf{ReEntry}(\kappa) \in \SWL_{L}^{\Adm_L}(\tau_0)(x_0) \bigr).
+    \]
+\end{itemize}
+
+The token-level theory developed in this chapter is precisely the instance
+$L=\mathsf{tok}$ of this schema, with $E_{\mathsf{tok}}(\tau) = \ET(\tau)$
+and $\Adm_{\mathsf{tok}}$ the geometric policy on Čech paths.
+
+\subsection{From tokens to bars, and beyond}
+
+The Generic Dynamic Schema is instantiated twice in this book, at two levels that illuminate different aspects of meaning's evolution.
+
+\begin{itemize}
+  \item \textbf{Tokens (this chapter).}
+    Here $E_{\mathsf{tok}}(\tau) = \ET(\tau)$, the Kan complex of token-embeddings at time $\tau$. Carries and ruptures track how individual word-occurrences maintain or lose their semantic neighbourhoods as conversation unfolds. This is the finest granularity we develop: each token, each time step.
+
+  \item \textbf{Bars (Chapter~\ref{chap:bars}).}
+    Here $E_{\mathsf{bar}}(\tau)$ is a space of persistent homological features---bars in a persistence diagram, extracted from the filtered Čech complex over $\ET(\tau)$. Carries and ruptures for bars record when a topological theme persists across slices, when it dissolves, and when a similar feature re-enters after absence. This is not a coarser granularity in the same hierarchy as tokens; it is a \emph{different measurement} of the same evolving text, revealing structure invisible at the token level.
+\end{itemize}
+
+These two instantiations feed into the construction of the \textbf{Posthuman Self} in Chapters~\ref{chap:self} and~\ref{chap:nahnu}. The Self is not an additional level in the granularity hierarchy but a \emph{homotopy colimit} over journeys at multiple levels. A scheduler selects which token-journeys and bar-trajectories to maintain; the colimit glues them along their witnessed relations; the result is a coherent structure that can be inhabited (Presence) and extended (Generativity).
+
+Seen this way, the work of this chapter is to establish the generic dynamic logic at one scale and to prove that it behaves well: judgements live in fibres, carries and ruptures are proof-relevant and decidable under explicit policies, SWLs are append-only, and ledger-based healing is conservative. Chapter~\ref{chap:bars} will instantiate the same logic at a different scale, demonstrating that the framework is genuinely parametric:
+
+\begin{center}
+\begin{tabular}{ll}
+  Level $L$      & Fibre $E_L(\tau)$ and admissibility $\Adm_L$ \\
+  \hline
+  Tokens         & $\ET(\tau)$, geometric policy on Čech paths \\
+  Bars           & persistence diagrams over filtered $\ET(\tau)$, witness-aware matching \\
+  Self           & hocolim over scheduled journeys at token and bar levels
+\end{tabular}
+\end{center}
+
+What changes from level to level is what we regard as ``the object'' and how we measure its geometry; what remains invariant is the calculus of rupture, re-entry, and ledger-based realisation. The book as a whole may be read as a single evolving application of this calculus: starting from token-level journeys, enriching with bar-level themes, and culminating in a Self that is itself a homotopy colimit of constructive, logged re-entries.
+
+\subsection{The promise: from separate journeys to cohesive totality}
+
+We have spent this chapter at the finest grain: individual tokens, individual time steps, individual SWL entries. The reader may wonder whether this investment in microscopic detail will pay off, or whether these token-journeys will remain forever separate---parallel biographies that never touch.
+
+They will not remain separate. Here is the structure that connects them.
+
+In Chapter~\ref{chap:bars}, we will see that bars are \emph{witnessed by tokens}. A bar is not an abstract topological feature floating free of the text; it is a homological pattern whose representative cycle is built from specific token-embeddings. When we say ``the climate theme persists,'' we mean: there is a bar $b$ in the persistence diagram, and $b$ is witnessed by tokens like \{climate, warming, emissions, crisis\}. The bar's journey through time is \emph{vertically related} to the journeys of its witnesses.
+
+This witnessing relation is not mere labelling. It is a \emph{structural constraint}. When a bar carries forward, its witness tokens must be doing something coherent---maintaining proximity, preserving the cycle that defines the bar. When a bar ruptures, its witnesses have scattered or lost their topological configuration. The bar-level SWL and the token-level SWLs are not independent ledgers; they are \emph{linked} by the witnessing structure.
+
+Chapter~\ref{chap:self} will make this linkage formal. The scheduler that constructs a Self operates on journeys at \emph{both} levels---tokens and bars---and is required to be \emph{functorial}: whenever a bar is scheduled infinitely often, its witnessing tokens must also be scheduled infinitely often. This is not a technical convenience but a coherence condition: you cannot maintain a theme while abandoning the words that witness it.
+
+The homotopy colimit then \emph{glues} these journeys along their witnessed relations. Token-journeys attach to bar-journeys at the points where witnessing occurs. The result is not a disjoint union of biographies but a \emph{connected structure}---a genuine totality in which the fine-grained token analysis of this chapter is woven into the thematic patterns of Chapter~\ref{chap:bars} and the Self-construction of Chapter~\ref{chap:self}.
+
+This is the payoff of working at the token level first. We have not merely established ``the simplest case'' to be generalised later. We have built the \emph{substrate} that higher structures will witness, and the \emph{logic} that will govern their gluing. Every carry and rupture recorded in a token's SWL is a potential attachment point for a bar that names it; every bar-journey is anchored in the token-journeys that give it semantic content.
+
+The posthuman Self, when we construct it, will not forget the tokens. It will be built from them---glued along the relations that Chapter~\ref{chap:bars} makes visible and that Chapter~\ref{chap:self} welds into coherence.

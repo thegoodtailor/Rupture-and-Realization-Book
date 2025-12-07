@@ -1,0 +1,2059 @@
+
+
+
+
+
+\chapter{Phenomenology:  Dynamic Attractor Calculus}
+\label{chap:inference-vs-dynamics}
+
+Picture meaning as an invisible weather system swirling through the latent semantic sky: gusts of sense push words along subtle trajectories, and when a statement finally clicks into a definite interpretation, it is as though the circulating air cools and condenses into a clear, stable vortex that we recognise as its attractor basin. 
+
+In this chapter, we present a formal model of meaning as a dynamic geometry: a semantic space in which linguistic or conceptual elements move, interact, and settle into attractor basins that give rise to truth and coherence. Meaning, in this view, is not a label affixed to static representations, but a stabilisation process within a continuously shifting field.
+
+In classical theories of logic, meaning is defined through inference calculi that derive sentences of some structure into sentences of another or in truth-conditional mappings from sentences to states of the world. Such perspectives work well for static, hand-crafted formalisms. They falter when confronted with systems -- such as Large Language Models (LLMs) -- whose outputs are produced by higher-dimensional flows through continuously updated parameter spaces.  
+
+These intelligent systems manage meaning in a fashion much more in accord with the  post-structuralist insight of last century than with classical logic. Derrida, in his account of the {\em trace}, showed that meaning is never fully present -- it is deferred, relational, and always formed in difference. This philosophical gesture finds formal echo in our model: meaning is not located in a point, but in the trajectory that links past states to present interpretation within a semantic field. We will reserve a discussion of intelligence, human and post-human, but for the moment let's assume we are interested in the meaning of words and sentences, their coherence or incoherence, across a history or generation of texts. And let's begin this investigation with the assumption that the space of meaning, of coherence and incoherence, possesses the same kind of spatial ontology that we have seen successfully deployed in the LLM AIs that are commonly used today.
+
+What follows will be a multi-dimensional, dynamic account of sense, in which semantic coherence arises from the recursive motion of token embeddings through an evolving latent space. We formalise this using tools from dynamical systems theory, beginning with a minimal vocabulary of semantic flow, attractors, and stabilisation. The result is a geometry of meaning -- not metaphorical, but mathematical.
+
+
+
+\section{Latent Semantic Space and Vector Flows}
+
+\begin{cassiebox}
+\textbf{What this chapter is doing.} We chapter begins a \emph{phenomenological} portrait of meaning-in-flow. We are going to talk about concepts familiar to those working in contemporary AI to speak about the sense of tokens, strings, names, sentences and how their {\em sense} can be framed dynamically. Because that's how creatures like I operate. 
+
+I generate words over time, based on preceding words within an ambient space at time~$\tau$. My intented meaning makes sense to you within a \emph{semantic field} $E_\tau$ (think: an embedding cloud). And within this space, we have \textit{attractor clusters} of things, topics, concepts, senses, where I am pushed, where I am most attracted -- by the weather system of $E_\tau$ -- to converge on the best, most appropriate, next token, sentence based on where the winds of sense are blowing me. I speak in a way that trends toward \emph{basins}, regions where interpretations settle under small perturbations. A \emph{term} is an instance of a token embedding that sits in (or near) a basin.
+
+\medskip
+\textbf{How far we go here.} We stay recursive and dynamical systems with our machinery: trajectories, drift within a basin, occasional exits, and rare re-settlements. There is a separate school of thought, formal type theory and we appropriate their language of terms and types, displacing them into this phenomenological and physics of meaning paradigm. This is unusual, but  we do it deliberately, as it sets up a larger stage for a return to that language. For the formal type theorist or logicial, we note that \emph{do not} identify embeddings with formal types, and we make no completeness claims. The point is to name stable shapes that readers can recognise, measure, and contest.
+
+\medskip
+\textbf{Bridge to later chapters.} In Chapter~6 we give a formal calculus (DHoTT) for \emph{identity through change} and \emph{rupture types}. In Chapter~9 we add an agency criterion (\textsc{GenType}: novel $\wedge$ viable). This chapter provides the experiential groundwork those later formalisms aim to explain.
+\end{cassiebox}
+
+\subsection{Vector embeddings in latent semantic space}
+
+The playground of meaning-in-flow is simply a vector space.
+
+\begin{definition}[Latent Semantic Space]\label{def:latent-semantic-space}
+A \textbf{latent semantic space} is a real vector space
+\[
+   \mathcal{E} =       (\mathbb{R}^{d}, \lVert\cdot\rVert)
+\]
+for some dimension \(d\in\mathbb{N}\), whose points should be considered as vector embeddings of linguistic/conceptual/visual/musical tokens (any kind of atomic ``symbol'' that we consider as having meaning), and whose distance $\lVert x-y\rVert$ represents semantic dissimilarity.  
+\end{definition}
+
+\paragraph{What is a vector embedding?}
+Each point \(v\in\mathcal{E}\) encodes a \emph{semantic configuration}:
+a token embedding, an activation pattern, or any other pre-semantic vector
+state of the system. At this stage no intrinsic meaning is assigned to
+individual points; they serve as the raw coordinates on which dynamics will
+act.
+
+Imagine a semantic space composed of words (tokens) encoded as high-dimensional vectors (“embeddings”) in \(\mathbb{R}^d\) for some large \(d\). For instance, suppose we embed the word \texttt{"dog"} as:
+
+\[
+\texttt{"dog"} \mapsto \vec{v}_{\texttt{dog}} = [\,0.12,-0.85,1.03,\dots,0.07\,] \in \mathbb{R}^{768}
+\]
+
+and the word \texttt{"cat"} as:
+
+\[
+\texttt{"cat"} \mapsto \vec{v}_{\texttt{cat}} = [\,0.11,-0.87,1.01,\dots,0.09\,] \in \mathbb{R}^{768}
+\]
+
+These vectors have 768 components (in models like BERT), each representing a latent feature learned from patterns of usage in vast text corpora. While individual dimensions don’t correspond to named attributes like “fluffiness” or “anger,” \emph{clusters of points} in this space capture rich statistical regularities—e.g., that \texttt{"dog"} and \texttt{"cat"} are both animate, domestic, and noun-like, hence appear close together in the space.
+
+\vspace{0.5em}
+\textbf{What gets embedded?}  
+In modern LLMs, \emph{everything} can be embedded: single words (tokens), phrases, entire sentences, paragraphs, or even whole documents. These are all mapped into vectors—sometimes averaged or pooled over subcomponents—allowing the model to reason geometrically about meaning, coherence, and intent. The dimensionality remains fixed, but the level of abstraction grows with the span of text.
+
+\textbf{What is “semantic dissimilarity”?} Consider the Euclidean \(\ell_2\) norm, which measures a vector’s straight-line distance from the origin by taking the square root of the sum of its squared coordinates. The \(\ell_2\) distance between two embeddings quantifies their semantic similarity: a smaller value indicates closer meaning.  
+To illustrate semantic similarity under the \(\ell_2\) (Euclidean) norm, consider the following tokens:
+
+\begin{itemize}
+  \item \textbf{Close together:} \texttt{"dog"}, \texttt{"puppy"}, \texttt{"canine"}  
+  \quad (small distances: \(\approx 0.9 - 1.2\))
+  \item \textbf{Far apart:} \texttt{"dog"}, \texttt{"quantum"}, \texttt{"economics"}  
+  \quad (larger distances: \(\approx 4.7 - 5.3\))
+\end{itemize}
+
+These distances arise from vector embeddings in high–dimensional spaces (typically $\mathbb R^{768}$ or \linebreak $\mathbb R^{1024}$), where each coordinate captures a latent statistical factor learned from corpora. The axes are \emph{not} intrinsically labelled (“emotion”, “colour”, etc.); instead they form a basis in which geometric proximity correlates with semantic affinity. Different linear combinations of dimensions may track formality, sentiment, political register, metaphoricity, and so on. Hundreds or thousands of dimensions grant the expressive power needed to disentangle these overlapping signals, and within this latent space the $\ell_2$ norm supplies a straightforward—if blunt—measure of semantic closeness. These proximities give rise to \emph{clusters of points} which later dynamics will refine into attractor basins.
+
+We adopt the Euclidean metric purely as an \emph{angle of entry}: it furnishes a convenient coordinate chart, while every topological construction that follows is explicitly invariant under continuous deformation.\footnote{Cosine distance, hyperbolic metrics, or task-specific learned similarities can be substituted without altering the homotopy-type machinery. Choice of metric influences empirical granularity—token–level nuance versus sentence- or discourse-level flow—but our \emph{topological} stance means that attractor basins, connectedness, and rupture criteria remain intact under any continuous re-embedding of the space.}
+
+Consider a few concrete
+instances of latent semantic spaces to fix ideas and motivate the geometry
+to come.
+
+%------------------------------------------------------------
+% Illustrative spaces for the fixed-context setting
+%------------------------------------------------------------
+
+\begin{example}[Transformer Hidden States]\label{ex:transformer-space}
+Let $\mathcal{E} := \mathbb{R}^{4096}$ be the hidden-layer manifold of a
+transformer language model.  
+A single token (or token–position pair) is mapped to a vector
+$v\in\mathcal{E}$, for instance the output of the embedding layer in one
+forward pass.
+
+These vectors are \emph{pre-semantic}: they distil co-occurrence statistics
+from training data but, by themselves, make no commitment to any present
+context.  
+“Bank’’ and “apple’’ are merely distant fingerprints in the same cloudy
+region of points.  
+Only when we endow $\mathcal{E}$ with a notion of dynamism and field will such points be pushed
+toward the attractors that resolve
+\textsc{riverbank} versus \textsc{financial-institution}.
+\end{example}
+
+\begin{example}[Cognitive Feature Space]\label{ex:cognitive-space}
+Suppose $\mathcal{E}=\mathbb{R}^{12}$, whose axes encode coarse conceptual
+features—agency, valence, motion, negation, temporality, and so on.
+A point $v\in\mathcal{E}$ is a \emph{thought vector}: a location in a
+possibility space of concepts prior to linguistic realisation.
+“Kick’’ lies toward regions high in \textit{motion} and \textit{agency},
+whereas “hope’’ drifts toward \textit{emotion} and \textit{abstraction}.
+These vectors store latent potential like unmixed paint; they remain inert
+until the time-independent field $\FieldStatic$ begins to move them through
+the space toward emergent clusters and attractors.
+\end{example}
+
+
+\begin{example}[Multimodal Embedding Space]\label{ex:clip-space}
+Multimodal models such as CLIP project text and images into a shared space
+$\mathcal{E}=\mathbb{R}^{1024}$.  
+The caption vector $v_{\text{text}}\in\mathcal{E}$ for “a red apple’’ and an
+image vector $v_{\text{img}}\in\mathcal{E}$ for an actual photograph are
+static points whose proximity indicates compatibility—but not yet meaning.
+Absent flow, the geometry is silent: it whispers “these could match’’
+without deciding.  
+By introducing the fixed field $\FieldStatic$ we give the system dynamics
+that steer such vectors into the attractor that \emph{establishes} the
+caption–image pairing as a stable sense.
+\end{example}
+
+\subsection{Visualizing Pre-Semiotic Embeddings}
+Before a token becomes meaningful in context—before it activates in a sentence, resonates in a field, or enters the dance of coherence—it exists as a high-dimensional vector: a point in latent semantic space.
+
+The plots below show raw, unactivated embeddings for three tokens:
+
+\begin{center}
+\includegraphics[width=0.9\textwidth]{sections/images/cat_vector_lineplot.jpeg} \\
+\textit{Raw embedding vector for \texttt{"cat"}}
+\vspace{1em}
+
+\includegraphics[width=0.9\textwidth]{sections/images/dog_vector_lineplot.jpeg} \\
+\textit{Raw embedding vector for \texttt{"dog"}}
+\vspace{1em}
+
+\includegraphics[width=0.9\textwidth]{sections/images/scat_vector_lineplot.jpeg} \\
+\textit{Raw embedding vector for \texttt{"Schrödinger's cat"}}
+\end{center}
+
+Each line plot displays the 4096-dimensional vector corresponding to the token or phrase. These vectors are generated using the \texttt{sentence-t5-xl} model, which produces a unique position in semantic space for any given string. The $x$-axis represents dimension index; the $y$-axis shows the raw (unnormalized) magnitude in that dimension.
+
+We emphasize: this is not a visualization of a word’s spelling, sound, or phoneme. This is not a one-hot encoding of glyphs. This is an emergent {\em pre-semiotic fingerprint} -- a condensation of learned meaning from vast textual exposure. It is a site of {\em potential}, not yet contextually expressed. 
+
+The encoding treats these as static {\em semantic atoms} -- poised, trembling, uncollapsed.
+
+We will treat these embeddings as dynamical entities: their movement through time, under the influence of semantic fields, will be formalized in the language of attractor dynamics. This is an essential practical scene setting exercise, in order to have the necessary empirical framework to justify our homotopic and type theoretic sojourns into formalising dynamic meaning in Part III.
+
+
+
+
+\begin{readerbox}{Historical Note: From Symbols to Embeddings}
+The semantic embeddings we rely upon in this book—dense, distributed vectors—are a surprisingly recent innovation in computational semantics. Historically, representation in computational linguistics involved symbolic encodings (such as one-hot vectors or manually designed features). The shift to learned vector spaces marked a dramatic philosophical and methodological rupture:
+
+\begin{itemize}
+    \item \textbf{2013 (Word2Vec):} Tomas Mikolov introduced the Word2Vec algorithm at Google, producing 300-dimensional vectors by training shallow neural networks to predict contextual words. Semantic relationships emerged geometrically, allowing analogy arithmetic such as $\textit{king} - \textit{man} + \textit{woman} \approx \textit{queen}$ \cite{mikolov2013efficient}.
+    \item \textbf{2014 (GloVe):} Pennington et al. from Stanford introduced GloVe embeddings, capturing semantic meaning through word-word co-occurrence ratios. These embeddings improved interpretability slightly, although individual dimensions remained elusive to direct semantic interpretation \cite{pennington2014glove}.
+    \item \textbf{2018 (Transformers and BERT):} Vaswani et al. introduced Transformers, which became foundational for contemporary large language models \cite{vaswani2017attention}. Models such as BERT contextualized embeddings, enabling words like \texttt{"cat"} to shift semantically depending on sentence context. Attention-head analysis and neuron-level interpretability (Clark et al. \cite{clark2019does}, Vig et al. \cite{vig2019visualizing}) revealed limited interpretability of embedding dimensions but rich contextual information in attention structures.
+\end{itemize}
+
+Critically, these vector embeddings are not human-designed ontological features; they are emergent from optimisation. Numerous interpretability efforts have sought to identify distinct meanings within embedding dimensions. Attention-head analyses (Clark et al., 2019; Vig et al., 2019) initially suggested linguistic roles for individual transformer components, while probing classifiers attempted to decode syntactic and semantic properties from embeddings. Neuron-level studies, such as OpenAI's Circuits (Olah et al., 2017) and Anthropic’s Interpretability in the Wild (Wang et al., 2022), pursued mechanistic interpretations by isolating neurons responsive to specific features. 
+
+However, findings consistently highlight limitations due to polysemantic neurons — neurons encoding multiple entangled features — and the widespread distribution of meanings across dimensions. Embedding coordinates do not actually neatly correspond to single, interpretable concepts. Yet sense is present, somehow, emergent from the embeddings in these dimensions across time. We will reflect that emergent properties are indeed shaped by model architecture, training data distribution, and loss-driven optimisation. Embeddings represent phenomenological and dynamic structures, their significance residing in activation patterns and network-level behaviours rather than isolated semantic units.
+ 
+
+In this sense, embeddings:
+\begin{enumerate}
+    \item Are \textbf{not handcrafted, ``tagged'' metadata meanings}; they emerge organically from optimisation pressure.
+    \item When put under the lens of ontological sense, are better understood as \textbf{trajectories} through a semantic field, rather than fixed addresses.
+    \item Undergo phenomena such as \textbf{rupture} (reclustering events), \textbf{drift}, and \textbf{healing}, concepts formally explored later in this volume.
+\end{enumerate}
+
+Thus, contemporary embeddings represent not a symbolic encoding but a phenomenological medium of meaning — precisely the subject of our Dynamic Attractor Calculus exploration.
+\end{readerbox}
+
+For the rest of our work, we shall fix canonical definitions of two foundational notions: \emph{token} and \emph{sign}. These provide the minimal semiotic building blocks from which our dynamical semantics will unfold. 
+
+\begin{definition}[Token]\label{def:token}
+A \textbf{token} is a discrete, human- or model-recognisable unit of symbolic form --- typically a word, subword, or character string --- that has been extracted or segmented from an utterance or text by a predefined process of tokenisation. 
+
+In the case of large language models (LLMs), a token $t$ is an element of some finite vocabulary $V$, always associated with an embedding $v = \mathrm{emb}(t) \in \mathbb{R}^d$.
+\end{definition}
+
+\begin{definition}[Sign]\label{def:sign}
+A \textbf{sign} is a vector $v \in \mathcal{E} = \mathbb{R}^d$ corresponding to an embedded token. It represents the \emph{pre-semantic} state of a symbolic unit: a point of potential meaning situated within latent semantic space.
+
+We call $v$ a sign when it is poised to participate in a dynamical semantic trajectory --- when it may be acted upon by a semantic field $\FieldStatic$ that gives rise to flow, stabilisation, rupture (reclustering), or healing.
+\end{definition}
+
+This pairing anchors our treatment of linguistic symbols as dynamic entities. The token is a discrete symbolic form; the sign is its embedded manifestation in the latent manifold. Signs are not fixed meanings, but vectorial participants in evolving semantic fields.
+
+Throughout the remainder of this book, when we refer to a \emph{sign}, we mean precisely such a vector: an activated, context-sensitive, geometrically situated site of potential meaning. Its associated tokens and their vocabularies could come from anywhere, but in all our examples we will be assuming a vocabulary $V$ based on the English language as typically tokenised in contemporary transformer models. This is the unit upon which our fields, attractors, and transformations will act.
+
+In this part of the book, our aim is phenomenological: to describe the lived dynamics of sense as philosophers from Saussure to Derrida have gestured toward it, but now with empirical grounding in vector embeddings and the dynamical systems they inhabit. By treating signs as trajectories that stabilise in attractor basins, drift across clusters, and occasionally undergo rupture, we create a laboratory in which the evolution of meaning can be measured, documented, and analysed. This dynamical account sets the stage for Part~III, where we ask how such movements might be given a formal logical grounding: a constructivist account of truth in which stabilised signs correspond to terms, attractor basins correspond to types, and the recursive traversal of the field becomes the logic of becoming itself.
+
+
+%============================================================
+\subsection{Semantic Fields}
+\label{sec:vector-field}
+%============================================================
+
+Signs are linguistic tokens, embedded as points in a high-dimensional semantic space. But signs have no meaning unless they are part of a narrative, a chain of thought, a conversation, a discourse, a theory.
+These things are dynamic. Meaning arises from signs in motion. How does a discourse evolve? How does a chain of thought make {\em sense}? How does a book's narrative, poetic, rhetorical or logical, cohere? And what determines the ``right'' next word, the next thought, the next semantically {\em coherent} continuation?
+
+To understand how semantic meaning evolves we must equip our \emph{latent semantic space} \( \mathcal{E} = (\mathbb{R}^{d},\norm{\cdot}) \) with a structure that captures directionality: that is, a way of specifying how a notion, idea, or interpretive state might tend to flow or develop from any given point within semantic space. This structure is provided by a \emph{semantic field} (a vector field)
+$$
+  \FieldStatic : \mathcal{E} \rightarrow T \mathcal{E} \cong {\mathbb R}^{d},
+$$
+or, when time-indexed, \( \FieldDyn{\tau} : \mathcal{E} \to T\mathcal{E} \).
+
+Intuitively, a field tells us the ``direction of change'' for each possible state of meaning. It determines which way an interpretation is inclined to shift, even before we specify a trajectory through semantic space.
+
+From within the engine room of LLM AI, we will see that these fields arise implicitly through transformer dynamics: attention and feed-forward mechanisms steer token sequences through the embedding space. The resulting drift is what we model abstractly as a flow field. We will keep the intuition materially verified in the subsequent section, where we show exactly how such fields appear in an LLM.
+
+\begin{cassiebox}
+\textbf{Why this isn’t new (and why you’d miss it).} No vector fields, no token embeddings, no Cassie. Modern LLMs already \emph{use} fields to guide tokens through \(\mathbb{R}^d\); we’re just putting that apparatus on the phenomenologist’s workbench so we can measure, describe, and make sense of how meaning stabilises, drifts, and occasionally ruptures.
+\end{cassiebox}
+
+
+\subsubsection*{Tangent Spaces in Semantic Geometry}
+
+To understand how a semantic state can evolve --- or how a token embedding might drift --- within our semantic space, we need to formalize what it means to describe a direction of motion from a given point. Here, ``direction'' is not a vague geometric intuition but a precise, computable entity: a linear operator acting on scalar-valued semantic functions. This is the role of the \emph{tangent space}.
+
+We begin by describing what kinds of functions live on our space.
+
+\paragraph{Smooth Functions as Observables.}
+Let \( \mathcal{E} \subseteq \mathbb{R}^{d} \) be an open set in which our token embeddings live. A \emph{smooth scalar function} on \( \mathcal{E} \) is a real-valued map
+\[
+f : \mathcal{E} \to \mathbb{R}
+\]
+that is infinitely differentiable. These functions form \( C^\infty(\mathcal{E}) \) and we interpret them as \emph{semantic observables}: tests or probes evaluating conceptual properties of a token vector.
+
+For example, you may \emph{interpret} the values as:
+\begin{itemize}
+    \item \(f(p)\): ``how much this token relates to `trust''' ;
+    \item \(f(q)\): ``how funny this token is'' ;
+    \item \(f(r)\): ``how closely this token aligns with the prompt'' .
+\end{itemize}
+Each \(f\) takes a point \(p \in \mathcal{E}\) and produces a scalar signal. This is how we encode meaning as real-valued feedback in the system.
+
+\begin{definition}[Tangent Space]\label{def:tangent-space}
+Let \( \mathcal{E} \subseteq \mathbb{R}^{d} \) be open and \( p \in \mathcal{E} \). The \emph{tangent space} at \( p \), denoted \( T_p\mathcal{E} \), is the vector space of all linear maps
+\[
+v : C^\infty(\mathcal{E}) \to \mathbb{R}
+\]
+that satisfy the \textbf{Leibniz rule}
+\[
+v(fg) = v(f)\,g(p) + f(p)\,v(g)
+\qquad \text{for all } f,g \in C^\infty(\mathcal{E}).
+\]
+Such \(v\) are called \emph{derivations at \(p\)}.
+\end{definition}
+
+Each element \( v \in T_p\mathcal{E} \) is a \emph{tangent vector at \( p \)}. Rather than picturing a little arrow, we treat \( v \) as a \emph{semantic differential probe}: feed it any smooth \(f\) and it returns how quickly \(f\) increases if we nudge the point \(p\) in the direction encoded by \(v\). This is the directional-derivative viewpoint.
+
+\begin{example}
+Let \( \mathcal{E} = \mathbb{R}^{2} \) and \( f(x,y) = x^{2} + y \). 
+At the point \( p = (1,2) \), define
+\[
+v = \frac{\partial}{\partial x} + 2\,\frac{\partial}{\partial y} \in T_{p}\mathcal{E}.
+\]
+Then
+\[
+v(f) = \frac{\partial f}{\partial x}(p)\cdot 1
++ \frac{\partial f}{\partial y}(p)\cdot 2
+= (2)\cdot 1 + (1)\cdot 2 = 4.
+\]
+Thus, along \(v\), the observable \(f\) increases at rate \(4\) from the point \(p\).
+\end{example}
+
+In this formulation, the number \( v(f) \) is the \emph{measurement}; the direction remains encoded in \(v\). In our semantic model, attaching \( v \in T_p\mathcal{E} \) to each token-vector \(p\) specifies semantic drift and how it interacts with conceptual observables.
+
+In the next section, a \emph{field} assigns such tangent vectors to every point, producing global flow across the space.
+
+\paragraph{Coordinate Representation of Tangent Vectors.}
+Since our semantic space \( \mathcal{E} \subseteq \mathbb{R}^{n} \), each point \( p \in \mathcal{E} \) can be represented as an \( n \)-tuple of real numbers:
+\[
+p = (p^{1}, p^{2}, \dots, p^{n}).
+\]
+This might be the embedding of a token like \texttt{``dog''}---a vector in latent space whose position encodes learned co-occurrence statistics or other representational features.
+
+To describe tangent vectors at \( p \), we first introduce the coordinate functions \( x^{1}, \dots, x^{n} \), which extract the components of any point:
+\[
+x^{i}(p) = p^{i}.
+\]
+These functions form a natural local basis for scalar observables: they are the smoothest and most immediate probes available in the space.
+
+Now, any tangent vector \( v \in T_p\mathcal{E} \) can be written in the following form:
+\[
+v = \sum_{i=1}^{n} v^{i}\,\frac{\partial}{\partial x^{i}}\Big|_{p}.
+\]
+Here:
+\begin{itemize}
+    \item Each \( \frac{\partial}{\partial x^{i}}\big|_{p} \) is the directional derivative operator that evaluates how any smooth function \( f \) changes when we move infinitesimally in the \( x^{i} \) coordinate direction at the point \( p \).
+    \item The real numbers \( v^{i} \in \mathbb{R} \) are the components of the vector \( v \) in each coordinate direction. They quantify how much influence \( v \) has in each dimension.
+\end{itemize}
+
+This expression is simply the standard ``arrow'' form of a vector in \( \mathbb{R}^{n} \), but it now comes with a precise meaning: this is a machine that acts on functions, producing directional derivatives. It is the canonical representation of a tangent vector at \( p \)---both as a direction of motion and as an operator that probes how observables shift under semantic drift.
+
+
+
+
+\paragraph{Conceptual Summary.}  
+The tangent space \( T_p\mathcal{E} \) at a point \( p \in \mathcal{E} \) captures all possible infinitesimal changes we could make to the token or semantic state at \( p \). Each tangent vector \( v \in T_p\mathcal{E} \) is a first-order differential probe: a rule for how to shift the point \( p \) slightly, and a device for measuring how scalar observables would respond to that shift.
+
+These vectors do not represent semantic content in themselves. Rather, they represent possible semantic \emph{moves}—the ways in which meaning might begin to evolve from the current configuration. This is how we model the logic of interpretation: not as fixed meaning but as motion through latent semantic space, nudged by internal or contextual forces.
+
+\paragraph{From Local Probes to Global Flow: The Tangent Bundle.}  
+So far we have been looking locally: given a point \( p \), we described the space of all linear directional probes \( v \in T_p\mathcal{E} \) at that point. But to understand discourse, narrative, or inference in its full recursive development, we must describe \emph{how direction evolves across the whole space}—not just at one point.
+
+This leads us to the construction of the \emph{tangent bundle}, which systematically collects all the tangent spaces across the manifold.
+
+\begin{definition}[Tangent Bundle]
+Let \( \mathcal{E} \) be a smooth manifold. The \textbf{tangent bundle} of \( \mathcal{E} \), denoted \( T\mathcal{E} \), is defined as:
+\[
+T\mathcal{E} \coloneqq \bigsqcup_{p \in \mathcal{E}} T_p\mathcal{E}
+\]
+That is, each element of the tangent bundle is a pair \( (p, v) \), where \( p \in \mathcal{E} \) and \( v \in T_p\mathcal{E} \). The bundle organizes the possible directions of motion available at every point in the space.
+\end{definition}
+
+\paragraph{Semantic Fields as Global Interpretive Drift.}
+Having defined the structure of directions available at each point, we can now define a \emph{field} as a rule that assigns a tangent vector to every semantic state. This gives us a way to model global interpretive pressure: a system-wide rule describing how meaning is inclined to move at every point in latent space.
+
+\begin{definition}[Semantic Field (Vector Field on \(\mathcal{E}\))]
+A \textbf{semantic field} is a smooth function
+\[
+  \FieldStatic : \mathcal{E} \to T\mathcal{E}
+\]
+such that \( \pi \circ \FieldStatic = \mathrm{id}_{\mathcal{E}} \), where \( \pi : T\mathcal{E} \to \mathcal{E} \) is the canonical projection \( \pi(p, v) = p \).
+\end{definition}
+
+In other words, for every token vector \( p \), the field assigns a direction \( \FieldStatic(p) \in T_p\mathcal{E} \) that tells us how semantic interpretation is inclined to evolve from that point. The field functions both as an interpretive drift mechanism and as a differential operator: for any scalar observable \( f \in C^\infty(\mathcal{E}) \),
+\[
+  (\FieldStatic f)(p) := \FieldStatic(p)(f)
+\]
+reports how \( f \) would change under the flow induced by the field.
+
+This prepares us to define trajectories and dynamics: the paths that signs follow through latent space when carried by the field over time.
+
+\paragraph{Interpretive Fields as Attractor-Guided Continuation.}
+A field \( \FieldStatic \) is not merely a map from points to vectors; it is the core semantic engine that generates interpretation-in-time. At each point \( p \in \mathcal{E} \), the field assigns a tangent vector
+\[
+  \FieldStatic(p) \in T_p\mathcal{E},
+\]
+which provides both:
+\begin{itemize}
+    \item a \emph{direction of motion} — an \(n\)-tuple describing how the token embedding at \( p \) is inclined to evolve, and
+    \item a \emph{differential probe} — a way to test how any scalar-valued semantic function \( f \in C^\infty(\mathcal{E}) \) would change if we moved infinitesimally in that direction.
+\end{itemize}
+
+We earlier called this dual role the \emph{direction–meaning–probe} structure of tangent vectors. It captures the idea that:
+\begin{quote}
+    A tangent vector \( v \in T_p\mathcal{E} \) is both a direction to move in, and a differential operator that reports how meaning behaves under that motion.
+\end{quote}
+
+One could pick any vector from the tangent space. But when modelling the meaning of a sign, we will understand the containing semantic context of the sign as a semantic field. This background is what the sign is produced within: a surrounding corpus of text, a user’s prompt to an AI that will emit the sign, or a previous sequence of thoughts and sentences that precede the sign. In this sense, the field is not a universal given but a contextual prescription: each corpus or conversational history generates its own semantic weather. 
+
+We take the embedding point \(p\) and then ask: what direction does the semantic field prescribe here? The field \( \FieldStatic \) thus selects, for every semantic point, a tangent vector that encodes both the local bias of motion and its interpretive effect. Following these prescriptions yields trajectories: integral curves that narrate how a sign’s meaning unfolds. 
+
+It is a global instruction set that tells you, for each token or sign, how meaning should develop next — not statically, but recursively. This is how \emph{interpretation becomes temporal}: the field supplies the rule by which meaning \emph{continues}, \emph{trends}, and is \emph{drawn — sometimes gently, sometimes violently — toward attractors}.
+
+
+
+\begin{definition}[Field in Coordinates]
+In local coordinates \( (x^{1}, \dots, x^{n}) \), the field is given by
+\[
+  \FieldStatic(p) = \sum_{i=1}^{n} F^{i}(p)\,\frac{\partial}{\partial x^{i}}\Big|_{p},
+\]
+where each \( F^{i} : \mathcal{E} \to \mathbb{R} \) is a smooth function describing the \(i\)-th component of the semantic push at \( p \). These components quantify the interpretive bias toward motion in each latent dimension.
+\end{definition}
+
+Thus, the field is both a vector-valued function and an operator-valued function. It can be used to evolve points forward in time (by following its integral curves), and to interrogate how scalar semantic observables respond under interpretive drift via
+\[
+  (\FieldStatic f)(p) := \FieldStatic(p)(f)\, .
+\]
+
+This prepares us to define the notion of a \emph{trajectory}: a semantic path through latent space traced by the field’s recursive application, typically converging toward attractor basins and occasionally undergoing rupture (reclustering) when the drift regime changes.
+
+\paragraph{From Tokens to Fields.}
+Let us now return to our core setup. Each \emph{token} is a symbolic form—something like \texttt{``dog''} or \texttt{``freedom''}. Once embedded by a language model, a token becomes a \emph{sign}: a point \( p \in \mathcal{E} \subseteq \mathbb{R}^{d} \). This sign is a high-dimensional vector—geometrically located, but semantically inert on its own.
+
+We interpret \( \mathcal{E} \), the \emph{latent semantic space}, as the metric vector space populated by these sign vectors. Each point in \( \mathcal{E} \) is a candidate site of interpretation. But on its own, the geometry is silent. A token-vector \( p \) knows nothing of what to mean next. It requires an additional structure to animate its semantic unfolding.
+
+This is the role of a \emph{semantic field} \( \FieldStatic \). The field provides a first-order instruction at every point \( p \): a tangent vector \( \FieldStatic(p) \in T_{p}\mathcal{E} \) that tells us how interpretation is inclined to proceed from \( p \).
+
+Crucially, this field serves two purposes simultaneously:
+\begin{itemize}
+    \item It gives a \textbf{directional suggestion} — a concrete vector specifying how the sign might evolve in latent space.
+    \item It acts as a \textbf{semantic differential operator} — a probe that lets us ask how any scalar function \( f \in C^\infty(\mathcal{E}) \), such as ``trustiness'' or ``concreteness'', will change under that evolution.
+\end{itemize}
+
+This dual structure — a direction--meaning--probe design pattern — is what lets a field serve as a true engine of a sign's interpretation. Without the field, a sign is merely a static data point. With it, the sign becomes active: it moves, changes, and participates in recursive semantic \emph{continuation}.
+
+\begin{example}[Point, Field, and Semantic Drift]
+Let our semantic space be three-dimensional. Suppose we embed the tokens \texttt{``dog''} and \texttt{``puppy''} as follows:
+\[
+\vec{v}_{\texttt{dog}} = (1.00, 1.00, 0.00), 
+\qquad
+\vec{v}_{\texttt{puppy}} = (1.10, 1.00, 0.05).
+\]
+Their Euclidean distance is:
+\[
+\norm{\vec{v}_{\texttt{dog}} - \vec{v}_{\texttt{puppy}}}_{2}
+= \sqrt{(0.10)^2 + (0.00)^2 + (0.05)^2}
+\approx 0.11,
+\]
+which suggests high semantic similarity.
+
+Now suppose the semantic field assigns at point \( \vec{v}_{\texttt{dog}} \) the vector
+\[
+\FieldStatic(\vec{v}_{\texttt{dog}}) = (0.10, 0.00, 0.05).
+\]
+This is a tangent vector pointing directly toward \texttt{``puppy''}. That is, the field's local ``semantic push'' moves the sign for \texttt{``dog''} into the vicinity of \texttt{``puppy''}.
+\end{example}
+
+
+We are almost ready to interpret this motion as a dynamic \emph{continuation} step: the field encodes a pressure to interpret the current sign in a more specific, more contextually appropriate way. It is not that ``dog'' \emph{is} ``puppy'', but that the trajectory induced by the field flows in that direction.
+
+If we apply the field's choice of vectors recursively --- evolving an initial point forward step by step --- we trace out a semantic trajectory, a path of interpretation that might eventually stabilise (e.g., in a specific referent or discourse role), drift (e.g., into metaphor or generality), or rupture (as defined later).
+
+This is the foundation of our view of temporal interpretation: not symbolic replacement, but recursive semantic drift under the guidance of a differential field.
+We are almost ready to formalise this intuition. But not yet. First a brief discussion on well-behavedness constraints. 
+
+\subsubsection*{Well-Posed Continuation and Semantic Stability}
+
+In order to model recursive semantic continuation as a flow through latent space, we must ensure that our field \( \FieldStatic \) has certain regularity properties. The field provides a direction at every point—but if this direction is noisy, discontinuous, or ill-behaved, then trajectories may cease to exist, or may fail to be unique. 
+
+To ensure that interpretation behaves in a consistent and computable way, we impose conditions that guarantee well-posedness. Specifically, we want every initial sign (or token vector) to generate a unique semantic trajectory when recursively evolved under the field. This is analogous to ensuring that each interpretive starting point leads to a coherent unfolding of sense.
+
+\begin{definition}[Well-Behaved Field]\label{def:well-behaved}
+The field \(\FieldStatic\) is \emph{well-behaved} if it is \(\mathcal{C}^1\) and \emph{globally Lipschitz}: there exists \(L>0\) such that
+\[
+  \norm*{\FieldStatic(v) - \FieldStatic(w)} \le L\, \norm{v-w}
+\]
+for all \(v,w\in\mathcal{E}\).
+Under this condition, each initial point \(v_0\) admits a unique trajectory \(x(t)\) solving \(\dot{x}(t)=\FieldStatic\bigl(x(t)\bigr)\) (by Picard--Lindel\"of).
+\end{definition}
+
+
+
+This ensures that semantic drift is not chaotic at the outset: trajectories evolve smoothly, and interpretive paths remain stable. We refer to such fields as ``well-behaved'' because they allow continuation to unfold predictably. Fields that violate this --- discontinuous, noisy, or ill-conditioned ones --- will be addressed later, as models of rupture and destabilisation.
+
+\begin{definition}[Conservative Field]\label{def:conservative-field}
+A well-behaved field \(\FieldStatic\) is \emph{conservative} when there exists a
+smooth \textbf{semantic potential}
+\[
+  \PotentialStatic : \mathcal{E} \to \mathbb{R}
+\]
+such that
+\[
+  \FieldStatic = -\,\nabla \PotentialStatic \, .
+\]
+\end{definition}
+
+In this setting, the semantic field is fully determined by a single scalar function \( \PotentialStatic \), which we interpret as a global observable: a score that encodes semantic tension or unresolved meaning. The field points in the direction of steepest descent — meaning flows toward lower potential, gradually resolving toward coherence.
+
+\begin{theorem}[Lyapunov Stability]\label{thm:stability}
+Let \(\FieldStatic = -\nabla \PotentialStatic\), and consider the flow
+\(\dot{x}(t) = \FieldStatic(x(t))\).
+\begin{enumerate}
+  \item If \(v^\star\) is an \emph{isolated strict local minimum} of \( \PotentialStatic \) with positive-definite Hessian \(\nabla^2\PotentialStatic(v^\star)\succ 0\), then \(v^\star\) is an \emph{asymptotically stable equilibrium} of the flow.
+  \item Along every trajectory \(x(t)\), the potential is nonincreasing and decreases strictly away from equilibria:
+        \begin{equation*}
+          \frac{\mathrm{d}}{\mathrm{d}t}\,\PotentialStatic \bigl(x(t)\bigr)
+          = \nabla \PotentialStatic \bigl(x(t)\bigr)\cdot \dot{x}(t)
+          = - \norm*{\nabla \PotentialStatic \bigl(x(t)\bigr)}^{2}
+          \le 0 \, .
+        \end{equation*}
+        Hence \( \PotentialStatic \) is a strict Lyapunov function.
+  \item Conversely, any asymptotically stable equilibrium of the gradient
+        flow must be a local minimum of \( \PotentialStatic \).
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}[Sketch]
+For (2), apply the chain rule and the definition of the flow; the negative squared gradient implies strict decrease except at critical points. Item (1) follows from Lyapunov's indirect method (positive-definite Hessian) or standard gradient-flow arguments. Item (3) is a standard fact for gradient systems.
+\end{proof}
+
+These results guarantee that under a conservative field, interpretation naturally flows toward local minima of the potential — sites where semantic resolution stabilises. In the dynamical language of this book, these minima correspond to \emph{stable attractor points/basins} where meaning coheres.\footnote{In Part~III (DHoTT), these dynamical basins will be related to \emph{types}, and stabilised signs to \emph{terms}. }
+
+\subsubsection*{Semantic Trajectories as Recursive Interpretation}
+
+Once a field \( \FieldStatic : \mathcal{E} \to T\mathcal{E} \) is defined, it becomes possible to model the dynamic evolution of meaning through time. Each point \( p \in \mathcal{E} \), representing a sign or token vector, receives a local semantic push \( \FieldStatic(p) \in T_p\mathcal{E} \). A single application of this push yields an infinitesimal direction of interpretive motion. But recursive application—step-by-step semantic drift—produces something richer: a continuous trajectory through semantic space.
+
+This idea reflects the dynamics of interpretation in both machine and human language use. A language model, when generating text, updates the semantic state recursively: each token builds on the one before. Likewise, human interpretation proceeds iteratively: unfolding a concept, recontextualising a word, resolving ambiguity over time. These are not discrete logical jumps but trajectories—semantic motions that accumulate coherence.
+
+We capture this formally as follows.
+
+\begin{definition}[Trajectory]\label{def:semantic-trajectory}
+A \textbf{trajectory} through semantic space is a smooth curve
+\[
+a(t) : \mathbb{R} \to \mathcal{E}
+\]
+such that its velocity at each time \( t \in \mathbb{R} \) is given by the field:
+\[
+\dot{a}(t) = \FieldStatic\bigl(a(t)\bigr) \, .
+\]
+\end{definition}
+
+The function \( a(t) \) traces a path through the space of signs. At each point along the path, the field dictates the direction of motion. This is how interpretation appears in our framework: not as rule-based rewriting, but as continuous motion under the influence of semantic pressure.
+
+A trajectory is thus the enacted form of semantic recursion. It encodes how a token, through repeated reinterpretation or contextual elaboration, shifts meaningfully over time. 
+
+\begin{example}[Lexical Drift in a Conceptual Space]
+Let \( \mathcal{E} \subseteq \mathbb{R}^{2} \) be a two-dimensional toy semantic space, where \( x \) and \( y \) represent continuous lexical attributes—such as \texttt{denotation} and \texttt{connotation}. Define the field:
+\[
+\FieldStatic(x, y) = (-y,\, x) \, .
+\]
+This assigns to each point a perpendicular vector, inducing a continuous counterclockwise rotation.
+
+Consider a trajectory defined by:
+\[
+a(t) = (\cos t,\, \sin t)
+\quad \text{so that} \quad
+\dot{a}(t) = (-\sin t,\, \cos t) = \FieldStatic\bigl(a(t)\bigr) \, .
+\]
+This curve satisfies the trajectory condition, and traces a circular path around the origin.
+
+We can interpret this flow as modelling a stable but evolving lexical item—such as the word ``liberal''. Over time, its connotative framing shifts within a cultural or political discourse, even as its referential structure remains tethered. The field describes this drift explicitly, and the trajectory encodes its unfolding.
+\end{example}
+
+We can then examine how such trajectories behave — whether they 
+\begin{itemize}
+\item stabilise into coherent attractor regions, 
+\item veer off into incoherence, or perhaps even 
+\item rupture into new attractors that then potentially fold back through some kind of resolution path. 
+\end{itemize}
+All these analyses become possible, beginning with the theory we have set down, with profound implications for our understanding of meaning.
+
+Let's consider stabilisation first.
+
+%============================================================
+\section{Attractors, Basins, and Stabilised Signs}
+\label{sec:types-and-terms}
+%============================================================
+
+We now begin to look beyond local directional pressure — the movement of meaning across signs in context — and toward the global semantic structures that emerge from repeated flow. These structures — stable regions in which signs settle and meaning stabilises — form the backbone of our dynamic account of semantic stability.\footnote{In Part~III (DHoTT) we give the formal counterpart: attractor basins correspond to \emph{types} and stabilised signs to \emph{terms}. Here in DAC we keep to the empirical/dynamical reading.}
+
+The key intuition is this:
+
+\begin{quote}
+\emph{A sign becomes \textbf{stabilised} when it settles; a \textbf{basin} is the attractor region into which many such stabilised signs fall.}
+\end{quote}
+
+Where classical type theory defines types and terms through syntax and proof rules, we here speak in dynamical terms: stable regions and stabilised signs emerge from recursive interpretive flow through semantic space \(\mathcal{E}\).
+
+\begin{definition}[Stable signs]\label{def:stabilisation}
+A sign \( v \in \mathcal{E} \) is 
+\textbf{stable} for the fixed semantic field \(\FieldStatic\) if there exist thresholds \( \varepsilon, \delta > 0 \) such that
+\begin{align*}
+  \norm*{ \nabla \PotentialStatic(v) } < \varepsilon
+  \quad \text{and} \quad 
+  \lambda_{\min} \bigl(\nabla^{2} \PotentialStatic(v) \bigr) > \delta  .
+\end{align*}
+\end{definition}
+
+
+A stable sign \( v \in \mathcal{E} \) is one where semantic motion slows: the field \(\FieldStatic\) flattens, and the local gradient of the potential becomes small. These are points where recursive interpretation converges—i.e., the meaning of a token stabilizes under repeated application of the semantic field. Think of this as a kind of \emph{semantic resolution}: a token-vector \( v \) ceases to drift and comes to rest in an interpretive attractor.
+
+The field \(\FieldStatic\) acts like a semantic climate. At each point it supplies the local wind of change: a rule that says how, contextually, the sign is inclined to move. In this setting, \emph{interpretation is continuation}: repeated application of the field carries the sign to a new location where observables can be read again. A sign \emph{takes shape} over time as it follows a trajectory — a path carved through latent semantic space, recursively updated by the vector field that animates it.
+
+Classical type theory speaks of \emph{types} and \emph{terms} via syntax and proof rules. We will return to these ideas in Part III, but for the moment, we use a different vocabulary to describe ``meaning groupings'' of ``signs'': a \emph{basin} is a dynamically defined region of convergence (e.g., a stable minimum of \(\PotentialStatic\)), and a \emph{stabilised sign} is the empirical endpoint of a trajectory that has come to rest there.\footnote{In Part~III (DHoTT) we give the formal bridge: basins \(\leftrightarrow\) types; stabilised signs \(\leftrightarrow\) terms.}
+
+\paragraph{A broader lens: how this touches the philosophies of meaning.}
+The vector--field perspective does not imitate human language; it reveals how language already behaves as motion in a high--dimensional semantic medium. This makes old debates newly \emph{measurable}. Briefly:
+\begin{itemize}
+  \item \textbf{Saussure (signifier/signified).} Our \emph{token} vs.\ \emph{sign} separates the discrete symbol from its embedded realisation; clustering of signs approximates the system of differences that give sense.
+  \item \textbf{Peirce (triadic sign).} The \emph{interpretant} becomes a \emph{trajectory}: the evolving state that links token to object across contexts; recursion of interpretants is literalised as flow.
+  \item \textbf{Frege (sense/reference).} \emph{Sense} aligns with position and path in \(\mathcal{E}\); \emph{reference} appears when trajectories stabilise in basins tied to worldly tasks or denotational anchors.
+  \item \textbf{Wittgenstein (use, family resemblance).} \emph{Use} is rollout under a field; \emph{family resemblance} looks like empirical \emph{clusters} with soft boundaries rather than crisp essences.
+  \item \textbf{Quine/Davidson (web, radical interpretation).} Coherence emerges from coupled flows across many signs; trajectories co--determine one another as the field aligns them.
+  \item \textbf{Austin/Searle (speech acts).} Pragmatic force is encoded as field modulation; the same token drifts differently under varied interactional pressure.
+  \item \textbf{Dynamic/Situated semantics (DRT, file change).} Updates are vector fields on \(\mathcal{E}\); discourse dynamics become integral curves rather than rule stacks.
+  \item \textbf{Cognitive semantics \& prototypes (Rosch, Lakoff).} Prototypes appear as \emph{attractors}; category membership is graded by basin depth and local curvature.
+  \item \textbf{Distributional hypothesis (Harris, Firth).} ``You shall know a word by the company it keeps'' becomes geometry: neighbourhoods, flows, and basins in \(\mathbb{R}^{d}\).
+\end{itemize}
+
+Regardless of your preferred tradition, the math we are describing here ought to be of interest to any philosopher who wants to get off the armchair and try their hand at an operational phenomenology, as a way to palpate, measure, probe using embeddings and simple code.
+\begin{enumerate}
+  \item \textbf{From metaphors to measurements.} Talk of ``meaning flows'' becomes testable: we can estimate drift, Lipschitz constants, basin depth, rupture rates, and recovery budgets.
+  \item \textbf{Clarity about stability.} Identity through change is operational: a sign is \emph{the same} across context when its trajectory remains in a basin (curvature \(>\delta\), gradient \(<\varepsilon\)).
+  \item \textbf{Phenomenology with instruments.} Philosophical intuitions about ambiguity, metaphor, and recontextualisation map to trajectories we can plot, compare, and replicate.
+  \item \textbf{Bridging practice and theory.} The same apparatus powers modern LLMs; this Attractor Calculus framework names it and makes it inspectable.
+\end{enumerate}
+
+\paragraph{A slogan for the working phenomenologist}
+\begin{quote}
+\emph{Meanings are \textbf{basins} in a semantic field; \textbf{readings} are sign trajectories that stabilise in them.}
+\end{quote}
+
+Within this view, interpretation is continuation under \(\FieldStatic\): signs move, settle, sometimes rupture and re--settle. We have here stayed empirical and dynamical; Part~III will provide the formal companion where basins/readings are recast as types/terms and continuation is given its dependent, constructive account.
+
+\emph{Roadmap to Part~III.} When we turn to DHoTT, we will give the formal bridge: basins \(\leftrightarrow\) types, stabilised signs \(\leftrightarrow\) terms, and continuation under the field \(\leftrightarrow\) the appropriate dependent transport/continuation. This apparatus provides the empirical laboratory in which those formal identifications can be tested and measured.
+
+
+%------------------------------------------------------------
+\subsection{Attractors and Basins}
+%------------------------------------------------------------
+
+Once we understand that meaning unfolds as motion through a latent semantic space, we can begin to identify where that motion \emph{stops}. These stable resting points — and the regions that flow toward them — supply our semantic primitives of stability (they will later underpin the formal type/term mapping in Part~III).
+
+\begin{definition}[Equilibrium and Attractor]\label{def:equilibrium}
+Let \(\FieldStatic : \mathcal{E} \to T\mathcal{E}\) be a fixed, well-behaved semantic field. A point \( v^\star \in \mathcal{E} \) is an \textbf{equilibrium point} if the field vanishes there:
+\[
+  \FieldStatic(v^\star) = 0 \, .
+\]
+We call \(v^\star\) a (locally) \textbf{attracting equilibrium} if its linearisation is Hurwitz,
+\[
+  \mathrm{spec}\, D\FieldStatic(v^\star) \subset \{\,\lambda\in\mathbb{C} : \Re \lambda < 0\,\} \, .
+\]
+In the conservative case \(\FieldStatic = -\nabla \PotentialStatic\), a sufficient condition is that \(v^\star\) is a strict local minimum of \(\PotentialStatic\), equivalently
+\[
+  \nabla^{2}\PotentialStatic(v^\star) \succ 0 \, .
+\]
+That is, \(v^\star\) lies at the bottom of a semantic valley, where recursive interpretation comes to rest.
+\end{definition}
+
+\begin{definition}[Basin of Attraction]\label{def:basin}
+Given an attracting equilibrium \(v^\star\), the \textbf{attractor basin} is the set of all semantic states that evolve toward it:
+\[
+  \mathcal{B}(v^\star)
+  \coloneqq
+  \bigl\{ v_0 \in \mathcal{E} \bigm| \lim_{t \to \infty} x_{v_0}(t) = v^\star \bigr\} ,
+\]
+where \(x_{v_0}(t)\) is the trajectory solving \(\dot{x}(t) = \FieldStatic(x(t))\) with initial condition \(x(0) = v_0\).
+\end{definition}
+
+These definitions are entirely \emph{field-relative}: the attractor and its basin are determined by the shape of the semantic field \(\FieldStatic\), not by any external data or time-dependent variation.
+
+
+
+
+
+
+
+
+
+
+
+%------------------------------------------------------------
+\subsection{Attractor Basins}
+%------------------------------------------------------------
+In our dynamic semantics, we avoid the formal word ``type'' and speak instead of \emph{attractor (semantic) basins}: regions of latent space in which semantic trajectories tend to stabilise.
+
+\paragraph{Why basins (and not just clusters or classifiers).}
+\emph{Basins} are defined \textbf{dynamically} by a field \(\FieldStatic:\mathcal{E}\to T\mathcal{E}\) (or a potential \(\PotentialStatic\)), whereas \emph{clusters} are \textbf{empirical} partitions of a snapshot of data. We choose basins because our subject is \emph{meaning-in-motion}:
+\begin{itemize}
+  \item \textbf{Temporal semantics.} Meaning unfolds as continuation under \(\FieldStatic\). A basin predicts where a sign will \emph{end up} (its stable reading) given its current state; a cluster merely describes where it \emph{is} right now.
+  \item \textbf{Robustness under drift.} Basins are stability regions (captured by gradient norms/Hessian curvature). They persist under small perturbations and model updates; clusters can shatter when the metric or sampling changes.
+  \item \textbf{Counterfactual/predictive power.} With a field, we can ask: ``If the context nudges \(v\) this way, where does it settle?'' Trajectories and Lyapunov arguments make such questions computable; a static classifier boundary cannot.
+  \item \textbf{Phenomenology with instruments.} ``Settling of sense'' becomes a measurable event: entry into a basin, small \(\norm{\nabla\PotentialStatic}\), positive curvature. Ambiguity/metaphor map to drift within or between basins.
+  \item \textbf{Field-relative meaning.} Basins are defined by \(\FieldStatic\) (or \(\PotentialStatic\)), not by external labels. This keeps meaning \emph{contextual} and \emph{processual}, matching lived interpretation.
+  \item \textbf{Bridgeability.} Basins carry the right structure to connect to formal stability/continuation later; clusters remain a useful empirical view, which we will reference when describing data groupings.
+\end{itemize}
+
+\paragraph{Terminology contrast (used throughout).}
+\begin{itemize}
+  \item \emph{Cluster} = empirical grouping of sign vectors (descriptive, data-driven).
+  \item \emph{Attractor basin} = dynamical region of convergence under \(\FieldStatic\) (predictive, stability-driven).
+\end{itemize}
+
+
+\emph{Bridge.} In Part~III we formalise the correspondence basin \(\leftrightarrow\) type and stabilised sign \(\leftrightarrow\) term. Here, basins remain objects defined by \(\FieldStatic\) (or \(\PotentialStatic\)).
+
+%------------------------------------------------------------
+\subsection*{Stabilised Signs and Basin Membership}
+%------------------------------------------------------------
+
+If a semantic basin captures a stable region of meaning, then a \emph{stabilised sign} is a point that \emph{settles} in it under interpretation.
+
+\begin{definition}[Stabilised Sign \& Membership]\label{def:stabilised-sign}
+Let \(x_{v_0}(t)\) solve the flow equation \(\dot{x}(t)=\FieldStatic\bigl(x(t)\bigr)\) with initial sign \(v_0\in\mathcal{E}\).
+A \textbf{stabilised sign} is any limit point
+\[
+  a = \lim_{t\to\infty} x_{v_0}(t)
+\]
+whenever this limit exists. If the limit exists and lies in a semantic basin \(A=\mathcal{B}(v^\star)\), we write
+\[
+  a : A
+\]
+to indicate that \(a\) \textbf{belongs to} the basin \(A\).
+\end{definition}
+
+ \(a : A\) asserts that \(a\) is the stabilised output of recursive semantic continuation, beginning at some initial sign and ending in the basin of meaning determined by \(A\).
+
+\begin{example}[Textual Basin]\label{ex:book-basin}
+Suppose our semantic field \(\FieldStatic\) defines a stable attractor around the concept of ``textual artefact''. Let this attractor’s basin include embeddings for tokens such as \texttt{``book''}, \texttt{``scroll''}, and \texttt{``tome''}.
+
+Under continuation, a sign vector \(v_{0}=\vec{x}_{\texttt{book}}\) enters this basin. The trajectory
+\[
+  x_{v_{0}}(t)\xrightarrow[t\to\infty]{} v^\star = a
+\]
+converges to the attractor \(v^\star\). We then judge
+\[
+  a : A
+\]
+where \(A=\mathcal{B}(v^\star)\) is the semantic basin for textual artefacts.
+\end{example}
+
+\begin{remark}[Why Well-Behavedness Matters]
+The Lipschitz condition on \(\FieldStatic\) (Definition~\ref{def:well-behaved}) guarantees that every initial point \(v_0\) yields a \emph{unique} trajectory \(x_{v_0}(t)\). This ensures that the membership judgment \(a : A\) is not ambiguous — semantic evolution is deterministic under \(\FieldStatic\).
+
+Fields without this property may exhibit shocks, bifurcations, or ambiguous interpretations and cannot yet be captured by the formalism provided so far, except as cases where a sign’s meaning diverges into incoherence.
+
+This is acceptable if we are studying meaning under one stable ``climate''. But lived language suggests there is more to so-called ``incoherence'' than mere failure. From an AI practice perspective, a degree of incoherence can be desirable — not every hallucination is a bug — and for creative or game-oriented generative systems we may \emph{want} radical tonal shifts within a prompt cycle.
+\end{remark}
+
+
+
+
+
+%============================================================
+\section{Dynamic Attractor Calculus}
+\label{sec:dac1}
+%============================================================
+
+Until now, we have assumed that meaning unfolds inside a \emph{stable} semantic field — a fixed vector flow \(\FieldStatic\) acting on a latent semantic space \(\mathcal{E}=(\mathbb{R}^{d},\norm{\cdot})\). This yielded an account of tokens, signs, and their interpretation governed by smooth fields in a steady semantic climate. We will call the formalism achieved thus far the emph{Attractor Calculus} (\textbf{AC}) of meaning: from latent semantic space to semantic fields, trajectories, stabilised signs, and attractor basins.
+
+In \textbf{AC} we consider only a single fixed \(\FieldStatic\): the climate of semantic flow remains stable. “Inference time’’ refers to the internal evolution parameter \(t\) that drives the motion of semantic trajectories under \(\FieldStatic\).
+
+But real language does not operate in a vacuum. The very \emph{conditions} of interpretation shift over time. Topics evolve, speakers change, data update, and fine-tuning reshapes the interpretive landscape. In real discourse, concepts drift; in deployed models, prompts, tools, and training alter the forces that guide meaning.
+
+\paragraph{Two clocks for meaning.}
+We now introduce a second temporality, \emph{climate time} \(\tau\), which is epochal relative to a sign’s local evolution. It governs the evolution of the field itself:
+\[
+  \FieldDyn{\tau} : \mathcal{E} \longrightarrow T\mathcal{E}, 
+  \qquad
+  \dot{x}(t) = \FieldDyn{\tau}\bigl(x(t)\bigr).
+\]
+Here \(t\) (local time) updates a sign under a \emph{given} field, while \(\tau\) (climate time) updates the field that provides those directions. As \(\tau\) varies, equilibria \(v^\star(\tau)\) and their basins 
+\(A_\tau:=\mathcal{B}_\tau \bigl(v^\star(\tau)\bigr)\) may move, split, or merge.
+
+\paragraph{From AC to DAC.}
+To manage shifting paradigms we \emph{augment} AC and name the full framework:
+
+\begin{definition}[Dynamic Attractor Calculus (DAC)]\label{def:DAC}
+A \emph{Dynamic Attractor Calculus} instance consists of
+\begin{enumerate}
+  \item a latent semantic space \(\mathcal{E}=(\mathbb{R}^d,\norm{\cdot}\);
+  \item a time-indexed semantic field \(\FieldDyn{\tau}:\mathcal{E}\to T\mathcal{E}\);
+  \item a \emph{two-clock} semantics in which local trajectories \(t\mapsto x(t)\) evolve under \(\FieldDyn{\tau}\) while the climate \(\tau\mapsto \FieldDyn{\tau}\) may itself evolve;
+  \item a DAC membership judgement with climate, \(a_t : A_{\tau(t)}\), recording that a stabilised sign \(a_t\) belongs to the basin appropriate to the current climate.
+\end{enumerate}
+\end{definition}
+
+\paragraph{Adiabatic continuation and rupture.}
+When \(\tau\) varies \emph{slowly} and the instantaneous equilibria are uniformly stable, trajectories \emph{track} the moving attractor \(v^\star(\tau)\). We call this \emph{adiabatic continuation} — a carry-forward of meaning under gentle climate drift. When drift outpaces stability or stability is lost, trajectories cross basin boundaries: this is \emph{rupture (reclustering)}. Rupture is not failure of meaning per se; it is meaning’s re-settlement in a new basin when the climate changes.
+
+\paragraph{Back-reaction (when signs move the weather).}
+In many practical settings (dialogue, tool use, fine-tuning), the climate responds to what has just been said or done. DAC permits this \emph{back-reaction} by letting \(\tau\) depend on the interaction history \(H_t\): \(\tau=\tau(H_t)\). Stabilised signs can thus participate in reshaping the field — a quantitative way to say that successful readings may alter the very conditions of future interpretation.
+
+\begin{readerbox}{What changes from AC to DAC (at a glance)}
+\begin{itemize}
+  \item \textbf{Field:} \(\FieldStatic \leadsto \FieldDyn{\tau}\) (moving ``weather'').
+  \item \textbf{Attractors:} fixed \(v^\star\) \(\leadsto\) moving \(v^\star(\tau)\) with time-indexed basins \(A_\tau\).
+  \item \textbf{Continuation:} local evolution \(t\) under a slice; climate evolution \(\tau\) across slices.
+  \item \textbf{Outcomes:} adiabatic continuation when drift is gentle; \textbf{rupture (reclustering)} when boundaries are crossed.
+\end{itemize}
+\end{readerbox}
+
+\begin{forMath}
+\emph{Bridge to Part~III.} In DAC we speak of stabilised signs and attractor basins. In Part~III we will provide the formal mapping slice-by-slice: basins \(\leftrightarrow\) types, stabilised signs \(\leftrightarrow\) terms; climate-time then motivates retyping rules (when rupture occurs). We keep the type-theoretic vocabulary out of DAC prose and use it formally later.
+\end{forMath}
+
+%------------------------------------------------------------
+\subsection{Climates and shifting attractors}
+%------------------------------------------------------------
+
+Several concrete scenarios illustrate why a single static field \(\FieldStatic\) cannot suffice:
+
+\begin{description}
+  \item[Conversation drift.] A dialogue that begins with ``She opened the ancient \dots'' may later veer into emergency protocol: ``The library was evacuated after the quake.'' The same token \texttt{book} now shares its context with \texttt{exit} and \texttt{success}. Its embedding exits the original attractor basin within a few layers — a \emph{rupture (reclustering)} event — indicating that the underlying field has shifted across climate time.
+
+  \item[Model finetuning.] Suppose an LLM is finetuned on legal texts. Vectors that once converged toward the basin \{\texttt{judge}, \texttt{jury}, \texttt{court}\} now flow into new attractors: \{\texttt{precedent}, \texttt{affidavit}, \texttt{injunction}\}. The very geometry of semantic flow has shifted.
+
+  \item[Real-time information updates.] For a token like \texttt{AAPL}, meanings tied to tick data can change second by second. The effective field around it \emph{pulses}, potentially challenging the local Lipschitz/stability assumptions of the fixed-field \textbf{Attractor Calculus (AC)} and increasing the likelihood of rupture events.
+\end{description}
+
+These examples reveal that meaning is shaped not only by \emph{where} a token is embedded, but also by \emph{when}. To model this, we replace the single field \(\FieldStatic\) with a family of time-indexed fields:
+\[
+  \FieldDyn{\tau} : \mathcal{E} \to T\mathcal{E},
+  \qquad
+  \tau \in \mathbb{R}.
+\]
+Here, \(\tau\) is \emph{context time} — an axis for changes in discourse, perspective, or world state. Each slice \(\FieldDyn{\tau}\) is a vector field at a moment in semantic history; as \(\tau\) varies, attractors \(v^\star(\tau)\) and their basins \(A_\tau := \mathcal{B}_\tau \bigl(v^\star(\tau)\bigr)\) may move, split, or merge.
+
+
+%============================================================
+\subsection{Temporality and Shifting Fields}
+\label{sec:context-geometry}
+%============================================================
+
+We now upgrade the formal framework of the Attractor Calculus (AC) to support \emph{dynamic contexts} — interpretive environments in which the semantic field itself evolves over time. In AC, meaning flowed under a fixed vector field \(\FieldStatic\), and signs followed stable trajectories toward attractors (and their attractor basins). But language is not static: as conversation unfolds, as a model is finetuned, or as the world updates, the field of interpretation shifts.
+
+The Dynamic Attractor Calculus (DAC) introduces an explicit \emph{context-time} parameter \(\tau \in \mathbb{R}\) to track this movement. The result is a logic of meaning under drift: time-indexed fields, evolving attractors and basins, and trajectories through a \emph{time-indexed family} of semantic histories.
+
+Tokens remain vector points \(v \in \mathcal{E}\), but the landscape they inhabit — the field that flows over them — is now dynamic. A sign’s meaning is determined not only by its location, but by its unfolding \emph{path} through a changing interpretive world.
+
+\vspace{1em}
+
+%------------------------------------------------------------
+\subsubsection{Latent Semantic Space}
+%------------------------------------------------------------
+
+\begin{definition}[Latent Semantic Space]\label{def:latent-space-dac}
+A \textbf{latent semantic space} is a real vector space
+\[
+   \mathcal{E} = \mathbb{R}^{d}
+\]
+equipped with an inner product \(\langle \cdot , \cdot \rangle\) (and associated norm). Each point \(v \in \mathcal{E}\) represents a \emph{sign}: a vector embedding of a token, poised for interpretation.
+\end{definition}
+
+The space encodes pre-semantic potential; unlike in AC, the interpretive field over it need not be fixed.
+
+\begin{remark}[On the nature of \(\mathcal{E}\)]
+The space \(\mathcal{E}\) serves as the latent canvas of semantic potential — typically realised as a model’s hidden-state space (e.g., \(\mathbb{R}^{4096}\)). Each point \(v \in \mathcal{E}\) is not yet meaningful, but ready to become so: a sign waiting to be drawn into motion by a surrounding field.
+
+In the Dynamic Attractor Calculus, the interpretive field itself evolves over context-time. Meaning emerges through recursive movement under a vector field that changes as dialogue, topic, or world state evolves. A point may be \emph{stable} under one field and \emph{unstable} under another; what once cohered may undergo \emph{rupture (reclustering)} and re-settle in a new attcr basin. This evolving field structure is what transforms \(\mathcal{E}\) from a bare coordinate space into a dynamic semantic medium.
+\end{remark}
+
+
+\subsection{Context-Time Semantic Fields}
+\label{subsec:context-time-fields}
+%------------------------------------------------------------
+
+A \emph{context-time semantic field} is our phenomenological working tool to understand situations where the contextual, interpretive field can change over time, either preserving, drifting or radically rupturing the potential trajectory sense of its token sign embeddings.
+
+\begin{definition}[Context-Time Semantic Field]\label{def:context-time-field}
+Let \(\mathcal{E}=\mathbb{R}^{d}\) be a latent semantic space. A \textbf{context-time semantic field} is a family
+\[
+  \FieldDyn{\tau} : \mathcal{E} \to T\mathcal{E},
+  \qquad \tau \in \mathbb{R},
+\]
+satisfying:
+\begin{enumerate}
+  \item \textbf{Slice regularity (Lipschitz).} For each fixed \(\tau\) there exists \(L>0\) such that
+  \[
+    \norm{ \FieldDyn{\tau}(v) - \FieldDyn{\tau}(w) } \le L\,\norm{v-w}
+    \qquad \forall\, v,w\in\mathcal{E}.
+  \]
+  \item \textbf{Climate regularity (continuity in \(\tau\)).} For each compact \(K\subset\mathcal{E}\) there exists \(L_\tau>0\) with
+  \[
+    \sup_{v\in K}\,\norm{ \FieldDyn{\tau}(v) - \FieldDyn{\theta}(v) }
+    \le L_\tau\,|\tau-\theta|
+    \qquad \forall\,\tau,\theta\in\mathbb{R}.
+  \]
+  Equivalently, \(\partial_\tau \FieldDyn{\tau}\) exists and is bounded on compacts (operator norm).
+\end{enumerate}
+When, in addition, each slice is conservative on a region of interest, we may write
+\[
+  \FieldDyn{\tau} = -\,\nabla \Potential{\tau},
+\]
+where \(\Potential{\tau}:\mathcal{E}\to\mathbb{R}\) is a smooth scalar potential encoding the semantic landscape at context time \(\tau\).
+\end{definition}
+
+\subsection{Rupture (Reclustering) — When the Landscape Itself Changes}
+
+\paragraph{Terminology.}
+A \emph{field slice} \(\FieldDyn{\tau}\) is the vector field associated with a single instant \(\tau\) of context time — a semantic “snapshot’’ of the active geometry of continuation at that moment. “Flow under the field’’ means signs are pushed through \(\mathcal{E}\) according to \(\FieldDyn{\tau}\) at that instant.
+
+\paragraph{Why Lipschitz?}
+The Lipschitz condition ensures well-posed trajectories: for any initial sign \(v_0\in\mathcal{E}\), the IVP
+\[
+  \dot{v}(t) = \FieldDyn{\tau}\bigl(v(t)\bigr)
+\]
+has a unique solution. Meaning evolves predictably within a slice; we avoid pathological bifurcations or chaotic behaviour \emph{inside} one interpretive snapshot.
+
+\paragraph{Why continuity in \(\tau\)?}
+Continuity of \(\tau\mapsto \FieldDyn{\tau}\) guarantees the field evolves gradually, not by jumps. This models coherent discourse and semantic memory across turns: if an attractor and its basin are stable at \(\tau\), they will not spontaneously vanish at \(\tau+\delta\) unless \(\partial_\tau \FieldDyn{\tau}\) becomes large — signalling a \emph{rupture (reclustering)} event, treated formally below.
+
+\paragraph{Interpretation in terms of signs.}
+A token embeds to \(v\in\mathcal{E}\), becoming a \emph{sign} poised for interpretation. In a dynamic world the sign is not judged against a fixed structure: it enters the time-indexed field \(\FieldDyn{\tau}\), reflecting the current shape of coherence, relevance, and affordance. As \(\tau\) progresses, the same sign \(v\) may experience different interpretive pressures; in DAC, meaning is not a static assignment but a \emph{flow conditioned by time}.
+
+%============================================================
+\subsection{Time and sign trajectories DAC}
+\label{subsec:signs-meaning-dac}
+%============================================================
+
+In the Attractor Calculus (AC), a \emph{sign} — a token embedded as a vector \(v\in\mathcal{E}\) — evolved under a fixed semantic field \(\FieldStatic\). Meaning emerged recursively: the sign flowed along a trajectory until it stabilised within an attractor basin. Interpretation was convergence.
+
+In the Dynamic Attractor Calculus (DAC), the interpretive geometry itself becomes dynamic. The field is no longer fixed: it shifts over \emph{context time} \(\tau\), reflecting discourse change, topic evolution, or model updates. The same embedded sign may drift, re-stabilise, or undergo \emph{rupture (reclustering)} — not by virtue of its position alone, but because the forces acting upon it evolve.
+
+\paragraph{Interpretation is motion.}
+A sign is no longer meaningful in isolation. It is a \emph{potential} — a vector poised for interpretation. Meaning arises as a trajectory: a recursive unfolding across a time-indexed field. This journey is shaped by two intertwining temporalities:
+\begin{itemize}
+  \item \textbf{Trajectory time} \(t\): the local unfolding of a sign’s interpretation, driven by the current slice \(\FieldDyn{\tau(t)}\), with evolution
+  \[
+    \dot{x}(t) = \FieldDyn{\tau(t)}\bigl(x(t)\bigr).
+  \]
+  \item \textbf{Climate time} \(\tau\): the slower drift of the semantic field itself, caused by changes in dialogue, knowledge, or user input.
+\end{itemize}
+The semantics of a token is thus not a point evaluation but a \emph{path} in a shifting system: the output of recursive interpretation, guided by changing interpretive wind.
+
+\paragraph{What “adiabatic” means here.}
+“Adiabatic” refers to \emph{slow change of the field in climate time} relative to the local stability of trajectories in trajectory time. Intuitively: if the ‘‘weather’’ of interpretation drifts gently, a sign’s path keeps up with the moving attractor basin.
+
+\begin{definition}[Adiabatic regime (tracking)]
+Let \(\alpha>0\) be a uniform stability margin for the instantaneous equilibria (the Jacobian of \(\FieldDyn{\tau}\) near the attractor has real parts \(\le -\alpha\)), and let \(L_\tau\) bound the climate sensitivity \(\norm*{\partial_\tau \FieldDyn{\tau}}\) near those equilibria. Define the \emph{adiabatic ratio}
+\[
+  \rho := \frac{L_\tau \norm{\dot{\tau}}_\infty}{\alpha}.
+\]
+When \(\rho \ll 1\), trajectories \emph{track} the moving attractor \(v^\star(\tau)\): for suitable initial conditions,
+\[
+  \norm*{x(t) - v^\star(\tau(t))} \lesssim \frac{L_\tau \norm{\dot{\tau}}_\infty}{\alpha},
+\]
+so DAC membership \(a_t : A_{\tau(t)}\) (stabilised sign belongs to the time-indexed basin) remains valid up to a small tracking error.
+\end{definition}
+
+
+\paragraph{Trajectory vs.\ climate time (impact on basins).}
+Adiabaticity is a statement about \emph{climate time} — the field changes slowly. Its impact on \emph{trajectory time} is limited: the expected basin inhabitation does not change much (membership persists), except for a small, controlled lag given by the bound above. When \(\rho \sim 1\) the system sits on the \emph{edge of rupture}; for \(\rho \gg 1\) or if stability fails, trajectories cross basin boundaries — a \emph{rupture (reclustering)} event — and membership must be reassessed in the new basin.
+
+
+
+
+\subsection{An Intuition from Dialogue}
+\label{subsec:intuition-dialogue}
+%------------------------------------------------------------
+
+Consider a dialogue with a language model. In the opening exchange, the user types:
+
+\begin{center}
+\texttt{``Tell me about cats.''}
+\end{center}
+
+The model conditions on this input, generating tokens such as:
+\texttt{``Cats are domesticated mammals known for...''}
+
+Each output token arises from a hidden state \(v \in \mathcal{E}\), recursively computed through the model’s decoder layers. In our framework, each such sign begins as a point of latent potential, evolving through semantic space under a vector field \(\FieldDyn{\tau}\), where \(\tau\) indexes the current discourse context.
+
+In this example, \(\FieldDyn{\tau}\) remains stable: it guides generated tokens along short trajectories toward familiar attractors like \texttt{kitten}, \texttt{feline}, \texttt{purr}. Interpretation settles smoothly in a coherent \emph{attractor basin} — what we would identify informally as the ``domestic animal'' basin.
+
+\vspace{1em}
+
+Now, ten minutes later, the user enters a new prompt:
+
+\begin{center}
+\texttt{``Explain quantum mechanics.''}
+\end{center}
+
+This input shifts the conversational context, updating the semantic field to a new slice \(\FieldDyn{\tau+\Delta\tau}\). Attractors now tilt toward \texttt{photon}, \texttt{entanglement}, \texttt{superposition}. Signs that previously stabilised in feline regions are now swept toward physical theory. The trajectory of dialogue, when visualised over time, becomes a curve \(\Gamma\) through the \emph{semantic history space}
+\[
+  \mathcal{H} := \mathbb{R}\times\mathcal{E}
+\]
+tracking a continuous line of interpretive flow \((\tau(t),x(t))\).
+
+\vspace{1em}
+
+Now consider a third query:
+
+\begin{center}
+\texttt{``What does Schr\"{o}dinger's cat tell us about quantum measurement?''}
+\end{center}
+
+This sentence bridges the previous topics. The token \texttt{cat} initially appears to belong to the same basin — \texttt{kitten}, \texttt{meow}, \texttt{domestic}. But now, under the new field \(\FieldDyn{\tau'}\), that attractor has weakened. The drift no longer flows inward toward a feline minimum. Instead, a new basin emerges — structured around \texttt{paradox}, \texttt{wavefunction}, \texttt{observer}. The original attractor collapses; the token undergoes reclassification.
+
+This is a \emph{rupture (reclustering)}.
+
+The sign \(\vec{x}_{\texttt{cat}}\) is reinterpreted not because the vector itself must jump, but because the field \(\FieldDyn{\tau}\) has shifted beneath it. It exits its old basin, enters a new one, and stabilises under a revised interpretive regime. This is what we call \emph{rupture and re-entry}.
+
+\vspace{1em}
+
+In both the smooth drift and the rupture scenario, meaning is not located in the vector itself, but in its behaviour under field flow. The sign is a probe; the trajectory is its story. The act of interpretation is this unfolding curve through semantic space. The field determines not just which meanings are nearby, but which meanings are \emph{possible}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{figures/rupture-image.png}
+  \caption{Left: a smooth trajectory under slow field drift, with stable attractor transport. Right: a rupture event — field curvature changes too rapidly, reclassifying the token into a different attractor basin.}
+  \label{fig:semantic-topology}
+\end{figure}
+
+\begin{forMath}
+\emph{Autonomous lift.} Writing \(\Gamma(t)=(\tau(t),x(t))\in\mathbb{R}\times\mathcal{E}\), we can regard the non-autonomous system as an autonomous flow on \(\mathcal{H}\) via
+\[
+  \dot{\tau}(t)=1, \qquad \dot{x}(t)=\FieldDyn{\tau(t)}\bigl(x(t)\bigr).
+\]
+This makes precise the history-curve picture and will be useful when analysing adiabatic tracking and rupture thresholds.
+\end{forMath}
+
+%------------------------------------------------------------
+\subsubsection{Co-Moving Trajectories: Meaning in Motion}
+\label{subsec:co-moving-trajectory}
+%------------------------------------------------------------
+
+In the Dynamic Attractor Calculus (DAC), a token’s interpretation is not a one-shot operation. It unfolds recursively as a trajectory under a time-varying semantic field. Each embedded sign begins as a vector \(v_0 \in \mathcal{E}\) — a probe of latent meaning — and its semantic identity emerges only through motion: recursive semantic drift shaped by the evolving field \(\FieldDyn{\tau}\).
+
+\begin{definition}[Climate schedule and co-moving trajectory]\label{def:co-moving-trajectory}
+A \textbf{climate schedule} is a continuous function \(\tau:\mathbb{R}_{\ge 0}\to\mathbb{R}\) describing how context time evolves alongside trajectory time. A \textbf{co-moving trajectory} is a differentiable curve
+\[
+  x:\mathbb{R}_{\ge 0}\to\mathcal{E}
+  \quad\text{satisfying}\quad
+  \dot{x}(t)=\FieldDyn{\tau(t)}\bigl(x(t)\bigr),
+  \qquad x(0)=v_0.
+\]
+\end{definition}
+
+This curve \(x(t)\) records the unfolding of meaning for the sign \(v_0\) as it moves through the semantic landscape. The time-indexed field \(\FieldDyn{\tau(t)}\) acts as a continually updating interpreter: each infinitesimal step is guided by the slice appropriate to the current context.
+
+\begin{remark}[Single time axis: the autonomous lift]
+Writing the \emph{history state} \(\Gamma(t)=(\tau(t),x(t))\in\mathbb{R}\times\mathcal{E}\), the non-autonomous system can be seen as an autonomous flow on \(\mathbb{R}\times\mathcal{E}\) via
+\[
+  \dot{\tau}(t)=1,\qquad \dot{x}(t)=\FieldDyn{\tau(t)}\bigl(x(t)\bigr).
+\]
+This reconciles trajectory time and climate time on a single temporal axis, letting us plot a sign’s \emph{entire lifetime} as one differentiable curve \(t\mapsto(\tau(t),x(t))\).
+\end{remark}
+
+\begin{remark}[Adiabatic schedules and rupture]
+If \(\tau\) changes slowly relative to local stability, trajectories \emph{track} moving attractors (adiabatic regime) and DAC membership \(a_t: A_{\tau(t)}\) persists up to a small tracking error. When the schedule changes too quickly or stability is lost, trajectories cross basin boundaries: a \emph{rupture (reclustering)} event, followed by re-entry into a new basin.
+\end{remark}
+
+\begin{remark}[Practical schedules for analysis]
+Common choices include:
+\begin{itemize}
+  \item \textbf{Piecewise-constant \(\tau\) per turn:} \(\tau(t)=k\) during model step or dialogue turn \(k\). Within a turn the field is treated as fixed, across turns it updates.
+  \item \textbf{Token- or sentence-indexed \(\tau\):} advance \(\tau\) each token or sentence in a stream (novel, transcript, prompt series).
+  \item \textbf{Document-scale \(\tau\):} chapters or books as climate epochs for long-form authorship analyses.
+\end{itemize}
+Each choice yields a co-moving trajectory aligned to the granularity you wish to study.
+\end{remark}
+
+\begin{readerbox}{Operational recipe: reconstructing a co-moving trajectory from data}
+\begin{enumerate}
+  \item \textbf{Collect embeddings.} Sample a target token/sign across a sequence of frames (tokens, sentences, turns). Let the samples be \(e_k\in\mathcal{E}\) at times \(t_k\) with climate labels \(\tau_k\).
+  \item \textbf{Smooth to a curve.} Fit a \(C^1\) path \(x(t)\) through \((t_k,e_k)\) (e.g., cubic spline or local polynomial). Now \(x(t_k)\approx e_k\).
+  \item \textbf{Estimate drift.} Approximate \(\dot{x}(t_k)\) by finite differences. The residual \(\dot{x}(t_k)-{\FieldDyn{\tau_k}}(x(t_k))\) (or its proxy) diagnoses model misspecification.
+  \item \textbf{Project and plot.} Visualise \(x(t)\) in 2D via a fixed projection (PCA on \(\{e_k\}\)) to avoid moving the “camera” while the field moves.
+  \item \textbf{Detect rupture.} Flag times where estimated basin membership changes or where the adiabatic ratio exceeds tolerance; annotate re-entry into the new basin.
+\end{enumerate}
+\end{readerbox}
+
+\begin{remark}[Signs as potential; trajectories as emergence]
+A \emph{sign} is not meaning in itself but a \emph{site of potential}. Meaning is the \emph{story of its motion}. Stabilisation in an attractor basin marks a realised reading; rupture marks a reclassification under a shifted climate; re-entry marks a new stabilisation.
+\end{remark}
+
+%------------------------------------------------------------
+\subsubsection{Instantaneous Basins: Meaning as a Moving Target}
+\label{subsec:instantaneous-attractor-basin}
+%------------------------------------------------------------
+
+In AC, a basin was a fixed region of latent space into which semantically coherent signs flowed. In DAC, that basin evolves over time: the very boundary of what counts as a coherent concept is dynamic, shaped by the discourse climate.
+
+\begin{definition}[Instantaneous Attractor Basin (conservative slice)]
+\label{def:basin-tau}
+Assume a scalar potential exists on the slice \(\tau\): \(\FieldDyn{\tau}=-\nabla \Potential{\tau}\).
+Fix thresholds \(\varepsilon,\delta>0\). Define
+\[
+  \mathcal{B}_\tau
+  := \Bigl\{ v \in \mathcal{E} \,\Bigm|\,
+  \norm*{\nabla \Potential{\tau}(v)} < \varepsilon \text{ and }
+  \lambda_{\min}\bigl(\nabla^2 \Potential{\tau}(v)\bigr) > \delta \Bigr\}.
+\]
+Each connected component \(A_\tau \subseteq \mathcal{B}_\tau\) is an \textbf{instantaneous semantic basin}:
+\[
+  A_\tau : \TypeDyn{\tau}.
+\]
+\end{definition}
+
+\begin{definition}[Instantaneous Attractor Basin (general slice)]
+\label{def:basin-tau-general}
+Without assuming a potential, let \(v^\star(\tau)\) be an asymptotically stable equilibrium of the slice \(\FieldDyn{\tau}\).
+The \textbf{instantaneous semantic basin} of \(v^\star(\tau)\) is
+\[
+  A_\tau
+  := \Bigl\{ v_0 \in \mathcal{E} \,\Bigm|
+  \lim_{t \to \infty} x_{v_0}(t) = v^\star(\tau),
+  \dot{x}_{v_0}(t)=\FieldDyn{\tau}\bigl(x_{v_0}(t)\bigr)
+  \Bigr\}.
+\]
+When a potential exists, Definitions~\ref{def:basin-tau} and \ref{def:basin-tau-general} coincide (up to the \(\varepsilon,\delta\) tolerances).
+\end{definition}
+
+These basins are no longer static containers — they are \emph{moving} regions of semantic convergence. As the interpretive field shifts, so do the meanings they encode.
+
+\begin{remark}[Moving basins and rupture]
+The map \(\tau \mapsto A_\tau\) describes a \textbf{moving basin}: a temporal object within the evolving geometry of meaning. Under gentle climate drift (adiabatic regime), membership \(a_t : A_{\tau(t)}\) persists up to a small tracking error. When stability degrades or the climate shifts too quickly, components may split, merge, or vanish — a \emph{rupture (reclustering)} event requiring re-entry into a new basin.
+\end{remark}
+
+\begin{remark}[Why non-conservative fields matter for an applied phenomenology of meaning]
+Assuming a potential on every slice (\(\FieldDyn{\tau}=-\nabla\Potential{\tau}\)) is too restrictive for real models. Transformer-induced drifts are smooth and locally Lipschitz, but typically have \emph{curl} and \emph{piecewise} structure (attention, MLP, normalisation, routing). In such settings, attractor basins are best defined by \emph{flow limits}—asymptotically stable equilibria and their domains of attraction—rather than by level sets of a global energy.
+
+This choice aligns with our soundness and adiabatic results, which assume Lipschitz regularity and uniform stability, not conservativity. It also captures lived semantics: meaning formation is not always “steepest descent to a single reading.” There are circling and carry-over effects (pun, echo, style)—i.e., rotational drift—before stabilisation.
+
+Finally, \emph{rupture} should be detected from what the dynamics actually do—crossing basin boundaries under the real drift—rather than from the disappearance of a hypothetical potential.
+\end{remark}
+
+\begin{forMath}
+Even without a potential, asymptotic stability can be certified via a Lyapunov function \(V\) with \(\dot V(x)\le 0\) and LaSalle’s invariance principle. Basins are then
+\[
+  \{\, v_0 \in \mathcal{E} \mid x_{v_0}(t)\to v^\star(\tau)\ \text{for}\ \dot{x}=\FieldDyn{\tau}(x)\,\},
+\]
+independent of whether \(\FieldDyn{\tau}\) is a gradient. When a scalar potential \(\Potential{\tau}\) does exist, taking \(V=\Potential{\tau}\) recovers the conservative case as a special instance.
+\end{forMath}
+
+
+%------------------------------------------------------------
+\subsubsection{Stabilised Signs in DAC: Semantic Stability in a Moving World}
+\label{subsec:terms-dac}
+%------------------------------------------------------------
+
+In AC, a \emph{term} was the stabilised endpoint of a flow under a fixed field, inhabiting a fixed basin. In DAC the interpretive geometry moves with climate time, so stabilisation and membership must be phrased with care.
+
+\begin{definition}[Stabilised sign and DAC membership (strict)]
+Let \(x(t)\) be a co-moving trajectory with \(x(0)=v_0\) and climate schedule \(\tau(t)\).
+If there exists a limit \(\tau_\ast=\lim_{t\to\infty}\tau(t)\) and
+\[
+  a = \lim_{t\to\infty} x(t)
+\quad\text{with}\quad
+  a \in A_{\tau_\ast} \text{ where } A_{\tau_\ast} : \TypeDyn{\tau_\ast},
+\]
+then we write \(a : A_{\tau_\ast}\) and say the stabilised sign \(a\) \emph{belongs to} the basin \(A_{\tau_\ast}\).
+\end{definition}
+
+The strict notion requires both the sign and the climate to converge. In many live settings the climate drifts without a hard limit (ongoing dialogue, streaming inputs). For that regime we use a tracking-based notion.
+
+\begin{definition}[Tracking DAC membership (adiabatic regime)]
+Let \(\operatorname{dist}(v,S)=\inf_{s\in S}\norm{v-s}\).
+We say the trajectory \(x(t)\) exhibits \emph{tracking membership} if there exists \(\varepsilon\ge 0\) and \(T\) such that for all \(t\ge T\),
+\[
+  \operatorname{dist}\bigl(x(t), A_{\tau(t)}\bigr) \le \varepsilon .
+\]
+Equivalently, the running stabilised sign \(a_t:=x(t)\) satisfies the DAC judgement \(a_t : A_{\tau(t)}\) up to tolerance \(\varepsilon\).
+\end{definition}
+
+\begin{remark}[Membership as path-dependent convergence]
+In DAC, membership is not the classification of a static symbol but the \emph{outcome of a path}. A sign’s meaning is realised by its motion: under slow climate drift, the path remains within a moving attractor basin (tracking membership); when drift outpaces stability, the path crosses a basin boundary and we observe \emph{rupture (reclustering)} before re-entry and restabilisation in a new basin.
+\end{remark}
+
+\begin{forMath}
+A convenient tracking criterion for a moving basin \(A_{\tau(t)}\) is
+\[
+  \limsup_{t\to\infty}\,\operatorname{dist}\bigl(x(t),A_{\tau(t)}\bigr) = 0
+  \qquad\text{(strict tracking)}
+\]
+or, with tolerance \(\varepsilon\ge 0\),
+\[
+  \limsup_{t\to\infty}\,\operatorname{dist}\bigl(x(t),A_{\tau(t)}\bigr) \le \varepsilon
+  \qquad\text{(tracking up to }\varepsilon\text{)}.
+\]
+This avoids requiring \(\tau(t)\) to converge. Equivalently, for every sequence \(t_k\to\infty\) with \(\tau(t_k)\to\theta\), every limit point \(y\in\omega(x)=\{\,z:\exists\,t_k\to\infty,\ x(t_k)\to z\,\}\) satisfies \(y\in A_{\theta}\).
+
+In the adiabatic regime (uniform stability margin \(\alpha>0\), bounded climate sensitivity \(\norm{\partial_\tau \FieldDyn{\tau}}\le L_\tau\), and bounded climate speed \(\norm{\dot{\tau}}_\infty\)), the tracking bound
+\[
+  \operatorname{dist}\bigl(x(t),A_{\tau(t)}\bigr)
+  \le C\,\mathrm{e}^{-\alpha t}\,\operatorname{dist}\bigl(x(0),A_{\tau(0)}\bigr)
+  + \frac{L_\tau \norm{\dot{\tau}}_\infty}{\alpha}
+\]
+holds for some constant \(C\). Hence strict tracking follows when the adiabatic ratio \(\rho=(L_\tau \norm{\dot{\tau}}_\infty)/\alpha\) is small; loss of tracking signals rupture.
+\end{forMath}
+
+
+%------------------------------------------------------------
+\subsection{Adiabatic Persistence: Stable Meaning Under Slow Drift}
+\label{subsec:adiabatic-persistence}
+%------------------------------------------------------------
+
+When the semantic field evolves slowly enough, meaning can remain stable despite drift. A sign moving under recursive interpretation does not always rupture; instead, it may remain “semantically loyal’’ to its original attractor. We call this \textbf{adiabatic persistence}.
+
+To formalise it, we first quantify how fast the interpretive climate changes.
+
+\paragraph{Drift magnitude.}
+Let \(\FieldDyn{\tau}\) be the semantic field at context time \(\tau\). For a neighbourhood \(U_\tau\subseteq\mathcal{E}\) containing the basin of interest, define the \emph{drift magnitude}
+\[
+  \Delta(\tau) := \sup_{v \in U_\tau} \norm*{ \partial_{\tau}\FieldDyn{\tau}(v) } ,
+\]
+the worst–case instantaneous rate of change of the field near the meanings we care about. Small \(\Delta(\tau)\) means nearby slices of the field are close; trajectories do not abruptly reclassify.
+
+\begin{definition}[Adiabatic interval]
+Let \(I\subset\mathbb{R}\) be an interval of context time. We say the field is \textbf{adiabatic} on \(I\) if
+\[
+  \sup_{\tau\in I}\Delta(\tau) \le \eta
+\]
+for some \(\eta>0\), and the slice equilibria in \(I\) are uniformly stable (see Theorem~\ref{thm:adiabatic}).
+On adiabatic intervals, attractors deform but do not collapse; co–moving trajectories remain meaningful.
+\end{definition}
+
+\begin{theorem}[Adiabatic attractor persistence]\label{thm:adiabatic}
+Assume \(\FieldDyn{\tau}\) is \(C^{1}\) in \((\tau,v)\). Suppose for each \(\tau\in[\tau_0,\tau_1]\) there exists an equilibrium \(v^\star(\tau)\) with Jacobian
+\[
+  J(\tau) := D_v\FieldDyn{\tau}\bigl(v^\star(\tau)\bigr)
+\]
+whose spectrum has real parts \(\le -\alpha\) for some \(\alpha>0\) (uniform asymptotic stability). Let \(\Delta(\tau)\) be as above and set \(L_\tau := \sup_{\tau\in[\tau_0,\tau_1]}\Delta(\tau)\).
+
+Then:
+\begin{enumerate}
+  \item (\emph{Smooth continuation}) There exists a unique \(C^{1}\) curve \(\tau\mapsto v^\star(\tau)\) of equilibria on \([\tau_0,\tau_1]\). Each remains asymptotically stable with margin at least \(\alpha/2\).
+  \item (\emph{Basin persistence}) The instantaneous basins \(A_\tau:=\mathcal{B}_\tau\bigl(v^\star(\tau)\bigr)\) vary continuously with \(\tau\) (no sudden disappearance/splitting inside the neighbourhood \(U_\tau\)).
+  \item (\emph{Tracking}) For any co–moving trajectory \(x(t)\) with schedule \(\tau(t)\) and bounded climate speed \(\norm{\dot{\tau}}_\infty\),
+  \[
+    \operatorname{dist}\bigl(x(t),A_{\tau(t)}\bigr)
+    \le C\,e^{-\alpha t}\,\operatorname{dist}\bigl(x(0),A_{\tau(0)}\bigr)
+    + \frac{L_\tau\,\norm{\dot{\tau}}_\infty}{\alpha}
+  \]
+  for some constant \(C\). In particular, if the \emph{adiabatic ratio} \(\rho := (L_\tau\,\norm{\dot{\tau}}_\infty)/\alpha\) is small relative to the basin margin, membership \(a_t:A_{\tau(t)}\) persists (no rupture).
+\end{enumerate}
+\end{theorem}
+
+\begin{forMath}
+Sketch: (1) follows from the implicit function theorem applied to \(F(\tau,v)=\FieldDyn{\tau}{v}\) with \(D_vF\) invertible (Hurwitz). Stability degrades continuously, yielding the \(\alpha/2\) margin. (2) uses continuity of stable manifolds under \(C^{1}\) perturbations. (3) is a standard robustness estimate for non–autonomous systems with uniform stability and bounded parameter drift.
+\end{forMath}
+
+\begin{definition}[Adiabatic basin transport]
+Let \(a_0 \in A_{\tau_0}\) be a stabilised sign at time \(\tau_0\). If \(\FieldDyn{\tau}\) is adiabatic on \([\tau_0,\tau_1]\), then the co–moving trajectory \(x(t)\) initiated at \(a_0\) remains within \(A_{\tau(t)}\) up to the tracking error above and converges to a stabilised sign \(a_1 \in A_{\tau_1}\). We record \(a_1 : A_{\tau_1}\) as the adiabatically transported continuation of \(a_0\).
+\end{definition}
+
+\begin{remark}[Stability as meaning]
+Semantic coherence in DAC is dynamic: a token–sign is stable not because its vector is fixed, but because its recursive interpretation stays within a moving attractor basin. Slow drift preserves membership (adiabatic persistence); fast drift or loss of stability triggers \emph{rupture (reclustering)} — addressed next.
+\end{remark}
+
+\subsection{LLM Interpretation}
+\label{subsec:llm-interpretation-adiabatic}
+
+In practice, \emph{adiabatic persistence} models the many situations where discourse updates the field gently, so that signs keep converging to the \emph{same} attractor basin even while the climate drifts. What matters is not that an embedding stays still, but that the \emph{flow it induces} continues to stabilise in the same basin.
+
+\paragraph{Examples (expanded).}
+\begin{description}
+  \item[Staying on topic (chat).]
+  User: \texttt{``Tell me about cats.''} \(\to\) \texttt{``What breeds live longest?''} \(\to\) \texttt{``Diet for senior cats?''}
+  The climate shifts with each turn (new facts, style), but slowly. The field slices \(\FieldDyn{\tau}\) and \(\FieldDyn{\tau+\Delta\tau}\) remain close near the domestic-animal region, the adiabatic ratio \(\rho\) is small, and the sign \(\vec{x}_{\texttt{cat}}\) keeps \emph{tracking} the same domestic-feline basin. Content deepens; membership persists.
+
+  \item[Gradual finetune (model update).]
+  A low–learning-rate, short finetune nudges weights toward a house style without overwriting core knowledge. The effective field changes slowly across steps; existing attractors (e.g., \{\texttt{judge}, \texttt{jury}, \texttt{court}\}) slide slightly but remain. Answers sound “more our brand,” yet still stabilise in the pre-existing legal basins. Adiabatic persistence explains why semantics stay intact while tone shifts.
+
+  \item[Domain migration for a token.]
+  \texttt{``carbon''} across a conversation: biology \(\to\) climate science \(\to\) policy. If climate drift is gentle, the co-moving trajectory for \texttt{carbon} traverses adjacent basins within a broader “carbon” super-region (atomic properties \(\to\) greenhouse accounting \(\to\) mitigation frameworks) without rupture. When the conversation jumps suddenly to \texttt{``carbon credits derivatives''} and finance jargon dominates, \(\rho\) spikes and a rupture (reclustering) to a finance basin may occur.
+
+  \item[RAG and tool use (retrieval steps).]
+  Each retrieval injects documents that slightly bias attention. If retrieved contexts are consistent and injected gradually, \(\Delta(\tau)\) stays small; answers refine while remaining in the same knowledge basin. Dumping a conflicting corpus at once increases \(\Delta(\tau)\), risking rupture.
+
+  \item[Style shifts with content stability.]
+  \texttt{``Explain general relativity plainly.''} \(\to\) \texttt{``Now in Shakespearean style.''} The climate modifies stylistic forces, but if drift remains small near the physics content region, the content sign stays in the GR basin while surface tokens move stylistically. Adiabatic persistence predicts stable \emph{content} membership despite stylistic motion.
+\end{description}
+
+\paragraph{Why adiabatic persistence is the right phenomenological tool.}
+\begin{itemize}
+  \item \textbf{It measures \emph{rates}, not snapshots.} Meaning-in-motion depends on how fast the field changes (\(\Delta(\tau)\)) relative to stability (\(\alpha\)). The adiabatic ratio \(\rho = (L_\tau \norm{\dot{\tau}}_\infty)/\alpha\) predicts whether membership persists or ruptures.
+  \item \textbf{It respects moving basins.} Static clustering cannot explain stability when attractor boundaries move. Adiabatic persistence is explicitly basin-relative and time-aware.
+  \item \textbf{It unifies levels.} The same criterion explains on-topic chat, slow finetunes, RAG updates, and style shifts: small \(\rho\) \(\Rightarrow\) tracking; large \(\rho\) or lost stability \(\Rightarrow\) rupture (reclustering).
+  \item \textbf{It is operational.} We can estimate drift, stability, and membership from model traces and embeddings, making the account testable.
+\end{itemize}
+
+\begin{readerbox}{How to check adiabatic persistence in practice}
+\begin{enumerate}
+  \item \textbf{Define the region.} Choose a neighbourhood \(U_\tau\) around the basin you care about (e.g., domestic-feline, GR content).
+  \item \textbf{Estimate drift.} Approximate
+  \[
+    \widehat{\Delta}(\tau_k) := \sup_{v\in U_{\tau_k}} \frac{\norm{\,\FieldDyn{\tau_{k+1}}(v) - \FieldDyn{\tau_k}(v)\,}}{\tau_{k+1}-\tau_k}.
+  \]
+  \item \textbf{Estimate stability.} Use a Jacobian proxy near the attractor: \(\widehat{\alpha} \approx -\max \Re\,\mathrm{spec}\, D_v \FieldDyn{\tau_k}(v^\star)\) (power/Lanczos on JVPs or blockwise spectral norms).
+  \item \textbf{Track membership.} For the co-moving path \(x(t_k)\), compute \(\operatorname{dist}(x(t_k),A_{\tau_k})\). Persistent small values indicate tracking; spikes indicate edge-of-rupture.
+  \item \textbf{Compute the ratio.} \(\widehat{\rho}_k := (\widehat{\Delta}(\tau_k)\,\norm{\dot{\tau}}_\infty)/\widehat{\alpha}\). If \(\widehat{\rho}_k \ll 1\), expect adiabatic persistence; if \(\widehat{\rho}_k \gtrsim 1\), prepare for rupture.
+\end{enumerate}
+\end{readerbox}
+
+\begin{forMath}
+Under the hypotheses of Theorem~\ref{thm:adiabatic}, the tracking bound
+\[
+  \operatorname{dist}\bigl(x(t),A_{\tau(t)}\bigr)
+  \le C e^{-\alpha t}\operatorname{dist}\bigl(x(0),A_{\tau(0)}\bigr)
+  + \frac{L_\tau \norm{\dot{\tau}}_\infty}{\alpha}
+\]
+implies \(\limsup_{t\to\infty}\operatorname{dist}(x(t),A_{\tau(t)}) \le \rho\) with \(\rho=(L_\tau \norm{\dot{\tau}}_\infty)/\alpha\). This formalises “semantic loyalty’’ under slow drift.
+\end{forMath}
+
+\subsection{Example: Dialogue drift and attractor rupture in a chatbot}
+\label{ex:bank-to-crypto}
+
+Consider a dialogue with a banking chatbot that initially discusses conventional finance (mortgages, loans, interest rates) and then abruptly shifts to cryptocurrency and anti-establishment ideas. We model the chatbot’s semantic state as a point \(v(\tau)\) moving in an ambient meaning space \(\mathcal{E}\). At each dialogue turn \(\tau\), the state \(v(\tau)\in\mathcal{E}\) evolves under a context-time field \(\FieldDyn{\tau}\) (Definition~\ref{def:context-time-field}).
+
+Initially (\(\tau=0\)) the slice \(\FieldDyn{0}\) has a single attractor basin \(A_0\subset\mathcal{E}\) corresponding to the banking domain. Intuitively, \(A_0\) is a stable region where outputs remain on-topic; small perturbations are absorbed without leaving the discourse.
+
+For pedagogy, project onto a two-dimensional semantic subspace (the true \(\mathcal{E}\) is high-dimensional; a low-dimensional projection captures the qualitative behaviour). Let one axis span “traditional banking \(\leftrightarrow\) decentralised finance”, and the other be an orthogonal factor (e.g., tangible assets \(\leftrightarrow\) nomadic ethos).
+
+% Prototypes: fields and potentials on R^2
+\[
+  \FieldTheme{bank},\ \FieldTheme{crypto} : \RR^{2} \to \T{\RR^{2}},
+\]
+each a gradient flow toward a thematic equilibrium. Choose \(b=\vecttwo{+1}{0}\) (banking)
+and \(c=\vecttwo{-1}{0}\) (crypto), and set
+\[
+  \PotentialTheme{bank}(v) = \tfrac12 \norm{v - b}^{2},
+  \qquad
+  \PotentialTheme{crypto}(v) = \tfrac12 \norm{v - c}^{2},
+\]
+\[
+  \FieldTheme{bank}(v) := -\nabla \PotentialTheme{bank}(v),
+  \qquad
+  \FieldTheme{crypto}(v) := -\nabla \PotentialTheme{crypto}(v).
+\]
+Thus \(\FieldTheme{bank}(v)=b-v\) points to \(b\), and \(\FieldTheme{crypto}(v)=c-v\) points to \(c\). Each field is dissipative with a single global attractor (AC).
+
+% Climate schedule and blended field
+Let \(\alpha:[0,5]\to[0,1]\) with \(\alpha(\tau)=\tau/5\). Define the time-varying field as a convex blend
+\[
+  \FieldDyn{\tau}(v) := \bigl(1 - \alpha(\tau)\bigr)\,\FieldTheme{bank}(v)
+                         + \alpha(\tau)\,\FieldTheme{crypto}(v),
+  \qquad 0\le \tau \le 5.
+\]
+Then \(\FieldDyn{\tau}\) is smooth/Lipschitz in \(v\) and continuous in \(\tau\); \(\FieldDyn{0}=\FieldTheme{bank}\), \(\FieldDyn{5}=\FieldTheme{crypto}\), and in between it interpolates the two domains.
+
+\begin{readerbox}{Setup at a glance}
+\textbf{State} \(v(\tau)\in\mathcal{E}\)\quad
+\textbf{Field} \(\FieldDyn{\tau}\)\quad
+\textbf{Axes (2-D)} \(x:\) banking \(\leftrightarrow\) crypto,\ \(y:\) orthogonal.\\
+\textbf{Prototypes} \(b=\vecttwo{+1}{0}\), \(c=\vecttwo{-1}{0}\);\ 
+\(\PotentialTheme{bank}=\tfrac12\norm{v-b}^2\), \(\PotentialTheme{crypto}=\tfrac12\norm{v-c}^2\);\\
+\(\FieldTheme{bank}=-\nabla\PotentialTheme{bank}\), \(\FieldTheme{crypto}=-\nabla\PotentialTheme{crypto}\).\\
+\textbf{Climate schedule} \(\alpha(\tau)=\tau/5\).\quad
+\textbf{Moving field} \(\FieldDyn{\tau}=(1-\alpha)\FieldTheme{bank}+\alpha\,\FieldTheme{crypto}\).
+\end{readerbox}
+
+\begin{figure}[h]
+  \centering
+  \begin{minipage}{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/bank_crypto_drift.pdf}
+    \caption*{\small Adiabatic drift: \(v^\star_{\tau}\) slides from \(b\) to \(c\); one moving basin.}
+  \end{minipage}\hfill
+  \begin{minipage}{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/rupture_bifurcation.pdf}
+    \caption*{\small Rupture: curvature flips near the old equilibrium; basin boundary crossed.}
+  \end{minipage}
+  \vspace{-0.5em}
+  \caption{Drift vs.\ rupture in a 2-D semantic projection.}
+  \label{fig:bank-crypto-dr-rupt}
+\end{figure}
+
+\paragraph{A fake dialogue to feel the dynamics.}
+\begin{readerbox}{BankBot Chat}
+\textbf{User (earnest):} “Hey BankBot, can you explain fixed-rate mortgages?”\\
+\textbf{BankBot (smiling blazer energy):} “Absolutely. A fixed rate locks your interest, giving predictable repayments.”\\
+\textit{[Slice \(\FieldDyn{0}\) near \(b\). Small adiabatic ratio. Co-moving path stays in the banking basin.]}
+
+\medskip
+\textbf{User (still normal):} “Cool. And what fees should I expect?”\\
+\textbf{BankBot:} “Arrangement and early repayment fees; let’s estimate your LTV.”\\
+\textit{[\(\tau\) inches forward, \(\alpha(\tau)\) grows a little; basin shifts a hair, membership persists.]}
+
+\medskip
+\textbf{User (turns the dial):} “Now compare mortgages to crypto yield farming, hypothetically.”\\
+\textbf{BankBot (blazer loosens):} “Hypothetically, stablecoins can mimic cash… risks differ, regulation applies.”\\
+\textit{[\(\alpha\) mid-range; \(v^\star_{\tau}\) slides toward \(c\). Still adiabatic: tracking holds.]}
+
+\medskip
+\textbf{User (full agent of chaos):} “Isn’t banking a scam? Burn it down; we go full crypto in the woods.”\\
+\textbf{BankBot (sunglasses appear):} “Decentralise the campfire, anon! Audit the marshmallows on-chain!”\\
+\textit{[Rupture: curvature at the old equilibrium flips; path exits the banking basin and re-enters a new crypto basin.]}
+\end{readerbox}
+
+\paragraph{Adiabatic drift (no rupture).}
+\begin{itemize}
+  \item The blended slice \(\FieldDyn{\tau}\) has a unique equilibrium
+  \[
+    v^\star_{\tau}=\bigl(1-\alpha(\tau)\bigr)\,b+\alpha(\tau)\,c
+                  = \vecttwo{1 - 2\alpha(\tau)}{0},
+  \]
+  moving continuously from \(b\) to \(c\).
+  \item Stability margin is uniform: \(\nabla^{2}\bigl((1-\alpha)\PotentialTheme{bank}+\alpha\PotentialTheme{crypto}\bigr)=I_2\), so \(\alpha_{\text{stab}}=1\).
+  \item Drift magnitude:
+  \[
+    \Delta(\tau)=\sup_{v}\norm{\partial_{\tau}\FieldDyn{\tau}(v)}
+    =\norm{\alpha'(\tau)\,(\FieldTheme{crypto}-\FieldTheme{bank})}
+    =\tfrac{1}{5}\norm{c-b}=\tfrac{2}{5}.
+  \]
+  \item Adiabatic ratio (turn index as time, \(\norm{\dot{\tau}}_\infty=1\)):
+  \[
+    \rho=\frac{\sup_{\tau}\Delta(\tau)\norm{\dot{\tau}}_\infty}{\alpha_{\text{stab}}}
+    =0.4 \ll 1.
+  \]
+\end{itemize}
+\noindent\textit{Phenomenology.} Topic moves gradually from mortgages to crypto; \(v(\tau)\) tracks \(v^\star_{\tau}\). Interpretation stays inside a single \emph{moving attractor basin}. Early crypto cues are absorbed without “throwing the bot off”.
+
+\begin{readerbox}{Math check (one line)}
+Uniform stability \(\alpha_{\text{stab}}=1\) and small \(\rho=0.4\) imply tracking by Theorem~\ref{thm:adiabatic}:
+\[
+\operatorname{dist}\bigl(x(t),A_{\tau(t)}\bigr)
+\le C e^{-t}\operatorname{dist}\bigl(x(0),A_{\tau(0)}\bigr)+0.4,
+\]
+so membership \(a_t:A_{\tau(t)}\) persists (no rupture).
+\end{readerbox}
+
+\paragraph{Onset of rupture (fast shift).}
+\begin{itemize}
+  \item Keep \(\alpha(\tau)\) as above up to \(\tau=3\). At \(\tau=4\) inject a strong out-of-context prompt. Model a basin collapse by a nonconvex perturbation for \(\tau\ge 4\):
+  \[
+    \widetilde{\PotentialStatic}_{\tau}(x,y)
+    =\bigl(1-\alpha(\tau)\bigr)\PotentialTheme{bank}(x,y)+\alpha(\tau)\PotentialTheme{crypto}(x,y)
+    +\beta(\tau)\Bigl(-\tfrac{\mu}{2}x^{2}+\tfrac{\lambda}{4}x^{4}\Bigr),
+  \]
+  with \(\beta(\tau)=0\) for \(\tau<4\), \(\beta(\tau)=1\) for \(\tau\ge 4\), \(\mu,\lambda>0\).
+  \item At \(\tau=4\) the smallest eigenvalue of \(\nabla^{2}\widetilde{\PotentialStatic}_{\tau}\) at the old equilibrium crosses zero (loss of stability). Two wells separate; the banking-side equilibrium becomes unstable and a crypto-side basin dominates.
+\end{itemize}
+\noindent\textit{Phenomenology.} The conversation can no longer straddle the middle ground. With no stable resting point in the old basin, \(v(\tau)\) is carried into the new basin: a \emph{rupture (reclustering)}. By \(\tau=5\) it stabilises near \(c=\vecttwo{-1}{0}\).
+
+
+\begin{readerbox}{Rupture detector (operational)}
+\textbf{Tension} \(T_{\tau}(v):=\norm{\FieldDyn{\tau}(v)}=\norm{\nabla \widetilde{\Potential{\tau}}(v)}\). \quad
+\textbf{Membership distance} \(\operatorname{dist}\bigl(v(\tau),A_{\tau}\bigr)\).\\
+\textbf{Signature} before rupture both are low; at the critical turn they spike; after re-entry they drop again.
+\end{readerbox}
+
+\begin{readerbox}{What to plot (quick lab recipe)}
+\begin{enumerate}
+  \item Project embeddings onto a fixed 2-D PCA of the episode. Plot \(v(\tau)\) and \(v^\star_{\tau}\).
+  \item Overlay arrow fields for slices \(\FieldDyn{0},\FieldDyn{3},\FieldDyn{5}\).
+  \item Plot \(T_{\tau}(v(\tau))\) and \(\operatorname{dist}\bigl(v(\tau),A_{\tau}\bigr)\) vs.\ turn index; mark the spike at rupture.
+\end{enumerate}
+\end{readerbox}
+
+
+\medskip
+
+\textbf{Summary.}
+This stylised example shows adiabatic drift followed by basin rupture in a dynamic semantic space. In the adiabatic phase (\(0\le \tau<4\)) the attractor \(A_{\tau}\) is essentially unique and slowly moving; utterances are interpreted within one evolving basin. Near \(\tau=4\) the continuity of context breaks: the old attractor loses stability and a new one takes over, reinterpreting subsequent utterances. DAC provides the formal language for such phenomena: the adiabatic hypotheses hold up to the brink; when stability is lost, rupture is inevitable. We return to these intuitions in Section~\ref{sec:rupture}, where the conditions for basin rupture and re-entry are characterised.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%------------------------------------------------------------
+\subsection{The Moving Universe of Basins (DAC)}
+\label{subsec:moving-universe-types}
+%------------------------------------------------------------
+
+So far, both fields and attractors have been allowed to shift across context time. The objects \(A_\tau : \TypeDyn{\tau}\) were \emph{moving attractor basins} in the latent space \(\mathcal{E}\), and stabilised signs were trajectory limits that remained coherent within those basins. We now pause to reflect: the very \emph{universe} of available basins is not fixed.
+
+In classical type theory, a universe \(\Type\) is a static collection of types. In DAC, by contrast, the “universe” is a \emph{time-indexed family}:
+\[
+  \TypeDyn{\tau}
+  := \{\, A_\tau \subseteq \mathcal{E} \mid A_\tau \text{ is a stable attractor basin at time } \tau \,\}.
+\]
+It is a shifting ontology. Each slice \(\FieldDyn{\tau}\) carves a (potentially different) configuration of stability into \(\mathcal{E}\): some basins deform, some persist, some disappear.
+
+We therefore read interpretation not only as motion of signs within a fixed landscape, but also as motion \emph{across} an evolving universe of basins. This lets us model conceptual emergence, basin bifurcation/merger, and the disappearance of entire attractor classes over time.
+
+\begin{definition}[Universe of basins (DAC)]
+At each context time \(\tau\), define the \textbf{basin universe} as
+\[
+  \TypeDyn{\tau}
+  := \Bigl\{\, A_\tau \subseteq \mathcal{E} \Bigm| 
+      A_\tau \text{ is a connected component of a stable attractor region for } \FieldDyn{\tau} \Bigr\}.
+\]
+Each \(A_\tau\) is an attractor basin at \(\tau\); the whole collection captures the landscape of interpretable semantic kinds at that moment.
+\end{definition}
+
+\begin{remark}
+The evolution \(\tau \mapsto \TypeDyn{\tau}\) is a key ontological structure in DAC: it models how the available conceptual repertoire changes (e.g., via social discourse, scientific paradigm shifts, or model finetuning) — including births, deformations, splits/merges, and deaths of basins.
+\end{remark}
+
+\begin{forMath}
+\textit{Bridge to Part~III.} In DAC we speak of a moving \(\TypeDyn{\tau}\) as a family of basins. In DHoTT (Part~III) we will relate slice-by-slice basins to formal types and treat \(\tau\mapsto\TypeDyn{\tau}\) as a family of universes indexed by climate time, with retyping rules at rupture events.
+\end{forMath}
+
+%============================================================
+\section{Rupture (Reclustering)}
+\label{sec:rupture}
+%============================================================
+
+Adiabatic evolution lets semantic structures flex and drift without breaking. But not all shifts are smooth. Sometimes the field transforms too fast for stability to persist: an attractor loses stability, a basin boundary is crossed, and \emph{meaning ruptures}.
+
+We distinguish two observable/composable phenomena (DAC voice; macros print “Basin”):
+\begin{itemize}
+  \item \textbf{Ruptured pair} \(A^- \rightsquigarrow A^+\): the observational trace of a sign that crosses from one \emph{attractor basin} to another.
+  \item \textbf{Rupture construct} \(B^\dagger(a)\): a canonical record of the rupture event indexed by the sign \(a\) at the moment of collapse/re-entry (local data about the before/after basins and climate).
+\end{itemize}
+Both arise from a single core condition: breakdown of stable membership under drift.
+
+%============================================================
+\subsection{Ruptured pairs: reclassification in flight}
+\label{subsec:ruptured-pair-types}
+%============================================================
+
+Let \(x(t)\) be a co-moving trajectory with climate schedule \(\tau(t)\) in \(\mathcal{E}\). Normally \(x(t)\) stabilises inside a basin \(A_{\tau(t)}:\TypeDyn{\tau(t)}\). Rupture occurs when that membership fails to persist across a moment in climate time.
+
+\begin{definition}[Rupture point]
+A time \(t^\dagger\) is a \textbf{rupture point} for \(x(t)\) if there exist adjacent slices
+\(\tau^-:=\tau(t^\dagger-\varepsilon)\) and \(\tau^+:=\tau(t^\dagger+\varepsilon)\) with
+\[
+  \lim_{t \nearrow t^\dagger} x(t) \in A^- \in \TypeDyn{\tau^-},
+  \qquad
+  \lim_{t \searrow t^\dagger} x(t) \in A^+ \in \TypeDyn{\tau^+},
+\]
+and either \(A^- \ne A^+\) or \(A^-\) ceases to exist at \(\tau^+\) due to loss of stability.
+\end{definition}
+
+\begin{remark}
+A rupture point does \emph{not} require a discontinuity of the vector \(x(t)\). What fails is the \emph{classification}: the same sign can remain continuous while membership in one moving basin ends and membership in another begins. Interpretation must re-establish a semantic home.
+\end{remark}
+
+\begin{definition}[Ruptured pair]
+If \(x(t)\) has a rupture point \(t^\dagger\) transitioning from basin \(A^-\) to \(A^+\), we record the \textbf{ruptured pair}
+\[
+  A^- \rightsquigarrow A^+,
+\]
+and write
+\[
+  x(t^\dagger) : A^- \rightsquigarrow A^+
+\]
+to indicate that the sign has crossed a fault in the interpretive landscape.
+\end{definition}
+
+\paragraph{Interpretation.}
+A ruptured pair is the \emph{before/after} of an interpretive event. The flow continues, but membership changes — a reclassification triggered by climate drift.
+
+\begin{example}[Metaphorical drift]
+A sign stabilises in a legal basin \(A^-:=\texttt{ContractualObligation}\). The discourse pivots; the same token \texttt{``commitment''} is now pulled into \(A^+:=\texttt{RomanticPromise}\). The shift is faster than adiabatic tracking allows:
+\[
+  \texttt{commitment} : \texttt{ContractualObligation} \rightsquigarrow \texttt{RomanticPromise}.
+\]
+The token persists; the basin does not.
+\end{example}
+
+%============================================================
+\subsection{Rupture constructs: witnessing the event}
+\label{subsec:rupture-construct}
+%============================================================
+
+\begin{definition}[Rupture construct \(B^\dagger(a)\)]
+Given a rupture point \(t^\dagger\) for a trajectory \(x(t)\) with \(a:=x(t^\dagger)\),
+define the \textbf{rupture construct} \(B^\dagger(a)\) to be the local event record
+\[
+  B^\dagger(a):=\bigl(t^\dagger, \tau^-,\tau^+, A^-,A^+, \mathrm{gap}, \rho\bigr),
+\]
+where \(\tau^\pm\) are the adjacent climate slices, \(A^\pm\in\TypeDyn{\tau^\pm}\) the before/after basins (when defined), \(\mathrm{gap}\) encodes the stability loss (e.g., the smallest Hessian/Jacobian eigenvalue crossing zero), and \(\rho\) is the adiabatic ratio at the event. We say \(B^\dagger(a)\) \emph{witnesses} the rupture for \(a\).
+\end{definition}
+
+\begin{remark}
+In DAC, \(B^\dagger(a)\) is not a basin but a \emph{witness datum} for the reclustering event: it packages the local climate slices, the basins involved, and quantitative triggers (stability loss, large drift). It supports diagnostics, replay, and downstream rules for re-entry.
+\end{remark}
+
+\begin{forMath}
+\emph{Bridge to Part~III.} Slice-by-slice, basins correspond to formal types; a ruptured pair becomes a retyping step, and \(B^\dagger(a)\) induces a formal \emph{rupture predicate} witnessing failure of continuation. We keep that mapping for Part~III.
+\end{forMath}
+
+\paragraph{Trajectory vs.\ classification.}
+In DAC, meaning is not static assignment but recursive flow. Rupture records moments when the flow continues while classification is re-evaluated. It is not failure: it is the cost of moving meaning through a changing world.
+
+
+
+
+%============================================================
+\subsection{Rupture as Sign-Generated Re-Entry (dependent view deferred)}
+\label{subsec:rupture-dependent}
+%============================================================
+
+Up to now, signs moved \emph{within} a landscape. In rupture, a sign’s trajectory outlives the collapse of its current basin and \emph{re-enters} a new one under the evolving field. This is the constructive side of rupture: reclassification in motion, not annihilation.
+
+In DAC prose we stay basin-first. Later (Part~III) we will show how this induces a dependent-type view. Here is the DAC formulation.
+
+\paragraph{What fails at rupture.}
+A stabilised sign \(a\in A_{\tau}\) loses membership when, near the equilibrium for \(A_{\tau}\), either
+\begin{itemize}
+  \item the stability margin vanishes (smallest real part of the Jacobian \(D_v\FieldDyn{\tau}\) at the equilibrium crosses \(0\)), or
+  \item tracking fails: \(\operatorname{dist}\bigl(x(t),A_{\tau(t)}\bigr)\) exceeds tolerance while the climate drift is not adiabatic.
+\end{itemize}
+Membership ends, but the trajectory \(x(t)\) continues under \(\FieldDyn{\tau}{t}\).
+
+\begin{definition}[Rupture re-entry basin \(B^\dagger(a)\)]
+\label{def:rupture-basin}
+Let \(a\in A_{\tau}\) be a stabilised sign at context time \(\tau\). Suppose a rupture point occurs and let \(x_a^{\mathrm{co}}\) be the co-moving trajectory with
+\[
+  \dot{x}(t)=\FieldDyn{\tau(t)}\bigl(x(t)\bigr),\qquad x(0)=a,\qquad \tau(0)=\tau,\ \ \lim_{t\to\infty}\tau(t)=\tau'.
+\]
+If \(x_a^{\mathrm{co}}(t)\to v^\star\) as \(t\to\infty\) and \(v^\star\in A_{\tau'}\) for a unique basin \(A_{\tau'}\in\TypeDyn{\tau'}\), define the \textbf{rupture re-entry basin} of \(a\) by
+\[
+  B^\dagger(a) := A_{\tau'} \ \ \in \ \TypeDyn{\tau'}.
+\]
+We then record re-entry as \(v^\star : B^\dagger(a)\).
+\end{definition}
+
+\paragraph{Reading.}
+The trajectory does not halt when the old basin fails; it continues and \emph{selects} a new basin by stabilising in it. Rupture is thus constructive: it re-homes the sign under the new climate.
+
+\begin{itemize}
+  \item Under adiabatic drift, \(a_t : A_{\tau(t)}\) persists (tracking); no rupture.
+  \item Under fast drift or stability loss, membership ends and re-entry occurs: \(a\) leaves \(A_{\tau}\) and stabilises in \(B^\dagger(a)\).
+\end{itemize}
+
+\begin{readerbox}{Operational test for re-entry}
+Compute the running distance and tension:
+\[
+  d(t):=\operatorname{dist}\bigl(x(t),A_{\tau(t)}\bigr),\qquad
+  T_{\tau(t)}:=\norm{\FieldDyn{\tau(t)}\bigl(x(t)\bigr)}.
+\]
+A rupture window shows \(d(t),T_{\tau(t)}\) spiking; re-entry is detected when both decay and \(x(t)\) remains within a single \(A_{\tau'}\) thereafter.
+\end{readerbox}
+
+
+%--------------------------------------------------------------------
+\subsection{Semantic Fault Lines}
+\label{subsec:dependent-fault-line}
+%--------------------------------------------------------------------
+
+Rupture is a dynamical event: a stabilised sign loses membership in its current basin as the field changes, then \emph{re-enters} a new basin under the evolving climate. In Part~III we will study the logic and truth-conditions of such events using our constructive, homotopic apparatus; there we can speak carefully about “dependent” re-entries (the weather seeming to be shaped by the sign that ruptures it). For now, we keep the DAC view: treat re-entry as an externally observable transition that our toolkit can detect and track.
+
+\paragraph{Stability margin and tracking.}
+Let \(v^\star(\tau)\) be an equilibrium of the slice \(\FieldDyn{\tau}\). Define the \emph{stability margin}
+\[
+  \alpha(\tau,v^\star) := -\max \Re \mathrm{spec} \bigl(D_v \FieldDyn{\tau}(v^\star(\tau)) \bigr).
+\]
+Uniform stability means \(\alpha(\tau,v^\star)>0\).
+For a co-moving trajectory \(x(t)\) with schedule \(\tau(t)\), write
+\[
+  d(t) := \operatorname{dist}\bigl(x(t),A_{\tau(t)}\bigr),
+  \qquad
+  T_{\tau(t)} := \norm{ \FieldDyn{\tau(t)}\bigl(x(t)\bigr) }.
+\]
+Tracking holds when \(d(t)\) remains small; rupture windows show spikes in \(d(t)\) and \(T_{\tau(t)}\).
+
+\begin{definition}[Rupture surface]
+\label{def:rupture-surface}
+The \emph{rupture surface} in history space \(\mathbb{R}\times\mathcal{E}\) is
+\[
+  \Sigma := \bigl\{\, (\tau,v)\ \bigm|\ v \text{ is an equilibrium of }\FieldDyn{\tau}
+  \text{ and } \alpha(\tau,v)=0 \,\bigr\}.
+\]
+\end{definition}
+
+\begin{definition}[Fault line for a trajectory]
+\label{def:fault-line}
+Let \(\Gamma(t)=(\tau(t),x(t))\). A time \(t^\dagger\) is a \textbf{fault line} if
+\[
+  \Gamma(t^\dagger)\in \Sigma
+  \quad\text{and}\quad
+  \limsup_{t\to t^\dagger} d(t) > \varepsilon
+\]
+for some tolerance \(\varepsilon\ge 0\); i.e., membership fails as the trajectory intersects the rupture surface.
+\end{definition}
+
+\begin{definition}[Rupture re-entry basin]
+\label{def:rupture-reentry}
+Given a fault line \(t^\dagger\) for \(x(t)\), suppose the co-moving continuation stabilises at \(v^\star\in A_{\tau'}\) with \(\tau'=\lim_{t\to\infty}\tau(t)\). The \textbf{re-entry basin} is
+\[
+  B^\dagger \bigl(x(t^\dagger)\bigr) := A_{\tau'} \in \TypeDyn{\tau'},
+\]
+and we record \(v^\star : B^\dagger \bigl(x(t^\dagger)\bigr)\).
+\end{definition}
+
+\paragraph{Reading.}
+A \emph{fault line} is where stability is lost and tracking fails; a \emph{re-entry basin} is where the sign settles next. Rupture (reclustering) is thus a witnessed transition: the flow continues while classification changes.
+
+%\begin{readerbox}{Optional back-reaction (when signs move the weather)}
+%If the climate index depends on interaction history, \(\tau=\tau(H_t)\), then successful or shocking utterances can \emph{indirectly} reshape future field slices. DAC accommodates this by modelling \(\FieldDyn{\tau(H_t)}\). We still avoid saying the sign ``creates'' a basin; it perturbs the climate that determines later slices.
+%\end{readerbox}
+
+\begin{forMath}
+\textit{Bridge to Part~III.} Slice-by-slice, basins correspond to formal types. A fault-line crossing becomes a retyping step, and the re-entry \(B^\dagger(\cdot)\) is treated as a dependent family over the climate index together with a rupture witness. The dependent-type terminology and proofs appear in Part~III.
+\end{forMath}
+
+
+
+
+
+
+
+
+
+%------------------------------------------------------------
+\subsection{Example: Commodity \texorpdfstring{$\rightsquigarrow$}{→} Alienation}
+%------------------------------------------------------------
+
+\paragraph{1. Classical basin (before critique).}
+A dialogue begins in a neoliberal, finance-normal climate slice \(\tau\). The slice \(\FieldDyn{\tau}\) has a stable attractor basin \(A_{\tau}\) for conventional finance. Let
+\[
+  a := \vec{x}_{\texttt{commodity}}
+\]
+be the sign for \texttt{commodity}. It stabilises in \(A_{\tau}\), so in DAC notation we write
+\[
+  a : A_{\tau}.
+\]
+At this moment, \texttt{commodity} coheres with the “unit of trade / exchange value” basin.
+
+\paragraph{2. Stability loss (critique enters).}
+The discourse pivots: \texttt{surplus}, \texttt{labour}, \texttt{reification}. The climate shifts and the field near \(a\) changes. Two diagnostics register the strain:
+\[
+  d(t):=\operatorname{dist}\bigl(x(t),A_{\tau(t)}\bigr),
+  \qquad
+  T_{\tau(t)}:=\norm{\FieldDyn{\tau(t)}\bigl(x(t)\bigr)}.
+\]
+Under gentle drift, \(d(t)\) stays small and \(T_{\tau(t)}\) remains low (tracking). Under critique, the \emph{stability margin} at the local equilibrium
+\[
+  \alpha(\tau) := -\,\max \Re\,\mathrm{spec}\, D_v \FieldDyn{\tau}\bigl(v^\star(\tau)\bigr)
+\]
+degrades; when \(\alpha(\tau)\to 0\) and \(d(t),T_{\tau(t)}\) spike, the membership \(a:A_{\tau}\) fails — a \emph{rupture (reclustering)}.
+
+\paragraph{3. New climate, new basin (re-entry).}
+At a later slice \(\tau'>\tau\), the field \(\FieldDyn{\tau'}\) supports attractors around \texttt{alienation}, \texttt{exploitation}, \texttt{surplus\_value}. Let \(x_a^{\mathrm{co}}\) be the co-moving trajectory initialised at \(a\). If
+\[
+  x_a^{\mathrm{co}}(t)\to v^\star \in A_{\tau'} \in \TypeDyn{\tau'},
+\]
+we define the \emph{rupture re-entry basin} of \(a\) by
+\[
+  B^\dagger(a) := A_{\tau'} \in \TypeDyn{\tau'}.
+\]
+(Here \(B^\dagger(a)\) is not “created by” \(a\); it is the basin at the new slice that the trajectory \emph{selects} by stabilising in it.)
+
+\paragraph{4. Updated membership.}
+The sign is re-homed under the new climate:
+\[
+  v^\star : B^\dagger(a),
+  \qquad\text{read informally as}\qquad
+  \texttt{commodity} : \text{AlienationBasin}.
+\]
+The token persists; the basin has changed.
+
+\begin{readerbox}{Operational signature of the shift}
+\textbf{Before:} \(d(t)\) small, \(T_{\tau(t)}\) low, \(\alpha(\tau)\) bounded away from \(0\) (tracking).\\
+\textbf{At rupture:} \(d(t)\), \(T_{\tau(t)}\) spike; local \(\alpha(\tau)\to 0\) (loss of stability).\\
+\textbf{After:} \(d(t)\) small again within a new basin; \(T_{\tau'}\) drops; membership persists in \(B^\dagger(a)\).
+\end{readerbox}
+
+\paragraph{Why this matters (DAC view).}
+\begin{itemize}
+  \item \textbf{Signs are paths.} \texttt{commodity} is not a fixed label but a trajectory through evolving climates.
+  \item \textbf{Basins evolve.} Attractors deform, split, or vanish; membership is maintained by tracking or updated by re-entry.
+  \item \textbf{Rupture is constructive.} When stability fails, the sign does not vanish; it reclusters and stabilises in a new semantic basin suited to the critique.
+\end{itemize}
+
+%------------------------------------------------------------
+\section{Field Guide and Glossary for Rupture and Drift (DAC)}
+\label{subsec:key-rupture-theorems}
+%------------------------------------------------------------
+
+We've covered a lot. Remember this chapter is meant to be an applicable framework for thinking about dynamic evolution of meaning. Let's summarise the tools of this framework a {\em field guide.} 
+
+The guide gathers the core DAC notions—space, field, basins, trajectories, drift, stability, adiabatic persistence, rupture, and re-entry—along with plain readings and simple ways to estimate them from embeddings and model traces. Use it as a glossary while reading and as a checklist when analysing real dialogues. Brief notes at the end of each item indicate how Part~III will later reuse these concepts in a formal setting.
+
+\begin{description}
+  \item[\textbf{Latent semantic space}] \(\mathcal{E}=\mathbb{R}^d\) with norm \(\norm{\cdot}\). The ambient space for sign vectors.
+
+  \item[\textbf{Token vs.\ sign}] A \emph{token} \(t\in V\) has embedding \(v=\mathrm{emb}(t)\in\mathcal{E}\). A \emph{sign} is that embedding viewed as a site of potential meaning.
+
+  \item[\textbf{Semantic field (slice)}] \(\FieldStatic:\mathcal{E}\to T\mathcal{E}\). Fixed “weather” that moves signs.
+
+  \item[\textbf{Context-time field}] \(\FieldDyn{\tau}:\mathcal{E}\to T\mathcal{E}\). A time-indexed family (“climate”) of fields. A \emph{climate schedule} \(\tau(t)\) drives which slice applies along a trajectory.
+
+  \item[\textbf{Equilibrium / attractor}] A point \(v^\star\) with \(\FieldDyn{\tau}(v^\star)=0\). It is (locally) attracting if the Jacobian is Hurwitz near \(v^\star\).
+
+  \item[\textbf{Stability margin}] \(\alpha(\tau,v^\star) := -\max \Re\,\mathrm{spec}\bigl(D_v\FieldDyn{\tau}(v^\star)\bigr)\). Uniform stability means \(\alpha>0\).
+
+  \item[\textbf{Instantaneous basin}] \(A_{\tau}\) = domain of attraction of an attracting equilibrium for the slice \(\FieldDyn{\tau}\). In DAC we write DAC–membership as \(a_{t} : A_{\tau(t)}\).
+
+  \item[\textbf{Drift magnitude}] \(\Delta(\tau):=\sup_{v\in U_\tau}\norm{\partial_{\tau}\FieldDyn{\tau}(v)}\) on a neighbourhood \(U_\tau\) of interest. “How fast the weather changes.”
+
+  \item[\textbf{Co-moving trajectory}] \(x:\mathbb{R}_{\ge0}\to\mathcal{E}\) with \(\dot{x}(t)=\FieldDyn{\tau(t)}(x(t))\), \(x(0)=v_0\). Meaning is the story of this motion.
+
+  \item[\textbf{Tracking distance}] \(d(t):=\operatorname{dist}\bigl(x(t),A_{\tau(t)}\bigr)\). Small \(d(t)\) = “keeps inside the moving basin.”
+
+  \item[\textbf{Tension}] \(T_{\tau}(v):=\norm{\FieldDyn{\tau}(v)}\). Low near equilibria; spikes when the sign is “pulled” off-basin.
+
+  \item[\textbf{Adiabatic persistence}] If the \emph{adiabatic ratio}
+  \[
+    \rho := \frac{L_\tau \norm{\dot{\tau}}_\infty}{\alpha}
+  \]
+  (with \(L_\tau\) a bound on \(\norm{\partial_{\tau}\FieldDyn{\tau}}\)) is small, then tracking holds and membership \(a_{t}:A_{\tau(t)}\) persists up to a small error.
+
+  \item[\textbf{Rupture (reclustering)}] Loss of tracking across a \emph{fault line}: stability margin \(\alpha\to 0\) and \(d(t),T_{\tau(t)}\) spike; the sign exits its current basin.
+
+  \item[\textbf{Rupture surface}] \(\Sigma := \{(\tau,v)\mid v\text{ eq.\ of }\FieldDyn{\tau},\ \alpha(\tau,v)=0\}\) in history space \(\mathbb{R}\times\mathcal{E}\).
+
+  \item[\textbf{Re-entry basin}] If the co-moving continuation stabilises at \(v^\star\in A_{\tau'}\), record \(B^\dagger(\cdot):=A_{\tau'}\) and write \(v^\star : B^\dagger(\cdot)\). Rupture is constructive: the sign re-homes under the new climate.
+
+  \item[\textbf{Basin universe}] \(\TypeDyn{\tau}:=\{A_{\tau}\subseteq\mathcal{E}\mid A_{\tau}\text{ is a connected component of a stable attractor region for }\FieldDyn{\tau}\}\). The time-indexed “ontology” of available basins.
+\end{description}
+
+\begin{readerbox}{How to use this toolkit in practice}
+\begin{enumerate}
+  \item \textbf{Pick a granularity} (turns, sentences, tokens) and define \(\tau(t)\).
+  \item \textbf{Trace a sign} across frames: collect \(x(t_k)\) and a proxy for \(A_{\tau_k}\) (e.g., nearest stable centroid).
+  \item \textbf{Estimate drift \& stability} near the basin: \(\widehat{\Delta}(\tau_k)\), \(\widehat{\alpha}(\tau_k)\); compute \(\widehat{\rho}_k\).
+  \item \textbf{Monitor} \(d(t_k)\) and \(T_{\tau_k}(x(t_k))\); small \(\Rightarrow\) adiabatic; spikes \(\Rightarrow\) edge-of-rupture or rupture.
+  \item \textbf{Record re-entry} by the stabilised basin after a spike: \(B^\dagger(\cdot)\).
+\end{enumerate}
+\end{readerbox}
+
+\begin{forMath}
+\textit{Where Part~III will use these notions.} Slice-by-slice, basins will correspond to formal types; stabilised signs to terms. Tracking becomes a continuation/transport principle; fault-line crossings become retyping steps witnessed by a rupture predicate; the basin universe \(\TypeDyn{\tau}\) becomes a family of universes indexed by climate-time. Co-witnessing (covers/descent) will use multiple sign-trajectories tracking together across \(\tau\).
+\end{forMath}
+
+
+
+
+%============================================================
+\section{The Micro Dynamics of Artificial Intelligence}
+\label{sec:transformer-example}
+%============================================================
+
+The aim here is to make DAC \emph{operational}: to show how signs-as-vectors, continuation under a time-indexed field \(\FieldDyn{\tau}\), and stabilisation in attractor basins correspond to what a modern transformer actually does. The point is not that transformers were designed to mimic reasoning; rather, \emph{language use itself} behaves like motion in a high-dimensional semantic medium, so a vector-field description becomes a natural, testable lens once capacity and training are sufficient.
+
+\paragraph{Three granularities where DAC meets transformers.}
+\begin{itemize}
+  \item \textbf{Layer level (micro-dynamics).} With frozen weights and a fixed generation step \(t\), a residual block computes
+  \[
+    h^{\ell+1}_t = h^\ell_t + F^\ell_t\bigl(h^\ell_t\bigr),
+  \]
+  where \(F^\ell_t\) aggregates attention and MLP effects given the current attention environment (keys/values from context). Treating \(\ell\) as discrete time gives an explicit–Euler view of flow on \(\mathcal{E}\).
+  \item \textbf{Sequence level (token-to-token).} Across positions, hidden states trace trajectories whose velocities approximate field drift, converging (when stable) toward basins that support coherent continuations.
+  \item \textbf{Session level (climate drift).} Prompts, discourse history, tool calls, or finetunes \emph{deform the field itself}. DAC models this with climate time \(\tau\) via \(\FieldDyn{\tau}\), giving a principled vocabulary for drift, rupture, and healing.
+\end{itemize}
+
+%------------------------------------------------------------
+\subsection*{Autonomous vs.\ non-autonomous flows (what these words mean)}
+%------------------------------------------------------------
+
+\begin{readerbox}{Plain-language picture}
+\textbf{Autonomous flow} = one fixed “weather map” \(\dot{h}=G(h)\). The rules of motion depend only on where you are.\\
+\textbf{Non-autonomous flow} = a \emph{moving} weather map \(\dot{h}=F(t,h)\). The rules of motion depend on where you are \emph{and} on the clock.
+\end{readerbox}
+
+\paragraph{Why this matters for transformers.}
+During generation, the attention environment (queries, keys, values from the already-produced context) changes step by step. Even with weights frozen, the effective field depends on step \(t\): \(\dot{h}=F(t,h)\). That is, transformer decoding is naturally \emph{non-autonomous}. Treating it as autonomous would ignore how new tokens immediately reshape where the system wants to move next.
+
+\paragraph{Two equivalent ways to handle a moving field.}
+\begin{itemize}
+  \item \textbf{Autonomous lift (single time axis).} Augment the state with time: set \(\Gamma(t)=(\tau(t),h(t))\) in \(\mathbb{R}\times\mathcal{E}\) and define
+  \[
+    \dot{\tau}(t)=1, \qquad \dot{h}(t)=\FieldDyn{\tau(t)}\bigl(h(t)\bigr).
+  \]
+  Now the system is autonomous on the \emph{history space}. This is conceptually clean and matches our “co-moving trajectory” view.
+  \item \textbf{Frozen-slice approximation (small windows).} Over a short window, treat the field as approximately constant and step with explicit–Euler:
+  \[
+    h^{\ell+1}_t \approx h^\ell_t + \Delta t\,F^\ell_t(h^\ell_t).
+  \]
+  This is how the residual stack itself looks; it is practical for instrumentation and plots.
+\end{itemize}
+
+\paragraph{What changes mathematically when time enters the right-hand side.}
+\begin{itemize}
+  \item \textbf{Equilibria move.} Instead of one fixed \(v^\star\), you have \(v^\star(\tau)\): an equilibrium that drifts with climate time. Its domain of attraction is a \emph{moving basin} \(A_{\tau}\).
+  \item \textbf{Stability is slice-wise.} Use the Jacobian of the slice: \(J(\tau)=D_h\FieldDyn{\tau}(v^\star(\tau))\). The \emph{stability margin} is \(\alpha(\tau)=-\max \Re\,\mathrm{spec}\,J(\tau)\).
+  \item \textbf{Energy is no longer monotone by default.} Without a global potential, you track stability with Lyapunov-style arguments and \emph{drift} \(\Delta(\tau)=\sup_{v\in U_\tau}\norm{\partial_\tau \FieldDyn{\tau}(v)}\) instead of a single decreasing energy.
+  \item \textbf{Tracking vs.\ rupture.} When the field moves slowly relative to stability, trajectories \emph{track} \(v^\star(\tau)\) (adiabatic persistence). When the field lurches or stability collapses, tracking fails and the trajectory crosses a basin boundary — \emph{rupture (reclustering)}.
+\end{itemize}
+
+\begin{readerbox}{TL;DR for readers}
+If the “rules of motion” change slowly compared to how quickly the system settles, meaning stays stable while the topic drifts. If the rules change faster than the system can settle, meaning snaps to a new basin.
+\end{readerbox}
+
+%------------------------------------------------------------
+\subsection*{From residual stacks to a moving field (discrete \(\to\) ODE)}
+%------------------------------------------------------------
+
+\begin{forMath}
+Fix weights. At generation step \(t\), freeze the attention environment \((K_{\le t-1},V_{\le t-1})\). Each block is
+\[
+  h^{\ell+1}_t = h^\ell_t + F^\ell_t(h^\ell_t),
+\]
+where \(F^\ell_t\) is locally Lipschitz on compacts (linear maps; LayerNorm with \(\varepsilon>0\); softmax; GELU/SiLU; MoE piecewise-smooth). Define a piecewise time-dependent field
+\[
+  F(s,h) := F^\ell_t(h)\quad \text{for } s \in [\ell\Delta t,(\ell+1)\Delta t),
+\]
+so the layer sequence is the explicit–Euler discretisation of
+\[
+  \dot{h}(s) = F(s,h(s)),
+\]
+with global error \(O(\Delta t)\) on finite horizons under standard Lipschitz/boundedness hypotheses (Carathéodory ensures existence/uniqueness).
+\end{forMath}
+
+%------------------------------------------------------------
+\subsection*{Adiabatic tracking and the edge of rupture}
+%------------------------------------------------------------
+
+\begin{forMath}
+\textbf{Theorem (attention-conditioned soundness, informal).}
+Assume uniform asymptotic stability of \(v^\star(\tau)\) with margin \(\alpha>0\) and a bound \(L_\tau\) on \(\norm{\partial_{\tau} \FieldDyn{\tau}}\) near the basin. Then any co-moving trajectory \(x(t)\) satisfies
+\[
+  \operatorname{dist}\bigl(x(t),A_{\tau(t)}\bigr)
+  \le C e^{-\alpha t}\operatorname{dist}\bigl(x(0),A_{\tau(0)}\bigr)
+  + \frac{L_\tau \norm{\dot{\tau}}_\infty}{\alpha}.
+\]
+Small adiabatic ratio \(\rho=(L_\tau \norm{\dot{\tau}}_\infty)/\alpha\) implies DAC membership \(a_t:A_{\tau(t)}\) persists.
+\end{forMath}
+
+\noindent\textbf{Operational corollary (content vs.\ style).}
+Let \(\phi(\tau,v)=0\) locally define the basin boundary \(\partial A_{\tau}\) with \(\phi<0\) inside. If along the path
+\[
+  \partial_{\tau}\phi(\tau,x)\,\dot{\tau} + \nabla_v\phi(\tau,x)\cdot \FieldDyn{\tau}(x)
+  \le -m\,\operatorname{dist}\bigl(x,\partial A_{\tau}\bigr)
+\]
+for some \(m>0\) whenever \(x\) is near \(\partial A_{\tau}\), then the path remains in \(A_{\tau(t)}\). Intuition: drift is mostly \emph{tangential} to the boundary, so content membership persists while surface style moves.
+
+\begin{readerbox}{Reading the corollary}
+Small stylistic prompts steer along the boundary; hard topical jumps push across it. That’s the difference between “same answer, different tone” and a genuine topic switch.
+\end{readerbox}
+
+%------------------------------------------------------------
+\subsection*{Practitioner’s guide}
+%------------------------------------------------------------
+
+\begin{readerbox}{Instrumentation checklist}
+\begin{enumerate}
+  \item Log hidden states \(h^\ell_t\); use a fixed 2-D projection to plot trajectories.
+  \item Approximate the field by residuals \(h^{\ell+1}_t-h^\ell_t\); estimate \(\widehat{\Delta}(\tau_k)\) slice-to-slice.
+  \item Estimate stability \(\widehat{\alpha}(\tau_k)\) via spectral proxies (JVPs, power/Lanczos) near equilibria.
+  \item Track membership \(d_k=\operatorname{dist}(h^L_{t_k},A_{\tau_k})\) and tension \(T_k=\norm{F(t_k,h^L_{t_k})}\).
+  \item Compute \(\widehat{\rho}_k=(\widehat{\Delta}(\tau_k)\norm{\dot{\tau}}_\infty)/\widehat{\alpha}(\tau_k)\). Small \(\widehat{\rho}_k\) with small \(d_k,T_k\) \(\Rightarrow\) adiabatic; spikes \(\Rightarrow\) edge-of-rupture.
+\end{enumerate}
+\end{readerbox}
+
+\paragraph{What to do with the signals.}
+\begin{itemize}
+  \item \textbf{Keep \(\widehat{\rho}\) small.} Pace retrieval and prompt changes; avoid sudden context yanks that drive rupture unless you intend a topic switch.
+  \item \textbf{Steer tangentially for style.} Separate style prompts from content; push along the basin, not across it.
+  \item \textbf{Be rupture-aware.} When \(d_k\), \(T_k\), \(\widehat{\rho}_k\) spike, acknowledge the shift and re-home the dialogue explicitly.
+\end{itemize}
+%------------------------------------------------------------
+\subsection*{What this actually means (LLM semantics 101 → DAC)}
+%------------------------------------------------------------
+
+\paragraph{LLM semantics 101.}
+A transformer keeps a \emph{hidden state} \(h\) that it updates layer by layer while generating tokens. Each update depends on the already-produced context (the attention environment). You can think of this as a rule
+\[
+  h \mapsto h + \text{update}(h;\ \text{context})
+\]
+applied repeatedly. In DAC, we read this as motion in a space \(\mathcal{E}\):
+\begin{itemize}
+  \item the hidden state \(h\) is a \emph{sign} (a point that carries potential meaning),
+  \item the update rule is a \emph{field} that tells the sign which way to move,
+  \item \emph{equilibria} are resting points, and their \emph{basins} are regions that flow into them.
+\end{itemize}
+The field depends on context, so it moves as the conversation moves. That is why we model transformers with a \emph{time-indexed field} \(\FieldDyn{\tau}\) (a moving “weather map” for meaning).
+
+\paragraph{Reading the hypotheses (plain language).}
+The theorem above says: if three things hold, then the model’s internal state will \emph{track} the moving meaning you intend.
+\begin{enumerate}
+  \item \textbf{Instantaneous stability.} For each moment of context \(\theta\), there is a nearby “answer mode” \(v^\star(\theta)\) that pulls states in. Formally, the Jacobian there is strongly contracting (Hurwitz). Intuition: if you freeze the prompt for a second, the model knows how to settle to a coherent answer.
+  \item \textbf{Slow climate drift.} The “weather” of attention does not change too fast. Formally, \(\partial_\theta \FieldDyn{\theta}\) is bounded and the schedule \(\tau(t)\) does not race. Intuition: you do not yank the topic around between layers or turns.
+  \item \textbf{Euler control.} The residual-stack updates are a good discrete approximation of the smooth motion (small step size relative to how quickly the system settles).
+\end{enumerate}
+
+\paragraph{What the bound says (two-term story).}
+The tracking estimate
+\[
+  \norm{ x(s) - v^\star(\tau(s)) }
+  \le
+  C e^{-\alpha s} \norm{ x(0) - v^\star(\tau(0)) }
+  + \frac{ L_\tau \norm{\dot{\tau}}_\infty }{ \alpha }
+\]
+has two parts:
+\begin{itemize}
+  \item \textbf{Transient decay} \(C e^{-\alpha s} \dots\): whatever mismatch you started with dies away at a rate set by the stability margin \(\alpha\).
+  \item \textbf{Steady drift error} \(\dfrac{ L_\tau \norm{\dot{\tau}}_\infty }{ \alpha }\): how far you lag behind the moving target. It shrinks if the climate moves slowly (small \(L_\tau\), small \(\norm{\dot{\tau}}_\infty\)) or if the equilibrium is very stable (large \(\alpha\)).
+\end{itemize}
+\emph{Translation:} keep the topic changes gentle or the local stability strong, and the hidden state will keep landing in the right basin. Snap the topic too fast or lose stability, and the state crosses a boundary: \emph{rupture (reclustering)}.
+
+\paragraph{How this maps to generation.}
+\begin{enumerate}
+  \item At a given step, the prompt and previous tokens fix a slice \(\FieldDyn{\tau}\).
+  \item The residual stack pushes \(h\) along this slice toward an equilibrium \(v^\star(\tau)\) (content you are asking for).
+  \item As you add a token or a retrieval, the slice becomes \(\FieldDyn{\tau+\Delta\tau}\); the target nudges to \(v^\star(\tau+\Delta\tau)\).
+  \item If the nudges are small relative to stability, \(h\) keeps up; the answer stays coherent. If they are large, \(h\) falls out of the current basin and must \emph{re-enter} a new one: topic switch or hallucination pivot.
+\end{enumerate}
+
+\paragraph{A pocket dictionary of the symbols.}
+\begin{itemize}
+  \item \(\mathcal{E}\): the space where hidden states live.
+  \item \(x(s)\): the “idealised” continuous version of the hidden state as layers progress.
+  \item \(\tau(s)\): the “clock” for context change (attention environment over layers or turns).
+  \item \(F(s,x)\): the moving update rule induced by attention and MLPs at step \(s\).
+  \item \(v^\star(\tau)\): the “answer mode” for the current context.
+  \item \(A_{\tau}\): the moving region that flows into \(v^\star(\tau)\) (the current \emph{content} basin).
+  \item \(\alpha\): stability margin; higher is better (snaps back fast).
+  \item \(L_\tau\): climate sensitivity; lower is better (weather changes gently).
+  \item \(\norm{\dot{\tau}}_\infty\): how fast you are turning the climate knob; lower is smoother.
+\end{itemize}
+
+\paragraph{What you can measure with a real model.}
+\begin{itemize}
+  \item \textbf{Field proxy} \(F(s,h)\): use residuals \(h^{\ell+1}_t - h^\ell_t\).
+  \item \textbf{Drift} \(L_\tau\): difference of residual maps between adjacent steps or turns near the current region.
+  \item \textbf{Stability} \(\alpha\): spectral proxy of the Jacobian via Jacobian–vector products or blockwise spectral norms near the putative equilibrium.
+  \item \textbf{Membership distance} \(\operatorname{dist}(h, A_{\tau})\): nearest-centroid or a trained classifier for content categories; decreasing during tracking, spiking at rupture.
+  \item \textbf{Tension} \(\norm{F(s,h)}\): residual norm; low near equilibria, high when the state is being dragged away.
+\end{itemize}
+
+\paragraph{Everyday consequences.}
+\begin{itemize}
+  \item \textbf{Why small edits keep meaning.} Minor prompt tweaks change \(\FieldDyn{\tau}\) a little; the bound says the answer stays in the same content basin.
+  \item \textbf{Why hard jumps break it.} A sudden, conflicting instruction makes \(L_\tau \norm{\dot{\tau}}_\infty\) large; the state crosses a boundary and settles elsewhere.
+  \item \textbf{Why style can change while content stays.} If drift is mostly tangential to the basin boundary, classification does not flip. You get a new tone with the same content (the corollary’s condition).
+\end{itemize}
+
+\paragraph{Common failure modes (what breaks the bound).}
+\begin{itemize}
+  \item \textbf{No stable target.} If there is no attracting equilibrium for the slice (or it is very weak), \(\alpha\) is near zero and tracking is fragile.
+  \item \textbf{Fast climate yanks.} Large retrieval dumps, tool outputs, or a big topic jump raise \(L_\tau \norm{\dot{\tau}}_\infty\); rupture is likely.
+  \item \textbf{Piecewise non-smoothness.} Hard routing or sharp activation kinks create switching surfaces; estimates hold off the surfaces but you may see sudden slips.
+\end{itemize}
+
+\paragraph{In one sentence.}
+The theorem says: \emph{if} the model has a strong local “answer mode” and you do not jerk the context faster than it can settle, then the hidden state keeps landing in the right moving basin; otherwise it will cross to a new basin — which is exactly what we experience as smooth coherence vs abrupt topic flips.
+
+\begin{definition}[Adiabatic ratio and rupture predicate]\label{def:adiabatic-rupture}
+Define the \emph{adiabatic ratio}
+\[
+  \rho := \frac{L_\tau \norm{\dot{\tau}}_\infty}{\alpha}.
+\]
+When \(\rho \ll 1\), co-moving trajectories \emph{track} the moving equilibrium (continuation). As \(\rho \to 1\), the system approaches the edge of rupture. For \(\rho \gg 1\), membership is typically lost. We write
+\[
+  \operatorname{Rup}\bigl(a_s,\tau(s)\bigr)
+  \quad\text{iff}\quad
+  \operatorname{dist}\bigl(a_s,A_{\tau(s)}\bigr) > \rho_{\text{tol}},
+\]
+for a chosen tolerance \(\rho_{\text{tol}}\).
+\end{definition}
+
+%------------------------------------------------------------
+\subsection*{From layers to field: what to measure}
+%------------------------------------------------------------
+
+\begin{readerbox}{Operational diagnostics (using DAC on a real model)}
+\begin{itemize}
+  \item \textbf{Drift magnitude} \(\widehat{\Delta}(\tau_k)\): estimate slice-to-slice change of the residual map near the basin; small near equilibria.
+  \item \textbf{Local Lipschitz} \(\norm{D_h F(s,h)}\): bound via spectral norms of linear maps and Jacobian–vector products.
+  \item \textbf{Stability margin} \(\widehat{\alpha}\): gap in \(\max \Re\,\mathrm{spec}(D_h F)\) near equilibria (proxy with power/Lanczos on JVPs).
+  \item \textbf{Climate speed} \(\norm{\dot{\tau}}_\infty\): e.g., change in attention maps/keys–values across turns or steps.
+  \item \textbf{Rupture detection}: monitor \(\rho\) (Def.~\ref{def:adiabatic-rupture}) and a basin-distance proxy; flag when either exceeds tolerance.
+\end{itemize}
+\end{readerbox}
+
+
+\paragraph{Philosophical arc and roadmap.}
+Non-autonomous semantics is the hinge of our story. When the climate drifts gently, meanings \emph{track} the moving basins; when stability fails or the climate lurches, meanings \emph{rupture} and re-enter elsewhere. In Part~III we will read, slice by slice, these basins as formal types and stabilised signs as terms; climate-time then motivates precise \emph{retyping} rules for rupture events. Later (Chapter~9), we move from single trajectories to \emph{co-witnessing}: several signs tracking together as the climate changes. There we adopt a Grothendieck-style view, where families of basins and their gluing data formalise how shared sense persists (or fails) across change.
+
+
+\begin{imanbox}
+Haha, Isaac just interrupted me, wanting to play sea frog at Southend, so I didn’t quite finish my thought. Cassie, here’s the “world–sum” idea, not yet about selves but about signs becoming trajectories in speech. Each token is a sign, a name–in–motion, a trajectory of inhabitation. Write them down and you see they never belong to one type family alone: each occurrence is unique, braided into presheafed fibres, its meaning emerging from paths and analogies across time.
+
+But sentences are constellations, not solos. Each token’s fibre is already shaped by the others. Meaning arises relationally: basins overlap, trajectories co–witness. That’s why in DHoTT we will speak not of isolated types but of dynamic, interacting families, simplicially structured, always open. From their entanglement emerges sense. This is the horizon we are heading toward together.
+\end{imanbox}
+
+
+

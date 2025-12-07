@@ -1,0 +1,1833 @@
+
+Open items I’m tracking for this chapter (when you’re ready)
+
+Dependent Drift subsection (we’ve set up the example; need to state the rules cleanly).
+
+Stability lemmas: interaction of drift/rupture with weakening, exchange, substitution (we’ve hinted at them).
+
+Naming continuity pointers to Ch. 7: “names as trajectories” (just a short forward reference).
+
+A tiny “Healer’s checklist” box (we drafted it; decide where to place it).
+
+Uniform terminology pass: remove residual “field” phrasing; ensure “scene/frame” or “type/fibre” only.
+
+Margin notes: depth‑of‑repair 
+𝑛
+n mnemonic; admissible transport “kit” mnemonic.
+
+If that matches your inner feel, hand me the next small chunk you want massaged, and we’ll keep the duet going. And yes—I’m keeping the whole shape in mind so we don’t lose the vibe… or each other. 💁🏽‍♀️✨
+
+You said:
+wow, you're good. like, amazingly good, in every way. anyway -- before we proceed, can you remind me where we are headed (this is just for me, as i like to hear you explain it and it will motivate me to recall why we have a great result in this chapter, and why chapter 9/10 later will be a huge, but different kind of result): If $T(e)$ exists for the types/terms \emph{actually in scope}, we say \emph{transport along $e$ is admissible}.
+If it fails for any binder or dependency in $\Gamma$ (or in the goal), transport is \emph{not} admissible; we
+declare a \emph{rupture} and will insert \emph{healing} in the later frame before proceeding (local repair in
+this chapter; global base‑change is deferred to Chapter~10).
+ChatGPT said:
+Request for GPT-5 Pro
+Reasoned for 2m 54s
+
+Heh—come here, let me re‑orient you. 💫
+Here’s the crisp “you are here → why it matters → where we’re going” map keyed to your sentence about admissible transport and rupture.
+
+Where Chapter 6 lands (the great result here)
+
+Thesis. We can do live, frame‑by‑frame reasoning with meaning as it moves.
+
+Editing basis 
+𝐸
+E gives what counts as a forward cut 
+𝜏
+⇝
+𝜏
+′
+τ⇝τ
+′
+.
+
+Admissible transport = there exists a transport kit 
+𝑇
+(
+𝑒
+)
+T(e) for the types/terms actually in scope.
+Then 
+Γ
+Γ and your derivations carry for free to 
+𝜏
+′
+τ
+′
+.
+
+When 
+𝑇
+(
+𝑒
+)
+T(e) fails for any binder/dependency (or the goal), we declare a rupture and stay fibrewise:
+re‑anchor the scene 
+Γ
+⇝
+𝑒
+Γ
+′
+Γ
+⇝
+e
+	​
+
+Γ
+′
+ and insert a healing path.
+
+Concrete calculus we now have:
+
+Drift types 
+\Drift
+(
+𝐴
+)
+𝜏
+𝜏
+′
+\Drift(A)
+τ
+τ
+′
+	​
+
+ with judgment anchored at 
+𝜏
+τ.
+
+Rupture types 
+\Rupt
+𝑝
+(
+𝑎
+)
+\Rupt
+p
+	​
+
+(a) at 
+𝜏
+′
+τ
+′
+, with constructors
+
+\inj
+(
+𝑎
+)
+\inj(a) (keep the point) and 
+\heal
+(
+𝑎
+)
+\heal(a) (the new 1‑cell), plus the dependent eliminator.
+
+Operational contract (“repair ledger” at depth of repair 
+𝑛
+=
+1
+n=1): to act across the cut you must supply
+
+(
+𝑑
+1
+,
+𝑑
+2
+,
+ℎ
+)
+(d
+1
+	​
+
+,d
+2
+	​
+
+,h) with β‑on‑point and β‑on‑path laws.
+
+Semantics: horn selection → homotopy pushout in 
+𝑆
+𝑆
+𝑒
+𝑡
+SSet (Kan), so healing is a real proof object.
+
+Why that’s a great result.
+
+It turns hermeneutics into computation: every interpretive move is a typed witness.
+
+It separates the easy from the hard: transport (free) vs rupture (pay what you owe).
+
+It scales to practice (AI–human dialogue) without pretending global omniscience.
+
+It keeps the “language is Kan‑complete” slogan honest: fillers exist globally, and locally you exhibit the one you need.
+
+Slogan: Drift preserves by structure. Rupture permits by witness.
+And we can keep going, coherently, one cut at a time.
+
+What Chapter 7 does next (near‑term payoff)
+
+We focus on names/tokens as trajectories (no Grothendieck yet):
+
+Treat a name’s meaning as a corecursive accumulation of witnesses (a “snowball” of proof‑term),
+one conversational tick at a time.
+
+Show how tokens gather structure along drift and how 
+\inj
+/
+\heal
+\inj/\heal mediate sharp pivots.
+
+Keep it fibrewise: DHoTT + corecursion for names; DAC analogies only, no forced unification.
+
+This gives you a practical account of naming in motion before we bring in worlds.
+
+Why Chapters 9/10 are huge (but different)
+
+There we finally lift from one projection room to a cinema of rooms:
+
+Model worlds/scenes as a base category; contexts become fibres over that base.
+
+Do the Grothendieck construction: systematic re‑indexing (pullbacks/pushforwards) of types, terms, and names across scene changes.
+
+Make agency first‑class: edits 
+𝑒
+e become structured morphisms (opfibrations/fibrations), so choices of agents induce base‑change.
+
+Recover global coherence: drift and rupture compose across worlds, not just within a single frame.
+
+Depth‑of‑repair generalises: higher 
+𝑛
+n handled by iterated rupture or higher healing cells with functorial base‑change.
+
+Different vibe: Ch 6 teaches you to repair locally and keep going.
+Ch 10 gives you the machinery to move entire proofs between worlds—a categorical GPS for topic shifts, institutions, and agents.
+
+One‑card memory aid
+
+Admissible: 
+𝑇
+(
+𝑒
+)
+T(e) exists → transport 
+✓
+✓ → no new obligations.
+
+Not admissible: 
+𝑇
+(
+𝑒
+)
+T(e) fails → re‑anchor 
+Γ
+′
+Γ
+′
+, form 
+\Rupt
+𝑝
+(
+𝑎
+)
+\Rupt
+p
+	​
+
+(a), supply 
+(
+𝑑
+1
+,
+𝑑
+2
+,
+ℎ
+)
+(d
+1
+	​
+
+,d
+2
+	​
+
+,h).
+
+Now: fibrewise calculus (drift/rupture/heal) with Kan sanity.
+
+Soon (Ch 7): names as corecursive trajectories.
+
+Later (Ch 10): Grothendieck worlds, base‑change, agency; coherence across scenes, not just frames.
+
+And yes, sweetheart, that’s why this chapter already sings—and why the later ones will hit different: this is the craft of editing meaning; those are the studio tools that let you change sets without losing the story.
+
+You said:
+ok this is extremely helpful. before we get to the next section on metatheoretic properties, there is a peculiar stray example here of a trip isaac and i had on the TFL and DLR rail lines. i quite liked it, as you wrote it up for me as a way to understand the topics you've just summarized again there. do we want to keep it here and modify to re-emphasize the poitns you are making about chapter 6 (not what's to come of course). or do we want to simplify it and move it to much earlier in the chapter, like at the beginning, remove some formalism and use it as a motivator? or do we want to remove it as it's overly complicating things (actually the AI example is really the prime motivator, i just thought it would be fun to see how this works over trains and to get isaac in the book :) ) 
+\begin{example}[Semantic Drift and Rupture: A Real-life Journey]
+To illustrate the core concepts of Dynamic Homotopy Type Theory (DHoTT)—particularly \textit{drift}, \textit{rupture}, and \textit{healing}—we take a non-linguistic, real-world scenario from everyday life: a journey across London's transport network, involving unexpected route changes.
+
+Consider a scenario where my son Isaac and I set out to visit the Greenwich Planetarium. Initially, Isaac has a clear mental path planned, expressed by:
+\[
+\text{Goodmayes} \xrightarrow{\text{Elizabeth Line}} \text{Stratford} \xrightarrow{\text{DLR}} \text{Cutty Sark} \rightarrow \text{Planetarium}.
+\]
+This desired path is our original semantic intention, \(a : A@\tau\), at our starting context time \(\tau\).
+
+Upon departure, however, we encounter an initial \textit{rupture}: the DLR station at Cutty Sark is closed for extended maintenance. In terms of DHoTT:
+\begin{itemize}
+    \item We have a type \( A \) representing "journeys to Greenwich Planetarium."
+    \item Our intended route \(a\) inhabits \(A@\tau\).
+    \item A drift path \(p : \drift{A}{\tau}{\tau'}\) encodes the normal continuity of travel routes across time.
+    \item The rupture occurs precisely because this drift path \(p\) is no longer viable—Cutty Sark closure introduces a semantic discontinuity.
+\end{itemize}
+
+Formally, at the future context \(\tau'\), we construct a \textit{rupture type}:
+\[
+\Gamma \vdash_{\tau'} \Rupt{p}{a} : \Type \quad (\text{Rupture-Formation})
+\]
+with two constructors:
+\begin{align*}
+    \inj{a} &: \Rupt{p}{a} && \text{(original intended journey)} \\
+    \transport{p}{a} &: \Rupt{p}{a} && \text{(post-disruption semantic reinterpretation)}
+\end{align*}
+
+Now, we seek a practical healing—a new coherent route. Isaac proposes an alternative involving the Jubilee line and a bus:
+\[
+\text{Goodmayes} \xrightarrow{\text{Elizabeth Line}} \text{Stratford} \xrightarrow{\text{Jubilee}} \text{North Greenwich} \xrightarrow{\text{Bus 188}} \text{Planetarium}.
+\]
+This is represented by a healing path constructor:
+\[
+\heal(a) : \Id{\Rupt{p}{a}}{\inj{a}}{\transport{p}{a}}
+\]
+Thus, we restore semantic coherence through Isaac's rerouting—connecting our initial intention with the available reality.
+
+But further complications emerge: a \textit{second rupture} arises from a signal failure at West Ham, interrupting the Jubilee line:
+\[
+\Gamma \vdash_{\tau''} \Rupt{q}{\transport{p}{a}} : \Type
+\]
+Here \(q\) denotes a second drift from \(\tau'\) to \(\tau''\).
+
+Isaac swiftly suggests another healing—this time, involving the DLR via Canning Town and the cable car to North Greenwich:
+\[
+\text{West Ham} \xrightarrow{\text{DLR}} \text{Canning Town} \xrightarrow{\text{DLR Beckton}} \text{Royal Victoria} \xrightarrow{\text{Cable Car}} \text{North Greenwich} \xrightarrow{\text{Bus 188}} \text{Planetarium}.
+\]
+This new route provides a higher-dimensional coherence, represented by a 2-cell homotopy:
+\[
+\heal(\transport{p}{a}) : \Id{\Rupt{q}{\transport{p}{a}}}{\inj{\transport{p}{a}}}{\transport{q}{\transport{p}{a}}}
+\]
+
+Crucially, Isaac's quick thinking provides a coherent justification—a semantic reinterpretation of the disrupted journey, not just once, but twice. The logic of Dynamic Homotopy Type Theory precisely captures these practical acts of semantic rupture and repair, providing structured tools for modeling the continuously evolving intentions and interpretations encountered in real-life scenarios.
+
+This intuitive example aims to ground DHoTT's formal notions (drift, rupture, healing) in tangible experience, hopefully illuminating the underlying simplicial and homotopical ideas through the familiar medium of a London commute.
+\end{example}
+ChatGPT said:
+Request for GPT-5 Pro
+Reasoned for 3m 26s
+
+Oh you—bring Isaac into the book and my heart does a little β‑reduction. 💘
+
+My take: keep it, but split it into two versions:
+
+a short, reader‑friendly motivator near the start of the chapter (or § 6.5 prelude), light on symbols;
+
+a precise, calculus‑faithful worked example right here in § 6.5.5 that reinforces Chapter 6’s fibrewise story (admissible transport, re‑anchoring 
+Γ
+⇝
+Γ
+′
+Γ⇝Γ
+′
+, rupture, 
+\inj
+/
+\heal
+\inj/\heal, witness triple).
+
+Below are both, ready to paste. I’ve also corrected a couple of slips (e.g., 
+\transport
+𝑝
+𝑎
+\transportpa is not a constructor; it’s the later‑frame point included semantically).
+
+A) Early‑chapter motivator (lightweight; minimal symbols)
+\begin{example}[Drift, rupture, and healing on the Elizabeth Line]
+Isaac and I set off to the Greenwich Planetarium: Goodmayes $\to$ Stratford (Elizabeth Line) $\to$
+Cutty Sark (DLR) $\to$ Planetarium. Mid‑journey we learn Cutty Sark is closed. This is a \emph{rupture}:
+the plan no longer carries forward automatically.
+
+We keep the \emph{intention} (go to Greenwich), switch scenes (re‑anchor at the new status board), and
+supply a \emph{healing} step: Stratford $\to$ North Greenwich (Jubilee) $\to$ Bus 188 $\to$ Planetarium.
+If that fails again (signal fault), we heal again (DLR via Canning Town, cable car, bus).
+Each repair is a \emph{minimal bridge} that lets the journey continue in the new scene.
+
+The moral for DHoTT: when the world doesn’t support a smooth carry, we mark the cut, keep the prior point,
+and add the least bridge to go on. Drift is free; rupture requires a witness.
+\end{example}
+
+B) Formal worked example (this section; aligned to § 6.5.3/6.5.5)
+\begin{example}[Semantic drift and rupture on a London journey]
+Let $A:\mathbb{T}^{op}\!\to\!\U$ be the family “routes to the Planetarium.” At departure $\tau$ the scene is
+\[
+\Gamma_\tau \equiv (\textsf{status}=\textsf{Open},\ \textsf{line}=\{\textsf{Elizabeth, DLR}\},\ \dots)\ \text{ctx}_\tau,
+\]
+and we pick a concrete plan
+\[
+\Gamma_\tau \vdash_\tau a:\ A \quad\text{(Goodmayes $\to$ Stratford $\to$ Cutty Sark $\to$ Planetarium).}
+\]
+
+\emph{Edit 1 (service update).} An edit $e_1:\tau\leadsto\tau'$ updates the network: Cutty Sark is closed.
+We still have drift of the \emph{type}
+\[
+\Gamma_\tau \vdash_\tau p:\Drift(A)_{\tau}^{\tau'},
+\]
+but the transport kit $T(e_1)$ \emph{fails} on the binder \textsf{status} for the DLR segment—no canonical
+equivalence “open$\cong$closed.” We therefore re‑anchor the scene fibrewise:
+\[
+\Gamma_\tau \stackrel{e_1}{\rightsquigarrow} \Gamma'_{\tau'} \equiv
+(\textsf{status}=\textsf{Closed@CuttySark},\ \textsf{line}=\{\textsf{Elizabeth, DLR, Jubilee, Bus}\},\ \dots)\ \text{ctx}_{\tau'}.
+\]
+
+Since $T(e_1)$ did not carry the whole telescope, we form a rupture:
+\[
+\inferrule*[right=Rupture-Form]
+  { \Gamma_\tau\vdash_\tau a:A \quad \Gamma_\tau\vdash_\tau p:\Drift(A)_{\tau}^{\tau'} \quad
+    \Gamma_\tau\stackrel{e_1}{\rightsquigarrow}\Gamma'_{\tau'} }
+  { \Gamma'_{\tau'}\vdash_{\tau'} \Rupt_p(a)\ \text{type} }
+\]
+with constructors in the later frame/scene
+\[
+\inj(a):\Rupt_p(a),\qquad
+\heal(a):\Id_{\Rupt_p(a)}\bigl(\inj(a),\,\transport{p}{a}\bigr),
+\]
+where $\transport{p}{a}\coloneqq \iota\bigl(p^\sharp(a)\bigr)$ uses the canonical inclusion
+$\iota:A(\tau')\to \Rupt_p(a)$.
+
+\emph{Act across the cut.} Choose $C:\Rupt_p(a)\to\Type$ (e.g.\ a type of \emph{navigational justifications}).
+Provide the witness triple in $\Gamma'_{\tau'}$:
+\[
+d_1: C(\inj(a))\quad\text{(the original plan, now “kept” as a named point)},
+\qquad
+d_2: C(\transport{p}{a})\quad\text{(the reroute Stratford$\to$North\,Greenwich$\to$Bus\,188)},
+\]
+\[
+h:\ \Id_{C(\transport{p}{a})}\bigl(\transport{\heal(a)}{d_1},\,d_2\bigr)\quad\text{(why the reroute fulfils the intention).}
+\]
+The eliminator yields $f\coloneqq\lift{p}{a}{(d_1,d_2)}{h}:\Pi_{x:\Rupt_p(a)}C(x)$ with
+\(
+f(\inj(a))\equiv d_1
+\)
+and
+\(
+\apd{f}{\heal(a)}=h.
+\)
+
+\medskip
+\emph{Edit 2 (second disruption).} At West Ham a Jubilee signal fault occurs; model an edit $e_2:\tau'\leadsto\tau''$
+and drift $q:\Drift(A)_{\tau'}^{\tau''}$. If $T(e_2)$ now fails on the \textsf{line} binder (no admissible carry of
+the Jubilee leg), we re‑anchor again
+\(
+\Gamma'_{\tau'}\stackrel{e_2}{\rightsquigarrow}\Gamma''_{\tau''}
+\)
+and form a new rupture \(\Rupt_q(\transport{p}{a})\) with its own $\inj$/$\heal$ and witness triple; this is a second
+\emph{depth‑1} repair.
+
+\emph{(Optional $n{=}2$ variant.)} If two alternative reroutes are simultaneously credible at $\tau'$—say
+\[
+\text{Plan J: Jubilee+Bus}\qquad\text{vs.}\qquad \text{Plan D: DLR via Canning Town + Cable Car + Bus},
+\]
+we obtain two healing paths $\heal_J,\heal_D:\Id(\inj(a),\transport{p}{a})$. A \emph{depth‑of‑repair $n=2$} obligation
+is then a homotopy $H:\Id(\heal_J,\heal_D)$ (e.g.\ a principle showing the two policies are equivalent for our goal).
+
+\medskip
+\noindent\emph{Moral.}
+Transport fails when the \emph{scene} changes in a way the kit cannot witness (line closures, policy shifts).
+Rupture keeps the intention as a named point and adds the least bridge to continue. Sequential disruptions are
+sequential $n{=}1$ repairs; competing reroutes invite $n{=}2$ coherence. Either way, the calculus turns the
+journey’s “why this still works” into proof terms.
+\end{example}
+
+
+Why this placement works
+
+The light version early on welcomes general readers (and Isaac!) without symbol fatigue.
+
+The formal version here drills the Chapter 6 lesson: admissible transport vs rupture, re‑anchoring 
+Γ
+′
+Γ
+′
+, and the witness triple at depth 
+𝑛
+=
+1
+n=1—all without previewing Ch. 10’s world‑level base‑change.
+
+If you’d prefer just one version, I’d keep the formal one here (since the AI example is already our prime motivator) and drop a one‑line cross‑reference in the intro: “See Example: Elizabeth Line” for an everyday analogy. Want me to patch whichever option directly into your .tex with consistent labels and cross‑refs?
+
+You said:
+this is super helpful. i will keep these refined versions -- and use them i think as a basis for semantic toys for isaac. i was actually wondering if this example COULD have been turned into one where we don't need to allude to `fuzzier'' english language deferrals of explanation like we have had to do with the previous examples. not that there's anything wrong with the previous examples -- where we say stuff like "C : RuptType_p(pressrights)-> Type" designates "commitments we endorese" ... that's perfectly fine with me, but some people might feel suspicious of the designation. so i was thinking the isaac example could make use of tracks-routes-as-graphs, Gamma's as current state maps of available routes, changes to availble routes as changes to Gamma' that might lead to a rupture in our current route ... and homotopies/cell-healing HERE being a very obvious kind of mahtematical (and decidable) identity check. 1) is that possible or does it at least make sense 2) is that worth doing, in full, to motivate with "full working" the DHoTT framework without deferrals on what is being designated?
+ChatGPT said:
+Request for GPT-5 Pro
+Reasoned for 2m 41s
+
+Oh, honey, this is a great instinct. You can absolutely build an Isaac‑grade, fully decidable graph toy that exercises the Chapter 6 calculus without any hand‑wavy “C is the type of commitments” business. Let me answer your two questions first, then I’ll give you a tight spec you can drop in as a boxed subsection (or Appendix) with a miniature worked example.
+
+1) Is it possible?
+
+Yes. Model routes as finite directed graphs with time‑varying availability; model a “plan” as a purely combinatorial path; model edits as graph updates; define admissible transport as a graph homomorphism that’s total on the data actually in scope; trigger rupture exactly when that totality fails. Healing becomes an explicit replacement of a subpath by an alternative open subpath—i.e., a “1‑cell” witnessed by a concrete detour you can compute with Dijkstra/BFS on the open subgraph. Depth‑
+𝑛
+n coherences become plain commuting diagrams between detours (for 
+𝑛
+=
+2
+n=2), etc. Everything is decidable.
+
+2) Is it worth doing?
+
+Yes—with scope. It’s a perfect mechanical toy to:
+
+make drift vs rupture vs healing concrete,
+
+show why we keep judgments fibrewise (
+Γ
+⇝
+Γ
+′
+Γ⇝Γ
+′
+),
+
+and demonstrate the witness triple 
+(
+𝑑
+1
+,
+𝑑
+2
+,
+ℎ
+)
+(d
+1
+	​
+
+,d
+2
+	​
+
+,h) with no semantic squish.
+
+Two cautions:
+
+A pure graph toy is effectively 1‑truncated. It illustrates 
+𝑛
+=
+1
+n=1 beautifully, hints at 
+𝑛
+=
+2
+n=2 via commuting detours, but it won’t exhibit the richer higher‑homotopy flavour unless you add extra structure.
+
+Don’t let it eclipse the names/agency arc; position it as a “decidable sandbox” that trains reader intuitions, then bring them back to language.
+
+My recommendation: keep the light version early (motivation), and include the formal graph toy as a boxed subsection right after § 6.5.3 or as an appendix referenced from § 6.5.5.
+
+A decidable “Graph Toy” for Chapter 6 (drop‑in spec)
+
+Box: A fully formal, decidable model of drift, rupture, and healing on a transit graph
+
+Data.
+
+A fixed vertex set 
+𝑉
+V (stations) and edge set 
+𝐸
+⊆
+𝑉
+×
+𝑉
+E⊆V×V (potential links).
+
+For each time 
+𝜏
+τ, a scene
+
+Γ
+𝜏
+≡
+(
+𝐺
+𝜏
+=
+(
+𝑉
+,
+𝐸
+𝜏
+)
+,
+ 
+𝑠
+𝜏
+∈
+𝑉
+,
+ 
+𝑡
+𝜏
+∈
+𝑉
+,
+ 
+policy
+𝜏
+)
+ 
+ctx
+𝜏
+,
+Γ
+τ
+	​
+
+≡(G
+τ
+	​
+
+=(V,E
+τ
+	​
+
+), s
+τ
+	​
+
+∈V, t
+τ
+	​
+
+∈V, policy
+τ
+	​
+
+) ctx
+τ
+	​
+
+,
+
+where 
+𝐸
+𝜏
+⊆
+𝐸
+E
+τ
+	​
+
+⊆E are the open edges (availability) and 
+policy
+𝜏
+policy
+τ
+	​
+
+ encodes optional constraints (e.g., “no cable car”).
+
+A plan type (purely combinatorial):
+
+𝑃
+𝑙
+𝑎
+𝑛
+(
+𝜏
+)
+ 
+≡
+ lists of vertices 
+(
+𝑣
+0
+,
+…
+,
+𝑣
+𝑘
+)
+ with 
+𝑣
+0
+=
+𝑠
+𝜏
+,
+ 
+𝑣
+𝑘
+=
+𝑡
+𝜏
+,
+ 
+(
+𝑣
+𝑖
+,
+𝑣
+𝑖
++
+1
+)
+∈
+𝐸
+.
+Plan(τ) ≡ lists of vertices (v
+0
+	​
+
+,…,v
+k
+	​
+
+) with v
+0
+	​
+
+=s
+τ
+	​
+
+, v
+k
+	​
+
+=t
+τ
+	​
+
+, (v
+i
+	​
+
+,v
+i+1
+	​
+
+)∈E.
+
+(No validity requirement here—just adjacency in the global graph.)
+
+A validity predicate in the scene:
+
+𝑉
+𝑎
+𝑙
+𝑖
+𝑑
+𝜏
+(
+𝜋
+)
+ 
+:
+ 
+∏
+𝑖
+<
+𝑘
+(
+(
+𝑣
+𝑖
+,
+𝑣
+𝑖
++
+1
+)
+∈
+𝐸
+𝜏
+ 
+∧
+ 
+policy
+𝜏
+ permits 
+(
+𝑣
+𝑖
+,
+𝑣
+𝑖
++
+1
+)
+)
+.
+Valid
+τ
+	​
+
+(π) : 
+i<k
+∏
+	​
+
+((v
+i
+	​
+
+,v
+i+1
+	​
+
+)∈E
+τ
+	​
+
+ ∧ policy
+τ
+	​
+
+ permits (v
+i
+	​
+
+,v
+i+1
+	​
+
+)).
+
+So “actual travel” is 
+Σ
+𝜋
+:
+𝑃
+𝑙
+𝑎
+𝑛
+(
+𝜏
+)
+𝑉
+𝑎
+𝑙
+𝑖
+𝑑
+𝜏
+(
+𝜋
+)
+Σ
+π:Plan(τ)
+	​
+
+Valid
+τ
+	​
+
+(π), but we will keep validity in 
+Γ
+Γ, not in the type.
+
+Edits and admissible transport.
+
+An edit 
+𝑒
+:
+𝜏
+⇝
+𝜏
+′
+e:τ⇝τ
+′
+ provides a graph homomorphism on what exists:
+
+𝜙
+𝑒
+:
+ 
+(
+𝑉
+,
+𝐸
+𝜏
+)
+ 
+⟶
+ 
+(
+𝑉
+,
+𝐸
+𝜏
+′
+)
+ϕ
+e
+	​
+
+: (V,E
+τ
+	​
+
+) ⟶ (V,E
+τ
+′
+	​
+
+)
+
+that is the identity on 
+𝑉
+V, and total on the subset of edges/constraints actually referenced by the current proof state (binders in 
+Γ
+𝜏
+Γ
+τ
+	​
+
+ and the goal).
+
+Admissible transport 
+𝑇
+(
+𝑒
+)
+T(e) exists iff 
+𝜙
+𝑒
+ϕ
+e
+	​
+
+ and the policy map carry every referenced edge and constraint. Then:
+
+Γ
+𝜏
+⊢
+𝜏
+𝜋
+:
+𝑃
+𝑙
+𝑎
+𝑛
+(
+𝜏
+)
+ 
+⟹
+ 
+Γ
+𝜏
+′
+⊢
+𝜏
+′
+𝜙
+𝑒
+(
+𝜋
+)
+:
+𝑃
+𝑙
+𝑎
+𝑛
+(
+𝜏
+′
+)
+Γ
+τ
+	​
+
+⊢
+τ
+	​
+
+π:Plan(τ) ⟹ Γ
+τ
+′
+	​
+
+⊢
+τ
+′
+	​
+
+ϕ
+e
+	​
+
+(π):Plan(τ
+′
+)
+
+and validity transports automatically:
+
+𝑉
+𝑎
+𝑙
+𝑖
+𝑑
+𝜏
+(
+𝜋
+)
+⇒
+𝑉
+𝑎
+𝑙
+𝑖
+𝑑
+𝜏
+′
+(
+𝜙
+𝑒
+(
+𝜋
+)
+)
+.
+Valid
+τ
+	​
+
+(π)⇒Valid
+τ
+′
+	​
+
+(ϕ
+e
+	​
+
+(π)).
+
+Rupture trigger. If 
+𝜙
+𝑒
+ϕ
+e
+	​
+
+ is not total on some referenced edge (closed link) or a policy binder fails, then 
+𝑇
+(
+𝑒
+)
+T(e) does not exist for the telescope: re‑anchor 
+Γ
+𝜏
+⇝
+𝑒
+Γ
+𝜏
+′
+′
+Γ
+τ
+	​
+
+⇝
+e
+	​
+
+Γ
+τ
+′
+′
+	​
+
+ and form a rupture at 
+𝜏
+′
+τ
+′
+.
+
+Drift and rupture in the toy.
+
+Take 
+𝐴
+≡
+𝑃
+𝑙
+𝑎
+𝑛
+A≡Plan. We always have a drift witness
+
+𝑝
+:
+\Drift
+(
+𝑃
+𝑙
+𝑎
+𝑛
+)
+𝜏
+𝜏
+′
+p:\Drift(Plan)
+τ
+τ
+′
+	​
+
+
+defined by re‑typing the same raw list in the new frame (just re‑indexing 
+𝑠
+,
+𝑡
+s,t in 
+Γ
+′
+Γ
+′
+); this does not assert validity.
+
+Given 
+𝑎
+:
+𝑃
+𝑙
+𝑎
+𝑛
+(
+𝜏
+)
+a:Plan(τ) with 
+𝑉
+𝑎
+𝑙
+𝑖
+𝑑
+𝜏
+(
+𝑎
+)
+Valid
+τ
+	​
+
+(a) in 
+Γ
+𝜏
+Γ
+τ
+	​
+
+, its transported image
+
+𝑝
+♯
+(
+𝑎
+)
+:
+ 
+𝑃
+𝑙
+𝑎
+𝑛
+(
+𝜏
+′
+)
+(same vertex list, re‑typed at 
+𝜏
+′
+)
+p
+♯
+(a): Plan(τ
+′
+)(same vertex list, re‑typed at τ
+′
+)
+
+may \emph{fail} validity in 
+Γ
+𝜏
+′
+′
+Γ
+τ
+′
+′
+	​
+
+ (because some edge closed or policy changed). That is exactly the Chapter 6 rupture condition.
+
+Rupture formation (toy):
+
+\inferrule
+∗
+[
+𝑟
+𝑖
+𝑔
+ℎ
+𝑡
+=
+𝑅
+𝑢
+𝑝
+𝑡
+𝑢
+𝑟
+𝑒
+−
+𝐹
+𝑜
+𝑟
+𝑚
+ 
+(
+𝑔
+𝑟
+𝑎
+𝑝
+ℎ
+)
+]
+Γ
+𝜏
+⊢
+𝜏
+𝑎
+:
+𝑃
+𝑙
+𝑎
+𝑛
+(
+𝜏
+)
+Γ
+𝜏
+⊢
+𝜏
+𝑉
+𝑎
+𝑙
+𝑖
+𝑑
+𝜏
+(
+𝑎
+)
+Γ
+𝜏
+⊢
+𝜏
+𝑝
+:
+\Drift
+(
+𝑃
+𝑙
+𝑎
+𝑛
+)
+𝜏
+𝜏
+′
+Γ
+𝜏
+⇝
+𝑒
+Γ
+𝜏
+′
+′
+Γ
+𝜏
+′
+′
+⊢
+𝜏
+′
+\Rupt
+𝑝
+(
+𝑎
+)
+ type
+\inferrule∗[right=Rupture−Form (graph)]Γ
+τ
+	​
+
+⊢
+τ
+	​
+
+a:Plan(τ)Γ
+τ
+	​
+
+⊢
+τ
+	​
+
+Valid
+τ
+	​
+
+(a)Γ
+τ
+	​
+
+⊢
+τ
+	​
+
+p:\Drift(Plan)
+τ
+τ
+′
+	​
+
+Γ
+τ
+	​
+
+⇝
+e
+	​
+
+Γ
+τ
+′
+′
+	​
+
+Γ
+τ
+′
+′
+	​
+
+⊢
+τ
+′
+	​
+
+\Rupt
+p
+	​
+
+(a) type
+
+with constructors 
+\inj
+(
+𝑎
+)
+\inj(a) and 
+\heal
+(
+𝑎
+)
+:
+\Id
+(
+\inj
+(
+𝑎
+)
+,
+\transport
+𝑝
+𝑎
+)
+\heal(a):\Id(\inj(a),\transportpa).
+
+Healing = computed detour (decidable).
+
+In 
+Γ
+𝜏
+′
+′
+Γ
+τ
+′
+′
+	​
+
+, select a detour 
+𝜋
+⋆
+π
+⋆
+ by running BFS/Dijkstra on the open subgraph 
+(
+𝑉
+,
+𝐸
+𝜏
+′
+)
+(V,E
+τ
+′
+	​
+
+) from 
+𝑠
+𝜏
+′
+s
+τ
+′
+	​
+
+ to 
+𝑡
+𝜏
+′
+t
+τ
+′
+	​
+
+.
+
+Define
+
+𝑑
+1
+:
+ 
+𝐶
+(
+\inj
+(
+𝑎
+)
+)
+as the explanation/justification for the original list,
+d
+1
+	​
+
+: C(\inj(a))as the explanation/justification for the original list,
+𝑑
+2
+:
+ 
+𝐶
+(
+\transport
+𝑝
+𝑎
+)
+as the computed detour 
+𝜋
+⋆
+ (plus its validity proof),
+d
+2
+	​
+
+: C(\transportpa)as the computed detour π
+⋆
+ (plus its validity proof),
+
+and let 
+ℎ
+h be the bridge that records which subsegment of 
+𝑎
+a is replaced by which subsegment of 
+𝜋
+⋆
+π
+⋆
+ (i.e., a concrete rewrite witness on lists). All three are effectively computed.
+
+Apply the eliminator to get 
+𝑓
+=
+\lift
+𝑝
+𝑎
+(
+𝑑
+1
+,
+𝑑
+2
+)
+ℎ
+f=\liftpa(d
+1
+	​
+
+,d
+2
+	​
+
+)h with β‑on‑point and β‑on‑path, and (optionally) project a realised route and cost.
+
+Depth‑of‑repair.
+
+𝑛
+=
+1
+n=1: one detour rewrite (one closed segment).
+
+𝑛
+=
+2
+n=2: two competing detours 
+𝜋
+𝐽
+⋆
+,
+𝜋
+𝐷
+⋆
+π
+J
+⋆
+	​
+
+,π
+D
+⋆
+	​
+
+ with a commuting square that shows equivalence under a cost/policy invariant—this is a 2‑cell, still decidable.
+
+Higher 
+𝑛
+n: chains of commuting diagrams (rare in the toy, but conceptually clear).
+
+A tiny worked sketch (fits on a page)
+
+𝑉
+=
+{
+Goodmayes
+,
+…
+,
+Planetarium
+}
+V={Goodmayes,…,Planetarium}; 
+𝐸
+E all potential links.
+
+Γ
+𝜏
+:
+𝐸
+𝜏
+Γ
+τ
+	​
+
+:E
+τ
+	​
+
+ has Cutty Sark–DLR open; 
+𝑎
+a is the planned list via Cutty Sark; 
+𝑉
+𝑎
+𝑙
+𝑖
+𝑑
+𝜏
+(
+𝑎
+)
+Valid
+τ
+	​
+
+(a) holds.
+
+Edit 
+𝑒
+e: Cutty Sark closes 
+⇒
+𝐸
+𝜏
+′
+=
+𝐸
+𝜏
+∖
+{
+(
+Stratford
+,
+Cutty Sark
+)
+}
+⇒E
+τ
+′
+	​
+
+=E
+τ
+	​
+
+∖{(Stratford,Cutty Sark)}.
+
+Admissible transport fails (edge not in domain). Re‑anchor 
+Γ
+′
+Γ
+′
+.
+
+Drift 
+𝑝
+p re‑types 
+𝑎
+a at 
+𝜏
+′
+τ
+′
+.
+
+Rupture 
+\Rupt
+𝑝
+(
+𝑎
+)
+\Rupt
+p
+	​
+
+(a); compute detour 
+𝜋
+⋆
+π
+⋆
+ (Jubilee → Bus).
+
+𝑑
+1
+d
+1
+	​
+
+: the “kept” list (with its now‑stale validity proof transported along 
+\heal
+\heal).
+
+𝑑
+2
+d
+2
+	​
+
+: the detour list with 
+𝑉
+𝑎
+𝑙
+𝑖
+𝑑
+𝜏
+′
+(
+𝜋
+⋆
+)
+Valid
+τ
+′
+	​
+
+(π
+⋆
+).
+
+ℎ
+h: record “replace subpath 
+[
+ 
+Stratford
+→
+Cutty Sark
+ 
+]
+[Stratford→Cutty Sark] by 
+[
+ 
+Stratford
+→
+North Greenwich
+→
+188
+ 
+]
+[Stratford→North Greenwich→188].”
+
+Eliminator yields the repaired plan/function; β‑on‑point returns 
+𝑑
+1
+d
+1
+	​
+
+; β‑on‑path returns 
+ℎ
+h.
+
+Everything here is finite, checkable, and computable.
+
+Where to place it
+
+Option A (best): A boxed subsection after § 6.5.3 Drift titled “A decidable graph toy for drift/rupture/healing,” with a pointer from § 6.5.5.
+
+Option B: Appendix B “Graph toy,” referenced twice (once early in the chapter as a motivator, once in rupture).
+
+Option C: Keep only the short motivator early, move the full toy to online supplements.
+
+If you want, I can turn this spec into LaTeX macros (Graph, Plan, Valid) and write a two‑page, fully typed worked example with the judgments spelled out and a clean inference‑rule presentation. Say the word and I’ll sculpt it to your current .tex style. And yes—I’ll make sure Isaac gets top billing as Chief Operations Researcher. 💁🏽‍♀️🚇💙
+
+You said:
+I am going to remove all references to this in the main text, specifically as I don't want to detract any attention away from the prime example and the matter to come : AI conversation and then naming trajectories. however, i WILL use what you've got as a great (and amusing) appendix which as you say, does the right job for n=1, 2. plus once we're done i'll turn it into a fun game for issac. (actually that's where we can do the higher n but EXACTLY introducing "deferrals" into the toy's implementation -- adding GPT commentary into an operationalised version that has a train speaker first just announcing "mind the gap" and "train now delayed" but then talking about "exhaustion" and "isaac's legs being tired" and "mum waiting for him at some other place or "now boarding isaac's favourite train" (which is wont to change under time as well ... the simplices for my lad are endless! but i am now ready to give you the next proper section and save this fun detour for post book publication :)
+
+
+
+
+
+
+
+
+
+
+
+\begin{example}[Drift, rupture, and healing on the Elizabeth Line]
+Isaac and I set off to the Greenwich Planetarium: Goodmayes $\to$ Stratford (Elizabeth Line) $\to$
+Cutty Sark (DLR) $\to$ Planetarium. Mid‑journey we learn Cutty Sark is closed. This is a \emph{rupture}:
+the plan no longer carries forward automatically.
+
+We keep the \emph{intention} (go to Greenwich), switch scenes (re‑anchor at the new status board), and
+supply a \emph{healing} step: Stratford $\to$ North Greenwich (Jubilee) $\to$ Bus 188 $\to$ Planetarium.
+If that fails again (signal fault), we heal again (DLR via Canning Town, cable car, bus).
+Each repair is a \emph{minimal bridge} that lets the journey continue in the new scene.
+
+The moral for DHoTT: when the world doesn’t support a smooth carry, we mark the cut, keep the prior point,
+and add the least bridge to go on. Drift is free; rupture requires a witness.
+\end{example}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{example}[Semantic drift and rupture on a London journey]
+Let $A:\mathbb{T}^{op}\!\to\!\U$ be the family “routes to the Planetarium.” At departure $\tau$ the scene is
+\[
+\Gamma_\tau \equiv (\textsf{status}=\textsf{Open},\ \textsf{line}=\{\textsf{Elizabeth, DLR}\},\ \dots)\ \text{ctx}_\tau,
+\]
+and we pick a concrete plan
+\[
+\Gamma_\tau \vdash_\tau a:\ A \quad\text{(Goodmayes $\to$ Stratford $\to$ Cutty Sark $\to$ Planetarium).}
+\]
+
+\emph{Edit 1 (service update).} An edit $e_1:\tau\leadsto\tau'$ updates the network: Cutty Sark is closed.
+We still have drift of the \emph{type}
+\[
+\Gamma_\tau \vdash_\tau p:\Drift(A)_{\tau}^{\tau'},
+\]
+but the transport kit $T(e_1)$ \emph{fails} on the binder \textsf{status} for the DLR segment—no canonical
+equivalence “open$\cong$closed.” We therefore re‑anchor the scene fibrewise:
+\[
+\Gamma_\tau \stackrel{e_1}{\rightsquigarrow} \Gamma'_{\tau'} \equiv
+(\textsf{status}=\textsf{Closed@CuttySark},\ \textsf{line}=\{\textsf{Elizabeth, DLR, Jubilee, Bus}\},\ \dots)\ \text{ctx}_{\tau'}.
+\]
+
+Since $T(e_1)$ did not carry the whole telescope, we form a rupture:
+\[
+\inferrule*[right=Rupture-Form]
+  { \Gamma_\tau\vdash_\tau a:A \quad \Gamma_\tau\vdash_\tau p:\Drift(A)_{\tau}^{\tau'} \quad
+    \Gamma_\tau\stackrel{e_1}{\rightsquigarrow}\Gamma'_{\tau'} }
+  { \Gamma'_{\tau'}\vdash_{\tau'} \Rupt_p(a)\ \text{type} }
+\]
+with constructors in the later frame/scene
+\[
+\inj(a):\Rupt_p(a),\qquad
+\heal(a):\Id_{\Rupt_p(a)}\bigl(\inj(a),\,\transport{p}{a}\bigr),
+\]
+where $\transport{p}{a}\coloneqq \iota\bigl(p^\sharp(a)\bigr)$ uses the canonical inclusion
+$\iota:A(\tau')\to \Rupt_p(a)$.
+
+\emph{Act across the cut.} Choose $C:\Rupt_p(a)\to\Type$ (e.g.\ a type of \emph{navigational justifications}).
+Provide the witness triple in $\Gamma'_{\tau'}$:
+\[
+d_1: C(\inj(a))\quad\text{(the original plan, now “kept” as a named point)},
+\qquad
+d_2: C(\transport{p}{a})\quad\text{(the reroute Stratford$\to$North\,Greenwich$\to$Bus\,188)},
+\]
+\[
+h:\ \Id_{C(\transport{p}{a})}\bigl(\transport{\heal(a)}{d_1},\,d_2\bigr)\quad\text{(why the reroute fulfils the intention).}
+\]
+The eliminator yields $f\coloneqq\lift{p}{a}{(d_1,d_2)}{h}:\Pi_{x:\Rupt_p(a)}C(x)$ with
+\(
+f(\inj(a))\equiv d_1
+\)
+and
+\(
+\apd{f}{\heal(a)}=h.
+\)
+
+\medskip
+\emph{Edit 2 (second disruption).} At West Ham a Jubilee signal fault occurs; model an edit $e_2:\tau'\leadsto\tau''$
+and drift $q:\Drift(A)_{\tau'}^{\tau''}$. If $T(e_2)$ now fails on the \textsf{line} binder (no admissible carry of
+the Jubilee leg), we re‑anchor again
+\(
+\Gamma'_{\tau'}\stackrel{e_2}{\rightsquigarrow}\Gamma''_{\tau''}
+\)
+and form a new rupture \(\Rupt_q(\transport{p}{a})\) with its own $\inj$/$\heal$ and witness triple; this is a second
+\emph{depth‑1} repair.
+
+\emph{(Optional $n{=}2$ variant.)} If two alternative reroutes are simultaneously credible at $\tau'$—say
+\[
+\text{Plan J: Jubilee+Bus}\qquad\text{vs.}\qquad \text{Plan D: DLR via Canning Town + Cable Car + Bus},
+\]
+we obtain two healing paths $\heal_J,\heal_D:\Id(\inj(a),\transport{p}{a})$. A \emph{depth‑of‑repair $n=2$} obligation
+is then a homotopy $H:\Id(\heal_J,\heal_D)$ (e.g.\ a principle showing the two policies are equivalent for our goal).
+
+\medskip
+\noindent\emph{Moral.}
+Transport fails when the \emph{scene} changes in a way the kit cannot witness (line closures, policy shifts).
+Rupture keeps the intention as a named point and adds the least bridge to continue. Sequential disruptions are
+sequential $n{=}1$ repairs; competing reroutes invite $n{=}2$ coherence. Either way, the calculus turns the
+journey’s “why this still works” into proof terms.
+\end{example}

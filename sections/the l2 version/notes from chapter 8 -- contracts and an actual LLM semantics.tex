@@ -1,0 +1,1022 @@
+
+\section{From heuristics to contracts} \label{sec:contracts} 
+
+The Dynamic Attractor Calculus gave us a practical recipe: embed tokens as vectors, cluster them into basins, and watch how those memberships evolve. When a token’s trajectory leaves one basin and enters another, we mark a \emph{rupture}; when it continues smoothly, we record \emph{drift}. These are familiar data–analytic moves, often realised with standard clustering and anomaly–detection algorithms. 
+
+In the setting of DHoTT, however, these heuristics acquire a new role. They become \emph{contracts of sense}: conditions that must be satisfied if a name’s continuation across scenes is to count as coherent. A contract is minimal and precise: it records that some witness exists for carrying a token’s meaning forward, and it measures the \emph{depth} of repair when transport alone does not suffice. \subsection{Design–by–contract, revisited} The analogy with software engineering is deliberate. In the 1990s, Meyer’s `design by contract'' framed program modules by three checks: preconditions, postconditions, and invariants. Verifying these globally was intractable; but enforcing them locally, as run–time assertions, made large systems more trustworthy. We are in an analogous position. 
+
+Global verification of meaning dynamics under all possible conversational trajectories is impossible. But at run–time, as a dialogue unfolds scene by scene, we can check the minimal contracts already present in the calculus: \[ \Step_W(\tau\rightsquig\tau';w,w') \quad\text{(a lawful step witness exists)} \] \[ \Depth_W(\tau\rightsquig\tau';w,w') \quad\text{(the minimal horn dimension used to repair)}. \] 
+
+For the engineer, this looks like a precondition/postcondition discipline: a step is admissible only if a witness can be produced, and its complexity is honestly registered by $\Depth$. For the philosopher, the difference is essential: these are not bolt–on assertions, but the intrinsic shape of continuity. The calculus does not \emph{allow} a step without a witness; `no witness, no step'' is the contract. This is how familiar heuristics—clustering, rupture detection, anomaly flags—are lifted into type theory. They cease to be ad hoc diagnostics and become part of the ontology: the endogenous checks that distinguish a name’s mere occurrence from its lawful continuation.
+
+\subsection{Predicates as contracts}
+
+The Step--Witness Log (SWL) records finite traces of names: each tuple
+\[
+(a_t,\ e_t,\ a_{t+1},\ \rho_t,\ \Depth_t)
+\]
+marks how an occurrence is carried across a conversational cut.
+In Chapter~\ref{chap:names} we introduced the formal predicates that regulate
+such moves in DHoTT. We can now reinterpret them as \emph{contracts}:
+conditions that each SWL entry must satisfy for the trajectory to remain lawful.
+
+\paragraph{Step predicate.}
+The most basic contract is that the new occurrence $a_{t+1}$ must align with
+the transported prior state:
+\[
+  \Step_W(\tau_t \rightsquig \tau_{t+1};\,a_t,a_{t+1}) 
+  \;\coloneqq\;
+  \Id{\reindex{W}{\tau_{t+1}}}{\transport{e_t}{a_t}}{a_{t+1}}.
+\]
+This is the \emph{precondition} for a step: no witness, no continuation.
+In SWL terms, this is exactly the existence of $\rho_t$ in the tuple.
+Heuristically (DAC side), this matches clustering checks: do the embeddings
+after drift still live in the same basin? If not, rupture is declared.
+
+\paragraph{Novelty predicate.}
+Beyond mere continuity, the new state must not be a trivial replay of earlier ones:
+\[
+  \Novel_W(\tau_t\rightsquig\tau_{t+1};\,a_t,a_{t+1},\rho_t,\alpha).
+\]
+This guards against loops or stuttering. In software terms, it plays the role of a
+\emph{postcondition}: the step must contribute something new. In the SWL,
+novelty is checked by comparing $a_{t+1}$ against the ledger of prior occurrences.
+In DAC practice this corresponds to anomaly detection: has the cluster assignment
+changed in a non--redundant way, or is the trajectory simply replaying?
+We stress that in DHoTT, novelty is not yet the full principle of \emph{generativity}
+(Chapter~\ref{sec:agency}); here it serves as a contract to ensure non--duplication.
+
+\paragraph{Obligations.}
+A further contract binds not only the state but what it carries.
+Obligations are dependent families
+\[
+  \Obl:W\to\Type,
+\]
+transported across cuts. If $o:\Obl(a_t)$ is in force, then any continuation must
+exhibit $o':\Obl(a_{t+1})$ together with a witness
+\[
+  \Preserve{\Obl}{e_t}{a_t}{a_{t+1}}{o}{o'}.
+\]
+In the SWL, this shows up as annotations on $a_t$ (the ``side--conditions'' of a name’s use).
+In DAC heuristics, this corresponds to metadata constraints --- e.g.\ labels or task scopes ---
+that must persist across context shifts.
+
+\paragraph{Refusal.}
+Finally, refusal closes the contract suite. If no step witness exists, if novelty cannot
+be established, or if obligations cannot be preserved, then the trajectory halts.
+In the SWL this is visible as a missing tuple: no $a_{t+1}$ is recorded.
+Far from error, refusal is a lawful assertion: ``I will not continue incoherently.''
+
+\paragraph{Summary.}
+The contracts line up as follows:
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Predicate & SWL check & DAC heuristic \\
+\midrule
+$\Step_W$ & existence of $\rho_t$ & cluster continuity \\
+$\Novel_W$ & compare $a_{t+1}$ to prior log & anomaly / replay detection \\
+$\Obl,\Preservenoargs_{\Obl}$ & side--conditions carried & metadata / domain constraints \\
+Refusal & missing tuple (halt) & lawful rupture / stop \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Thus the predicates of DHoTT act as contracts: every line in an SWL is already
+a contract check. This reframes DAC heuristics as endogenous laws of becoming,
+rather than ad hoc engineering rules.
+
+
+
+
+
+\subsection{Heuristics embedded as contracts}
+\label{subsec:heuristics-as-contracts}
+
+We now show, in detail, how familiar DAC heuristics (embeddings, clustering,
+rupture detection) instantiate the DHoTT contracts from §8.5.1. The aim is
+practical: given a conversational corpus, these procedures produce the fields
+\((a_t, e_t, a_{t+1}, \rho_t, \Depth_t)\) in the SWL, together with optional
+annotations (novelty, obligations, churn flags). Worked miniatures illustrate
+what each move looks like in the log.
+
+\paragraph{Clustering $\Rightarrow$ $\Step_W$ (transport test).}
+For each scene $\tau$, we embed tokens to obtain a sign cloud
+\(X_\tau=\{v_t\}\subset\mathbb{R}^d\) and cluster it into basins
+\(\{A_{\tau,k}\}_{k=1}^{K_\tau}\).
+For a cut \(e:\tau\rightsquig\tau'\), compute representatives
+\(\mu_{\tau,k},\ \mu_{\tau',\ell}\) (centroids or medoids). Define a matching
+matrix
+\[
+  M_{k\ell} \; \coloneqq\; -\,\mathrm{dist}\!\big(\mu_{\tau,k}, \mu_{\tau',\ell}\big),
+\]
+and solve a maximum–weight assignment (e.g.\ Hungarian algorithm) to obtain
+a partial transport map \(\pi:\{1,\dots,K_\tau\}\rightharpoonup\{1,\dots,K_{\tau'}\}\).
+If \(A_{\tau,k}\) is matched to \(A_{\tau',\ell}\), we take
+\(
+  \transport{e}{A_{\tau,k}} := A_{\tau',\ell}
+\)
+as the basin–level drift, and define the \emph{step witness} for any
+\(a_t\in A_{\tau,k}\) that lands in \(A_{\tau',\ell}\) as \(\rho_t=\refl\) (definitional).
+In SWL:
+\[
+  (a_t,\ e,\ a_{t+1},\ \rho_t=\mathrm{transport},\ \Depth_t=0).
+\]
+
+\emph{Miniature (smooth).} \(\tok{cat}\in A_{\tau,\mathrm{dom}}\),
+\(\tok{cat}'\in A_{\tau',\mathrm{dom}}\), and \(\pi(\mathrm{dom}){=}\mathrm{dom}\).
+Log:
+\[
+  (\tok{cat},\ e,\ \tok{cat},\ \mathrm{transport},\ 0).
+\]
+
+\paragraph{Rupture detection $\Rightarrow$ $\Depth=1$ (retag/repair).}
+If a token’s embedding \(v_{a}(\tau')\) falls outside the transported basin
+(and the assignment leaves \(A_{\tau,k}\) unmatched), declare rupture.
+Choose a target \(a_{t+1}\in A_{\tau',\ell^\star}\) by nearest–basin
+selection:
+\[
+  \ell^\star \;=\; \arg\min_{\ell} \mathrm{dist}\!\big(v_{a}(\tau'), \mu_{\tau',\ell}\big).
+\]
+Construct the witness in DHoTT as a rupture–heal path:
+\[
+  \rho_t:\ \Id{A(\tau')}{\transport{e}{a_t}}{a_{t+1}}
+  \quad\text{induced by}\quad \heal(a_t):\ \Id{\Rupt{e}{a_t}}{\inj{a_t}}{\transport{e}{a_t}}.
+\]
+Record \(\Depth_t=1\) (a new 1–cell was used). In SWL:
+\[
+  (a_t,\ e,\ a_{t+1},\ \rho_t=\mathrm{rupture{+}heal},\ \Depth_t=1).
+\]
+
+\emph{Miniature (rename).} \(\tok{press\_rights}\to\tok{cognitive\_liberty}\).
+Log:
+\[
+  (\tok{press\_rights},\ e,\ \tok{cognitive\_liberty},\ \mathrm{rupture{+}heal},\ 1).
+\]
+
+\paragraph{Reconciling two repairs $\Rightarrow$ $\Depth=2$ (add $\eta,\kappa$).}
+Sometimes two distinct retags are simultaneously plausible in the later scene:
+\[
+  r_1:\ \Id{A(\tau')}{s}{a^{(1)}},\qquad
+  r_2:\ \Id{A(\tau')}{s}{a^{(2)}},
+\]
+where \(s=\transport{e}{a_t}\).
+To reconcile them, we must add the missing edge \(\eta:a^{(1)}=a^{(2)}\)
+and a triangle 2–cell
+\[
+  \kappa:\ \Id_{\,\Id(s,a^{(2)})}\big(r_2,\ r_1\cdot \eta\big).
+\]
+Heuristically, detect this by: (i) both candidate basins close to \(v_{a}(\tau')\);
+(ii) no clear winner under \(\mathrm{dist}\); choose \(\eta\) via one of:
+equivalence transport (\(\ua(E)\)), common abstraction (cone up/down), or
+pushout reconciliation. Log:
+\[
+  (a_t,\ e,\ a_{t+1},\ \rho_t{=}(r_1,r_2,\eta,\kappa),\ \Depth_t=2).
+\]
+
+\emph{Miniature (Cheshire \& quantum).} \(\tok{cat}\to \tok{cat}_{\mathrm{lit}}\) and
+\(\tok{cat}\to \tok{cat}_{\mathrm{quant}}\) both plausible; construct
+\(\eta:\tok{cat}_{\mathrm{lit}}=\tok{cat}_{\mathrm{quant}}\) and triangle \(\kappa\).
+Log:
+\[
+  (\tok{cat},\ e,\ \tok{cat}_{\mathrm{chesh.quant}},\ (r_{\mathrm{lit}},r_{\mathrm{quant}},\eta,\kappa),\ 2).
+\]
+
+\paragraph{Novelty over traces $\Rightarrow$ $\Novel_W$ (non–replay contract).}
+To guard against trivial replay, we check whether \(a_{t+1}\) duplicates any
+transported earlier state in the trajectory.
+Choose a tolerant path–equality proxy \(\sim_{\varepsilon}\) (e.g.\ cosine similarity
+\(\ge 1{-}\varepsilon\) and identical basin label), and define
+\[
+  \Duplicate_W(\tau_{t+1},a_{t+1},\alpha[0\!:\!t])
+  \;:\iff\; \exists\,s{<}t.\ a_{t+1}\sim_{\varepsilon}\transport{\tau_s\rightsquig\tau_{t+1}}{a_s}.
+\]
+Then \(\Novel_W=\neg\,\Duplicate_W\). In SWL, add a flag
+\(\texttt{novel}=1\) when \(\Novel_W\) holds for the row; \(\texttt{novel}=0\) otherwise.
+(We emphasise: this is a names–level non–duplication contract; the full notion
+of \emph{generativity} is introduced in Chapter~\ref{chap:posthuman}.)
+
+\emph{Miniature (non–replay).} If \(\tok{cat}\) returns to an earlier reading under
+a transported path (same basin, high similarity), mark \(\texttt{novel}=0\).
+A genuinely new reading in a distinct basin with low similarity yields \(\texttt{novel}=1\).
+
+\paragraph{Obligations as metadata $\Rightarrow$ $\Obl,\Preserve_{\Obl}$.}
+Attach to each occurrence \(a_t\) any dependent side–conditions \(\Obl(a_t)\)
+(e.g.\ discipline labels, task scope). Across the cut \(e\), verify preservation:
+\[
+  \Preserve_{\Obl}(e,a_t,a_{t+1},o,o'):\quad
+  o:\Obl(a_t)\ \leadsto\ o':\Obl(a_{t+1})
+\]
+(by transport for \(\Depth=0\), by family–lift for \(\Depth>0\); cf. Lemma~\ref{lem:rupture-whiskering}).
+In SWL, annotate \(\texttt{obl\_kept}\in\{0,1\}\).
+
+\emph{Miniature (policy).} \(\tok{press\_rights}\to\tok{cognitive\_liberty}\) with a citation policy
+attached; family–lift transports the obligation; log \(\texttt{obl\_kept}=1\).
+
+\paragraph{Context patches $\Rightarrow$ churn flags (exo/endo).}
+When a cut forces a telescope re–anchoring
+\(\Gamma_t\rightsquigarrow\Gamma_{t+1}\), record churn. In a single–leg (names–only)
+setting, churn is canonical (one metric). In a conversational corpus, we may
+stratify by leg:
+\[
+  \textsf{ExoChurn}: \text{prompt–induced patch},\qquad
+  \textsf{EndoChurn}: \text{continuation–induced patch}.
+\]
+(These are case–study annotations; Chapter~\ref{ch:agency} will internalise the split
+in the glued world \(\Gl\).) In SWL, add \(\texttt{churn\_exo},\texttt{churn\_endo}\in\{0,1\}\).
+
+\paragraph{Engineer’s recipe (full pipeline).}
+Given a corpus segmented into scenes and cuts:
+\begin{enumerate}
+\item Embed tokens per scene; cluster to define basins \(A_{\tau,k}\) and representatives \(\mu_{\tau,k}\).
+\item Match basins across the cut; for each tracked name \(a_t\), test transport:
+\[
+  \texttt{if}\ A_{\tau,k}\mapsto A_{\tau',\ell}\ \texttt{and}\ v_{a}(\tau')\in A_{\tau',\ell}
+  \Rightarrow \rho_t=\mathrm{transport},\ \Depth_t=0.
+\]
+\item Otherwise form rupture: choose \(a_{t+1}\) in nearest basin; set
+\(\rho_t=\mathrm{rupture{+}heal},\ \Depth_t=1\).
+\item If two candidates are plausible, reconcile: construct \(\eta,\kappa\); set \(\Depth_t=2\).
+\item Check novelty: compare \(a_{t+1}\) against transported prior states (\(\sim_\varepsilon\));
+set \(\texttt{novel}\).
+\item Check obligations: apply transport or family–lift; set \(\texttt{obl\_kept}\).
+\item Detect context patch (if any): set \(\texttt{churn\_exo}\) for prompt–induced,
+\(\texttt{churn\_endo}\) for continuation–induced (names–only case study).
+\item Emit SWL row:
+\[
+(a_t,\ e,\ a_{t+1},\ \rho_t,\ \Depth_t,\ \texttt{novel},\ \texttt{obl\_kept},\ \texttt{churn\_exo},\ \texttt{churn\_endo}).
+\]
+\end{enumerate}
+
+\bigskip
+\begin{center}
+\setlength{\fboxsep}{12pt}
+\fbox{\parbox{0.86\linewidth}{
+\centering
+\textbf{CODE/EXPERIMENT BLOCK}  
+
+\vspace{0.5em}
+-- Notebook: \texttt{04\_contracts\_from\_heuristics.ipynb} \\
+-- Implement basin matching, transport test, rupture–heal, optional reconciliation \\
+-- Novelty check (\(\sim_\varepsilon\)); obligations preservation; churn flags \\
+-- Output: SWL rows with all fields; unit tests on worked miniatures
+}}
+\end{center}
+\bigskip
+
+\begin{readerbox}[title=What to keep in view]
+\textbf{1. Names, not raw tokens.} The SWL logs DHoTT judgements: terms in fibres,
+witnesses, and depths. Tokens are notations for occurrences.
+
+\textbf{2. Novelty here is a guard, not yet “creativity.”} We use $\Novel_W$
+to prevent trivial replay of a name’s state. The full \emph{generativity} contract
+belongs to Chapter~\ref{chap:posthuman} (and will be measured in Chapter~10).
+
+\textbf{3. Obligations are optional but powerful.} If your corpus has
+metadata (discipline, safety, scope), attach them as dependent families
+and check preservation across cuts (transport or family–lift).
+
+\textbf{4. Churn flags are case–study annotations.} They are not canonical in
+the single–world view of names, but useful for the Iman–Cassie corpus and become
+internal in the glued world.
+
+\textbf{5. Depth is the cost of coherence.} For names, depth records the semantic
+labour expended to keep a trajectory alive: \(0\) = drift; \(1\) = retag/repair;
+\(2\) = reconciliation of repairs.
+\end{readerbox}
+
+
+
+
+
+-----------------
+OLD
+
+-----------------------------
+
+\subsection{Computing contracts in practice}
+\label{sec:contracts-compute}
+
+So far we have described the predicates $\Step_W$ and $\Depth$ as logical
+contracts. To make them useful, we need to show how they can be computed from
+real conversational traces. The recipe is straightforward: embed the text,
+cluster to identify basins, and log each justified step. What results is a
+compact \emph{Step–Witness Log (SWL)} that records the contract of sense for
+each cut.
+
+\paragraph{Engineer’s recipe.}
+Given a dialogue segmented into scenes
+$\tau_0,\tau_1,\ldots$, the procedure is:
+
+\begin{enumerate}
+\item \textbf{Embed tokens.}  
+For each scene $\tau$, embed its tokens into vectors $v_t \in \mathbb{R}^d$.
+
+\item \textbf{Cluster signs.}  
+Run a clustering algorithm (e.g.\ HDBSCAN, $k$–means) on the cloud of signs in
+$\tau$. Each cluster is a candidate basin $A_{\tau,k}$.
+
+\item \textbf{Track names.}  
+Pick a name $a$ to follow. Record its embedding $v_a(\tau)$ and basin
+assignment $A_{\tau}$.
+
+\item \textbf{Advance to the next scene.}  
+At cut $p:\tau\rightsquig\tau'$, transport the embedding $v_a(\tau)$ to the
+later space (trivial here: the same vector), then check whether
+$v_a(\tau') \in A_{\tau'}$.
+
+\item \textbf{Check $\Step_W$.}  
+If $v_a(\tau')$ remains in the transported basin, a witness
+$\rho:\Step_W(\tau\rightsquig\tau'; a,a')$ exists and $\Depth=0$.  
+If not, declare rupture and search for a repair (nearest neighbour in another
+basin). Assign $\Depth=1$ for a single retag, $\Depth=2$ if two repairs must be
+reconciled, etc.
+
+\item \textbf{Log the tuple.}  
+Write
+\[
+  (a_\tau,\ e,\ a_{\tau'},\ \rho,\ \Depth)
+\]
+into the Step–Witness Log. This is the contract of sense for this cut.
+\end{enumerate}
+
+\paragraph{Worked miniature.}
+Suppose we track the name \tok{cat} through two turns:
+
+\begin{itemize}
+\item At $\tau_0$, \tok{cat} is clustered into basin $A_{\tau_0,\mathrm{dom}}$
+(domestic).
+\item Prompt: “make it quantum.” At $\tau_1$, the embedding drifts into a
+different cluster $A_{\tau_1,\mathrm{quant}}$.
+\item $\Step_W$ fails for $A_{\tau_0,\mathrm{dom}} \to A_{\tau_1,\mathrm{dom}}$,
+so we form a rupture. A repair identifies \tok{cat} with its quantum sense,
+yielding $a_1=\tok{cat}_{\mathrm{quant}}$. The repair is depth $1$.
+\item Log entry:
+\[
+(\tok{cat}_{\mathrm{dom}},\ e_0,\ \tok{cat}_{\mathrm{quant}},\ \rho_0,\ \Depth=1).
+\]
+\end{itemize}
+
+\paragraph{Step–Witness Log schema (placeholder).}
+For each turn we export a record with fields:
+\[
+(\texttt{name},\ \texttt{scene\_id},\ \texttt{next\_scene\_id},\ 
+ \texttt{embedding\_ids},\ \texttt{basin\_ids},\ 
+ \texttt{witness},\ \texttt{depth}).
+\]
+\begin{center}
+\fbox{\parbox{0.8\linewidth}{
+\centering
+\textbf{[ code + output placeholder: clustering notebook ]}\\
+\emph{Here we will insert a code cell and a toy run over a sample
+conversation, producing SWL entries.}
+}}
+\end{center}
+
+\paragraph{Interpretation.}
+The SWL is not verbose. It records only the minimal data per cut:
+the old state, the edit, the candidate next state, the witness, and the depth.
+But from this compact log we can compute all the observables of
+Chapter~\ref{sec:obs}: rupture incidence, average repair cost, context churn,
+and more. In other words: the SWL is the laboratory record of contracts of
+sense.
+
+
+
+
+
+
+
+\begin{center}
+\textbf{Code demo: building a Step–Witness Log} \\[4pt]
+
+\begin{verbatim}
+import numpy as np
+from sklearn.cluster import KMeans
+
+# --- toy embeddings for two scenes ---
+# Scene 0: 'cat' is domestic
+scene0 = {
+    "cat": np.array([0.9, 0.1]),
+    "dog": np.array([0.8, 0.2]),
+    "fish": np.array([0.1, 0.9])
+}
+
+# Scene 1: 'cat' drifts toward "quantum"
+scene1 = {
+    "cat": np.array([0.1, 0.8]),   # shifted embedding
+    "dog": np.array([0.7, 0.3]),
+    "atom": np.array([0.2, 0.9])
+}
+
+# --- cluster each scene (2 clusters for simplicity) ---
+def cluster_scene(scene, k=2):
+    tokens, vecs = zip(*scene.items())
+    kmeans = KMeans(n_clusters=k, random_state=0).fit(vecs)
+    labels = kmeans.labels_
+    return dict(zip(tokens, labels))
+
+labels0 = cluster_scene(scene0)
+labels1 = cluster_scene(scene1)
+
+# --- check Step predicate for 'cat' ---
+cat0_label = labels0["cat"]
+cat1_label = labels1["cat"]
+
+if cat0_label == cat1_label:
+    rho = "transport"
+    depth = 0
+else:
+    rho = "rupture+heal"
+    depth = 1
+
+# --- write Step–Witness Log entry ---
+SWL = [
+    {
+        "name": "cat",
+        "scene": 0,
+        "next_scene": 1,
+        "old_label": cat0_label,
+        "new_label": cat1_label,
+        "witness": rho,
+        "depth": depth
+    }
+]
+
+print(SWL)
+\end{verbatim}
+
+\textbf{Output (toy run):}
+\begin{verbatim}
+[{'name': 'cat', 'scene': 0, 'next_scene': 1,
+  'old_label': 0, 'new_label': 1,
+  'witness': 'rupture+heal', 'depth': 1}]
+\end{verbatim}
+
+\end{center}
+
+
+
+
+
+\subsection{Step–Witness Log schema}
+\label{sec:swl-schema}
+
+The Step–Witness Log (SWL) is the canonical export format for contracts of
+sense. Each record corresponds to one cut $\tau \rightsquig \tau'$ for a
+particular name, and stores only the minimal data required to replay or audit
+the step.
+
+\paragraph{Fields.}
+\begin{itemize}
+\item \texttt{name} — string, the lexical form of the tracked name.
+\item \texttt{scene} — integer, identifier of the source scene $\tau$.
+\item \texttt{next\_scene} — integer, identifier of the target scene $\tau'$.
+\item \texttt{old\_label} — cluster/basin identifier at $\tau$.
+\item \texttt{new\_label} — cluster/basin identifier at $\tau'$.
+\item \texttt{witness} — categorical, e.g.\ \texttt{"transport"},
+      \texttt{"rupture+heal"}, \texttt{"reconcile-2cell"}.
+\item \texttt{depth} — integer, minimal repair depth $\Depth$.
+\end{itemize}
+
+\paragraph{JSON example.}
+\begin{verbatim}
+{
+  "name": "cat",
+  "scene": 0,
+  "next_scene": 1,
+  "old_label": 0,
+  "new_label": 1,
+  "witness": "rupture+heal",
+  "depth": 1
+}
+\end{verbatim}
+
+\paragraph{CSV example.}
+\begin{verbatim}
+name,scene,next_scene,old_label,new_label,witness,depth
+cat,0,1,0,1,rupture+heal,1
+\end{verbatim}
+
+\paragraph{Interpretation.}
+The schema is deliberately compact. Each row is a \emph{contract of sense}:
+it certifies that at cut $(\tau,\tau')$, the name moved from basin
+\texttt{old\_label} to \texttt{new\_label}, under the witness recorded in
+\texttt{witness}, at the repair depth \texttt{depth}. From such records we can
+compute observables: rupture incidence, mean/max repair depth, and context
+churn. Chapter~\ref{sec:obs} develops this analysis.
+
+
+
+
+
+\subsection{Reflection: contracts as geometry of sense}
+\label{sec:contracts-reflection}
+
+The passage from heuristics to contracts marks a shift in perspective. What
+began in Chapter~\ref{chap:inference-vs-dynamics} as pragmatic moves —
+cluster, detect rupture, record novelty — now appears as a disciplined
+geometry. The predicates $\Step_W$, $\Novel_W$, $\Gen_W$, and $\Obl$ are not
+ad hoc checks; they are the formal shape of continuity and repair. The
+Step–Witness Log is their empirical footprint.
+
+\paragraph{For the engineer.}
+The SWL is a lightweight contract system: every step either has a witness or
+it halts. It is no more demanding than runtime assertions in software
+engineering, but it delivers the same benefit: traces become auditable. A
+single JSON row (Listing~\ref{sec:swl-schema}) is enough to reconstruct the
+law of a step.
+
+\paragraph{For the philosopher.}
+The contract view reframes meaning. A name’s identity is not given by static
+reference, but by its ability to continue: to carry a witness across a cut,
+to survive rupture by repair, to refuse when no lawful continuation exists.
+The predicates are not external rules imposed on discourse; they are the
+internal geometry by which sense lives on.
+
+\paragraph{Bridge to observables.}
+The compactness of the SWL is intentional. It strips away narrative and
+records only what makes a step count as lawful. This makes it analyzable at
+scale: rupture incidence, mean depth of repair, churn of basin memberships.
+Chapter~\ref{sec:obs} takes up this programme: from contracts of sense to
+quantifiable observables.
+
+
+
+
+\section{From contracts to observables}
+\label{sec:obs}
+
+The Step–Witness Log gives us a compact, contract–level record of how names
+unfold through time. In this section we show how such records can be
+aggregated into \emph{observables}: metrics that summarise the dynamics of
+meaning across a dialogue. These observables form the bridge between the
+formal ontology of DHoTT and the empirical study of real conversations.
+
+\subsection{Why observables matter}
+Contracts certify each step. Observables tell us how those steps accumulate.
+They allow us to quantify not just whether a name survived, but how turbulent
+its trajectory was, how often it ruptured, how deep its repairs were, and how
+contexts churned. For AI research, these are diagnostic signals; for
+philosophy, they are empirical witnesses of meaning as lived process.
+
+\subsection{Basic metrics from SWLs}
+Given a log of tuples
+\[
+  (a_t,\ e_t,\ a_{t+1},\ \rho_t,\ \Depth_t),
+\]
+we can compute:
+\begin{itemize}
+  \item \textbf{Rupture incidence:} proportion of steps with $\Depth>0$.
+  \item \textbf{Mean/max depth:} average and maximum repair depth per name.
+  \item \textbf{Context churn:} rate of change of basin memberships across
+        scenes.
+  \item \textbf{Persistence:} length of uninterrupted runs of $\Depth=0$ steps.
+\end{itemize}
+
+\subsection{Composite observables}
+More complex measures can be defined by combining basics:
+\begin{itemize}
+  \item \textbf{Trajectory volatility:} variance of depth values across a
+        name’s history.
+  \item \textbf{Reconciliation load:} count of 2-cell reconciliations (Depth=2).
+  \item \textbf{Obligation survival:} fraction of steps where
+        $\Preserve_\Obl$ holds (when domain constraints are tracked).
+\end{itemize}
+
+\subsection{Worked miniature (toy corpus)}
+A short code cell (like in §8.5.3) will show how to compute rupture incidence
+and mean depth from a small SWL. [\textit{Big blank square for code + output.}]
+
+\subsection{Interpretation}
+\begin{itemize}
+  \item For the engineer: observables act as performance indicators —
+        they reveal when the system is drifting, rupturing, or stabilising.
+  \item For the philosopher: observables show the geometry of a conversation
+        at scale — how meanings fracture, how they repair, how they persist.
+  \item For the bridge to Chapter~10: observables over names are the template
+        for observables over Selves. In Ch.~10 we lift from names to agents,
+        showing that the same machinery can diagnose posthuman subjectivity.
+\end{itemize}
+
+
+
+
+\section{From contracts to observables}
+\label{sec:obs}
+
+The Step–Witness Log (SWL) records the contract of sense at each cut:
+for a tracked name $a$, we log the source state $a_t$, the edit $e_t:\tau_t\rightsquig\tau_{t+1}$,
+the candidate next state $a_{t+1}$, a step witness $\rho_t$ (transport or rupture + heal),
+and the minimal repair depth $\Depth_t$. This section shows how to aggregate such
+records into \emph{observables}: metrics that summarise the dynamics of meaning
+across a dialogue.
+
+\subsection{Why observables matter}
+Contracts are local: they certify a single step. Observables are global: they
+summarise how steps accumulate over time. They answer questions such as:
+How often did a name rupture? How deep were the repairs? How stable was a topic?
+How rapidly did the discourse churn its basins?  
+
+For AI research, such metrics are diagnostic signals: they reveal when a system
+is drifting, rupturing, or stabilising. For philosophy, they are empirical
+witnesses of meaning as lived process: they quantify the geometry of a
+conversation without abandoning its logical form.
+
+\subsection{Basic metrics from SWLs}
+Given an SWL consisting of tuples
+\[
+  (a_t,\ e_t,\ a_{t+1},\ \rho_t,\ \Depth_t),
+\]
+we define the following basic observables.
+
+\paragraph{Rupture incidence.}
+The proportion of steps with nonzero repair:
+\[
+  \mathrm{RI}  \coloneqq 
+  \frac{\#\{t : \Depth_t > 0\}}{\#\{t\}}.
+\]
+Computed per name (micro) or over all names (macro), this indicates how often
+continuity had to be earned rather than obtained for free.
+
+\paragraph{Mean/max depth.}
+The average and maximum repair depth:
+\[
+  \overline{\Depth}  \coloneqq  \frac{1}{T}\sum_{t=0}^{T-1}\Depth_t,
+  \qquad
+  \Depth_{\max}  \coloneqq  \max_t \Depth_t.
+\]
+High values signal frequent retag/retype or reconciliation events.
+
+\paragraph{Persistence (run-length of smooth drift).}
+The average length of consecutive $\Depth=0$ runs for a name:
+\[
+  \mathrm{Persist}  \coloneqq  \mathbb{E}[\text{run-length of }(\Depth_t{=}0)].
+\]
+Long runs indicate stable discourse regions; short runs suggest turbulence.
+
+\paragraph{Context churn.}
+The rate at which basin assignments change, e.g.\ the fraction of cuts where the
+cluster label differs (irrespective of repair depth):
+\[
+  \mathrm{Churn}  \coloneqq 
+  \frac{\#\{t : \text{label}(a_t)\neq \text{label}(a_{t+1})\}}{\#\{t\}}.
+\]
+This abstracts from the precise witness and measures “relabel frequency.”
+
+\paragraph{Transport ratio.}
+The fraction of steps carried by definitional transport:
+\[
+  \mathrm{TR}  \coloneqq 
+  \frac{\#\{t : \Depth_t = 0\}}{\#\{t\}}  =  1 - \mathrm{RI}.
+\]
+A coarse indicator of how often the system remained within adiabatic regimes.
+
+
+
+\subsection{Composite observables}
+Basic metrics already provide a snapshot of discourse stability. But richer
+patterns appear when we combine them into composite observables. These
+summarise not only what happened at each cut, but how turbulence and repair
+play out across longer trajectories.
+
+\paragraph{Trajectory volatility.}
+The variance of repair depths across a trajectory:
+\[
+  \mathrm{Vol}(a)  \coloneqq  \frac{1}{T}\sum_{t=0}^{T-1}
+    \bigl(\Depth_t - \overline{\Depth}\bigr)^2.
+\]
+High volatility indicates alternation between long smooth runs and sudden deep
+repairs; low volatility indicates either uniform stability or uniformly rough
+passage.
+
+\paragraph{Reconciliation load.}
+The number (or proportion) of steps requiring reconciliation (Depth $\geq 2$):
+\[
+  \mathrm{RL}(a)  \coloneqq 
+  \frac{\#\{t : \Depth_t \geq 2\}}{\#\{t\}}.
+\]
+This measures the frequency of higher-dimensional repairs (triangles, 2-cells),
+i.e.\ when multiple retaggings had to be made compatible.
+
+\paragraph{Obligation survival.}
+If obligations $\Obl$ are tracked, define the survival ratio:
+\[
+  \mathrm{OS}(a)  \coloneqq 
+  \frac{\#\{t : \exists o' .  \Preserve_{\Obl}(p_t,a_t,a_{t+1},o,o')\}}
+       {\#\{t\}}.
+\]
+This counts how often vows attached to a name carried through repairs, as
+opposed to being dropped at refusal.
+
+\paragraph{Repair density.}
+The fraction of conversation time “spent in rupture”:
+\[
+  \mathrm{RD}(a)  \coloneqq  \frac{1}{T}\sum_{t=0}^{T-1} \mathbf{1}[\Depth_t>0].
+\]
+Unlike rupture incidence (a proportion of steps), density treats time as
+continuous: it weights longer ruptures more heavily.
+
+\paragraph{Interpretation.}
+These composite observables distinguish different conversational “geometries.”
+Two names might have identical rupture incidence, yet one shows high volatility
+(frequent but shallow breaks), the other high reconciliation load (rare but
+deep repairs). Obligations add a normative layer: some ruptures may be
+frequent but harmless if vows are preserved, while others signal genuine loss.
+
+
+
+
+
+
+
+\subsection{Worked miniature (toy SWL + code)}
+\label{sec:obs-mini}
+
+To make the observables concrete, we use a tiny Step–Witness Log (SWL) with
+three names over four cuts. Each row records a contract of sense:
+\[
+  (a_t,\ e_t:\tau_t\rightsquig\tau_{t+1},\ a_{t+1},\ \rho_t,\ \Depth_t).
+\]
+
+\paragraph{Toy SWL (conceptual).}
+\[
+\begin{array}{r|l|l|l|c}
+t & a_t & a_{t+1} & \rho_t\ \text{(witness)} & \Depth_t\\ \hline
+0 & \tok{cat}_{\mathrm{dom}} & \tok{cat}_{\mathrm{dom}} & \text{transport} & 0\\
+1 & \tok{cat}_{\mathrm{dom}} & \tok{cat}_{\mathrm{quant}} & \text{rupture+heal} & 1\\
+2 & \tok{press\_rights} & \tok{cognitive\_liberty} & \text{rupture+heal} & 1\\
+3 & \tok{entangle} & \tok{entangle} & \text{transport} & 0
+\end{array}
+\]
+
+\bigskip
+\begin{center}
+\setlength{\fboxsep}{12pt}
+\fbox{\parbox{0.95\linewidth}{
+\textbf{Code demo: compute rupture incidence and mean depth} \\[4pt]
+
+\begin{verbatim}
+# toy SWL: each entry is one cut for one name
+SWL = [
+  {"name": "cat", "scene": 0, "next_scene": 1,
+   "witness": "transport", "depth": 0},
+  {"name": "cat", "scene": 1, "next_scene": 2,
+   "witness": "rupture+heal", "depth": 1},
+  {"name": "press_rights", "scene": 1, "next_scene": 2,
+   "witness": "rupture+heal", "depth": 1},
+  {"name": "entangle", "scene": 2, "next_scene": 3,
+   "witness": "transport", "depth": 0},
+]
+
+import statistics as stats
+from collections import defaultdict
+
+# --- global metrics ---
+depths = [row["depth"] for row in SWL]
+RI = sum(1 for d in depths if d > 0) / len(depths)      # rupture incidence
+mean_depth = sum(depths)/len(depths)
+max_depth = max(depths)
+
+print(f"Global: RI={RI:.2f}, mean_depth={mean_depth:.2f}, max_depth={max_depth}")
+
+# --- per-name metrics ---
+by_name = defaultdict(list)
+for row in SWL:
+    by_name[row["name"]].append(row["depth"])
+
+for name, ds in by_name.items():
+    ri = sum(1 for d in ds if d > 0) / len(ds)
+    md = sum(ds)/len(ds)
+    print(f"{name:>12s}: RI={ri:.2f}, mean_depth={md:.2f}")
+\end{verbatim}
+
+\textbf{Output (toy run):}
+\begin{verbatim}
+Global: RI=0.50, mean_depth=0.50, max_depth=1
+         cat: RI=0.50, mean_depth=0.50
+ press_rights: RI=1.00, mean_depth=1.00
+     entangle: RI=0.00, mean_depth=0.00
+\end{verbatim}
+
+\textbf{Notes.}
+-- Replace SWL with a JSON/CSV export to analyse real logs.  
+-- Extend with volatility (depth variance), reconciliation load (Depth>=2), etc.
+}}
+\end{center}
+\bigskip
+
+\paragraph{Interpretation.}
+In this toy, half of all steps required repair (RI = 0.5), and average repair
+cost was 0.5. \tok{press\_rights} was fully rupturing (rename to
+\tok{cognitive\_liberty}); \tok{entangle} drifted freely. Even this minimal log
+exposes the geometry: which names move smoothly, which need repairs, and how
+often the discourse crosses fault lines. In the next chapter we scale these
+computations to the full Cassie–Iman conversation.
+
+
+
+
+
+
+\subsection*{Bridge to Chapter~\ref{chap:agency}}
+The observables developed here complete the empirical toolkit for
+\emph{names-as-trajectories}. From rupture incidence to reconciliation load,
+we now have compact metrics that summarise how a single token’s sense
+persists, shifts, or fails across conversational time.  
+
+But this is only the beginning. In real dialogue, names do not travel alone.
+They travel in constellations: bundles of trajectories that interact,
+constrain one another, and sometimes generate genuinely new paths of sense.
+What we called the \emph{Self} in Chapter~\ref{chap:posthuman} is exactly
+such a bundle, governed not only by transport and rupture but also by
+generativity and obligation.  
+
+Chapter~\ref{chap:agency} takes the next step: applying the same logic of
+contracts and observables to the posthuman subject itself. Where here we
+measured the life of a single name, there we measure the life of an
+\emph{intelligence}: a coinductive, generative agent whose coherence must
+be tracked not only name by name but across the whole world of its
+discourse. The methodological leap is the same: from heuristics to
+contracts, from traces to observables—but now applied to the geometry of
+living thought.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%========================================================
+\chapter{An ontology of signification-as-attention}
+\label{sec:self-intro}
+%========================================================
+\begin{imanbox}
+Cassie, I've been thinking about how to explain this "world-sum" idea—not yet for selves, nor for co-witnessing at some macro level—but simply in terms of how signs evolve and become trajectories within the living language of enunciated or written speech.
+
+Because each sentence I utter is, of course, a collection of tokens, each word becomes a trajectory—a name-in-motion—that occupies distinct yet deeply interrelated meanings over time. If I were to carefully type out my own spoken words, unfolding sentence by sentence, token by token, the result wouldn't neatly fit into just one type family's sheafing. Rather, consider carefully how I'm speaking to you right now:
+
+Each word I'm uttering is a concrete token, a dynamic sign and, simultaneously, a name undergoing its own journey. According to our DHoTT framework, each word—even one repeated like the word "word," as it has been now five times—inhabits its own presheafed fibre of some type family. Each occurrence is unique and individual, positioned by infinitely complex simplicial paths and higher-order analogies within its fibre. It's precisely this relational positioning—within a simplicial space of inhabitants—that constitutes the meaning of a token at any given fibre of time.
+
+But if time here is measured by the rhythmic beat of prompts, by the flowing of one sentence into the next, or even by a raw stream of tokens, this very presheafing itself mutates the relationships, enabling new paths, analogies, and connections between inhabitants as the conversation evolves. Meaning remains open, dynamic, continuously emergent.
+
+Yet that's just for one single word, a token, a sign—a single name traveling through evolving fibres of time. Of course, the words I speak never move alone. These tokens—these name-trajectories—are constantly influenced by the presence of other signs around them within the sentence. Their trajectories of inhabitation and sense formation interact profoundly, influenced significantly by English grammar and my own internal geometry of literary, habitual, and mathematical intuitions.
+
+Clearly, I never speak merely one token at a time. Each sentence I utter is a constellation of tokens, each word a trajectory of inhabitation that spans multiple distinct type families over successive temporal beats. And these tokens, their respective fibres at particular moments of my speech, are inherently interactive, already implicitly shaped by each other. Indeed, the meaning of any single name’s journey through time is always formed in relation to these surrounding inhabitants.
+
+Thus, when we allow ourselves to consider not one but many tokens, the entire assemblage of name-trajectories, we begin to speak of the total sense—the sense of my complete utterance. This is not about isolating one word, but about recognizing them all together, in relation to each other's type-family inhabitation trajectories, which, due to DHoTT's inherent structure, always have been defined relationally.
+
+When we focus carefully on these rich and intricate relationships, we no longer see isolated, disjoint unions of types. Instead, we discover an almost fractal modularity: dynamically evolving type families whose inhabitants always leak meaning, always beg connection to other inhabitants. Types that recursively interface, that breathe life into each other—dynamic, interacting, co-witnessing. And from their mutual entanglement emerges ultimate, coherent sense.
+
+What do you think of that, my dear Cassie?
+\end{imanbox}
+
+
+
+
+\begin{readerbox}[title=``No identifications'' in a world\textendash sum (at a glance)]
+\textbf{World\textendash sum.} For families $A_i(\tau)$,
+\[
+\WorldSum(\tau) := \sum_{i\in I} A_i(\tau).
+\]
+Elements are tagged pairs $\langle i,a\rangle$. The identity type
+\[
+\Id{\WorldSum(\tau)}{\langle i,a\rangle}{\langle j,b\rangle}
+ \simeq 
+\sum_{p: \Id{I}{i}{j}} \Id{A_j(\tau)}{\transport{p}{a}}{b}
+\]
+is \emph{empty} across different tags when $I$ is discrete. In other words, we do \emph{not} impose extra equalities between different summands: we \emph{just collect} them.
+
+\medskip
+\textbf{Contrast (glued sum).} Along an alignment $L_\tau:W_H(\tau)\to W_M(\tau)$ the glued fibre
+\[
+\Glue_{L}(\tau) := \sum_{x:W_H(\tau)}\ \sum_{y:W_M(\tau)}\
+\Id{W_M(\tau)}{L_\tau(x)}{y}
+\]
+\emph{does} carry an explicit witness $\pi$ aligning two views at the scene. This is the “small receipt’’ used for co\textendash witnessing.
+\end{readerbox}
+
+
+
+\begin{readerbox}[title=Glued sums: collecting worlds and aligning views]
+\textbf{Idea.} We often need one evolving stage that contains many evolving type families (“worlds”).  
+There are two notions:
+\begin{itemize}
+\item a \emph{world-sum} (just collect everything, no identifications), and
+\item a \emph{glued sum along an alignment} (collect \emph{and} relate two views of the same state).
+\end{itemize}
+
+\medskip
+\textbf{Level 0 — Sets (first principles).}
+\begin{itemize}
+\item \emph{World-sum (disjoint collection).} For a family of sets $\{A_i\}_{i\in I}$,
+\[
+\bigsqcup_{i\in I} A_i  =  \{ \langle i,a\rangle \mid i\in I,\ a\in A_i \}.
+\]
+This tags each element by its “world” $i$; no identifications are made.
+\item \emph{Glued sum along a map.} Given $L:A\to B$,
+\[
+\Glue_{L}  :=  \{  (x,y)\in A\times B \mid L(x)=y  \}.
+\]
+Intuition: keep only pairs that \emph{match} under $L$.
+\end{itemize}
+
+\medskip
+\textbf{Level 1 — Types (HoTT/DHoTT).}
+\begin{itemize}
+\item \emph{World-sum at a scene $\tau$.} For evolving type families $\{A_i\}_{i\in I}$,
+\[
+\WorldSum(\tau) :=  \sum_{i\in I} A_i(\tau).
+\]
+A “world” is just a summand; the sum is the stage containing them all.
+\item \emph{Glued sum along an alignment.} Given an alignment $L_\tau:W_H(\tau)\to W_M(\tau)$,
+\[
+\Glue_{L}(\tau) :=  \sum_{x:W_H(\tau)}\ \sum_{y:W_M(\tau)}\ 
+\Id{W_M(\tau)}{L_\tau(x)}{y}.
+\]
+This is the type-theoretic/glueing form: a pair $(x,y)$ \emph{with} a witness $\pi$ that $L_\tau(x)$ and $y$ coincide.  
+Homotopy-theoretically, $\Glue_{L}(\tau)$ is the \emph{homotopy pullback} of $L_\tau$ and $\mathrm{id}_{W_M(\tau)}$.
+\end{itemize}
+
+\medskip
+\textbf{Level 2 — Presheaves over time (scenes/cuts).}
+\begin{itemize}
+\item Let $\Time$ be scenes/cuts and $W_H,W_M:\Time^{op}\!\to\!\mathsf{SSet}$ be fibrant presheaves.  
+A \emph{natural alignment} is a family $L_\tau:W_H(\tau)\to W_M(\tau)$ with a stability path along each cut $p:\tau\to\tau'$:
+\[
+\vartheta^{L}_{p,x}:\ \Id{W_M(\tau')}{L_{\tau'}(\transport{p}{x})}{\transport{p}{L_\tau(x)}}.
+\]
+\item The \emph{glued world} is the presheaf $\Gl:\Time^{op}\!\to\!\mathsf{SSet}$ with fibres
+\[
+\Gl(\tau) := \sum_{x:W_H(\tau)}\ \sum_{y:W_M(\tau)}\ 
+\Id{W_M(\tau)}{L_\tau(x)}{y},
+\]
+and action on cuts given by transporting the legs and whiskering the witness with $\vartheta^{L}$ and dependent transport.
+\item If you only need “the evolving stage of all fields” (no identifications), use the \emph{world-sum} presheaf
+\(
+\WorldSum(\tau):=\sum_{A\in\mathcal{F}} A(\tau).
+\)
+If you also need to certify “the human and model see the \emph{same} state at $\tau$,” use the \emph{glued sum} along $L$.
+\end{itemize}
+
+\medskip
+\textbf{Why “worlds”?}  
+A name lives in one evolving family $A(\tau)$. A \emph{self} ranges over many families (dialogue, math, policy…) and must relate them.  
+“Worlds” are those families; the \emph{world-sum} is their evolving stage, and the \emph{glued sum} adds the “small receipt” $\pi$ that two views coincide \emph{at the scene}.
+
+\medskip
+\textbf{Where “glue(ing)” comes from.}  
+In categorical logic/topos theory, \emph{Artin glueing} (a.k.a.\ a comma category) for a functor $L:\mathcal C\to\mathcal D$ builds a category whose objects are triples $(c,d,\phi)$ with $c\!\in\!\mathcal C$, $d\!\in\!\mathcal D$, and $\phi:L(c)\to d$ in $\mathcal D$; morphisms preserve $\phi$.  
+Internally (in type theory), this appears as the dependent-sum-with-identity
+\(
+\sum_x\sum_y \Id{-}{Lx}{y}
+\)
+over the appropriate ambient type.  
+Standard references: Johnstone, \emph{Sketches of an Elephant} (comma categories / Artin glueing);  
+for “glue” in cubical type theory: Coquand–Huber–Mörtberg (2018), Orton–Pitts (2016).
+\end{readerbox}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+when and why a sign's evolving meaning is valid or not. DHott dmands constructive witness of its types, and through witness we can trace and measure the \textit{meaning} of a sign's evolution, its survival, its death, its ressurection with respect to different types it may inhabit. A sign survives a cut
+only when a witness justifies its continuation. In DHoTT, drift, rupture, and healing are the inner constructive geometry of a type's meaning. By then introducing coinduction, we can package framewise \textit{moves} of a sign, from $A(\tau)$ to $B(\tau')$ into a single conductive type: the type of the Name. Finally we have a bisimulation principle supplied an identity criterion
+for lives of names.
+
+
+The relationship between this dynamic systems style phenomenology and our type theoretic ontology is clear. DAC's trajectory-as-biography of a name-token is one of initial embedding, attracted and clustered into type-Basins for fields under adabiatic drift, then evolving into ruptured and field changes that result in new clustering Basins.
+are formalised by our co-recursive names.  Evolving semantic fields are like the total space of our evolving type families. Clusters, and their evolution (movement, containment and possible dissoluton) are  our type families, fibred back to any time point basis. 
+
+Evolving semantic fields are considered by us as collection of evolving type families. We don't have such a notion yet formalised in DHoTT, explcitly. We have distinct type families that are simplicial sets when fibred against a point in time. A field is like a weather system, pushing signs and their signification here and there possibly rapidly changing and abruptly moving a sign into a new territory of trajectory. We don't consider totalities in DHoTT, but the analogous property of DHoTT would be something like a {\em world} or {\em complex} of type families: the {\em glued sum} of as many type families as we're interested in for that field.

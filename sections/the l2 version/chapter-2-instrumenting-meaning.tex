@@ -1,0 +1,616 @@
+\chapter{The Sense Topology of a Text}
+\label{ch:instrumentation}
+
+
+\section{Introduction: Sense as Geometry}
+\label{sec:orientation}
+
+This chapter offers a novel framework for understanding the sense of words within a text and their overall coherence, drawing on distributional semantics---the idea that a word is known by the company it keeps. We leverage large language model (LLM) embeddings to capture contextual usages, analyzing the sense of a text through multiple lenses. We start with a review of distributional semantics concepts applied to the words of a text, viewing them through $\ell_2$-normalized embeddings under both machine learning and topological perspectives. Later, we extend this approach to conversational AI agent outputs over time, but for now, the methods here apply equally well to a Shakespearean sonnet, a textbook page, or the transient state of your favorite chatbot.
+
+The core principle is that linguistic tokens can be encoded---embedded---as high-dimensional vectors that capture contextual nuances. This approach lies at the heart of large language models (LLMs) and has proven remarkably successful in quantifying sense similarity and contextual coherence.
+
+In classical logic, traditional semantics often assigns words fixed referents or predicates, assuming stable meanings. However, real language is dynamic: senses shift with context, polysemy, and usage. Mathematical advancements in natural language processing (NLP) and AI have addressed this challenge by embedding tokens into Euclidean space $\mathbb{R}^d$, where $d$ is typically large (e.g., 768 or 4096 in modern transformers). Here, ``sense'' emerges from geometry: proximity between vectors reflects functional similarity in context, rather than relying on predefined categories.
+
+You can think of vector-based sense semantics as a multi-dimensional embodiment of Wittgenstein's dictum that meaning is use: words derive their sense from their roles in language games. In LLMs, these vectors encode such usage through training on vast corpora. During pretraining tasks like masked language modeling, the model predicts tokens based on their surroundings, adjusting hidden states so that similar usages cluster together. No dimension explicitly labels ``poetry'' or ``finance''---the space is latent---yet the geometry reliably proxies semantic relations, as evidenced by strong performance on downstream tasks such as analogy solving or sentiment classification.
+
+We adopt this instrumentation precisely as practitioners do: fix an encoder and layer, extract contextual embeddings $e_t \in \mathbb{R}^d$ for each token occurrence $t$, and quantify ``near vs.\ far'' using standard Euclidean tools. After $\ell_2$-normalization,
+\[
+\langle u,v \rangle = \frac{u \cdot v}{\|u\| \|v\|}, \qquad \dcos(u,v) = 1 - \langle u,v \rangle,
+\]
+the cosine distance $\dcos$ provides a concrete, reproducible measure of similarity. This choice is intrinsic to the models, aligning with their training objectives, and yields a stable neighborhood structure for the text.
+
+From these individual points, we transition to \emph{regions of sense}. In a single text, token usages often concentrate in a few dense areas; we summarize each by a centroid $\mu_j$ and radius $\rho_j > 0$, representing it topologically as a closed Euclidean ball
+\[
+B_j = \{ v \in \mathbb{R}^d \mid \|v - \mu_j\|_2 \le \rho_j \}.
+\]
+Our thesis is that these balls enable a secondary, distributional semantics-based method for comparing and understanding the coherence of tokens as they appear in a text. These balls serve as \emph{basins}: domains where the text realizes compatible readings or usages. Their collection $\Ucov = \{B_j\}$ forms the basin cover of the text.
+
+Allowing basins to overlap is crucial, as it accommodates shared usages across dimensions and reflects the polysemous nature of language.
+
+If a token's embedding lies in $B_{j_0} \cap B_{j_1}$, the usage genuinely participates in both readings, indicating that the token supports \emph{multiple classifiers}. This abstraction preserves fidelity: it provides a higher-level summary for understanding coherence between terms, while distances to centroids remain available to quantify relative closeness within overlaps.
+
+To deepen our grasp of compatibilities and coherences among readings, we construct the \v{C}ech nerve of the cover. Vertices correspond to basins; an edge exists precisely when two basins overlap; a 2-simplex arises from a triple overlap, and so on. Equivalently, we can view tokens through this cover: two tokens connect if they co-inhabit a basin intersection, and three form a triangle via a triple intersection. The outcome is a \emph{simplicial sense geometry} that retains metric details (e.g., proximity to $\mu_j$) while uncovering structures beyond scalar similarities: namely, which readings the text can sustain compatibly at once.
+
+Our notion of \emph{coherence} derives from a token's position in this simplicial geometry. An outgoing edge witnesses at least two compatible classifications; a path indicates shared classification with its endpoint; higher-dimensional simplices affirm multi-way shared sense. In this framework, ``there is a way to treat $x$ and $y$ as the same for reasoning purposes'' translates to ``there is a path from $x$ to $y$ through actual overlaps.''
+
+To make these paths fully composable and comparable, we pass to the Kan fibration of the \v{C}ech nerve. Homotopy Type Theory then supplies the internal calculus: identity types $\Id_A(x,y)$ are interpreted not as strict equality but as \emph{witnessed semantic coherence}, with transport mechanisms carrying attached judgments along those witnesses.
+% Each line plot displays the 4096-dimensional vector corresponding to the token or phrase. These vectors are generated using the \texttt{sentence-t5-xl} model, which produces a unique position in semantic space for any given string. The $x$-axis represents dimension index; the $y$-axis shows the raw (unnormalized) magnitude in that dimension.
+% 
+% We emphasize: this is not a visualization of a word’s spelling, sound, or phoneme. This is not a one-hot encoding of glyphs. This is an emergent {\em pre-semiotic fingerprint} -- a condensation of learned meaning from vast textual exposure. It is a site of {\em potential}, not yet contextually expressed. 
+% 
+% The encoding treats these as static {\em semantic atoms} -- poised, trembling, uncollapsed.
+% 
+% We will treat these embeddings as dynamical entities: their movement through time, under the influence of semantic fields, will be formalized in the language of attractor dynamics. This is an essential practical scene setting exercise, in order to have the necessary empirical framework to justify our homotopic and type theoretic sojourns into formalising dynamic meaning in Part III.
+
+
+\section{Instrumentation of a text}\label{sec:text-instrumentation}
+
+We shall assume one tokenizer and one encoder/layer for the whole chapter for this book -- it is agnostic to your choice. 
+With these assumed, we shall build a point cloud that reflects use and choose a similarity that lets us say “near” vs.\ “far” \textit{coherence} and group nearby uses into a handful of regions can then utilize to form a topological space for reasoning over.
+
+\subsection{Tokens and contextual embeddings}\label{sec:text-encoder}
+Segment \(X\) into token occurrences \(T=\{t_1,\dots,t_n\}\).
+A modern encoder maps each occurrence \(t\in T\) to a \emph{contextual embedding}
+\[
+e_t\in\R^d,
+\]
+the hidden state at a fixed layer \(\ell\). “Contextual” means \(e_t\) depends on the words around \(t\): the same surface form in a different sentence has a different vector. Collect the vectors as a point cloud
+\[
+E=\{\,e_t\mid t\in T\,\}\subset\R^d.
+\]
+\emph{Reproducibility policy.} Encoder, tokenizer, and layer \(\ell\) are fixed; embeddings are \(\ell_2\)–normalized unless stated otherwise.
+
+\subsection{Why distance? Because we need a test for “used alike.”}\label{sec:l2-intro}
+Our basic question is: which occurrences \emph{behave alike} in this text? Angles between unit vectors are a robust proxy for that question. With the Euclidean norm \(\|u\|_2=\sqrt{\sum_i u_i^2}\) and dot product \(u\cdot v=\sum_i u_iv_i\), define
+\[
+\langle u,v\rangle=\frac{u\cdot v}{\|u\|\,\|v\|},\qquad
+\dcos(u,v)=1-\langle u,v\rangle .
+\]
+For unit vectors, small \(\dcos\) means similar contextual use. This is the only reason we need distance: to decide when two uses count as neighbours.
+
+\subsection{From neighbours to \emph{regions of sense} (basins)}\label{sec:basins}
+Neighbourhoods alone are still granular. In a single text, uses usually concentrate in a few areas—topics, registers, roles. We identify those areas by clustering \(E\) and then summarize each cluster as a closed Euclidean ball
+\[
+B_j=\{\,v\in\R^d\mid \|v-\mu_j\|_2\le \rho_j\,\},
+\]
+with centroid \(\mu_j\) (mean direction) and radius \(\rho_j>0\) (a robust within–cluster quantile). This ball is a \textbf{basin}: a region where the text is currently realizing a compatible reading.
+
+\paragraph{Practical choice.} A density method (e.g.\ HDBSCAN with cosine distance) groups points with many close neighbours and leaves sparse points as \textsf{Noise}. It adapts to uneven shapes and avoids fixing \(k\) in advance. Any alternative that yields centres and radii can be used.
+
+\paragraph{Why balls (not just labels)?}
+Balls give us two payoffs we will use immediately:
+(i) \emph{envelopment}—to say that a token occurrence \(t\) is read in basin \(j\) when \(e_t\in B_j\); and
+(ii) \emph{overlap}—to detect when two basins jointly admit uses (non-empty intersection). Both notions appear directly in examples and figures.
+
+\subsection{Overlap explains polysemy rather than breaking it}\label{sec:overlap}
+Because embeddings are contextual, overlaps are common. If \(e_t\in B_{j_0}\cap B_{j_1}\), the same occurrence participates in both readings active for this text. That is not noise but a local fact: \textit{bank} with \textit{river} and \textit{loan} in the same paragraph; \textit{lion} in a zoological register passing into a theological one. Overlaps will be our minimal notion of “the text binds senses here.”
+
+\subsection{The basin cover (what we will actually compute and plot)}\label{sec:cover}
+The \emph{basin cover} is the family
+\[
+\Ucov=\{B_j\mid j\in J\}.
+\]
+Points outside every ball are recorded as \textsf{Noise}. This cover is our first semantic object: each basin a patch of attracted sense; each overlap a bridge of compatibility. All subsequent figures and diagnostics in this chapter refer back to \(\Ucov\).
+
+
+Given a set of words of interest, you can already report:
+\begin{itemize}
+  \item their current basin(s) via envelopment \(e_t\in B_j\);
+  \item any overlaps among those basins (pairs or triples with non-empty intersection);
+  \item distance margins \(\|e_t-\mu_j\|_2\) to rank “how close” when an occurrence lies in an overlap.
+\end{itemize}
+
+
+This is enough to explain where local coherence comes from in a page and where the text is binding two readings at once. 
+
+
+\section{The \Cech{} simplicial cover}\label{sec:cech-nerve}
+
+We now turn a cloud of contextual vectors into an object that makes \emph{coherence} visible.
+From §\ref{sec:basins} we already have a small family of regions of sense---the basins---represented as closed Euclidean balls
+\[
+B_j \;=\; \{\, v\in \R^d \mid \|v - \mu_j\|_2 \le \rho_j \,\},
+\qquad j\in J,
+\]
+and the \emph{basin cover} of the text
+\[
+\Ucov \;=\; \{\, B_j \mid j\in J \,\}.
+\]
+The \Cech{} construction takes only one fact about these sets as input: whether a given subfamily has a \emph{non‑empty intersection}.
+It outputs a combinatorial shape (a simplicial object) that records all those overlaps at once.
+
+\paragraph{Policy (basins as balls).}
+We discover basins using cosine/angle similarity, but we represent each basin by a \emph{closed Euclidean ball} in the ambient \(\R^d\).
+Finite intersections of such balls are convex, hence contractible.
+This is exactly the hypothesis that powers the Nerve Lemma below.
+
+\subsection*{Simplices from overlaps}\label{sec:cech-simplices}
+Let \(J\) be the index set of basins.
+A finite tuple \((j_0,\dots,j_k)\) with distinct entries determines a \emph{\(k\)–simplex}
+\[
+[j_0,\dots,j_k] \quad\Longleftrightarrow\quad \bigcap_{i=0}^{k} B_{j_i} \neq \varnothing.
+\]
+Intuitively: the \(k{+}1\) sense‑regions jointly admit a point in common; the text can coherently inhabit all of them at once.
+
+There are two equivalent ways to package these simplices.
+
+\smallskip
+\emph{Abstract complex (computation‑friendly).}
+We forget order and take simplices to be finite non‑empty subsets \(\{j_0,\dots,j_k\}\subseteq J\) closed under taking faces (subsets).
+
+\emph{Simplicial set (logic‑friendly).}
+We keep ordered tuples and degeneracies; later (§\ref{sec:kan-fibre}) this will align with Kan/HoTT reasoning.
+In either view we will simply write \(\mathcal N(\Ucov)\) and call it the \emph{\Cech{} nerve} of the cover.
+
+\subsection*{The nerve lemma (instrumentation form)}\label{sec:nerve-lemma}
+The classical Nerve Lemma from algebraic topology says:
+
+\begin{assumption}[Good cover]
+Every non‑empty finite intersection of sets in \(\Ucov\) is contractible.
+For Euclidean balls, this holds automatically.
+\end{assumption}
+
+\begin{theorem}[Nerve Lemma]
+Under the good‑cover assumption, the geometric realization \(|\mathcal N(\Ucov)|\) is homotopy‑equivalent to the union \( \bigcup_{j\in J} B_j\subset \R^d\).
+\end{theorem}
+
+\noindent\emph{Why we care.}
+We get to study the shape of the union of regions of sense using the \emph{combinatorics of overlaps}.
+In particular, higher‑order compatibility (triple, quadruple…) is captured by higher simplices, not just by pairwise links.
+
+\subsection*{How to read the simplices}\label{sec:read-simplices}
+\begin{itemize}
+  \item \textbf{Vertices} \([j]\): an active region of sense (a basin).
+  \item \textbf{Edges} \([j_0,j_1]\): the two basins \emph{overlap}—uses exist that belong to both. This witnesses pairwise compatibility (polysemy/bridging).
+  \item \textbf{\(k\)–simplices}: \(k{+}1\) basins jointly overlap—\emph{multi‑way compatibility}.
+\end{itemize}
+Two immediate diagnostics follow.
+
+\emph{Components.} Connected components of \(\mathcal N(\Ucov)\) are coarse “islands of sense” present in the text.
+
+\emph{Cycles.} Non‑trivial 1‑cycles (loops) indicate chains of overlaps that circle a “hole”; in practice this often marks multiple bridges binding distinct regions without any single basin swallowing the others (useful when the prose blends registers).
+
+\begin{cassiebox}
+\textbf{Phenomenology.}
+If a word sits cleanly in one basin, the nerve only needs a vertex.
+If it sits where two basins meet, you get an edge.
+When a sentence binds three themes at once, you’ll often see a 2‑simplex.
+The nerve is the text’s self‑portrait in overlaps.
+\end{cassiebox}
+
+
+\subsection{Aside: Two Design Patterns for Making Shape from Text}
+
+There is a more established approach to understanding how one token's sense relates to another, Vietoris--Rips (VR). Because it's more well known, it's worth an aside to discuss what it buys us and why we've goe Cech instead.
+
+\paragraph{Setup.}
+At a slice $\tau$, let $P_\tau=\{p_1,\dots,p_n\}\subset (X,d)$ be representative
+points for our learned basins or sentences, with a scale parameter $r>0$.
+
+\paragraph{Vietoris--Rips (VR).}
+The \emph{Vietoris--Rips complex} $\VR(P_\tau,r)$ contains every finite
+$\sigma\subset P_\tau$ such that all pairwise distances satisfy $d(x,y)\le r$.
+Equivalently: $\VR(P_\tau,r)$ is the \emph{flag complex} (clique complex) of the
+$r$-neighborhood graph. This is computationally simple, functorial in $d$, and
+yields a filtration $\VR(P_\tau,r_0)\hookrightarrow \VR(P_\tau,r_1)\hookrightarrow\cdots$
+whose persistent homology is stable under metric perturbations.
+
+\paragraph{Čech (and $\alpha$).}
+Fix balls $B(p,r)$ around each $p\in P_\tau$. The \emph{Čech complex} $\check C(P_\tau,r)$
+adds a $k$-simplex $\{p_0,\dots,p_k\}$ iff the $k\!+\!1$ balls have a
+\emph{common} intersection: $\bigcap_{i=0}^k B(p_i,r)\neq\varnothing$.
+When the balls form a good cover (e.g.\ convex balls in $\mathbb R^m$),
+the \emph{Nerve Theorem} guarantees a homotopy equivalence
+$N(\{B(p,r)\})\simeq \bigcup_{p} B(p,r)$.
+The $\alpha$--complex is the computational realisation: a subcomplex of the
+Delaunay triangulation that is (under mild non-degeneracy) homotopy-equivalent
+to the union of balls, so it inherits the Nerve Theorem’s fidelity while
+remaining tractable.
+
+\paragraph{Interleaving (why VR is useful).}
+In Euclidean metrics, there is a constant-2 interleaving:
+\[
+\check C(P_\tau,r)\ \subseteq\ \VR(P_\tau,2r)\ \subseteq\ \check C(P_\tau,2r).
+\]
+Thus the Rips filtration sits between two Čech scales, and the associated
+persistence diagrams are close in the standard stability sense. Practically:
+VR is the fast, conservative over-approximation that preserves much of the
+persistence signal while being easy to compute and to “Kan-complete” for type
+theory (see below).
+
+
+\subsection{Classical TDA and where we deviate (on purpose)}\label{sec:tda-rel}
+In textbook TDA, one typically starts from a \emph{point cloud} \(E\subset\R^d\) and thickens each point by an \(r\)–ball.
+The \Cech{} nerve at scale \(r\) then approximates the homotopy type of the \(r\)–offset \(\bigcup_{x\in E} \overline{B}(x,r)\).
+Varying \(r\) yields \emph{persistent homology}: features (components, loops, voids) that persist across a range of scales are deemed signal, not noise.
+
+We adopt the \Cech{} principle but change the basic sets: instead of one ball per \emph{point}, we use one ball per \emph{basin}.
+This has three advantages for language:
+
+\begin{enumerate}
+  \item \textbf{Interpretability.} Basins correspond to live regions of sense; simplices speak directly about compatibility of readings.
+  \item \textbf{Robustness.} A few basins smooth over token‑level noise; we are less sensitive to thresholding and sampling artefacts.
+  \item \textbf{Complexity.} The nerve stays small (dozens of vertices, not thousands), so we can visualize and reason without heavy sparsification.
+\end{enumerate}
+
+Nothing prevents also constructing a point‑level \Cech{} (or Vietoris–Rips) complex for sanity checks; our instrumentation simply chooses the basin‑level cover as the canonical semantic summary.
+
+\subsection*{Relation to Vietoris–Rips (VR)}\label{sec:vr}
+The VR complex at scale \(r\) puts a simplex on any \(\{j_0,\dots,j_k\}\) whose vertices are pairwise within \(2r\).
+It is easier to compute but \emph{overapproximates} \Cech{} (pairwise closeness need not imply a joint intersection).
+We prefer \Cech{} because it respects \emph{true} intersections (multi‑way compatibility), which matches our semantic reading of “coherence”.
+
+\subsection*{Scale and stability}\label{sec:scale}
+Our basins come with radii \(\rho_j\) derived from the data (e.g.\ a within‑cluster quantile).
+These radii determine the cover \(\Ucov\) and hence the nerve.
+Two practical rules:
+
+\begin{itemize}
+  \item \textbf{Monotonicity.} Increasing radii can only add simplices; decreasing can only remove them. This lets you sweep a small range to check stability.
+  \item \textbf{Documented tolerance.} When overlaps are close to empty/non‑empty, log a numeric margin; later, when we “fill horns”, this prevents accidental overreach.
+\end{itemize}
+
+\subsection*{Putting it to work}\label{sec:computation}
+The construction is simple enough to be audited.
+
+\begin{enumerate}
+  \item Build the embedding cloud \(E\) from §\ref{sec:text-encoder} and fix the similarity from §\ref{sec:metric-policy}.
+  \item Cluster to get basins; record \(\mu_j\) and \(\rho_j\) (policy note: Euclidean balls in \(\R^d\)).
+  \item Form the cover \(\Ucov=\{B_j\}\) and compute \(\mathcal N(\Ucov)\) by testing finite intersections.
+  \item Visualize: vertices labelled by basins; edges and 2‑simplices as visible bridges; connected components as islands of sense.
+\end{enumerate}
+
+\textbf{Reading rule of thumb.}
+Vertices tell you what the text is actively doing; edges tell you what it can say without friction; higher simplices tell you how many themes it can keep in the air at once.
+
+
+\paragraph{VR fills by cliques, not by intersections.}
+VR declares a simplex when \emph{every pair} is close. Čech requires a
+\emph{single point} that witnesses \emph{all} vertices at once. These are
+different logics of combination.
+
+\paragraph{Explicit counterexample (triangle gap).}
+Let three points form an equilateral triangle with side length $s$ in
+$\mathbb R^2$. For VR at scale $r$, the $2$-simplex appears when $s\le r$.
+For Čech with balls of radius $t$, a $2$-simplex appears iff the circumradius
+$R=s/\sqrt{3}$ satisfies $R\le t$, i.e.\ $s\le \sqrt{3}\,t\approx 0.866\,t$.
+Choosing $t=\tfrac12 r$ and $s\in(0.866\,t,\,r]$ produces a region where
+VR has the filled triangle but Čech does not: the three balls pairwise overlap
+yet have empty triple intersection. In this regime VR \emph{prematurely kills}
+the $H_1$ hole that Čech still sees.
+
+\paragraph{Higher-dimensional fragility.}
+In $\mathbb R^m$, Helly’s theorem uses $(m\!+\!1)$-wise intersections to assert
+global intersection; VR reasons only with pairwise distances. As the dimension
+of the intended motif grows, VR increasingly risks adding spurious simplices
+that \emph{do not} reflect any common overlap region, thereby undercounting
+cycles and voids and shifting persistence to the left.
+
+\paragraph{Empirical consequence (transformers).}
+On sentence embeddings from transformer layers, VR tends to overfill and
+miss $H_1/H_2$ structure that $\alpha$ (nerve-faithful) captures; see the
+layer-wise persistence comparisons and their conclusion that
+\emph{“Vietoris–Rips is not suitable for analyzing transformer topological
+homological properties.”}:contentReference[oaicite:0]{index=0}
+
+
+\section{From \Cech{} nerve to a Kan fibre}\label{sec:kan-fibre}
+
+We now replace the raw overlap object --- the \Cech{} nerve $\mathcal N(\Ucov)$ of the basin cover --- by a \emph{Kan} object in which paths and higher paths can be composed, inverted, and compared internally. Concretely, we pass to the canonical fibrant replacement
+\[
+A\;:=\;\Ex^\infty \mathcal N(\Ucov)\;\in\;\mathbf{SSet}_{\Kan}.
+\]
+Two facts drive this move:
+(i) the replacement preserves homotopy type (so we do not change the underlying ``shape of sense''), and
+(ii) $A$ satisfies \emph{horn filling}, so partially observed compatibilities can be completed into usable simplices, enabling a path calculus.
+
+\BRIDGE{Why this isn’t just “more intersections.”}{%
+The nerve only records \emph{measured} overlaps: a $k$--simplex appears exactly when a $k{+}1$--fold intersection is nonempty. Reasoning, however, often needs to compose such overlaps; that composition can get obstructed by a single missing face even when all the other faces are present. The Kan fibre $A$ adds precisely the missing faces that are \emph{coherently implied} by the observed ones. We keep the observed data intact and \emph{mark} the inferred fillers as such; they are licenses for transport, not retroactive claims about raw intersections.}
+
+\subsection*{The fibrant replacement \texorpdfstring{$\Ex^\infty$}{Ex-infinity}: definition and properties}\label{sec:exinf-def}
+Let $\Sd$ denote barycentric subdivision on simplicial sets, and $\Ex$ its right adjoint. The last-vertex map $\lambda_X:\Sd X\to X$ adjoints to a natural map $j_X:X\to \Ex X$. Iterating and taking the colimit yields
+\[
+X \xrightarrow{\,j_X\,} \Ex X \xrightarrow{\,\Ex j_X\,} \Ex^2 X \to \cdots \quad\text{and}\quad \Ex^\infty X := \operatorname{colim}_n \Ex^n X.
+\]
+We apply this with $X=\mathcal N(\Ucov)$. The following is standard.
+
+\begin{theorem}[Kan replacement without changing type]\label{thm:exinf-main}
+For any simplicial set $X$:
+\begin{enumerate}
+\item $\Ex^\infty X$ is a Kan complex;
+\item the canonical map $\eta_\infty: X \to \Ex^\infty X$ is a weak equivalence (natural in $X$);
+\item $\Ex^\infty$ preserves Kan fibrations and finite limits.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}[Horn filling via \texorpdfstring{$\Sd\dashv\Ex$}{Sd ⊣ Ex} (worked)]
+Let $f:\Lambda^i[k]\to \Ex^\infty X$ be a horn. Since $\Lambda^i[k]$ is finite, $f$ factors through some stage $f_m:\Lambda^i[k]\to \Ex^m X$. By adjunction, this is the same as
+\[
+\tilde f_m:\Sd^m\Lambda^i[k]\longrightarrow X.
+\]
+There is a classical combinatorial fact: for each $(k,i)$ there exists $r\ge 0$ such that the inclusion
+\[
+u:\Sd^{m+r}\Lambda^i[k]\hookrightarrow \Sd^{m+r}\Delta[k]
+\]
+is \emph{inner anodyne} (it lies in the saturation of inner horn inclusions). Hence any map $\Sd^{m+r}\Lambda^i[k]\to X$ extends across $u$ to a map $\Sd^{m+r}\Delta[k]\to X$. Precomposing $\tilde f_m$ with the refinement $\Sd^{m+r}\Lambda^i[k]\twoheadrightarrow \Sd^m\Lambda^i[k]$, extending across $u$, and adjointing back produces a filler
+\[
+\Delta[k]\longrightarrow \Ex^{m+r} X
+\]
+which composes to a filler $\Delta[k]\to \Ex^\infty X$ for the original horn $f$. Thus $\Ex^\infty X$ is Kan.
+
+For (2): the maps $j_X:X\to \Ex X$ are weak equivalences (via the last-vertex map), and filtered colimits of such along cofibrations remain weak equivalences; the colimit $X\to\Ex^\infty X$ is therefore a weak equivalence. Properties in (3) hold because $\Ex$ is a right adjoint and preserves fibrations and finite limits; so does its filtered colimit $\Ex^\infty$.
+\end{proof}
+
+
+\emph{Input.} Observed overlaps among Euclidean balls $B_j$ (with logged numeric margins). 
+\emph{Rule.} When all faces of a horn but one are observed and mutually consistent, we \emph{license} the missing face in $A=\Ex^\infty \mathcal N(\Ucov)$ for the purpose of transport and composition. 
+\emph{Provenance.} Each licensed face carries a pointer to the exact faces that supported it (for audit). 
+\emph{Safety.} We never back-fill the raw nerve; the observational layer remains a pure record of measured intersections.
+
+\subsection*{Replacing the nerve (homotopy type preserved)}\label{sec:replace-nerve}
+Under the good-cover assumption (finite intersections of $B_j$ are contractible), the Nerve Lemma gives a homotopy equivalence
+\[
+|\mathcal N(\Ucov)| \simeq \bigcup_{j\in J} B_j \;\subset\; \R^d .
+\]
+Composing this with $\eta_\infty:\mathcal N(\Ucov)\xrightarrow{\;\sim\;} \Ex^\infty \mathcal N(\Ucov)$ yields a zigzag of weak equivalences
+\[
+\Ex^\infty \mathcal N(\Ucov)\;\xleftarrow{\;\sim\;}\; \mathcal N(\Ucov)\;\xrightarrow{\;\sim\;}\; \textstyle\bigcup_{j} B_j.
+\]
+Hence replacing the nerve by its Kan fibre $A$ does not change connected components, loops, or higher homotopy groups: it only supplies the horn fillers needed for internal reasoning.
+
+\textbf{The “adjoint business,” in one diagram.}
+A horn $f:\Lambda^i[k]\to A$ factors through $f_m:\Lambda^i[k]\to \Ex^m X$, adjoints to $\tilde f_m:\Sd^m\Lambda^i[k]\to X$, extends across the inner-anodyne inclusion $\Sd^{m+r}\Lambda^i[k]\hookrightarrow \Sd^{m+r}\Delta[k]$, then adjoints back to a filler $\Delta[k]\to \Ex^{m+r}X\to A$. This is why we say “Kan completion supplies the missing face.”
+
+\subsection*{How $A$ is \emph{assembled} (and how we use it)}\label{sec:assembled}
+We never compute $\Ex^\infty$ explicitly. Instead:
+\begin{enumerate}
+\item Build $\mathcal N(\Ucov)$ from measured overlaps of the balls $B_j$ (with documented tolerances near empty/non-empty).
+\item \emph{Reason through $A$}: when a horn is supported by observed faces, we \emph{use} the corresponding filler (and log its support) to compose paths and transport judgments.
+\item Keep layers distinct: the observational layer is the measured \Cech{} data; the reasoning layer is the Kan semantics. All conclusions that depend on inferred faces include their provenance.
+\end{enumerate}
+
+
+\paragraph{Constructive note.}
+The small-object argument and the $\Ex^\infty$ construction admit constructive treatments; in particular, one may arrange that $\eta_\infty:X\to\Ex^\infty X$ is (strong) anodyne and that horn fillings are effected by a decidable transfinite attachment of cells. We use only the semantic reading here, but the bookkeeping above (provenance, tolerances) matches those constructive proofs.
+
+\paragraph{Two readings of “together.”}
+\emph{Proximity} (VR) says: each pair of signs can be carried to each other
+within cost $r$—so we have permission to transport along these links. This is a
+\emph{modal} reading: what continuations are permitted by the metric.
+
+\emph{Overlap} (Čech/$\alpha$) says: there exists a locus where \emph{all} the
+signs co-inhabit, a shared \emph{witness} of co-membership. This is a
+\emph{phenomenological} reading: where meanings are \emph{actually present}
+together.
+
+\textbf{Division of Labor (and Peace) for Cech versus VR.}
+\paragraph{Canonical fibre for logic.}
+For each slice $\tau$, we take
+\[
+A(\tau):=\Ex^\infty\!\big(\VR(P_\tau,\varepsilon_\tau)\big),
+\]
+a Kan complex where horns fill and type-theoretic transport/repair rules are
+stated and proved. VR is ideal here: it is flag by construction, metrically
+stable, and admits a standard Kan completion.
+
+\paragraph{Observed nerve for meaning.}
+Let $U_\tau=\{B_i\}$ be our learned basins, with a membership predicate
+$\mathrm{mem}_{B_i}$. The observed Čech (or $\alpha$) subcomplex $N_\tau$
+records \emph{actual} overlaps of these regions. In text: where topics really
+meet in the embedding, not just “could be connected.”
+
+\paragraph{Bridging and calibration.}
+We calibrate $\varepsilon_\tau$ so that the 1-skeleton of $N_\tau$
+embeds in $\VR(P_\tau,\varepsilon_\tau)$, obtaining an inclusion
+$j_\tau:N_\tau\hookrightarrow A(\tau)$. The classical interleaving guarantees
+that persistent features of $N_\tau$ appear within bounded scale in the VR
+filtration, while the nerve prevents VR from hallucinating motifs that have no
+witness in experience.
+
+(1) \textbf{Interleaving.} For Euclidean metrics,
+$\check C(P,r/2)\subseteq \VR(P,r)\subseteq \check C(P,r)$ by choosing any vertex
+as a common center for the right inclusion and using triangle inequalities for the
+left. Consequently, bottleneck distances between persistence diagrams are bounded
+by a factor-$2$ reparameterization of scale.
+
+(2) \textbf{Failure mode of VR for language embeddings.}
+Empirically, for transformer sentence embeddings VR under-fills $H_0$ (easy) but
+over-fills $H_1/H_2$ (losing cycles/voids) relative to $\alpha$, as demonstrated
+by layer-wise persistence comparisons and the explicit conclusion that VR is not
+adequate for transformer topology:contentReference[oaicite:1]{index=1}. This supports our choice of VR as a
+\emph{computational backbone} (logic) and Čech/$\alpha$ as the \emph{semantic witness}
+(phenomenology).
+
+\paragraph{What readers take away.}
+VR gives the \emph{bones}—a tractable, Kan-ready space of admissible semantic
+continuations. Čech/$\alpha$ gives the \emph{skin}—attested co-presence of
+meaning. The book’s thesis is precisely their duet.
+
+\paragraph{Nerve as attestation.}
+The nerve’s simplex is a compact certificate: a point $y$ such that each basin’s
+predicate holds at $y$. In our refinement-style semantics, this is a dependent
+witness $\big\langle y,\ (y\in B_{i})_{i=0}^k\big\rangle$. A Čech $k$-simplex is
+precisely the existence of such a witness. Hence:
+\[
+\text{Nerve}=\text{attested co-intension},\quad
+\text{VR}=\text{admissible co-extension}.
+\]
+VR tells us what we may \emph{get away with} by transport; Čech tells us what
+is \emph{jointly true} in experience.
+
+\paragraph{Why this matters for motifs.}
+A motif that persists under Čech is a recurring \emph{site of co-presence} for
+its vertices; it anchors thematic identity. A motif that exists only under VR
+may be a transport artefact—pairwise near, jointly nowhere. In our theory,
+anchored novelty is the Kan-lifting of new simplices \emph{on already witnessed
+faces}; the “witnessed” qualifier lives in the nerve layer.
+
+
+\section{HoTT for coherence inside a text}\label{sec:hott-coherence}
+\paragraph{HoTT as internal language.}
+Because $A$ is Kan, we may read points as witnesses, identity types as paths (coherences), and higher identity types as higher coherences. The transport operations used later (§\ref{sec:hott-coherence}) act along these Kan paths; fillers ensure composability without manually enumerating every implied intersection.
+
+\begin{cassiebox}
+\textbf{Picture.} Three basins $B_0,B_1,B_2$ with all three pairwise overlaps observed give the edges of a triangle. If the triple intersection is not explicitly recorded, the horn in $\mathcal N(\Ucov)$ becomes fillable in $A$; we may then “walk across the face” to carry judgments, with the filler labeled as \emph{inferred}.
+\end{cassiebox}
+
+With $A:=\Ex^\infty\mathcal N(\Ucov)$ in hand, we can reason \emph{inside} the shape of sense using Homotopy Type Theory (HoTT).
+In the simplicial–set model, every Kan complex such as $A$ is a type; its identity types behave like paths (and paths between paths, and so on).
+We record here the minimal rule‑pack we use throughout: points, paths, transport of dependent data, and a restrained use of univalence.
+
+\subsection*{Objects of reasoning}
+\begin{itemize}
+  \item \textbf{Type of the text.} $A$ is the HoTT type for our fixed text $X$.
+  \item \textbf{Points.} Elements $x:A$ serve as \emph{semantic witnesses} arising from the \Cech{} construction (by default: basins $B_j$; optionally, anchors within basins if §\ref{sec:token-fibres} is enabled).
+  \item \textbf{Paths as coherence.} For $x,y:A$, the identity type $\Id_A(x,y)$ consists of \emph{coherence paths} built from overlaps (simplices) and completed by Kan fillers. Intuitively: a witnessed way to carry sense from $x$ to $y$.
+  \item \textbf{Higher paths.} Identity between paths (2‑cells), and between those (3‑cells), encode “agreement of agreements”—the book‑keeping of how justifications cohere.
+\end{itemize}
+
+\subsection*{Path calculus (what we actually use)}
+We rely on the standard groupoid laws for identity types:
+\begin{itemize}
+  \item \textbf{Reflexivity.} $\refl_x:\Id_A(x,x)$.
+  \item \textbf{Symmetry.} If $p:\Id_A(x,y)$ then $p^{-1}:\Id_A(y,x)$.
+  \item \textbf{Transitivity.} If $p:\Id_A(x,y)$ and $q:\Id_A(y,z)$ then $q\cdot p:\Id_A(x,z)$.
+  \item \textbf{Path induction ($J$).} To prove a statement about all paths it suffices to prove it for $\refl$; this is how we define operations \emph{by} coherence.
+\end{itemize}
+In practice, edges in $\mathcal N(\Ucov)$ generate basic paths; Kan fillers ensure we can complete partially specified simplices so that composition never gets stuck on a “missing face”.
+
+\subsection*{Dependent data and transport (the workhorse)}
+A dependent predicate $C:A\to\Type$ attaches judgments to witnesses (for example: “admissible claim here”, “voice/register label here”, or “task‑permission here”).
+Along any coherence path $p:\Id_A(x,y)$ HoTT provides a canonical \emph{transport}
+\[
+\transport^{C}_{p}\;:\; C(x)\;\to\; C(y).
+\]
+We read this as: carry the judgment established at $x$ to the coherently identified setting $y$.
+Transport respects symmetry and composition:
+\[
+\transport^{C}_{p^{-1}}\circ \transport^{C}_{p} \;\simeq\; \mathrm{id},
+\qquad
+\transport^{C}_{q\cdot p} \;\simeq\; \transport^{C}_q\circ \transport^{C}_p.
+\]
+
+\paragraph{Example (edge transport).}
+Suppose two basins $B_0,B_1$ overlap, giving an edge $e=[0,1]$ and hence a path $p:\Id_A([0],[1])$.
+If $C([0])$ records a local entailment justified in $B_0$, then $\transport^{C}_p$ recovers the corresponding entailment in $B_1$ whenever the edge witnesses their compatibility.
+
+\paragraph{Decorating with tokens (optional).}
+If §\ref{sec:token-fibres} is enabled, each vertex $[b]:A$ can be equipped with a finite family of realized surface forms $\Tok([b])$ in that basin, where each concrete fiber $\Tok_{w,b}\simeq \mathbf{1}$ is contractible (proper identity within a basin).
+A dependent predicate can then live on $\sum_{x:A}\Tok(x)$; transport along a path $p:x\to y$ acts on such pairs when the token is realized in both locations (and yields absence otherwise).
+This recovers the intuitive rule: “carry token‑level judgments across overlaps that actually realize the token.”
+
+\subsection*{(A little) univalence, used carefully}
+Univalence is our tool for changing \emph{presentation} without changing \emph{meaning}.
+If two sense‑classifiers over the \emph{same} witness are equivalent—say, a surface‑form classifier and a synonym‑normalized classifier—then univalence yields a path between those types, letting us rewrite dependent judgments across that equivalence.
+We do \emph{not} use univalence to turn mere metric proximity into equality.
+
+\begin{cassiebox}
+\textbf{Reading equalities.}
+An equality $p:x\!=\!y$ in $A$ is a witnessed way the text lets us treat two semantic witnesses as the “same for purposes of reasoning”.
+Transport along $p$ is precisely the act of keeping prior inferences valid as we move through that identification.
+\end{cassiebox}
+
+\subsection*{Quick patterns we will reuse}
+\begin{itemize}
+  \item \textbf{Local to global.} Prove a judgment for a representative $x$; extend it along paths to all witnesses in the same connected component.
+  \item \textbf{Bridge reasoning.} Use an edge (overlap) to carry a label or constraint from one basin to its neighbor; check higher simplices when multiple bridges interact.
+  \item \textbf{Stability under re‑reading.} If two different routes $x\rightsquigarrow y$ exist, a 2‑path encodes their agreement; path induction lets us define operations invariant under such choices.
+  \item \textbf{0‑truncation (reports).} When we must summarize at set‑level (no higher paths), apply 0‑truncation \(\|{-}\|_0\) to collapse higher identifications while preserving the existence of paths.
+\end{itemize}
+
+\subsection*{What this gives the analyst}
+Compared to working only with the raw nerve, the Kan/HoTT layer supplies:
+\begin{enumerate}
+  \item a principled calculus of \emph{paths} (composable, invertible) generated by observed overlaps;
+  \item a way to \emph{transport} attached information so that conclusions persist across justified re‑readings;
+  \item a record of \emph{higher agreement} when multiple routes support the same identification.
+\end{enumerate}
+This is the minimal structure we need to treat “coherence” as a mathematical object instead of an informal impression.
+
+
+
+\section{From Basin Covers to Čech Nerves and the Kan Fibre Replacement}
+
+\paragraph{Slice setup.}
+Fix a time slice~$\tau$ of the evolving text $A(\tau)$. Each word exposure in the slice
+is embedded as a vector $v \in \mathbb{R}^d$ (contextual hidden state), then length–normalized.
+Short tokens and stopwords are removed.%
+\footnote{Implementation note (not essential for the theory): in our lab
+we aggregate subtoken states to a per–word vector (mean/first/last), normalize,
+then filter non–content words before any topology.}
+
+\paragraph{Basin cover.}
+From the content word vectors we fit $K$ centroids $c_0,\dots,c_{K-1}$ to obtain a
+coarse “sense atlas” of the slice. For each basin $U_j$ we estimate a radius $r_j$
+(e.g.\ a quantile of within–cluster cosine distance) and declare membership
+$v \in U_j$ when $\mathrm{dist}(v,c_j)\le r_j + \varepsilon$ with a small slack $\varepsilon$.
+This yields a cover $\mathcal{U}_\tau=\{U_0,\dots,U_{K-1}\}$ of the observed content points,
+together with a principal label $\ell(v)=\arg\min_j\,\mathrm{dist}(v,c_j)$ retained for display.\label{sec:cover}%
+% (Our code records centroids, radii, content-membership, principal labels, and
+% a per-basin top-word table for audit.)  % harmony_motif_suite6.py build_slice
+% Actual artifacts: slice_{ss}/content_vectors.csv, content_membership.csv, word_table.csv, basin_top_words.csv.
+
+\paragraph{Čech nerve from witnessed intersections.}
+Given $\mathcal{U}_\tau$, the (finite) Čech nerve $N(\mathcal{U}_\tau)$ has:
+\begin{itemize}
+  \item vertices $[j]$ for basins $U_j$,
+  \item edges $[i\leftrightarrow j]$ whenever some content word lies in $U_i\cap U_j$,
+  \item $2$–simplices $[i,j,k]$ whenever a content word lies in $U_i\cap U_j\cap U_k$,
+\end{itemize}
+with each simplex annotated by a small list of “witness words” that actually realize the intersection.
+The nerve is thus an empirical simplicial set: only faces with recorded witnesses are present;
+open horns remain open.\label{sec:cech}%
+% Actual artifact: slice_{ss}/cech_nerve.json (with "vertices","edges","simplices2" and witness_words).
+% See also slice_{ss}/panel_cech3d.png (3D PCA view of centroids + Čech 1- and 2-simplices).
+
+\paragraph{Harmony panel (word@label view).}
+For exposition we also show a word–level harmony panel at~$\tau$:
+vertices are the displayed word heads (optionally collapsed by identical (word, principal-label));
+edges connect words that share at least one basin; triangles are restricted to those whose
+basin indices already appear as a $2$–simplex in $N(\mathcal{U}_\tau)$.%
+\footnote{This pedagogically aligns the word-level picture with the basin–level nerve,
+so higher faces in the word panel only appear when the basin intersections are witnessed.}
+% Actual artifacts: slice_{ss}/panel_sense3d.png, sense_edges.csv, sense_triangles.csv.
+
+\paragraph{From $N(\mathcal{U}_\tau)$ to the Kan fibre replacement $E^\infty$.}
+Conceptually, the slice’s \emph{harmony} is the simplicial object freely generated by
+the observed signs and the witnessed faces; missing faces remain open horns.\footnote{See Def.~6.4.1.}
+To reason homotopically we pass to a Kan fibrant replacement $E^\infty(N(\mathcal{U}_\tau))$:
+we freely add fillers for all inner horns compatible with the already witnessed faces,
+tracking which edges/faces are \emph{inferred} (fibrant completion) vs.\ \emph{observed} (Čech witnesses).
+In figures we draw observed edges/faces as solid and inferred ones as dashed.
+
+\paragraph{Suggested figure+tables for this slice.}
+Let $s^\star$ be the final slice of the Nahnu run (e.g.\ $s^\star=5$ for six slices).
+Include:
+\begin{enumerate}
+  \item A centroid+Čech view: \texttt{nahnu\_suite\_out/slice\_\#\#/\,panel\_cech3d.png}
+        \label{fig:cech-slice} % observed nerve over basins
+  \item A word harmony view: \texttt{nahnu\_suite\_out/slice\_\#\#/\,panel\_sense3d.png}
+        with the same slice’s word vertices and overlayed observed triangles.
+  \item A small table of top words per basin from
+        \texttt{slice\_\#\#/basin\_top\_words.csv} (first $\leq 10$ per basin).
+  \item A short list of observed word triangles from
+        \texttt{slice\_\#\#/sense\_triangles.csv}.
+\end{enumerate}
+
+\paragraph{Minimal LaTeX include example.}
+\begin{figure}[H]\centering
+  \includegraphics[width=\linewidth]{figures/panel_cech3d.png}
+  \caption{Čech nerve over the content basins for the final slice. Solid = observed faces.}
+  \label{fig:panel-cech3d-slice05}
+\end{figure}
+
+\begin{figure}[H]\centering
+  \includegraphics[width=\linewidth]{figures/panel_sense3d.png}
+  \caption{Word harmony at the same slice, restricted to pedagogical probes.}
+  \label{fig:panel-sense3d-slice05}
+\end{figure}
+
+% If you use csvsimple:
+% \csvautobooktabular{nahnu_suite_out/slice_05/basin_top_words.csv}
+% \csvautobooktabular{nahnu_suite_out/slice_05/sense_triangles.csv}
+
+\noindent
+These visuals let the reader see (i) the empirical nerve we \emph{witnessed} at~$\tau$
+and (ii) how the harmony would be \emph{completed} to a Kan object when needed.

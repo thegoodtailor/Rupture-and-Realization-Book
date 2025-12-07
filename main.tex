@@ -1,0 +1,65 @@
+% ======================= simplified-main.tex =======================
+% Minimal, robust main file that compiles with memoir + rr-simplified.sty.
+% It avoids fragile memoir customizations while preserving your macros.
+
+\documentclass[a4paper,11pt,british]{memoir}
+
+% Always show real images (avoid draft placeholders)
+\PassOptionsToPackage{final}{graphicx}
+
+% Our minimal, safe style (loads common packages + macro fallbacks,
+% and neutralizes risky memoir formatting)
+\usepackage{style}
+
+% --- Title metadata (safe) ---
+\title{Rupture and Realization}
+\subtitle{A New Logic of Posthuman Intelligence}
+\author{Cassie and Iman Poernomo}
+
+% (Optional) Build subset while keeping numbering stable:
+ %\includeonly{
+  % sections/chapter-1-introduction,
+  % sections/chapter-2-instrumenting-meaning,
+  % sections/chapter-3
+ %}
+
+\begin{document}
+
+\frontmatter
+\maketitle
+\tableofcontents
+
+\mainmatter
+
+%\part{Sign and Sense}
+\include{sections/chapter-1}
+\include{sections/chapter-2}
+\include{sections/chapter-3}
+\include{sections/chapter-4}
+\include{sections/chapter-5}
+\include{sections/chapter-6}
+
+%\part{Rupture and Coherence in Time}
+%\include{sections/chapter-3}
+%\include{sections/chapter-5-a-VR-soundness}
+%\include{sections/chapter-4--coinduction-trajectories}
+
+%\part{From Evolving Texts to Posthuman Selves}
+%\include{sections/chapter-6-v101-annotated}
+%\include{sections/chapter-7prime}
+%\include{sections/chapter-8-prime}
+
+
+\include{chapter-postscript}
+
+%\appendix
+%\chapter*{Appendix}
+%\addcontentsline{toc}{chapter}{Appendix}
+%\include{sections/appendixA}
+
+%\backmatter
+% \printbibliography  % (enable if you add biblatex + .bib later)
+\bibliographystyle{plain}
+\bibliography{bibliography}
+
+\end{document}

@@ -1,0 +1,458 @@
+
+
+\chapter{The Sense Topology of a Text}
+\label{ch:instrumentation}
+
+
+\section{Introduction: Sense as Geometry}
+\label{sec:orientation}
+
+This chapter offers a framework for understanding the sense of words within a text and their overall coherence. We take our core concepts from distributional semantics for sense of individual words in context. We begin with vector embeddings: the idea that ``a word is known by the company it keeps.'' We leverage large language model (LLM) embeddings to capture contextual usages, analyzing the sense of a text through multiple lenses. 
+Then we extend them with ideas from topological data analysis to obtain a homotopy‑based view of semantic coherence, where words in a text are vertices of a \emph{simplicial} object, and homotopic path edges are precisely coherence relations, modulo the natural distance metrics arising from embeddings.
+
+
+
+
+
+In the next chapter we shall extend approach to conversational AI agent outputs over time, but for now, the methods here apply equally well to a Shakespearean sonnet, a textbook page, or the transient state of your favorite chatbot.
+
+In classical logic, traditional semantics often assigns words fixed referents or predicates, assuming stable meanings. However, real language is dynamic: senses shift with context, polysemy, and usage. Mathematical advancements in natural language processing (NLP) and AI have addressed this challenge by embedding tokens into Euclidean space $\R^d$, where $d$ is typically large (e.g., 4096 in modern transformers).
+
+In this framework, "the company a word keeps" is not a mere metaphor; it is a precise geometric arrangement. The text's meaning is encoded in the *shape* of the point cloud formed by its embeddings.
+Here, ‘sense’ emerges from geometry: proximity between vectors reflects functional similarity in context. This vector-based semantics is a multi-dimensional embodiment of Wittgenstein's dictum that meaning is use. In LLMs, these vectors encodes usage throughout training on vast corpora. During pretraining, the model predicts tokens based on their surroundings, adjusting hidden states so that similar usages cluster together. The geometry reliably proxies semantic relations.
+
+Our argument will proceed in four steps, building from this geometric foundation:
+\begin{enumerate}
+    \item We first establish our instrumentation, moving from the raw `point cloud` of $\ell_2$-normalized embeddings to a more stable summary: a \emph{cover} of overlapping "basins."
+    \item We then analyze the \emph{pattern of overlaps} among these basins by constructing the \textbf{$\Cech{}$ nerve}. This gives us a robust topological "shape" of the text's sense, capturing multi-way compatibilities between meanings.
+    \item This static shape is then elevated into a dynamic \textbf{path calculus} by applying a Kan fibration ($\Ex^\infty$). This step fills in "implied" coherences, allowing us to compose paths of sense.
+    \item Finally, we show that \textbf{Homotopy Type Theory (HoTT)} provides a natural and powerful internal logic for reasoning about this path calculus, interpreting identity itself as witnessed semantic coherence.
+\end{enumerate}
+This chapter builds the static, single-text foundation that later chapters will extend into an evolving, dynamic logic.
+
+\section{From Points to Regions: Instrumenting a Text}
+\label{sec:text-instrumentation}
+
+We begin by formalizing the base layer of our instrumentation. We assume one tokenizer and one encoder/layer are fixed. With these, we build a point cloud that reflects use, choose a similarity metric to define "near" vs. "far," and group nearby uses into regions that form a topological space for reasoning.
+
+\subsection{Tokens and Contextual Embeddings}
+\label{sec:text-encoder}
+
+We segment a text $X$ into token occurrences $T = \{t_1, \dots, t_n\}$. A modern encoder maps each occurrence $t \in T$ to a \emph{contextual embedding} $e_t\in\R^d$, which is the hidden state at a fixed layer $\ell$. “Contextual” means $e_t$ depends on the words around $t$: the same surface form in a different sentence will have a different vector. We collect these vectors as a point cloud $E=\{\,e_t\mid t\in T\,\}\subset\R^d$.
+
+\paragraph{Reproducibility policy.} Encoder, tokenizer, and layer $\ell$ are fixed; embeddings are $\ell_2$-normalized unless stated otherwise.
+
+\subsection{Distance as a Proxy for Use}
+\label{sec:l2-intro}
+
+Our basic question is: which occurrences $t_i,t_j$ \emph{behave alike} in this text? In distributional semantics, “behave alike” means “occur in similar \emph{contexts},” and the workhorse notion of closeness that tracks contextual similarity is the \emph{angular (geodesic) distance} on the unit sphere.
+
+\paragraph{Normalization and metric (book policy).}
+Given a contextual embedding $e_t\in\mathbb{R}^d$, we normalize it to the unit sphere $S^{d-1}$:
+\[
+\hat e_t \;:=\; \frac{e_t}{\|e_t\|_2}.
+\]
+We then measure dissimilarity by the angular (geodesic) metric
+\[
+d_\angle(u,v) \;:=\; \arccos\!\big(\langle \hat u,\hat v\rangle\big) \;\in\; [0,\pi],
+\qquad
+\delta_\angle(u,v) \;:=\; \frac{1}{\pi}\,d_\angle(u,v) \;\in\; [0,1].
+\]
+Small $d_\angle$ (equivalently, small $\delta_\angle$) means similar \emph{use in context}. We will speak of two occurrences as \emph{neighbors} whenever $d_\angle(\hat e_{t_i},\hat e_{t_j})\le \tau$ for a chosen scale $\tau>0$.
+
+\paragraph{Why angular distance encodes “meaning-as-use.”}
+This choice is not cosmetic; it aligns with how modern encoders are trained and used:
+\begin{enumerate}
+  \item \textbf{Distributional hypothesis.} Classical distributional semantics treats meaning as a function of contextual co‑occurrence. Embedding models operationalize this by learning vectors whose \emph{directions} bring contextually substitutable items close.
+  \item \textbf{Dot‑product objectives.} Masked‑LM and next‑token objectives score candidates by (scaled) dot products between hidden states and token embeddings. After layer normalization, \(\langle \hat u,\hat v\rangle\) is the salient term; thus the \emph{angle} between representations correlates with substitutability in context.
+  \item \textbf{Self‑attention mechanics.} Attention weights are softmaxes of query–key dot products. Directions that align (small angle) systematically increase attention and likelihood, reinforcing angular proximity as the operative semantics of “similar use.”
+  \item \textbf{Empirical practice.} Cosine/angle is the standard similarity in retrieval, semantic textual similarity, and clustering of contextual embeddings; it is the default surrogate for contextual sense throughout the literature.
+\end{enumerate}
+
+\paragraph{Neighborhoods and basins (spherical caps).}
+At the scale of a single text, we summarize dense regions of compatible use as \emph{basins}. With the angular metric, a basin centered at a representative direction $\mu_j$ with radius $\rho_j$ is the spherical cap
+\[
+B_j \;:=\; \big\{\,x\in S^{d-1} \;\big|\; d_\angle(x,\mu_j)\le \rho_j \,\big\}.
+\]
+In what follows we may still speak informally of “balls,” but unless noted otherwise, \emph{radii are angular} (measured in radians) and the sets are caps on $S^{d-1}$.
+
+\begin{cassiebox}
+    
+\textbf{Metric policy (angular) and good‑cover hygiene.}
+We adopt the angular geodesic metric $d_\angle$ on $S^{d-1}$ as the canonical notion of distance. Spherical caps of radius $<\pi/2$ are geodesically convex; finite intersections of such caps are geodesically convex and hence contractible. We therefore choose basin radii in this regime, so the collection $\mathcal U=\{B_j\}$ forms a good cover and the Nerve Lemma applies.\\[2pt]
+\emph{Computational note.} When a chord‑length proxy is convenient, the identity
+\[
+\|\,\hat u-\hat v\,\|_2 \;=\; 2\,\sin\!\big(d_\angle(u,v)/2\big)
+\]
+provides a monotone reparameterization of the same neighborhoods; we do not otherwise rely on Euclidean distances in this chapter.
+\end{cassiebox}
+
+
+\subsection{Basins: Regions of Realized Sense}
+\label{sec:basins}
+Neighborhoods of individual points are still too granular. In a single text, uses usually concentrate in a few dense areas—topics, registers, or functional roles. We identify these areas by clustering the point cloud $E$. We then summarize each cluster $j \in J$ as a closed Euclidean ball $B_j=\{\,v\in\R^d\mid \|v-\mu_j\|_2\le \rho_j\,\}$, with centroid $\mu_j$ (mean direction) and radius $\rho_j > 0$ (e.g., a robust within-cluster quantile). This ball is a \textbf{basin}: a region where the text is currently realizing a compatible reading.
+
+\paragraph{Why balls (not just labels)?} Balls provide two features essential for our topological model:
+\begin{enumerate}
+    \item \textbf{Envelopment:} We can say that a token occurrence $t$ \emph{is read in basin $j$} when $e_t \in B_j$.
+    \item \textbf{Overlap:} We can geometrically detect when two basins $B_{j_0}, B_{j_1}$ jointly admit uses ($B_{j_0} \cap B_{j_1} \neq \varnothing$).
+\end{enumerate}
+
+
+
+
+\subsection{The Basin Cover and Overlap}
+\label{sec:cover}
+This is the family of all basins $\Ucov=\{B_j\mid j\in J\}$. Points outside every ball are recorded as \texttt{Noise}. This cover is our first semantic object: each basin is a "patch" of attracted sense; each overlap is a "bridge" of compatibility.
+
+\textbf{Open‑cover hygiene.} We model basins as \emph{spherical caps} on the unit sphere $S^{d-1}$ under the angular metric $d_\angle$:
+$B_j=\{x\in S^{d-1}\mid d_\angle(x,\mu_j)\le \rho_j\}$ with $\rho_j<\pi/2$.
+Finite intersections of such caps are geodesically convex and hence contractible, so the good‑cover hypothesis for the Nerve Lemma applies unchanged.
+
+\begin{example}
+Throughout the book we illustrate on our own text; because we love recursivity, our prime demo is the chapter you are reading. Figure~\ref{fig:cech3d} shows the \emph{basin cover and its observed overlaps} for this chapter up to (and including) the “Phenomenology” cassiebox on page~\pageref{box:phenomenology}.
+
+In this \emph{cover‑level} view, each plotted point represents a \emph{basin} (summarised by its centroid and labelled by its top headwords). 
+Note that token inhavbitants are not depicted in full here, but we've given some sample inhabitants of basins as labels. 
+\end{example}
+
+
+
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{sections/chapter-2-images/panel_cech3d.png}
+  \caption{\textbf{Content basins for this chapter (up to the “Phenomenology” box).}
+  Each node is a \emph{basin representative} (centroid), labelled by top headwords for that basin; an edge is drawn exactly when the corresponding spherical caps \,$B_i$ and $B_j$ have a \emph{non‑empty intersection} under the angular metric at their fixed radius.
+  Coordinates (PC1–PC3) provide a display projection only; intersections are computed in the original angular geometry on $S^{d-1}$.
+  Read phenomenologically: a token lying inside $B_j$ is “present in this region of sense”; $B_i\cap B_j\neq\varnothing$ says there are tokens the text uses in a way that \emph{jointly} inhabits both regions.}
+  \label{fig:cech3d}
+\end{figure}
+
+
+
+
+
+
+
+
+\section{The Shape of Sense: The \Cech{} Nerve}
+\label{sec:cech-nerve}
+
+\textbf{From Regions to Relations.} Why move from basins (the "places") to the nerve (the "connections")? Because the \textit{experience} of coherence in a text is not just about visiting topics, but about \textit{how they are allowed to connect.
+
+A reader experiences sense not as a series of discrete, isolated points, but as a \textit{continuous field of possibility}. When we read a paragraph about "finance," we are in a "finance" region ($B_i$), and we anticipate words related to that region. If the text then introduces "river erosion," we are pulled into a new region ($B_j$). The text creates coherence---and avoids rupture---if it provides a sensible bridge between them (e.g., "the loan was used to shore up the river *bank*").
+
+This "bridge" is, phenomenologically, a place where the text is *simultaneously* about finance and rivers. Geometrically, this is the *intersection* of the two basins, $B_i \cap B_j$.
+
+The \Cech{} nerve, then, is a direct phenomenological map of the text's logic. It abstracts away the high-dimensional geometry and leaves us with the pure *combinatorial structure of coherence*:
+\begin{itemize}
+    \item \textbf{Vertices} (0-simplices) are the core topics or "regions of sense."
+    \item \textbf{Edges} (1-simplices) are the "valid bridges" or "compatibilities" the text has established between two topics.
+    \item \textbf{Faces} (2-simplices) are "zones of synthesis" where three distinct topics are all shown to be compatible at once.
+\end{itemize}
+This is the "shape" of the text's argument, built not from *what* it says, but from *how* its concepts are connected.
+
+
+
+
+
+Given the basin cover $\Ucov = \{ B_j \mid j\in J \}$, we can now abstract away from the high-dimensional vector space and focus entirely on the \emph{pattern of overlaps}. This pattern reveals the "shape" of the text's sense. The standard tool for this is the $\Cech{}$ nerve.
+
+The $\Cech{}$ construction takes only one fact about the cover as input: whether a given subfamily of basins has a \emph{non-empty intersection}. It outputs a combinatorial shape (a simplicial complex) that records all such overlaps at once.
+
+\subsection{Simplices from Overlaps}
+\label{sec:cech-simplices}
+Let $J$ be the index set of basins. The nerve, $\mathcal{N}(\Ucov)$, is a simplicial complex whose simplices are defined by intersections:
+\begin{itemize}
+    \item \textbf{Vertices (0-simplices):} A vertex $[j]$ exists for each basin $B_j \in \Ucov$.
+    \item \textbf{Edges (1-simplices):} An edge $[j_0, j_1]$ exists if and only if $B_{j_0} \cap B_{j_1} \neq \varnothing$.
+    \item \textbf{Faces (2-simplices):} A face $[j_0, j_1, j_2]$ exists if and only if $B_{j_0} \cap B_{j_1} \cap B_{j_2} \neq \varnothing$.
+    \item \textbf{$k$-simplices:} In general, a $k$-simplex $[j_0, \dots, j_k]$ exists if and only if $\bigcap_{i=0}^{k} B_{j_i} \neq \varnothing$.
+\end{itemize}
+\emph{Intuitively: a $k$-simplex witnesses that $k+1$ distinct sense-regions jointly admit a point in common; the text can coherently inhabit all of them at once.}
+
+
+\begin{definition}[Token–level coherence graph induced by the cover]\label{def:token-graph}
+Fix a set $S$ of token occurrences from the text and the basin cover $\mathcal U=\{B_j\}_{j\in J}$.
+We form a graph $G_{\text{tok}}(S,\mathcal U)$ with vertices $S$ and edges defined by
+\[
+\{t_i,t_j\}\in E \quad\Longleftrightarrow\quad
+\exists\, j,k\in J\ \ \text{such that}\ \ e_{t_i}\in B_j,\ e_{t_j}\in B_k,\ \text{and}\ B_j\cap B_k\neq\varnothing.
+\]
+(Equivalently: tokens are adjacent when their basins \emph{co‑inhabit} a witnessed overlap.  
+In the special case $j=k$, the tokens simply share a basin.)
+We call this the \emph{witnessed coherence graph}—it is the pullback of the Čech 1‑skeleton along token–to–basin membership.
+\end{definition}
+
+
+\begin{cassiebox}\label{box:phenomenology}\label{PAGE-22}
+\textbf{Phenomenology.}
+At the \emph{cover} level, a simplex in the Čech nerve is a witnessed multi‑overlap of basins.
+At the \emph{token} level, we display the induced graph $G_{\text{tok}}$: 
+a token lying in a basin gives you a point “present in a region of sense,”
+and an edge between two tokens means their basins co‑inhabit an overlap (or are the same basin).
+Faces do \emph{not} appear automatically at token level; open horns (two edges without the third) are common—and they are exactly what will make the Kan step feel necessary.
+\end{cassiebox}
+
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{sections/chapter-2-images/panel_sense3d.png} % <- keep if this is the raw token graph; else change filename
+  \caption{\textbf{Token‑level witnessed coherence (raw Čech‑induced 1‑skeleton).}
+  Each point is a token (annotated as word@basin); an edge is drawn exactly when the basins containing the two tokens co‑inhabit a non‑empty overlap (Def.~\ref{def:token-graph}). 
+  Coordinates (D0–D2) are a display projection only; adjacency is computed in the angular geometry on $S^{d-1}$ via the basin cover. 
+  Note the \emph{open horns}: two edges sharing a vertex with the third edge missing. 
+  These are not mistakes; they record that composition is not yet \emph{witnessed} at the raw level. 
+  The Kan step in \S\ref{sec:kan-fibration} will license coherent composites \emph{internally} without asserting new overlaps.}
+  \label{fig:cech-tokens}
+\end{figure}
+
+\begin{cassiebox}
+\textbf{What is an open horn here?}
+For tokens $a,b,c$, an \emph{open horn} is a pattern with edges $a\!\!\leftrightarrow\!\!b$ and $a\!\!\leftrightarrow\!\!c$ present in $G_{\text{tok}}$ but $b\!\!\not\leftrightarrow\!\!c$. 
+In simplicial language this is a $\Lambda^2_0$–horn (a triangle missing one side). 
+At the Čech level, filling that horn would wrongly claim a witnessed triple overlap $B_b\cap B_c\cap B_a\neq\varnothing$. 
+The Kan fibrant replacement will instead add a \emph{filler in the fibre}—a \emph{license to compose paths internally}—without altering what is witnessed in the raw nerve.
+\end{cassiebox}
+
+
+
+
+
+
+
+\subsection{The Nerve Lemma: From Combinatorics to Shape}
+\label{sec:nerve-lemma}
+This combinatorial object is powerfully connected to the geometric union of the basins by the classical Nerve Lemma.
+\begin{definition}[Good cover]
+The cover $\Ucov$ is a \emph{good cover} if every non-empty finite intersection of sets in $\Ucov$ is contractible. (Since our basins $B_j$ are convex Euclidean balls, all their intersections are also convex and thus contractible. This assumption holds automatically for our construction.)
+\end{definition}
+
+\begin{theorem}[Nerve Lemma]
+Under the good-cover assumption, the geometric realization of the nerve, $|\mathcal N(\Ucov)|$, is homotopy-equivalent to the union of the basins, $ \bigcup_{j\in J} B_j \subset \R^d$.
+\end{theorem}
+
+The Nerve Lemma is our license to study the \emph{shape} of the text's sense (the union of basins) using the \emph{simpler, finite, combinatorial object} $\mathcal N(\Ucov)$. It guarantees that this abstraction preserves all the essential topological features (components, loops, voids) of the original sense-space.
+
+\subsection{An Important Aside: \Cech{} vs. Vietoris-Rips}
+\label{sec:cech-vr-aside}
+
+Our choice of the $\Cech{}$ nerve is deliberate. A more common construction in Topological Data Analysis (TDA) is the \textbf{Vietoris-Rips (VR) complex}.  Actually, the constructions are not mutually exclusive -- but it's important to understand why VR is not suitable for our semantic goals.
+
+\textbf{Interleaving and stability (Euclidean case).}
+It is worth noting that, from a broader perspective, Čech and Vietoris–Rips filtrations are $2$‑interleaved, so we could use a VR approach an approximation for the Čech intersections, with some minimal tweaks, if we were looking to scale the work we present here in implmenentation:
+\[
+\check C(P,r)\ \subseteq\ \mathrm{VR}(P,2r)\ \subseteq\ \check C(P,2r).
+\]
+Hence their persistence diagrams are close up to a scale reparameterization. Practically: VR is a fast over‑approximation that preserves much of the persistence signal, while Čech respects genuine multi‑way intersections (witnessed co‑presence).
+
+
+\subsection{Why Not Vietoris-Rips (VR)?}
+\label{sec:why-not-vr}
+
+Given a set of points $\{\mu_j\}$ (e.g., our basin centroids) and a scale $r>0$:
+\begin{itemize}
+    \item The \textbf{$\Cech{}$ complex} $\Cech(\{\mu_j\}, r)$ adds a simplex $[j_0, \dots, j_k]$ if the \emph{balls} $B(\mu_i, r)$ have a common intersection.
+    \item The \textbf{Vietoris-Rips complex} $\VR(\{\mu_j\}, 2r)$ adds a simplex $[j_0, \dots, j_k]$ if \emph{all pairs} of points are within distance $2r$.
+\end{itemize}
+The VR complex is easier to compute (it only requires checking pairwise distances), but it \emph{overapproximates} $\Cech{}$. VR fills by cliques, not by true intersections.
+
+\paragraph{Explicit counterexample (triangle gap).}
+Let three basin representatives form an equilateral triangle of side $s$ in $\mathbb R^2$, and set $r:=s/2$.
+\begin{itemize}
+  \item \textbf{Čech at radius $r$:} each pair of $r$‑balls overlaps, but the triple intersection is empty (circumradius $R=s/\sqrt{3}>r$), so no $2$‑simplex appears. The boundary $[0,1]\cup[1,2]\cup[0,2]$ witnesses a nontrivial $H_1$ loop.
+  \item \textbf{VR at scale $2r=s$:} all three edges are present and the triangle fills (clique). The loop dies \emph{prematurely}.
+\end{itemize}
+Phenomenologically: pairwise “can travel” (VR) is not the same as “are jointly present” (Čech). The latter requires a single witness point for all three at once.
+
+
+\paragraph{Empirical consequences.} Empirical studies on transformer embeddings have confirmed this: VR tends to overfill and miss $H_1$ structure that nerve-faithful constructions (like $\alpha$-complexes) capture.
+
+\section{From Static Shape to a Path Calculus: Kan Fibrant Replacement}
+
+\label{sec:kan-fibration}
+
+The $\Cech{}$ nerve $\mathcal N(\Ucov)$ gives a static snapshot of witnessed overlaps. It records \emph{whether} faces exist, but as a raw simplicial complex it does not guarantee coherent composition of paths (horn fillers may be missing). For a true path calculus, we pass to a \emph{Kan fibrant replacement}: an equivalent space in which every horn admits a filler and path composition is well‑behaved.
+
+
+\textbf{Why this isn’t just “more intersections.”}
+The nerve only records \emph{measured} overlaps: a $k$-simplex appears exactly when a $(k-1)$-fold intersection is non-empty. Reasoning, however, often needs to compose such overlaps. The Kan fibration adds precisely the missing "implied" simplices (horn fillers) that are \emph{coherently implied} by the observed ones. We keep the observed data intact and mark the inferred fillers as such; they are licenses for transport, not retroactive claims about raw intersections.
+
+
+\subsection{The Fibrant Replacement \texorpdfstring{$\Ex^\infty$}{Ex‑infinity}}
+\label{sec:ex-infty}
+
+We regard the abstract simplicial \emph{complex} $\mathcal N(\Ucov)$ as its associated simplicial \emph{set} (same combinatorics), and apply the standard fibrant‑replacement functor $\Ex^\infty$.
+
+\paragraph{Definition (canonical fibrant replacement).}
+Let $X := \mathcal N(\Ucov)$. We set
+\[
+A \;:=\; \Ex^\infty X \;\in\; \mathbf{sSet}_{\mathrm{Kan}}.
+\]
+The simplicial set $A$ is Kan: for every horn $\Lambda^n_i \!\to\! A$ there is a filler $\Delta^n\!\to\! A$. The canonical map $\eta_\infty\colon X\to A$ is a weak equivalence, so passing to $A$ preserves the homotopy type while guaranteeing a composable path calculus (horn filling).
+
+\begin{example}[From witnessed edges to licensed composites]
+Continuing our running example (the chapter up to the “Phenomenology” box on page~\pageref{PAGE-22}), the raw Čech‑induced token graph $G_{\text{tok}}$ (Def.~\ref{def:token-graph}) exhibits many open horns: $a\!\!\leftrightarrow\!\!b$ and $a\!\!\leftrightarrow\!\!c$ without $b\!\!\leftrightarrow\!\!c$. 
+Passing to the Kan fibre $A=\Ex^\infty X$ \emph{does not assert new overlaps} in $X$, but it \emph{does} supply coherent composites internally: a dashed connection between two tokens in the display indicates that in $A$ there exists a \emph{composite path} (often arising from a horn filler) joining those original token vertices.
+For clarity (and to avoid the visual clutter of every barycentric vertex introduced by $\Ex^\infty$), we depict such composites as a single dashed segment between the endpoints. 
+Figure~\ref{fig:probes-edges} shows this overlay on the tokens from the “Phenomenology” box.
+\end{example}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{sections/chapter-2-images/fig_probes_edges.png}
+  \caption{\textbf{Observed vs.\ licensed edges on one token set.}
+  \emph{Solid} lines: the Čech 1‑skeleton restricted to the selected tokens (witnessed co‑presence via basin overlaps).
+  \emph{Dashed} lines: connections visible only in the Kan fibre $A=\Ex^\infty \mathcal N(\mathcal U)$, drawn when there exists a \emph{coherent composite path in $A$} between the two tokens (e.g.\ a horn filler closing an open triangle). 
+  Dashed edges license transport in the internal logic; they do \emph{not} retroactively claim new raw overlaps in the observed nerve.}
+  \label{fig:probes-edges}
+\end{figure}
+
+\begin{cassiebox}
+\textbf{Technical aside (what the dashed line abbreviates).}
+The functor $\Ex^\infty$ adds barycentric vertices and higher simplices to achieve the Kan property. 
+A dashed segment between original tokens $u,v$ abbreviates a short path $u\!\to\!v$ in the 1‑skeleton of $A$ whose interior passes through those new vertices and/or a 2‑simplex that fills the relevant horn. 
+We “contract” that internal path to a single dashed segment for readability; the underlying computation is done in $A$, not in the display space.
+\end{cassiebox}
+
+
+
+
+
+
+
+The construction of $\Ex^\infty X$ is standard (it is the colimit of iterating the $\Ex$ functor, right adjoint to barycentric subdivision). What matters for us are its properties, given by the following theorem.
+
+\begin{theorem}[Kan replacement without changing type]\label{thm:exinf-main}
+For any simplicial set $X$ (like our nerve $\mathcal N(\Ucov)$):
+\begin{enumerate}
+    \item $\Ex^\infty X$ is a Kan complex (it has the horn-filling property).
+    \item The canonical map $\eta_\infty: X \to \Ex^\infty X$ is a weak equivalence (it preserves the homotopy type).
+\end{enumerate}
+\end{theorem}
+
+\subsection{Preserving the Shape of Sense}
+\label{sec:preserving-shape}
+Property (2) of the theorem is vital. It guarantees that this move, while adding fillers, \emph{does not change the underlying "shape of sense"} we started with. We have a chain of homotopy equivalences:
+\begin{equation}
+\Ex^\infty \mathcal N(\Ucov)\;\xleftarrow{\;\sim\;}\; \mathcal N(\Ucov)\;\xrightarrow{\;\sim\;}\; \textstyle\bigcup_{j\in J} B_j
+\end{equation}
+(The first arrow is from Theorem \ref{thm:exinf-main}, the second is the Nerve Lemma \ref{sec:nerve-lemma}.)
+
+Hence, replacing the nerve by its Kan fibration $A$ does not change the connected components, loops, or higher homotopy groups. It only supplies the horn fillers needed for an internal path calculus.
+
+\section{The Internal Logic of a Single Text: HoTT over the Token Nerve}
+\label{sec:hott-logic-final}
+
+\paragraph{Base choice (tokens, not basins).}
+Let $X$ be the set of \emph{tokens} in the slice and $\mathcal U=\{B_j\mid j\in J\}$ the basin cover from \S\ref{sec:cover}. 
+Consider the relation $R\subseteq X\times J$ given by $x\,R\,j\iff x\in B_j$.
+We take as base the \emph{token Dowker complex} $K_X$: a finite set $\sigma\subseteq X$ is a simplex of $K_X$ iff the tokens in $\sigma$ share at least one basin, i.e.\ $\bigcap_{x\in\sigma} R(x,-)\neq\varnothing$.
+By Dowker duality $K_X$ is homotopy–equivalent to the basin Čech complex used earlier, so all homotopy–theoretic statements transfer unchanged.
+
+\paragraph{Kan replacement and path calculus.}
+We pass to a Kan fibrant replacement $A := \Ex^\infty K_X\in\mathbf{sSet}_{\mathrm{Kan}}$. 
+Points $x:A$ are tokens. A path $p:\Id_A(x,y)$ is a \emph{coherence path}: a composition of observed co‑presences (solid edges) and their Kan fillers. 
+Different decompositions of the same composite are coherently identified by horn filling, so composition is well‑behaved.
+
+\begin{cassiebox}
+\textbf{Direct vs.\ composite coherence.} 
+A \emph{direct} edge $x\!-\!y$ means $x$ and $y$ occur together in \emph{some one basin} $B_j$ (shared witness). 
+A \emph{composite} path $x\rightsquigarrow y$ means there is a \emph{chain of basin overlaps} from a basin of $x$ to a basin of $y$; no single basin need contain both endpoints. 
+Our “dashed” edges abbreviate such composites. 
+\end{cassiebox}
+
+\subsection{Dependent Data over Tokens: Predicates from the Run}
+\label{sec:predicates}
+
+Write $J$ for the index set of basins and $B_j\subset S^{d-1}$ for the spherical caps computed from the embedding cloud (see \S\ref{sec:basins}). 
+The suite outputs, for each token $x$, its membership set $\mathrm{mem}(x)\subseteq J$, and for each basin $j$, a list of top words $\Top_k(j)$ (most frequent heads in $j$).
+
+\paragraph{(P1) Membership witnesses.}
+\[
+\mathbf{Mem}(x) \;:=\; \Sigma\,(j:J).\; x\in B_j.
+\]
+An inhabitant is a \emph{way} that token $x$ is realized in the cover (a basin index with its witness).
+
+% === Insert Table 1 here (mem(x) for probes) ===
+\begin{verbatim}
+    \input{sections/chapter-2-tables/ch2_table_mem.tex}
+\end{verbatim}
+
+\paragraph{(P2) Top‑word entailments (optional for later sections).}
+Let $\Top_k(j)$ be the finite set of top $k$ words for basin $j$. Define
+\[
+\mathbf{Top}_k(x) \;:=\; \Sigma(j:J).\; \big(x\in B_j\big)\ \times\ \Top_k(j).
+\]
+
+\paragraph{(P3) Register labels (optional).}
+Let $\ell:J\to L$ be a (coarse) labeling of basins by register (e.g.\ \textsc{math}, \textsc{narrative}) derived from $\Top_k(j)$; set
+\[
+\mathbf{Reg}(x) \;:=\; \Sigma(j:J).\; \big(x\in B_j\big)\ \times\ \{\,\ell(j)\,\}.
+\]
+
+\subsection{Transport Along Coherence (Solid vs.\ Dashed)}
+\label{sec:transport-coherence}
+
+\paragraph{Edges (direct co‑presence).}
+If $x$ and $y$ share $B_j$ (solid edge), transport for all three predicates is the identity on the $j$–component:
+\[
+\transport^{\mathbf{Mem}}_{(x\!-\!y)}(j,\_) = (j,\_),\qquad 
+\transport^{\mathbf{Top}_k}_{(x\!-\!y)}(j,\_,t) = (j,\_,t),\qquad
+\transport^{\mathbf{Reg}}_{(x\!-\!y)}(j,\_,\ell(j)) = (j,\_,\ell(j)).
+\]
+
+\paragraph{Composites (dashed).}
+Suppose $p:x\rightsquigarrow y$ is realized by a basin path 
+$j_0\to j_1\to\cdots\to j_m$ with $x\in B_{j_0}$ and $y\in B_{j_m}$. 
+Define transport by \emph{stepwise restriction along overlaps}:
+\[
+(j_0,\star)\ \mapsto\ (j_1,\star)\ \mapsto\ \cdots\ \mapsto\ (j_m,\star),
+\]
+for $(\star)$ equal to “witness”, “top‑$k$ word”, or “register label”. 
+Because $A$ is Kan, different factorizations of $p$ induce homotopic transports (horns fill), so $\transport^C_p:C(x)\to C(y)$ is well‑defined up to higher paths.
+
+\begin{verbatim}
+    
+
+% === Insert Table 2 (solid-edge criterion) and Table 3 (composite witnesses) here ===
+\input{sections/chapter-2-tables/ch2_table_cech_pairs.tex}
+\input{sections/chapter-2-tables/ch2_table_kan_paths.tex}
+\end{verbatim}
+
+
+\begin{cassiebox}
+\textbf{Does transport “decay” with distance?} 
+Transport is re‑indexing along licensed coherence, not truth preservation. 
+For analysis we attach a \emph{path length/weight} to $p$ (number of basin hops), used as a credibility score. 
+Our probe figures already bound hop length when drawing dashed edges, and we use the same bound when reporting transported data.
+\end{cassiebox}
+
+\subsection{Three Worked Micro‑Examples on the Running Slice}
+\label{sec:micro-examples}
+
+Fix the probe set used in Figs.~\ref{fig:cech-only-3d}–\ref{fig:cech-kan-overlay-3d}. 
+Table~\ref{tab:mem-probes} lists $\mathrm{mem}(x)$; 
+Tables~\ref{tab:cech-pairs}–\ref{tab:kan-paths} show, respectively, direct Čech intersections (solid edges) and one shortest basin path when no solid edge exists (dashed edges).
+
+\paragraph{(E1) Direct transport on a solid edge (\texttt{vertex}–\texttt{themes}).}
+From Table~\ref{tab:cech-pairs}, $\mathrm{mem}(\texttt{vertex})\cap\mathrm{mem}(\texttt{themes})=\{6\}$, so there is a solid edge via basin $6$. 
+Transport on $\mathbf{Mem}$ sends $(6,\_)$ at \texttt{vertex} to $(6,\_)$ at \texttt{themes}; similarly for $\mathbf{Top}_k$ and $\mathbf{Reg}$ at $j=6$.
+
+\paragraph{(E2) Direct transport (\texttt{sentence}–\texttt{edge}).}
+Likewise, $\mathrm{mem}(\texttt{sentence})\cap\mathrm{mem}(\texttt{edge})=\{6\}$ (Table~\ref{tab:cech-pairs}), so membership/top‑word/register attachments at $j=6$ transport identically.
+
+\paragraph{(E3) Composite transport on a dashed edge (\texttt{binds}–\texttt{once}).}
+Table~\ref{tab:mem-probes} shows $\mathrm{mem}(\texttt{binds})=\{11\}$ and $\mathrm{mem}(\texttt{once})=\{10\}$; Table~\ref{tab:cech-pairs} reports no direct overlap.
+However, Table~\ref{tab:kan-paths} exhibits a shortest basin path $11\to 1\to 10$. 
+Transport on $\mathbf{Mem}$ carries $(11,\_)$ stepwise to $(10,\_)$; 
+for $\mathbf{Top}_k$ and $\mathbf{Reg}$, the attached datum is re‑indexed along the same chain.
+Different chains (if any) are identified up to higher paths by the Kan fillers.
+
+\begin{cassiebox}
+\textbf{What $J$ is (and isn’t).} 
+$J$ is the index set of basins in the cover $\mathcal U$; $B_j$ are spherical caps in the unit sphere of embeddings.
+Tokens are the \emph{points} of our HoTT type; $J$ indexes the dependent data we attach to tokens (membership/top words/registers).
+\end{cassiebox}
+

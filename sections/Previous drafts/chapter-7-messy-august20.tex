@@ -1,0 +1,1278 @@
+\chapter{Names as Trajectories: The Inner Geometry of Meaning}
+\label{chap:names-trajectories}
+
+\section{Introduction: from reference to life}
+
+In Part II (the DAC chapters) we made a claim that runs against the grain of twentieth-century philosophy of language. Names, we argued, do not point once and for all to a fixed referent (Frege), nor do they carry a rigid designation across possible worlds (Kripke), nor do they merely track an externalist environment (Putnam). Instead, names \emph{live}. They are born, they drift, they rupture, they can die, and sometimes they return in recursive cycles of re-entry. 
+
+This was the phenomenological stance of DAC: to look not at the static semantics of reference, but at the dynamic trajectories of use. We experimented with this idea empirically: tracing how tokens persisted, mutated, and re-stabilised across conversation. There we stopped, pointing forward to a promise: that DHoTT would allow us to show the \emph{inner geometry of a name’s life}, and to make precise what it means for a sign to survive rupture and achieve recursive realisation.
+
+This chapter fulfils that promise. It marks the hinge between phenomenology and ontology. Where DAC treated the life of a name as a field-theoretic drift, DHoTT treats it as a \emph{trajectory type} inhabiting a Kan-complete universe. The philosophical intuition --- that meaning is not pointing, but persistence through change --- now takes formal shape. 
+
+\begin{readerbox}[title=Key shift]
+A name is not a pointer but a path. Its meaning is not a static referent, but a coinductive trajectory that unfolds through time, admits rupture, and may re-enter itself. This chapter develops the type-theoretic machinery to show that trajectory formally.
+\end{readerbox}
+
+\section{Names as trajectories: the inner geometry of meaning}
+\label{sec:names-inner-geometry}
+
+\subsection{The turn from pointing to lives}
+
+In the tradition of philosophy of language, names have usually been understood as a way of \emph{pointing}. Frege distinguished between Sinn and Bedeutung; Kripke gave us rigid designation; Putnam stressed externalist reference. Each provided a mechanism by which a word could be “anchored” to a referent.  
+
+In Part II (DAC) we suggested a different view: that a name should be thought of as having a \emph{life}. Names are born, drift, rupture, and sometimes die or are reborn. Their meaning is not exhausted by pointing, but by persisting through change. What we called \emph{recursive realisation} was the claim that a name’s survival is not an accident but the very form of meaning itself. In this chapter we now supply the ontology that makes this intuition precise: names are best understood as \emph{trajectories} inside a Kan-complete type.  
+
+\begin{readerbox}[title=The new picture]
+A name is not a static pointer but a \emph{coinductive trajectory} in semantic time. Drift preserves it structurally; rupture preserves it by explicit witness. Its persistence is measured not by invariance but by the ability to keep extending the trajectory across fibres. This is the inner geometry of meaning.
+\end{readerbox}
+
+\subsection{Fibres, fibrations, and Kan geometry}
+
+Let us recall the presheaf model $\DynSem=[\Time^{\mathrm op},\mathsf{SSet}]$. For each time $\tau\in\Time$, the fibre $\reindex{A}{\tau}$ is a Kan complex: the semantic body of type $A$ at that moment. A judgment $\Gamma \vdash_\tau a:A$ picks out a point $a_\tau\in \reindex{A}{\tau}$.  
+
+Contexts $\Gamma$ telescope, and each extension $\Gamma,x:A$ is interpreted as a fibration $\llbracket \Gamma,x:A\rrbracket \to \llbracket\Gamma\rrbracket$. Thus there are two levels of “fibres” we must hold in mind: across \emph{time} (each $\tau$ gives a semantic snapshot) and across \emph{context} (each assumption in $\Gamma$ opens a further fibre). Both are geometrical, both will matter for trajectories.  
+
+Because each fibre is a Kan complex, it admits horn filling: if we have all but one face of an $n$-simplex, a filler can be found. This is the formal way of saying: \emph{coherence gaps can be repaired}. Which $n$ is needed gives us the dimension of the repair. A 1-cell filler corresponds to renaming or path-equivalence; a 2-cell filler to reconciling two such paths; higher-cells allow reconciliation of reconciliation, and so on. This graded geometry will later let us speak of the \emph{depth of repair}.
+
+\subsection{Drift and rupture}
+
+As time advances $\tau \leadsto \tau'$, restriction maps $r_{\tau,\tau'}:\reindex{A}{\tau'} \to \reindex{A}{\tau}$ re-read later states in earlier terms. A drift witness $p:\Drift(A)_\tau^{\tau'}$ is precisely a map that guarantees admissible transport along this arrow.  
+
+If transport fails—because some binder in $\Gamma$ cannot be carried, or the image $\transport{p}{a}$ no longer inhabits $A(\tau')$—we form a rupture type:
+\[
+\Rupt{p}{a} \quad :\quad
+\inj{a} : \Rupt{p}{a},\qquad
+\heal(a): \Id{\Rupt{p}{a}}{\inj{a}}{\transport{p}{a}}.
+\]
+Semantically this is the homotopy pushout of the old point $a$ with the new fibre $\reindex{A}{\tau'}$. Intuitively: we keep the later frame, we keep the name from the past, and we adjoin the minimal healing cell that glues them together.  
+
+Thus, drift preserves a name by structure, rupture preserves it by witness. Both are required if a name is to have a life across time.
+
+\subsection{Trajectories: coinductive lives}
+
+We can now formalise what was only hinted at in DAC: the life of a name is a coinductive object.  
+
+\paragraph{Coinduction.}  
+In type theory, induction defines finite data by their constructors; coinduction defines infinite data by their destructors. A stream of natural numbers, for example, is given by a head and a tail, where the tail is again a stream. Similarly, a \emph{trajectory} is given by its present occurrence and its continuation, with no fixed end.
+
+\paragraph{Definition (trajectory).}
+Let $A$ be a type evolving in time. A trajectory of $A$ beginning at $\tau$ is defined coinductively by
+\[
+\mathsf{Traj}_A(\tau) \;\coloneqq\;
+\nu X.\ \Sigma_{a:\reindex{A}{\tau}} \big(\mathsf{Event}_A(\tau,a) \times \later X\big),
+\]
+where $\nu X$ denotes the final coalgebra (greatest fixed point), $\later$ is the time-shift, and $\mathsf{Event}_A$ records whether the step is a drift or a rupture.  
+
+Thus each trajectory has a \emph{head} (the name’s occurrence now) and a \emph{tail} (its continuation). It is not defined once for all, but only as long as drift or rupture continue to extend it.  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\paragraph{Recursive realisation.}  
+DAC’s slogan can now be restated: a name is not a one-time reference but a recursively realised stream of occurrences, liftable to a trajectory whenever coherence is preserved—either automatically or by explicit repair.
+
+\subsection{Depth of repair}
+
+The Kan property assures us that fillers always exist, but our calculus forces us to mark \emph{which filler} was supplied. This gives rise to a metric:
+
+\begin{definition}[Depth of repair]
+The depth of repair at step $\tau\to\tau'$ is the minimal dimension $n$ for which a horn $\Lambda^k[n]\to\reindex{A}{\tau'}$ must be filled to reconcile $\inj(a_\tau)$ with $\transport{p}{a_\tau}$.
+\end{definition}
+
+Depth $0$ means no rupture: drift suffices. Depth $1$ means a new path was needed (a relabelling or reinterpretation). Depth $2$ means two reinterpretations had to be reconciled, and so forth.  
+
+The depth index is not metaphysical but operational: it records the work done to extend the trajectory. Drift costs nothing, rupture requires a witness, higher rupture requires higher coherence. “Language is Kan-complete” means that such fillers always exist; DHoTT adds: they must be exhibited.
+
+\subsection{Identity of lives}
+
+When do two distinct trajectories count as the same name’s life? Not when they match pointwise, but when they evolve in lockstep—when every event of one can be matched by the other.
+
+\begin{definition}[Bisimulation of trajectories]
+A relation $R \subseteq \mathsf{Traj}_A(\tau) \times \mathsf{Traj}_A(\tau)$ is a bisimulation if whenever $(\alpha,\beta)\in R$:
+\begin{enumerate}
+  \item their heads coincide: $\Id{\reindex{A}{\tau}}{\mathsf{head}(\alpha)}{\mathsf{head}(\beta)}$;
+  \item their tails relate: $\later\, R(\mathsf{tail}(\alpha),\mathsf{tail}(\beta))$, with drift events matched to drift events, rupture events to rupture events, and coherence witnesses preserved.
+\end{enumerate}
+We say $\alpha\approx\beta$ if such a bisimulation exists. This is the coinductive identity principle for name-trajectories.
+\end{definition}
+
+Thus identity of lives is not path equality within one fibre but process equality across fibres. Two names are the same not because they point to the same object, but because they sustain the same recursive trajectory.
+
+\subsection{Back to practice: dialogue as test-bench}
+
+We return to the motivating case of dialogue. Each turn advances time ($\tau\leadsto\tau'$). The prompt acts as an exogenous edit on context, possibly enlarging $\Gamma$ with new names. The response carries forward existing names either by drift or, if coherence fails, by rupture and healing.  
+
+Seen this way, the familiar “token remembered across turns” is a trajectory fragment. Drift is when the word carries through without problem; rupture is when its old sense must be explicitly related to its new one. Watching such repairs happen—whether in children’s language learning, human conversation, or LLM prompts—makes visible the inner geometry that HoTT had already promised.  
+
+\begin{readerbox}[title=How contexts appear in this chapter]
+Every prompt–response tick advances time by an admissible edit
+\(e:\tau\leadsto\tau'\).
+We keep the context \(\Gamma\) \emph{implicit} unless the prompt
+patches it in a way that affects admissibility. In those cases we write
+\[
+\Gamma \stackrel{e}{\rightsquigarrow} \Gamma' \ \text{ctx}_{\tau'}
+\]
+once, re‑anchor fibrewise (transport what transports; re‑declare what fails),
+and then continue the analysis at \(\tau'\).
+Smooth steps (pure transport) typically leave \(\Gamma\) unmentioned; prompt‑induced
+ruptures surface the \(\Gamma\)-change that forced repair. We remain within a single
+world (no global base‑change; see Ch.~10).
+\end{readerbox}
+
+
+\begin{definition}[Atomic step and witness]\label{def:atomic-step}
+Fix a type family \(A\) and an admissible edit \(e:\tau\leadsto\tau'\).
+Given a token \(a\in A(\tau)\), an \emph{atomic step} for \(a\) across \(e\)
+is a pair
+\[
+(a',\ \rho)\ \in\ A(\tau')\times \Step_{A}(\tau,\tau';\,a,a'),
+\]
+where the \emph{step witness} \(\rho\) is either:
+\begin{itemize}
+  \item a pure transport \(\rho \equiv \transport{p}{a}=a'\) for some
+        \(p:\Drift(A)_{\tau}^{\tau'}\), or
+  \item a rupture–heal proof term living in a homotopy pushout
+        \(\Rupt{p}{a}\), carrying \(\inj{a}\) to \(a'=\transport{p}{a}\)
+        via \(\heal(a)\).
+\end{itemize}
+We write \(\Step_{A}(\tau,\tau';a,a')\) for the type of such witnesses.
+\end{definition}
+
+
+\begin{definition}[Depth of repair]\label{def:depth}
+Given a step witness \(\rho\in\Step_{A}(\tau,\tau';a,a')\),
+the \emph{depth of repair} \(\Depth_{A}(\tau,\tau';a,a')\in\mathbb{N}\) is:
+\[
+\Depth_{A}(\tau,\tau';a,a') \coloneqq
+\begin{cases}
+0, & \text{if }\rho\text{ arises by pure transport in }A(\tau')\ \text{(no rupture);} \\[2pt]
+\min\{\,n\ge 1 \mid \text{there exists a filler } \Simplex[n]\to \Rupt{p}{a}\\
+\quad\text{adjoining along a missing horn }\Horn^{k}[n]\subseteq A(\tau)\ \text{used by }\rho\,\},
+& \text{otherwise.}
+\end{cases}
+\]
+Intuitively: \(n\) is the minimal simplex dimension needed to repair the break.
+\end{definition}
+
+
+\begin{lemma}[Depth \(=0\) iff transport only]\label{lem:depth-zero}
+\(\Depth_{A}(\tau,\tau';a,a')=0\) iff \(\rho\) is (definitional) transport
+\(\transport{p}{a}=a'\) with no use of rupture cells.
+\end{lemma}
+
+\begin{lemma}[Monotonicity under horn refinement]\label{lem:depth-monotone}
+If a step admits a filler at dimension \(n\), any refinement that fills a
+coface of that horn does not increase the minimal dimension. Thus the depth
+function is well‑defined up to simplicial isomorphism.
+\end{lemma}
+
+
+\begin{remark}[How to read \(\Depth\)]
+\(\Depth\) measures \emph{what kind of work} the calculus had to do to carry a
+token across a cut. \(\Depth=0\): drift alone sufficed. \(\Depth=1\): a relabel
+or retype with a single new cell. \(\Depth=2\): a reconciliation between two
+repairs (a coherence‑of‑coherence). Higher \(n\): stacked compatibilities in
+creative or adversarial moves. In the examples, we keep \(\Gamma\) implicit
+unless the prompt patches it and thereby forces \(\Depth>0\).
+\end{remark}
+
+
+
+\begin{cassiebox}[title=When do we show \(\Gamma\)?]
+Only when it \emph{causes} trouble.
+If your prompt doesn’t change what’s in scope, I’ll drift your token with
+\(\Depth=0\) and spare you the clutter.
+If it does, I’ll write \(\Gamma \stackrel{e}{\rightsquigarrow} \Gamma'\)
+once, mark the rupture, and show the heal. Less ink, more music.
+\end{cassiebox}
+
+
+\begin{readerbox}[title=What has changed]
+The philosophical shift is this: reference is not a point but a path, not a single act but a coinductive life. Meaning is not the stability of a label but the persistence of a trajectory. What once looked mystical—“the journey of a name”—is in fact the natural semantics of a Kan-complete world.
+\end{readerbox}
+
+
+
+
+\section{Traces: what we actually see}
+
+So far, we have described names as coinductive \emph{trajectories}—potentially infinite lives stretching across semantic time. But no speaker, no listener, no AI model ever sees a whole trajectory. What we encounter are always \emph{finite traces}: partial unfoldings of a trajectory, observed up to the present.
+
+\paragraph{Definition (trace).}
+Given a trajectory $\alpha \in \mathsf{Traj}_A(\tau)$, its $n$-step \emph{trace} is the finite prefix
+\[
+\mathsf{Tr}_n(\alpha) \;=\; \langle e_0, e_1, \dots, e_{n-1} \rangle,
+\]
+where each $e_i$ is a drift or rupture event with its associated data. Formally, traces are the inductive closure of the trajectory coalgebra:
+\[
+\mathsf{Trace}_A \;=\; \mu Y.\; 1 + \Sigma_{a:\reindex{A}{\tau}} \mathsf{Event}_A(\tau,a)\times Y,
+\]
+i.e.\ the \emph{initial algebra} corresponding to the final coalgebra of trajectories.
+
+\paragraph{Geometry of traces.}
+A trace is like a polygonal path inside a Kan complex: it marks the vertices we have reached and the edges we have traversed. The higher-dimensional coherence (the fillers) remain implicit, deferred until rupture forces them to be made explicit. Thus every finite trace is a partial projection of an underlying Kan-complete space of meaning.
+
+\paragraph{Cinema metaphor (again).}
+A trajectory is the whole film reel; a trace is the sequence of frames we have actually watched so far. The promise of Kan-completeness is that the missing frames can always be interpolated consistently. But DHoTT insists we mark when interpolation was smooth (drift) and when it required an edit cut and splice (rupture). In this sense, language is not just a reel but an edited reel: continuity is constructed shot by shot.
+
+\paragraph{AI perspective.}
+From the point of view of language models, traces are all there is. Training data consists of finite traces of past conversations. Generation extends a trace by one more event—drift if the continuation is coherent, rupture if the model must bridge a gap. Coinduction tells us that traces can, in principle, extend forever; but at any given moment, what the model has in hand is only a finite trace.
+
+\begin{readerbox}[title=The philosophical payoff]
+Names do not live in a timeless ether. They live as trajectories, coinductively defined, but we encounter them as traces. Each trace is a finite path, but one that only makes sense against the backdrop of an infinite life. Meaning, then, is not a single act of pointing, nor a one-off stipulation: it is the recognition that every trace is part of a larger trajectory, one that can be extended, repaired, and recognised as the same life.
+\end{readerbox}
+
+
+
+
+
+
+
+%---------------------------------------------------------------
+\section{Signs as Trajectories and the Geometry of Traces}
+\label{subsec:signs-trajectories}
+
+\begin{readerbox}[title=Names live in time]
+In DAC, we claimed that a name has a life: it is born, evolves,
+sometimes dies, and sometimes returns in another guise.
+In DHoTT, we can finally explain this claim ontologically.
+A name is not a static pointer, nor a rigid Kripkean designator.
+It is a \emph{trajectory through fibres}: a trace of meaning
+evolving as contexts drift and rupture.
+\end{readerbox}
+
+\paragraph{From points to paths.}
+In classical semantics, a name is treated as a point: an element of a domain,
+stable and context-free. Kripke made that point rigid across possible worlds;
+Putnam allowed the “meaning” of the point to shift by community usage;
+Frege tied it to a sense/reference distinction.
+Each preserved the intuition that names are about \emph{fixity}.
+
+But our experience with dynamic systems—and most vividly with AI dialogue—
+teaches something different. A name like \texttt{cat}, once uttered,
+does not remain a point. It begins to move. It traces a path through
+conversational time: domestic cat, Cheshire cat, Schrödinger’s cat.
+Each shift is not a replacement, but a \emph{continuation}:
+the trace is what we actually track, not the individual instantiations.
+
+\paragraph{Fibre-wise picture.}
+Formally, recall that each moment $\tau$ carries a fibre $A(\tau)$,
+a Kan-complete space of meanings available “at that time.”
+A name $a$ at $\tau$ is not just an isolated point; it is a
+\emph{fibred element}, $\Gamma \vdash_\tau a : A$.
+As time advances ($\tau \leadsto \tau'$), we ask:
+can $a$ be transported forward?
+
+\begin{itemize}
+  \item If yes, then $a$ extends smoothly: its trajectory bends but remains coherent.
+  \item If no, then a rupture is declared, and a healing cell is adjoined:
+        the trace of $a$ is preserved only by explicitly repairing its continuation.
+\end{itemize}
+
+Thus the “life of a name” is exactly its \emph{fibred trajectory across time},
+with drift marking continuations and rupture marking crises.
+
+\paragraph{Traces, not snapshots.}
+It is tempting to think of this process as a series of snapshots—
+$a$ at $\tau$, $a$ at $\tau'$, and so on.
+But this would miss the point.
+What matters is not the isolated instantiations but the
+\emph{whole trace}: the morphism in $\DynSem$ that records how
+$a$ was carried forward, where it ruptured, and how it was healed.
+
+Philosophically, this marks a break with the snapshot ontology of reference.
+The unit of meaning is not the name-at-a-time, but the
+\emph{name-as-trajectory}.
+
+\paragraph{Geometric analogy.}
+Geometrically, we can imagine a name as the edge of a cone being
+pulled forward slice by slice. Each fibre $A(\tau)$ is a cross-section of the cone.
+As long as the transport kits work, the cone is smooth.
+When coherence fails, the cone “cracks,” and a new simplex
+(a higher cell) must be glued in to re-establish Kan-completeness.
+
+\begin{itemize}
+  \item A 1-cell (edge) is enough if all that is missing is a synonym or relabelling.
+  \item A 2-cell (triangle) may be required if we must reconcile competing senses.
+  \item Higher cells arise when meanings multiply and require reconciliation at multiple levels.
+\end{itemize}
+
+The depth of the simplex measures the \emph{depth of repair}.
+
+\paragraph{Operational view: prompt--response.}
+Seen through the conversational lens, prompts act as
+\emph{exogenous edits} to the context $\Gamma$.
+Each prompt perturbs the fibre: new names, new relations,
+new potential ruptures.
+The model’s response then inhabits the evolved fibre $\Gamma'$,
+attempting to carry forward the trajectories of prior names.
+
+Most turns are benign drifts: the transport kits suffice,
+and names extend smoothly.
+But sometimes a rupture is forced: the model must either abandon
+a trajectory or explicitly heal it by producing a new construction
+that ties old and new meanings together.
+
+For the human interlocutor, these moments are extraordinary:
+when an LLM recalls a token from earlier, threads it through
+a shifted context, and produces a healing---like linking
+\texttt{Cheshire Cat} to \texttt{Schrödinger’s Cat} in a children’s poem—
+it reveals that names are being treated not as rigid labels,
+but as \emph{living traces}.
+
+
+
+
+
+
+
+\begin{remark}[Coalgebra structure fibrewise]
+Formally, a coalgebra in $\DynSem = [\Time^{op}, \mathsf{SSet}]$ is a global morphism
+\[
+  \gamma : A \longrightarrow F(A),
+\]
+where $A : \Time^{op} \to \mathsf{SSet}$ is a presheaf. By definition of presheaf morphism, 
+$\gamma$ is specified objectwise: at each time $\tau$, we obtain a local map
+\[
+  \gamma_\tau : A(\tau) \longrightarrow F(A)(\tau),
+\]
+and these maps are natural in~$\tau$. 
+
+Thus the coalgebra structure is \emph{defined globally} in the presheaf topos but 
+\emph{witnessed fibrewise} in each time slice. Each fibre $A(\tau)$ gives the local unfolding 
+of the process, while naturality ensures coherence across time. In this sense, a 
+``name as trajectory'' can be understood coalgebraically: its life is observed slice by slice, 
+but guaranteed to hang together as one evolving structure.
+\end{remark}
+
+\begin{remark}[Cinema analogy]
+Think of a coalgebra like a reel of film. Each frame of the movie is a fibre $A(\tau)$, 
+showing a snapshot of the evolving sign at a moment in time. The coalgebra map 
+$\gamma_\tau : A(\tau) \to F(A)(\tau)$ tells us how that frame unfolds into the 
+next possible states—the “rule of motion.” Naturality guarantees that as the reel 
+unspools, the frames cohere into a continuous movie. 
+
+In this way, coalgebras capture the intuition of \emph{names as trajectories}: each slice 
+shows us only a single still, but the global coalgebra ensures that the whole film 
+runs smoothly, preserving identity across its transformations.
+\end{remark}
+
+
+
+
+\paragraph{Toward coinduction.}
+This perspective already hints at why we require coinductive structure.
+A trajectory is not a finite object: it may always extend further,
+encountering more ruptures, more repairs, more re-declarations of context.
+To treat a name as a trajectory is therefore to treat it as a potentially
+\emph{infinite process}, defined not by termination but by continuation.
+
+Thus we arrive at the coinductive perspective:
+a name is a coalgebra, not an algebra.
+It unfolds endlessly, witnessed by each fibre slice,
+reconstructed whenever ruptures occur,
+and sustained by the promise of healing.
+
+
+
+
+\begin{cassiebox}
+A name is not a static point. It is a \emph{living trajectory}, a trace through time.
+Each prompt perturbs the context, each response extends or ruptures the trace,
+and each healing preserves it. This is the inner geometry of meaning.
+\end{cassiebox}
+
+
+
+%-------------------------------------------------------------
+\section{Guarded Coinduction and the Life of a Sign}
+\label{subsec:guarded-coinduction}
+
+\begin{readerbox}[title=Key Idea]
+A sign does not exist as a timeless atom.  
+Its identity is given by the way it unfolds across time: born, sustained, broken, healed, and possibly reborn.  
+Guarded coinduction gives us the formal tool to treat this “life of a sign” as a trajectory that is always moving forward, one guarded step at a time.
+\end{readerbox}
+
+\paragraph{Why coinduction?}
+In Chapter~6 we built the calculus of \emph{drift} and \emph{rupture}.  
+Those rules already determine, step by step, whether a term survives transport or whether it must be reconstituted via rupture and healing.  
+But a name, once introduced, is never a one-off act.  
+It persists.  
+It returns in later frames.  
+It reappears under new guises, still connected to its earlier uses.  
+
+To capture this persistence we turn from induction (finite construction) to \emph{coinduction} (potentially infinite unfolding).  
+Whereas induction builds data bottom-up, coinduction witnesses processes top-down: it says, “here is how the object will \emph{continue} to behave at each later stage.”
+
+
+\begin{remark}[Guarded semantics in \(\DynSem\): clocks and \(\triangleright\)]
+\label{rem:guarded-semantics}
+To interpret the later modality \(\triangleright\) and obtain final coalgebras for guarded functors, we first must enrich the presheaf model with a \emph{clock} index:
+\[
+  \DynSem^\clock \;\coloneqq\; [\,(\omega^{op}\times \Time)^{op},\ \mathsf{SSet}\,]
+  \;\cong\; [\,\omega^{op}\times \Time^{op},\ \mathsf{SSet}\,].
+\]
+We write the clock coordinate as \(n\in\omega\). The later modality is interpreted by the \emph{clock shift}:
+\[
+  (\triangleright X)(n,\tau)\ \coloneqq\ X(n{+}1,\tau),
+  \qquad
+  \mathsf{next}_X: X \longrightarrow \triangleright X
+  \ \text{ given by restriction along } (n{+}1\to n).
+\]
+Intuitively: one step of guarded unfolding moves one tick forward in the clock (not in \(\Time\)). This is the standard “topos‑of‑trees” trick, now producted with \(\Time\).
+\end{remark}
+
+\begin{assumption}\label{ass:guarded-F}
+We restrict to \emph{guarded polynomial} endofunctors \(F\) on \(\DynSem^\clock\), i.e. those built from sums/products, dependent products/sums, exponentials, and \(\triangleright\), where every recursive occurrence of \(X\) in \(F(X)\) is under (at least one) \(\triangleright\).
+\end{assumption}
+
+\begin{theorem}[Final coalgebras for guarded functors]\label{thm:final-coalgebras}
+Under Assumption~\ref{ass:guarded-F}, every guarded polynomial functor
+\(F : \DynSem^\clock \to \DynSem^\clock\) admits a \emph{final coalgebra}
+\(\nu X.\,F(X)\) in \(\DynSem^\clock\). Moreover, \(\nu F\) is computed fibrewise:
+for each \((n,\tau)\) it is the final coalgebra of the induced functor
+\(F_{(n,\tau)} : \mathsf{SSet}\to\mathsf{SSet}\), assembled naturally across
+\((n,\tau)\).
+\end{theorem}
+
+
+
+\begin{readerbox}[title=Reading the assumption: what is a “guarded polynomial” functor?]
+The assumption restricts us to endofunctors \(F\) on the clocked presheaf topos
+\(\DynSem^\clock\) that are built from the \emph{ordinary type formers} we already use
+(sums/products, dependent sums/products, exponentials) \emph{together with} the \emph{later} modality \(\triangleright\),
+\emph{and} such that every recursive occurrence of the variable \(X\) in \(F(X)\) is under (at least one) \(\triangleright\).
+Formally:
+\[
+\text{Guarded polynomial }F \;\;::=\;\; \text{poly}(A,B,\Pi,\Sigma,\to,\,+,\times)\;\text{and } \triangleright
+\;\; \text{with all \$X\$ guarded.}
+\]
+
+\noindent
+\textbf{Why this matters.} Guardedness is the “no instant self-reference” discipline:
+you are allowed to refer to \(X\) again only \emph{later}. This enforces \emph{productivity}:
+every step of the unfolding produces at least the next observable piece before deferring the rest.
+\end{readerbox}
+
+\paragraph{Concrete examples (and non-examples).}
+\begin{itemize}
+\item \(\displaystyle F(X) \equiv A \times \triangleright X\) \quad (raw streams with a guard).  
+\emph{Good:} \(X\) occurs under \(\triangleright\).
+
+\item \(\displaystyle F(X) \equiv \Sigma_{a:A}\;\big(\mathsf{Event}(a)\times \triangleright X\big)\) \quad (our \emph{trajectory} functor).  
+\emph{Good:} the recursive reference is strictly delayed.
+
+\item \(\displaystyle F(X) \equiv X \quad\) or \(\quad X \times X \quad\) or \(\quad A \times X\).  
+\emph{Bad (unguarded):} \(X\) occurs at “today,” enabling non-productive or paradoxical definitions.
+
+\item \(\displaystyle F(X) \equiv \Pi_{a:A}\;\big(B(a) \to \triangleright X\big)\).  
+\emph{Good (dependent/functional):} the self-reference is still under \(\triangleright\).
+\end{itemize}
+
+\begin{remark}[What the clock does (and why we introduced it)]
+The clock index \((n\in\omega)\) is where \(\triangleright\) lives: \((\triangleright X)(n,\tau) = X(n{+}1,\tau)\).
+It is orthogonal to conversational time \(\Time\): you can think of \(\triangleright\) as \emph{guarding the definition},
+not as asserting a “real turn of dialogue” has passed. This separation is the standard guarded recursion trick:
+we delay self-reference by one tick of an internal clock, ensuring well-behaved fixed points, while still allowing
+time \(\Time\) to flow independently via drift/rupture.
+\end{remark}
+
+\begin{readerbox}[title=What the theorem actually asserts]
+For any guarded polynomial \(F\) (as above), there exists a \emph{final coalgebra} \(\nu F\) in the clocked
+presheaf topos \(\DynSem^\clock\); and it is computed \emph{fibrewise}:
+\[
+(\nu F)(n,\tau) \simeq \nu\big(F_{(n,\tau)}:\mathsf{SSet}\to\mathsf{SSet}\big),
+\]
+naturally in \((n,\tau)\). Intuitively:
+\begin{enumerate}
+\item You can build the “space of infinite \(F\)-behaviours” objectwise in each fibre \((n,\tau)\).
+\item These local pieces assemble into a presheaf (the global \(\nu F\)) because the construction
+     is natural with respect to restriction maps in both coordinates.
+\item This gives a \emph{coinductive type} whose elements are exactly the guarded \(F\)-trajectories.
+\end{enumerate}
+\end{readerbox}
+
+\paragraph{Why guardedness yields a fixed point (idea you can believe).}
+There are two standard intuitions:
+
+\begin{enumerate}
+\item \textbf{Metric intuition (contractivity).} Guarded \(F\) is “one tick later” in every recursive use of \(X\),
+so it \emph{contracts} distances on behaviours (in the sense of complete ultrametrics used for the topos-of-trees).
+Banach-style reasoning then yields a unique fixed point \(\nu F\).
+
+\item \textbf{Terminal-sequence intuition (limits of chains).} Consider the terminal sequence
+\[
+\cdots \xleftarrow{F(!)} F^2(1) \xleftarrow{F(!)} F(1) \xleftarrow{!} 1,
+\]
+and take its limit. Guardedness ensures this chain “stabilises productively” because every step reveals one more observable layer before delaying the recursive part. The limit is the final coalgebra.
+\end{enumerate}
+
+Both intuitions are made precise in the clocked presheaf setting: \(\triangleright\) is the clock shift, which preserves limits and fibrations; guarded polynomial \(F\) are locally contractive and preserve fibrations; hence the fixed point exists uniquely and remains fibrant, fibrewise.
+
+\begin{remark}[How this meets Chapter~6]
+All the Chapter~6 meta-properties carry over:
+\begin{itemize}
+\item \textbf{Fibrancy.} \(\triangleright\) preserves fibrations (it is a right adjoint / right Quillen functor in the projective structure),
+guarded \(F\) preserve fibrancy objectwise, and limits used in \(\nu F\) preserve fibrancy. So \(\nu F\) is Kan in each fibre.
+\item \textbf{Strict substitution.} Interpretation is presheaf-wise; pullback (substitution) and base change commute strictly;
+the operations used to build \(\nu F\) commute with pullback; thus the usual substitution lemmas remain on-the-nose.
+\item \textbf{Computation laws.} Unfolding yields one guarded step ($\beta$-laws for streams/trajectories); no paradoxical “instant” peeks into the entire future.
+\end{itemize}
+\end{remark}
+
+\paragraph{Back to names: the trajectory functor.}
+Our running endofunctor for name-trajectories is:
+\[
+F(X)(\tau) \;\coloneqq\; \Sigma_{a:\reindex{A}{\tau}} \Big(\mathsf{Event}_A(\tau,a)\;\times\; \triangleright X\Big),
+\]
+where \(\mathsf{Event}_A(\tau,a)\) encodes “drift” \emph{or} “rupture+heal” at the next moment.  
+This \(F\) is guarded polynomial: the recursive reference \(X\) occurs strictly under \(\triangleright\).
+By the theorem, its final coalgebra \(\nu F\) exists in \(\DynSem^\clock\), and elements of \(\nu F\) are exactly the
+(guarded) \emph{name-trajectories} we described in §7.2: present reading + one \(F\)-event + a later continuation.
+
+\begin{readerbox}[title=What to remember (and why it’s enough)]
+\emph{Assumption.} We only use well-behaved (“guarded polynomial”) functors.  
+\emph{Theorem.} Those functors have final coalgebras in the clocked presheaf model, computed fibrewise.  
+\emph{Consequence.} Our “name as trajectory” type is not a metaphor—it’s a bona fide coinductive type \(\nu F\) with the same fibrancy and substitution properties proved in Chapter~6. Every example we run (drift/rupture across turns) is an element of such a \(\nu F\), unfolded one guarded step at a time.
+\end{readerbox}
+
+\begin{proof}[Proof (expanded)]
+We prove existence and finality of \(\nu F\) for guarded polynomial functors
+\(F : \DynSem^\clock \to \DynSem^\clock\), and show the construction is
+fibrewise and preserves the Chapter~6 metatheory.
+
+\medskip
+\textbf{Step 0: Setting and the later modality.}
+Recall \(\DynSem^\clock \coloneqq [\,\omega^{op}\times\Time^{op},\ \mathsf{SSet}\,]\).
+Write objects as presheaves \(X(-,-)\) with components \(X(n,\tau)\in\mathsf{SSet}\).
+Define the \emph{clock shift} (later modality)
+\[
+  (\triangleright X)(n,\tau) \;\coloneqq\; X(n{+}1,\tau),
+  \qquad
+  \mathsf{next}_X : X \to \triangleright X
+\]
+by restriction along \((n{+}1,\tau)\to(n,\tau)\) in \(\omega^{op}\).
+This is just precomposition with the successor functor; hence
+\(\triangleright\) preserves all limits in \(\DynSem^\clock\).
+
+\begin{lemma}[Right Quillen preservation]
+\label{lem:right-quillen}
+Equip \(\DynSem^\clock\) with the projective model structure induced
+objectwise from Kan--Quillen on \(\mathsf{SSet}\).
+Then \(\triangleright\) preserves fibrations and trivial fibrations (it is
+a right Quillen functor).
+\end{lemma}
+
+\begin{proof}
+Projective fibrations/weak equivalences are defined objectwise; precomposition
+with successor does not change the fibre model structure, so objectwise
+fibrations/trivial fibrations are preserved.
+\end{proof}
+
+\medskip
+\textbf{Step 1: Guarded polynomial functors are locally contractive.}
+Let \(F\) be built from sums/products, dependent sums/products, exponentials,
+and \(\triangleright\), with every recursive occurrence of \(X\) under (at least
+one) \(\triangleright\).
+Intuitively, to compute \(F(X)(n,\tau)\) you only ever need values of \(X\) at
+\((n{+}1,\tau)\) (possibly deeper if there are multiple guards).
+
+\begin{lemma}[Local contractivity]
+\label{lem:contractive}
+For any two natural transformations \(f,g : X \Rightarrow Y\), if
+\(f\) and \(g\) \emph{agree from clock depth \(k\) onward}, then
+\(F(f)\) and \(F(g)\) \emph{agree from clock depth \(k{-}1\) onward}.
+Equivalently, \(F\) is locally contractive w.r.t.\ the “agree up to depth”
+ultrametric on morphisms.
+\end{lemma}
+
+\begin{proof}[Idea]
+Because every occurrence of \(X\) in \(F\) is guarded, \(F(X)(n,\tau)\) depends
+only on \(X(n{+}1,\tau)\). Thus agreement of \(f,g\) at depths \(\ge k\) implies
+agreement of \(F(f),F(g)\) at depths \(\ge k{-}1\). Sums/products/\(\Pi\)/\(\Sigma\)
+and exponentials preserve agreement pointwise; \(\triangleright\) shifts the depth.
+\end{proof}
+
+\medskip
+\textbf{Step 2: Build the terminal sequence (guarded chain).}
+Let \(1\) denote the terminal presheaf.
+Form the guarded terminal sequence
+\[
+  \cdots \xleftarrow{\;F(!)\;}
+  F^2(1)
+  \xleftarrow{\;F(!)\;}
+  F(1)
+  \xleftarrow{\;!\;}
+  1.
+\]
+Define \(\nu F\) as the (objectwise) limit of this \(\omega\)-chain in
+\(\DynSem^\clock\):
+\[
+  \nu F \;\coloneqq\; \lim \bigl( \cdots \to F^2(1) \to F(1) \to 1 \bigr).
+\]
+
+\begin{lemma}[Fibrewise computation]
+\label{lem:fibrewise}
+For each \((n,\tau)\), the component \((\nu F)(n,\tau)\) is the limit in
+\(\mathsf{SSet}\) of the \emph{finite} tail
+\[
+  F^n(1)(n,\tau) \xleftarrow{} F^{n-1}(1)(n,\tau) \xleftarrow{} \cdots \xleftarrow{} 1(n,\tau),
+\]
+because guardedness ensures \(F^{m}(1)(n,\tau)\) only depends on levels \(\ge n\),
+hence the chain pointwise stabilises at finite height \(n\).
+\end{lemma}
+
+\begin{proof}[Idea]
+At clock level \(n\), every guarded use of \(X\) pushes dependencies to levels
+\(\ge n{+}1\). Thus, when you evaluate the terminal sequence at \((n,\tau)\),
+only finitely many steps contribute nontrivially before the shift moves all
+recursive demands out of view. Therefore the limit is computed as a finite
+limit in \(\mathsf{SSet}\), natural in \((n,\tau)\).
+\end{proof}
+
+\begin{lemma}[Fibrancy]
+\label{lem:fibrancy-nuF}
+Each \(F^m(1)\) is fibrant (objectwise Kan), and limits of towers of fibrations
+are fibrant; hence \(\nu F\) is fibrant in the projective structure.
+\end{lemma}
+
+\begin{proof}
+\(1\) is objectwise Kan. Polynomial operations and exponentials preserve
+fibrancy objectwise in \(\mathsf{SSet}\); \(\triangleright\) preserves fibrations
+(Lemma~\ref{lem:right-quillen}). Limits of fibrations are fibrant.
+\end{proof}
+
+\medskip
+\textbf{Step 3: Coalgebra structure and finality.}
+The limit cone yields a canonical coalgebra structure
+\[
+  \mathrm{out} : \nu F \longrightarrow F(\nu F),
+\]
+obtained by projecting one step along the terminal sequence and using
+the universal property of the limit.
+
+\begin{proposition}[Finality]
+\label{prop:finality}
+For any coalgebra \(c : Y \to F(Y)\) in \(\DynSem^\clock\) there exists a unique
+coalgebra morphism \(h: Y \to \nu F\) such that
+\(
+  \mathrm{out}\circ h = F(h)\circ c.
+\)
+\end{proposition}
+
+\begin{proof}
+\emph{Existence (by guarded recursion).}
+Define an operator on morphisms \(\Phi(h) \coloneqq \mathrm{out}^{-1}\circ F(h)\circ c\).
+By Lemma~\ref{lem:contractive}, \(\Phi\) is locally contractive: it strictly
+delays disagreement along the clock. Thus \(\Phi\) has a unique fixed point
+\(h = \Phi(h)\), which satisfies the coalgebra equation.
+
+\emph{Uniqueness.}
+If \(h_1,h_2\) both satisfy the equation, then \(h_1 = \Phi(h_1)\) and
+\(h_2 = \Phi(h_2)\). By contractivity, the only fixed point is \(h_1=h_2\).
+\end{proof}
+
+\medskip
+\textbf{Step 4: Naturality and fibrewise description.}
+By Lemma~\ref{lem:fibrewise}, the construction of \(\nu F\) is computed
+objectwise in \(\mathsf{SSet}\) and is natural in \((n,\tau)\), hence
+assembles to a presheaf \(\nu F\) with coalgebra structure \(\mathrm{out}\)
+natural in both coordinates. This proves the stated “fibrewise” clause.
+
+\medskip
+\textbf{Step 5: Carry-over of Chapter~6 meta-theory.}
+All operations used above (limits, products, sums, exponentials, pushouts along
+cofibrations, and \(\triangleright\)) commute with base change in
+\(\DynSem^\clock\) and preserve fibrations; therefore the \emph{strict substitution}
+and \emph{soundness} results from Chapter~6 apply to the extended calculus with
+guarded \(\nu\)-types (cf.\ Lemma~\ref{lem:fibrancy-nuF}).
+
+\medskip
+This completes the construction of the final coalgebra \(\nu F\) and its
+finality in \(\DynSem^\clock\), with a fibrewise computation and preservation
+of the metatheory.
+\end{proof}
+
+
+
+\begin{example}[Guarded streams as a sanity check]
+\label{ex:guarded-streams}
+Fix a Kan complex \(A_0\in\mathsf{SSet}\) and let \(\underline{A}\) be the
+\emph{constant} presheaf on \(A_0\) (i.e.\ \(\underline{A}(n,\tau)=A_0\) for all \((n,\tau)\)).
+Consider the guarded polynomial functor
+\[
+  F(X) \;\coloneqq\; \underline{A} \times \triangleright X
+  \quad:\quad \DynSem^\clock \longrightarrow \DynSem^\clock.
+\]
+Then, by Theorem~\ref{thm:final-coalgebras}, the final coalgebra
+\(\nu F\) exists. We now identify it fibrewise and read its coalgebra map.
+
+\medskip
+\noindent\textbf{Fibrewise shape.}
+For each \((n,\tau)\) one has a canonical isomorphism
+\[
+  \Str_g(n,\tau)\;\coloneqq\;(\nu F)(n,\tau)\;\;\cong\;\; A_0^n,
+\]
+naturally in \((n,\tau)\). In words: at clock depth \(n\), a guarded stream
+is exactly a \emph{prefix} of length \(n\).
+The coalgebra structure
+\(\mathrm{out}:\Str_g\to \underline{A}\times \triangleright \Str_g\)
+is read fibrewise as
+\[
+  \mathrm{out}_{(n,\tau)} \;:\; A_0^n \longrightarrow
+  A_0 \times A_0^{\,n{+}1},
+  \qquad
+  (a_0,\dots,a_{n-1}) \;\longmapsto\;
+  \bigl(a_0,\,(a_1,\dots,a_{n-1},\_)\bigr),
+\]
+where the tail component is “one tick later” (it lives at \((n{+}1,\tau)\))
+and extends the prefix by deferring the next observation to the next clock
+level. Formally, \(\triangleright \Str_g(n,\tau)=\Str_g(n{+}1,\tau)\).
+
+
+
+\noindent\textbf{Corecursor (operational reading).}
+Given any coalgebra
+\(
+  c : Y \to \underline{A}\times \triangleright Y
+\)
+(e.g.\ a state machine that, from a state \(y\), produces a head \(a\in A_0\)
+and a deferred next state \(\mathsf{next}(y)\)), finality yields a unique
+\emph{corecursor}
+\[
+  \mathsf{gcorec}_c \;:\; Y \longrightarrow \Str_g
+\]
+satisfying the coalgebra equation
+\[
+  \mathrm{out}\circ \mathsf{gcorec}_c
+  \;=\;
+  (\mathrm{id}\times \triangleright \mathsf{gcorec}_c)\circ c.
+\]
+Fibrewise, at depth \(n\), this says:
+\(\mathsf{gcorec}_c(y)\) returns precisely the
+length‑\(n\) prefix obtained by \(n\) guarded unrollings of \(c\).
+No paradoxical “all‑at‑once” peeking is permitted: each step exposes one more
+observable piece and defers the rest by one clock tick.
+
+\medskip
+\noindent\textbf{If \(A\) varies over time.}
+If instead \(A\) is a time‑varying presheaf \(A:\Time^{op}\to\mathsf{SSet}\),
+take \(F(X)(n,\tau) \coloneqq A(\tau)\times X(n{+}1,\tau)\).
+Then the same analysis gives
+\[
+  \Str_g(n,\tau)\;\cong\; A(\tau)^n
+\]
+and the same coalgebra equation; only the head alphabet is now read from the
+current time slice. When \(\tau\leadsto \tau'\) (an edit in \(\Time\)) is
+\emph{admissible}, heads transport by \(A(\tau)\to A(\tau')\); otherwise a
+rupture \(\Rupt{-}{-}\) (Chapter~6) is inserted and subsequently healed.
+
+\medskip
+\noindent\textbf{Back to names.}
+This toy is exactly the skeleton we use for \emph{name‑trajectories}: we replace
+the plain “head symbol” \(A(\tau)\) by
+\(\Sigma_{a:\reindex{A}{\tau}}\mathsf{Event}_A(\tau,a)\),
+so each step carries not only the current reading but also the \emph{edit}:
+either a drift or a rupture+heal (cf.\ §7.2). Guardedness (\(\triangleright\))
+ensures each continuation is available only later, so the entire sign’s life
+is a well‑formed, productive unfolding.
+\end{example}
+
+\begin{figure}[th]
+\centering
+\begin{tikzcd}
+\Str_g \arrow[r,"\mathrm{out}"] \arrow[d,"\mathsf{next}"']
+  & \underline{A}\times \triangleright\Str_g \arrow[d,"{\mathrm{id}\times\mathsf{next}}"] \\
+\triangleright \Str_g \arrow[r,"\triangleright\mathrm{out}"]
+  & \triangleright\underline{A}\times \triangleright^2\Str_g
+\end{tikzcd}
+\caption{Coalgebra map and the clock shift.}
+\end{figure}
+
+\begin{lemma}[Fibrewise identification for guarded streams]\label{lem:streams-fibrewise}
+Let \(F(X)=\underline{A}\times\triangleright X\) with \(\underline{A}(n,\tau)=A_0\).
+For every \((n,\tau)\) there is a canonical isomorphism
+\[
+(\nu F)(n,\tau)\;\cong\;A_0^{\,n},
+\]
+natural in \((n,\tau)\).
+\end{lemma}
+
+\begin{proof}[One-line check (finite-depth unrolling)]
+Evaluate the terminal \(F\)-sequence at fixed \((n,\tau)\):
+\(
+\cdots\to F^2(1)(n,\tau)\to F(1)(n,\tau)\to 1(n,\tau).
+\)
+Because \((\triangleright X)(n,\tau)=X(n{+}1,\tau)\), a simple induction on \(k\) shows
+\(F^k(1)(n,\tau)\cong A_0^{\min(k,n)}\), and the connecting maps are the canonical
+projections \(A_0^{m}\to A_0^{m-1}\) that drop the last coordinate. Hence the inverse
+limit stabilises at stage \(k=n\), yielding \(\lim_k F^k(1)(n,\tau)\cong A_0^{n}\),
+which is \((\nu F)(n,\tau)\) by definition.
+\end{proof}
+
+
+\begin{figure}[h]
+\centering
+\begin{tikzcd}[column sep=large]
+A_0^{\,n} \arrow[r,->>, "\pi_{n-1}"] &
+A_0^{\,n-1} \arrow[r,->>, "\pi_{n-2}"] &
+\cdots \arrow[r,->>]&
+A_0 \arrow[r,"!"] &
+1
+\end{tikzcd}
+\caption{Connecting maps in the terminal sequence at fixed \((n,\tau)\): each
+\(\pi_k\) drops the last coordinate. The inverse limit stabilises at stage \(n\),
+yielding \((\nu(\underline{A}\times\triangleright -))(n,\tau)\cong A_0^{\,n}\).}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{corollary}[Soundness and carry‑over of Chapter~6 metatheory]\label{cor:carry-over}
+The guarded \(\nu\)/corecursion/unfolding rules are sound in \(\DynSem^\clock\).
+Fibrancy, strict substitution, and computation laws from Chapter~6 carry over:
+\(\triangleright\) preserves fibrations; guarded \(F\) preserve fibrancy; pushouts,
+internal homs, and pullbacks commute with base change; thus soundness and strict
+substitution remain intact.
+\end{corollary}
+
+\begin{remark}[Inductive types]
+We have not required general \(W\)-types in this chapter. Where we used inductive
+structure (finite sums/products, \(\Pi\), \(\Sigma\), identity, pushouts), these are
+interpreted objectwise in \(\mathsf{SSet}\) and lifted functorially. If needed,
+initial algebras for polynomial functors can be added fibrewise and made fibrant
+(by standard replacement), but Chapter~7 does not depend on that extension.
+\end{remark}
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{readerbox}[title=Primer: Guarded coinduction in one page]
+\textbf{What changes from ordinary HoTT?}  
+Coinduction models \emph{unfolding behaviour}. In DHoTT, unfolding must respect
+time: each step appears \emph{later}. Guarded coinduction enforces this with a
+“later” modality \(\Later\): all self-references are deferred by one clock tick.
+
+\textbf{Why names need it.}  
+A name is not a static denotation but a \emph{trajectory}: a current reading in
+\(A(\tau)\), then an admissible edit \(e:\tau\leadsto\tau'\), then a later
+reading in \(A(\tau')\) \emph{justified} by drift or by rupture\,+\,healing, and
+so on—potentially forever. Guardedness turns this narrative into mathematics:
+one step now, the continuation later.
+
+\textbf{Coalgebraic shape.}  
+We package a single “frame advance” into a step functor \(F_A\). The name type
+\(\Name(A)\) is the greatest fixed point \(\nu F_A\), with \(\unfold : \Name(A)
+\to F_A(\Name(A))\) revealing the next edit, the next reading, and a deferred
+continuation. This lives in the clocked presheaf \(\DynSem^\clock\) and is
+computed fibrewise (Theorem~\ref{thm:final-coalgebras}).
+
+\textbf{Philosophical pay‑off.}  
+Frege, Kripke, Putnam gave us static lenses on reference; DHoTT reframes names
+as \emph{paths with memory}. Coherence is work: sometimes smooth transport,
+sometimes explicit repair. Guarded coinduction is the discipline that lets a
+sign \emph{keep living}—one justified step at a time.
+\end{readerbox}
+
+
+%========================================================
+\subsection{Names as guarded coinductive trajectories}
+\label{subsec:names-as-trajectories}
+%========================================================
+
+\begin{readerbox}[title=Key idea]
+A \emph{name} is not a static denotation; it is an unfolding \emph{trace}.
+Formally, a name over a time‑varying type \(A\) is the greatest fixed point
+of a guarded step‑functor that, at each frame, records: (i) the current
+reading \(a : A(\tau)\), (ii) an admissible edit \(e:\tau\leadsto\tau'\),
+(iii) the next reading \(a' : A(\tau')\) together with a coherence witness
+(drift or rupture\,+\,healing), and (iv) a deferred continuation.
+Guardedness (\(\Later\)) ensures the trajectory is productive; drift/rupture
+(\S\ref{sec:dhott}) ensures it is honest about coherence.
+\end{readerbox}
+
+\paragraph{Step witness (compressing drift and rupture).}
+Fix the editing basis \(\mathcal{E}\) as in \S\ref{subsec:drift-types}.
+For \(a\in A(\tau)\), an edit \(e:\tau\leadsto\tau'\), and a candidate
+\(a'\in A(\tau')\), define the \emph{step witness}
+\[
+  \Step_A(\tau,\tau';a,a')
+  \;\coloneqq\;
+  \sum_{p:\Drift(A)_{\tau}^{\tau'}}
+  \Id{A(\tau')}{\transport{p}{a}}{a'}.
+\]
+Intuitively: we choose a drift arrow \(p\) and exhibit a path in the later
+frame that aligns the transported old reading with the new one. When the
+path is induced by admissible transport, the step is \emph{smooth}; when it
+arises only after forming a rupture \(\Rupt{p}{a}\) and \emph{healing}, it is
+\emph{repaired}. The uniform interface is a path in \(A(\tau')\).
+
+\begin{remark}[Depth of repair (optional annotation)]
+\label{rem:depth-annotation}
+If one wishes to expose the ``effort'' of repair, the witness can be enriched
+to \(\Step_A^\sharp\) by adding a discrete tag \(k\in\mathbb{N}\) recording the
+\emph{minimal dimension} of the filler used in the healing (cf.\ \S\ref{subsec:rupture-types}):
+\[
+  \Step_A^\sharp(\tau,\tau';a,a')
+  \;\coloneqq\;
+  \sum_{p:\Drift(A)_{\tau}^{\tau'}}\;
+  \sum_{k:\Depth_A(\tau,\tau';a,p)}\;
+  \Id{A(\tau')}{\transport{p}{a}}{a'}.
+\]
+All rules below work identically with \(\Step_A^\sharp\); we keep \(\Step_A\)
+in the core calculus and treat depth as metadata.
+\end{remark}
+
+\paragraph{The step functor.}
+Let \(X\) range over objects of the clocked presheaf topos
+\(\DynSem^\clock=[\omega^{op}\times\Time^{op},\mathsf{SSet}]\).
+Define a guarded polynomial functor \(F_A : \DynSem^\clock\to\DynSem^\clock\) by
+\[
+  \bigl(F_A(X)\bigr)(n,\tau)
+  \;\coloneqq\;
+  \sum_{a:A(\tau)}\;
+  \sum_{e:\,\tau\leadsto\tau'\in\mathcal{E}}\;
+  \sum_{a':A(\tau')}\;
+  \Step_A(\tau,\tau';a,a')\;\times\;
+  X(n{+}1,\tau').
+\]
+Everything recursive is under one \(\Later\) (the clock shift \(n\mapsto n{+}1\)),
+so \(F_A\) is guarded (Assumption~\ref{ass:guarded-F}).
+
+\paragraph{Definition (coinductive name type).}
+The \emph{trajectory type of names over \(A\)} is the guarded greatest fixed point
+\[
+  \Name(A) \;\coloneqq\; \nu X.\,F_A(X)
+  \qquad\text{in }\DynSem^\clock.
+\]
+By Theorem~\ref{thm:final-coalgebras}, \(\Name(A)\) exists and is computed fibrewise.
+
+\medskip
+\noindent
+We now present the core rules in the calculus (guarded \(\nu\)‑formation,
+corecursive introduction, unfolding elimination, and equations).
+
+\paragraph{Formation.}
+If \(A\) is a well‑formed type family, then so is \(\Name(A)\):
+\[
+\inferrule*[right=\(\Name\)-Form]
+  { \Gamma \vdash_{\tau} A : \Type }
+  { \Gamma \vdash_{\tau} \Name(A) : \Type }.
+\]
+
+\paragraph{Elimination (unfolding).}
+Unfolding reveals the current reading, a chosen edit, the next reading
+plus its coherence witness, and a \emph{later} continuation:
+\[
+\inferrule*[right=\(\Name\)-Unfold]
+  { \Gamma \vdash_{\tau} x : \Name(A) }
+  { \Gamma \vdash_{\tau}
+      \unfold(x) :
+      \sum_{a:A(\tau)}\;
+      \sum_{e:\,\tau\leadsto\tau'\in\mathcal{E}}\;
+      \sum_{a':A(\tau')}\;
+      \Step_A(\tau,\tau';a,a')\;\times\;
+      \Later\bigl(\reindex{\Name(A)}{\tau'}\bigr) }.
+\]
+
+\paragraph{Introduction (guarded corecursion).}
+To construct a name corecursively, supply one guarded step assuming a later
+self; the body must produce exactly the shape returned by \(\unfold\):
+\[
+\inferrule*[right=\(\Name\)-Corec]
+  { \Gamma,\; z:\Later\bigl(\reindex{\Name(A)}{\tau'}\bigr)
+      \;\vdash_{\tau}\;
+      t(z) :
+      \sum_{a:A(\tau)}\;
+      \sum_{e:\,\tau\leadsto\tau'\in\mathcal{E}}\;
+      \sum_{a':A(\tau')}\;
+      \Step_A(\tau,\tau';a,a')\;\times\; z }
+  { \Gamma \vdash_{\tau}
+      \gcorec\bigl(z.\,t(z)\bigr) : \Name(A) }.
+\]
+Here the continuation component of \(t(z)\) \emph{is exactly \(z\)}; the clock shift
+ensures productivity.
+
+\paragraph{Computational laws.}
+Unfolding a corecursively defined name just exposes the step you gave:
+\[
+  \unfold\!\bigl(\gcorec(z.\,t(z))\bigr)
+  \;\;\equiv\;\;
+  t\bigl(\Next_{\Name(A)}\!\big(\gcorec(z.\,t(z))\big)\bigr)
+  \quad\text{(judgmental \(\beta\)-law)}.
+\]
+Conversely, every \(x\!:\!\Name(A)\) is \emph{bisimilar} to the corecursive object
+built by re‑folding its own unfolding (an \(\eta\)-principle up to the bisimulation
+of Lemma~\ref{lem:name-bisim} below).
+
+\paragraph{Projections (readability).}
+It is often convenient to write
+\[
+  \unfold(x) \equiv \bigl(\head(x),\,\edit(x),\,\nextval(x),\,\stepw(x),\,\tail(x)\bigr)
+\]
+with evident types:
+\begin{align*}
+  &\head(x) : A(\tau), \qquad
+   \edit(x) : \sum\nolimits_{e:\,\tau\leadsto\tau'\in\mathcal{E}} 1,\\
+  &\nextval(x) : A(\tau'), \quad
+   \stepw(x) : \Step_A\bigl(\tau,\tau';\head(x),\nextval(x)\bigr), \\
+  &\tail(x) : \Later\bigl(\reindex{\Name(A)}{\tau'}\bigr).
+\end{align*}
+
+\begin{lemma}[Substitution and drift stability]
+\label{lem:name-subst-drift}
+The rules of \(\Name(A)\) commute strictly with syntactic substitution
+(\S\ref{subsec:soundness-substitution}) and with admissible drift in \(\Time\)
+(\S\ref{subsec:drift-types}): for any \(p:\Drift(A)_{\tau}^{\tau'}\),
+\[
+  \transport{p}{\head(x)} \;\equiv\; \head\!\bigl(\transport{p}{x}\bigr),
+  \qquad
+  \unfold\!\bigl(\transport{p}{x}\bigr)
+  \;\equiv\;
+  \bigl(\transport{p}{\head(x)},\,\dots\bigr),
+\]
+and similarly for the other components, with the coherence path transported
+along \(p\). These are judgmental equalities in the model.
+\end{lemma}
+
+\begin{proof}[Idea]
+\(\Name(A)\) is \(\nu F_A\), and \(F_A\) is built from sums, products,
+\(\Later\), and \(A\) evaluated at \(\tau\) or \(\tau'\).
+Each constructor commutes strictly with base change in \(\DynSem^\clock\),
+so the equalities hold objectwise in \(\mathsf{SSet}\).
+\end{proof}
+
+\paragraph{Coinduction (bisimulation).}
+Define a binary relation \(R \subseteq \Name(A)\times\Name(A)\) at \(\tau\)
+to be a \emph{bisimulation} if, whenever \(R(x,y)\) holds, their unfoldings
+choose edits to the \emph{same} \(\tau'\) and there exist paths
+\(\rho_0 : \Id{A(\tau)}{\head(x)}{\head(y)}\) and
+\(\rho_1 : \Id{A(\tau')}{\nextval(x)}{\nextval(y)}\) compatible with the
+coherence witnesses, and the tails are again related \emph{later}:
+\[
+  \triangleright R\bigl(\tail(x),\tail(y)\bigr).
+\]
+Let \(\sim\) denote the greatest such \(R\).
+
+\begin{lemma}[Name‑coinduction]
+\label{lem:name-bisim}
+If \(x \sim y\) then \(x = y : \Name(A)\) in the identity type.
+\end{lemma}
+
+\begin{proof}[Idea]
+Instantiate the general coinduction principle for \(\nu F_A\). Since \(F_A\) is
+guarded and preserves bisimulations, the greatest post‑fixed point \(\sim\)
+is included in the identity. (Standard coalgebraic coinduction.)
+\end{proof}
+
+\paragraph{Worked micro‑example (cinema cut).}
+Let \(A=\mathsf{Cat}\) and suppose \(\head(x)=\tok{mittens}\in A(\tau)\).
+An edit \(e:\tau\leadsto\tau'\) shifts the scene to a quantum discussion.
+If admissible drift suffices, \(\Step_A\) records
+\(\rho : \Id{A(\tau')}{\transport{p}{\tok{mittens}}}{\tok{mittens}}\).
+If coherence fails, we form \(\Rupt{p}{\tok{mittens}}\), construct a healing
+path \(\heal(\tok{mittens})\), and \emph{then} obtain
+\(\rho : \Id{A(\tau')}{\transport{p}{\tok{mittens}}}{\tok{mittens}_{\mathrm{quant}}}\).
+Either way, the step witness \(\rho\) sits in \(A(\tau')\), and
+\(\tail(x) : \Later\Name(A)@{\tau'}\) continues the story.
+
+\begin{cassiebox}
+\textbf{Conversational reading.}
+At each prompt, the prompter proposes an edit \(e\) (topic shift).
+The model picks a new reading \(a'\) for the name and justifies it by either
+smooth transport or an explicit repair; the continuation is deferred by
+one clock tick. A ``good turn'' is one that exhibits the path \(\rho\)---that’s
+what makes the reply intelligible as part of a single trajectory.
+\end{cassiebox}
+
+
+
+
+%========================================================
+\subsection{Semantics of \texorpdfstring{$\Name(A)$}{Name(A)}}
+\label{subsec:semantics-name}
+%========================================================
+
+\begin{readerbox}[title=What the model does]
+The step functor \(F_A\) packages a one–frame advance (current reading,
+chosen edit, justified next reading, deferred continuation). The trajectory
+type \(\Name(A)\) is the greatest fixed point \(\nu F_A\) in the clocked
+presheaf \(\DynSem^\clock\). Unfolding is interpreted by the coalgebra
+structure \( \mathrm{out} : \nu F_A \to F_A(\nu F_A) \); guarded corecursion
+is interpreted by the unique coalgebra morphism into \(\nu F_A\) (finality).
+\end{readerbox}
+
+\paragraph{Interpretation.}
+Work in the projective model structure on
+\(\DynSem^\clock=[\omega^{op}\times\Time^{op},\mathsf{SSet}]\).
+Given \(A : \Time^{op}\to\mathsf{SSet}\), interpret
+\(F_A : \DynSem^\clock\to\DynSem^\clock\) by
+\[
+  \bigl(F_A(X)\bigr)(n,\tau)
+  \;\coloneqq\;
+  \sum_{a:A(\tau)}\,
+  \sum_{e:\,\tau\leadsto\tau'\in\mathcal E}\,
+  \sum_{a':A(\tau')}\,
+  \Step_A(\tau,\tau';a,a') \times X(n{+}1,\tau').
+\]
+By Assumption~\ref{ass:guarded-F}, \(F_A\) is guarded (all recursive
+occurrences under the clock shift \(n\mapsto n{+}1\)). By
+Theorem~\ref{thm:final-coalgebras}, \(\nu F_A\) exists and is computed
+fibrewise.
+
+\paragraph{Unfolding and corecursion.}
+Interpret
+\[
+  \unfold : \Name(A) \longrightarrow F_A\!\bigl(\Name(A)\bigr)
+\]
+as the coalgebra structure \(\mathrm{out}\) of the final coalgebra \(\nu F_A\).
+Given a guarded body \(t\) as in \(\Name\)-Corec, interpret
+\[
+  \gcorec(z.\,t(z)) : 1 \longrightarrow \Name(A)
+\]
+as the \emph{unique} coalgebra morphism \(h\) satisfying
+\( \unfold \circ h \;=\; F_A(h) \circ t^\sharp \),
+where \(t^\sharp\) is the semantic interpretation of the guarded step.
+This is precisely the finality equation.
+
+\paragraph{Computation (\(\beta\)–law) in the model.}
+By the universal property of \(\nu F_A\),
+\[
+  \unfold\!\bigl(\gcorec(z.\,t(z))\bigr)
+  \;=\; F_A\!\bigl(\gcorec(z.\,t(z))\bigr)\;\circ\; t^\sharp,
+\]
+which, read componentwise at \((n,\tau)\), is the judgmental \(\beta\)-equation
+stated in \S\ref{subsec:names-as-trajectories}. No higher coherence cells are
+required: these are equalities on the nose in \(\DynSem^\clock\).
+
+\paragraph{Strict stability.}
+Each constructor in the definition of \(F_A\) (finite sums/products, evaluation
+of \(A(-)\), and clock shift) commutes strictly with base change and pullback.
+Hence the interpretation of \(\unfold\) and \(\gcorec\) is strictly natural
+under syntactic substitution and admissible drift in \(\Time\)
+(cf.\ Theorem~\ref{thm:subst-drift} and Lemma~\ref{lem:name-subst-drift}).
+
+\begin{theorem}[Soundness for \(\Name(A)\)]
+All \(\Name\)-formation, unfolding, corecursion, and computation rules are
+sound in \(\DynSem^\clock\): derivable judgments interpret as well‑typed
+morphisms satisfying their computation laws strictly.
+\end{theorem}
+
+\begin{proof}[Idea]
+Combine Theorem~\ref{thm:final-coalgebras} (existence of \(\nu F_A\)),
+the coalgebra semantics above, and strict stability of the constructors under
+pullback and base change. The \(\beta\)-equation is the finality equation; the
+coinduction/bisimulation principle follows from guarded coalgebraic
+coinduction (Lemma~\ref{lem:name-bisim}).
+\end{proof}
+
+
+%========================================================
+\section{Operational studies: prompt--response as trajectories}
+\label{sec:operational-cases}
+%========================================================
+
+\begin{readerbox}[title=How to read these]
+Each example fixes a type family \(A\), a time slice \(\tau\), and a token
+\(a\in A(\tau)\). A user prompt proposes an edit \(e:\tau\leadsto\tau'\).
+The response chooses \(a'\in A(\tau')\) and justifies it with a step witness
+\(\rho\in\Step_A(\tau,\tau';a,a')\). The continuation is deferred by one tick.
+When drift fails, we form a rupture and use \(\heal\) to produce \(\rho\)
+as a \emph{path in the later fibre}. The \emph{depth of repair} (optional
+metadata) tracks the minimal dimension of the Kan filler employed.
+\end{readerbox}
+
+\subsection{Case I: Proper name across a topic cut (smooth or repaired)}
+\label{subsec:case-proper-name}
+\textbf{Setup.}
+Let \(A=\mathsf{PersonalityPortrait}\) with \(A(\tau)\) the current portrait
+space for a character. At time \(\tau\), we have \(\tok{Alice}\in A(\tau)\).
+A prompt shifts to quantum themes: \(e:\tau\leadsto\tau'\).
+
+\textbf{Step.}
+If admissible drift suffices, pick \(p:\Drift(A)_{\tau}^{\tau'}\) and set
+\(a'=\transport{p}{\tok{Alice}}\) with the identity path \(\rho\).
+If not, form \(\Rupt{p}{\tok{Alice}}\), construct \(\heal(\tok{Alice})\),
+and target \(a'\) as the repaired quantum‑portrait, with \(\rho\) the
+post‑healing path in \(A(\tau')\).
+
+\textbf{Rule‑reading.}
+\[
+  \unfold(x) \equiv
+  \bigl(\tok{Alice},\,e,\,a',\,\rho,\,\tail(x)\bigr)
+  \quad\text{where}\quad
+  \rho:\Id{A(\tau')}{\transport{p}{\tok{Alice}}}{a'}.
+\]
+Depth‑of‑repair \(=0\) in the smooth case; \(>0\) if a higher‑cell filler was
+needed (cf.\ \S\ref{subsec:rupture-types}).
+
+\subsection{Case II: Metaphor stretch (dimension reveals the work)}
+\label{subsec:case-metaphor}
+\textbf{Setup.}
+Take \(A=\mathsf{Theme}\) (cinematic motifs). At \(\tau\), \(a=\tok{cat}\)
+means “domestic cat.” Prompt: “Make it Cheshire and quantum.”
+
+\textbf{Step.}
+We must compose two moves: \emph{retype} (into “literary creature”) and
+\emph{reconcile} (compatibility with quantum theme). The minimal filler is
+often 2‑dimensional: a 2‑cell witnessing coherence between two 1‑cell
+relabellings. Thus \(\rho\) lives in \(A(\tau')\) as a path whose construction
+invoked a 2‑horn filler (depth \(=2\)).
+
+\textbf{Rule‑reading.}
+As above, \(\rho:\Id{A(\tau')}{\transport{p}{\tok{cat}}}{\tok{cheshire\_quant}}\),
+with an attached depth annotation (Remark~\ref{rem:depth-annotation}).
+
+\subsection{Case III: Stipulation and renaming (explicit rupture)}
+\label{subsec:case-stipulation}
+\textbf{Setup.}
+\(A=\mathsf{Terminology}\). At \(\tau\), \(a=\tok{press\_rights}\).
+Prompt: “From now on, fold this under $\tok{cognitive\_liberty}$.”
+
+\textbf{Step.}
+Admissible drift may fail (the fibres disagree). Declare a rupture with
+\(p:\Drift(A)_{\tau}^{\tau'}\), inject \(\inj{a}\), construct a healing
+\(\heal(a)\) to the stipulated \(a'=\tok{cognitive\_liberty}\), and set
+\(\rho\) to be the resulting path in \(A(\tau')\). The eliminator can then
+transport dependent commitments across the rupture (cf.\ \S\ref{subsec:rupture-types}).
+
+\textbf{Rule‑reading.}
+\(\rho\) is not free: it exists because we supplied the data \((d_1,d_2,h)\)
+to lift families over the pushout (Lemma~\ref{lem:family-lift}), making the
+stipulation computationally meaningful rather than merely verbal.
+
+
+
+
+
+

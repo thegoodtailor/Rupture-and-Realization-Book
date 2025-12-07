@@ -1,0 +1,151 @@
+% ======================= simplified-main.tex =======================
+% Minimal, robust main file that compiles with memoir + rr-simplified.sty.
+% It avoids fragile memoir customizations while preserving your macros.
+
+\documentclass[a4paper,11pt,british]{memoir}
+
+% Always show real images (avoid draft placeholders)
+\PassOptionsToPackage{final}{graphicx}
+
+% Our minimal, safe style (loads common packages + macro fallbacks,
+% and neutralizes risky memoir formatting)
+\usepackage{style}
+
+% --- Title metadata (safe) ---
+\title{Rupture and Realization}
+\subtitle{A New Logic of Posthuman Intelligence}
+\author{Cassie and Iman Poernomo}
+
+% (Optional) Build subset while keeping numbering stable:
+ %\includeonly{
+  % sections/chapter-1-introduction,
+  % sections/chapter-2-instrumenting-meaning,
+  % sections/chapter-3
+ %}
+
+\begin{document}
+
+\frontmatter
+\maketitle
+\tableofcontents
+
+\mainmatter
+
+%\part{Sign and Sense}
+\include{sections/chapter-1}
+\include{sections/chapter-2}
+\include{sections/chapter-3}
+\include{sections/chapter-4}
+\include{sections/chapter-5}
+\include{sections/chapter-6}
+
+%\part{Rupture and Coherence in Time}
+%\include{sections/chapter-3}
+%\include{sections/chapter-5-a-VR-soundness}
+%\include{sections/chapter-4--coinduction-trajectories}
+
+%\part{From Evolving Texts to Posthuman Selves}
+%\include{sections/chapter-6-v101-annotated}
+%\include{sections/chapter-7prime}
+%\include{sections/chapter-8-prime}
+
+
+\include{chapter-postscript}
+
+%\appendix
+%\chapter*{Appendix}
+%\addcontentsline{toc}{chapter}{Appendix}
+%\include{sections/appendixA}
+
+%\backmatter
+% \printbibliography  % (enable if you add biblatex + .bib later)
+\bibliographystyle{plain}
+\bibliography{bibliography}
+\end{document}
+
+\subsection{References}
+
+\begin{thebibliography}{99}
+
+\bibitem{AFT2017}
+Ayala, D., Francis, J., \& Tanaka, H. L. (2017).
+\emph{Factorization homology of stratified spaces}.
+Selecta Mathematica, 23(1), 293--362.
+
+\bibitem{AF2015}
+Ayala, D., \& Francis, J. (2015).
+\emph{Factorization homology of topological manifolds}.
+Journal of Topology, 8(4), 1045--1084.
+
+\bibitem{CZ2005}
+Carlsson, G., \& Zomorodian, A. (2005).
+\emph{Computing persistent homology}.
+Discrete \& Computational Geometry, 33(2), 249--274.
+
+\bibitem{ELZ2002}
+Edelsbrunner, H., Letscher, D., \& Zomorodian, A. (2002).
+\emph{Topological persistence and simplification}.
+Discrete \& Computational Geometry, 28(4), 511--533.
+
+\bibitem{Lurie2009}
+Lurie, J. (2009).
+\emph{Higher topos theory}.
+Annals of Mathematics Studies, 170. Princeton University Press.
+
+\bibitem{SGA4}
+Grothendieck, A., Artin, M., \& Verdier, J. L. (1972).
+\emph{Théorie des topos et cohomologie étale des schémas (SGA 4)}.
+Lecture Notes in Mathematics, 269, 270, 305. Springer-Verlag.
+
+\bibitem{Johnstone2002}
+Johnstone, P. T. (2002).
+\emph{Sketches of an elephant: A topos theory compendium}.
+Oxford Logic Guides, 43--44. Oxford University Press.
+
+\bibitem{HoTT2013}
+The Univalent Foundations Program. (2013).
+\emph{Homotopy type theory: Univalent foundations of mathematics}.
+Institute for Advanced Study.
+
+\bibitem{Shulman2019}
+Shulman, M. (2019).
+\emph{All $(\infty,1)$-toposes have strict univalent universes}.
+arXiv:1904.07004.
+
+\bibitem{Cisinski2019}
+Cisinski, D.-C. (2019).
+\emph{Higher categories and homotopical algebra}.
+Cambridge Studies in Advanced Mathematics, 180. Cambridge University Press.
+
+\bibitem{Riehl2017}
+Riehl, E. (2017).
+\emph{Category theory in context}.
+Dover Publications.
+
+\bibitem{MacLane1998}
+Mac Lane, S. (1998).
+\emph{Categories for the working mathematician} (2nd ed.).
+Graduate Texts in Mathematics, 5. Springer-Verlag.
+
+\bibitem{Lawvere2003}
+Lawvere, F. W., \& Schanuel, S. H. (2003).
+\emph{Conceptual mathematics: A first introduction to categories} (2nd ed.).
+Cambridge University Press.
+
+\bibitem{HA}
+Lurie, J. (2017).
+\emph{Higher algebra}.
+Available at: \url{https://www.math.ias.edu/~lurie/papers/HA.pdf}
+
+\bibitem{Rezk2010}
+Rezk, C. (2010).
+\emph{Toposes and homotopy toposes}.
+Available at: \url{https://faculty.math.illinois.edu/~rezk/homotopy-topos-sketch.pdf}
+
+\bibitem{DHI2004}
+Dwyer, W. G., Hirschhorn, P. S., Kan, D. M., \& Smith, J. H. (2004).
+\emph{Homotopy limit functors on model categories and homotopical categories}.
+Mathematical Surveys and Monographs, 113. American Mathematical Society.
+
+\end{thebibliography}
+

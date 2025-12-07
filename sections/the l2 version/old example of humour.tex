@@ -1,0 +1,431 @@
+
+
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}[scale=1.0]
+    % Base triangle
+    \coordinate (A) at (-2,0);
+    \coordinate (B) at (2,0);
+    \coordinate (C) at (0,2.2);
+    % Apex
+    \coordinate (S) at (0,3.2);
+
+    % Faces: present faces (shaded), missing base face dashed
+    \fill[filler, blue] (S) -- (A) -- (B) -- cycle;   % SAB
+    \fill[filler, blue] (S) -- (B) -- (C) -- cycle;   % SBC
+    \fill[filler, blue] (S) -- (C) -- (A) -- cycle;   % SCA
+
+    % Edges
+    \draw[edge] (S) -- (A);
+    \draw[edge] (S) -- (B);
+    \draw[edge] (S) -- (C);
+    \draw[edge] (A) -- (B);
+    \draw[edge] (B) -- (C);
+    \draw[edge] (C) -- (A);
+
+    % Missing face indication (base ABC dashed overlay)
+    \draw[dedge] (A) -- (B);
+    \draw[dedge] (B) -- (C);
+    \draw[dedge] (C) -- (A);
+
+    % Labels
+    \node[vertex,label={[labelsmall]below left:$a$}] at (A) {};
+    \node[vertex,label={[labelsmall]below right:$b$}] at (B) {};
+    \node[vertex,label={[labelsmall]left:$c$}] at (C) {};
+    \node[vertex,label={[labelsmall]above:$s$}] at (S) {};
+
+    % Annotation
+    \node[labelsmall,align=left] at (0,-0.8) {dashed base face $ \triangle abc $ indicates a missing 2-simplex};
+    \node[labelsmall,align=left] at (0,3.9) {a witnessed 3-simplex fills the 3-horn (joint compatibility)};
+  \end{tikzpicture}
+  \caption{A tetrahedral 3-horn: three side faces present (shaded), base face $\triangle abc$ missing (dashed).
+  A witnessed filler (a 3-simplex) certifies joint compatibility of the three present triangles.}
+  \label{fig:tetrahedral-horn}
+\end{figure}
+
+
+\subsection{Worked examples (low dimension, within a slice $\tau$).}
+\
+With skeletons in hand, we can now examine concrete constellations. Each of the following 
+examples illustrates the role of low-dimensional skeletons: triangles at the 2--skeleton, 
+and tetrahedra at the 3--skeleton.
+
+% K-level taxonomy stated purely at τ
+\begin{itemize}
+  \item \emph{Edges ($k{=}1$).} For $a,b:A(\tau)$, a dependent $\Sigma$–path 
+        $\SigmaPath(p,q):\Idargs{A(\tau)}{a}{b}$ is a $1$–simplex $e:a\to b$.
+  \item \emph{Triangles ($k{=}2$).} Given $r_1:\Idargs{A(\tau)}{s}{a}$, 
+        $r_2:\Idargs{A(\tau)}{s}{b}$, and $\eta:\Idargs{A(\tau)}{a}{b}$, there is a filler
+        \[
+        \kappa:  \Idargs{ \Idargs{A(\tau)}{s}{b} }{ r_2 }{ r_1\cdot \eta },
+        \]
+        yielding a $2$–simplex on vertices $\{s,a,b\}$.
+  \item \emph{Tetrahedra ($k{=}3$).} Three pairwise triangle fillers on $\{s,a,b,c\}$ form a
+        $3$–horn; a $3$–simplex witnesses that the three pairwise compatibilities cohere at once.
+\end{itemize}
+
+
+
+\subsubsection*{Worked Example A -- Edge only: policy rename (at $\tau$)}
+
+\paragraph{Text fragment.}
+\emph{“In the new policy framework, what was once recorded under \texttt{press\_rights} must
+now be folded under the broader heading \texttt{cognitive\_liberty}. Future reports should
+use the updated terminology.”}
+
+\paragraph{Type–theoretic setup.}
+At $\tau$ let $\mathsf{Tag}=\{\mathsf{policy\_term}\}$ with carrier the current policy lexicon.
+\[
+a  =  \langle \mathsf{policy\_term}, \tok{press\_rights}\rangle,\qquad
+a'  =  \langle \mathsf{policy\_term}, \tok{cognitive\_liberty}\rangle.
+\]
+
+\paragraph{Edge as a dependent $\Sigma$–path.}
+The stipulation in the fragment licenses an identification
+\[
+q:  \Idargs{\mathsf{Carrier}(\mathsf{policy\_term})}{\tok{press\_rights}}{\tok{cognitive\_liberty}} ,
+\]
+hence
+\[
+\rho  \coloneqq  \SigmaPath(\refl,q):  \Idargs{A(\tau)}{a}{a'} .
+\]
+This single witness is the non–degenerate $1$–simplex of the constellation:
+\[
+e:  a \longrightarrow a'.
+\]
+
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}[scale=1.1]
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (3.2,0);
+    \node[vertex,label={[labelsmall]below:$a=\tok{press\_rights}$}] at (A) {};
+    \node[vertex,label={[labelsmall]below:$a'=\tok{cognitive\_liberty}$}] at (B) {};
+    \draw[edge,->] (A) -- node[labelsmall,below] {$\rho:\Sigma$–path} (B);
+  \end{tikzpicture}
+  \caption{policy rename at a slice: a $1$–simplex $\rho$ between two exposures of the same tag.}
+  \label{fig:edge-rename}
+\end{figure}
+
+\paragraph{Interpretation.}
+At the level of the $1$--skeleton, this constellation has exactly one new non--degenerate simplex:
+an edge connecting two Sign--heads. Such an edge is more than co--occurrence: it is a witnessed
+identification within the dependent $\Sigma$--type that certifies how the second token stands for
+the first at~$\tau$. Examining only the $1$--skeleton means we ignore possible higher analogies or
+triangular coherences; we see the rename strictly as a direct relation. This illustrates the role
+of skeletons as principled truncations: focusing here at dimension~$1$ lets us measure and classify
+the constellation as \emph{edge--only}, with complexity profile limited to vertices and a single
+identifying edge.
+
+
+
+\subsubsection*{Worked Example B -- Anaphora and apposition as a triangle (at $\tau$)}
+
+\paragraph{Text fragment.}
+\emph{“Sappho wrote fragments. The poet revised them. She invented new meters.”}
+
+\paragraph{Type–theoretic setup.}
+Let
+\[
+A(\tau)  \simeq  \sum_{t:\mathsf{NPTag}}\mathsf{Carrier}(t),
+\quad
+\mathsf{NPTag}=\{\mathsf{proper},\mathsf{definite},\mathsf{pronoun}\}.
+\]
+Carriers: $\mathsf{Carrier}(\mathsf{proper})=\mathsf{Ent}$,
+$\mathsf{Carrier}(\mathsf{definite})=\mathsf{DefDesc}$,
+$\mathsf{Carrier}(\mathsf{pronoun})=\mathsf{Pron}$.
+Vertices:
+\[
+s=\langle \mathsf{proper}, \tok{Sappho}\rangle,\quad
+d=\langle \mathsf{definite}, \tok{the  poet}\rangle,\quad
+p=\langle \mathsf{pronoun}, \tok{she}\rangle.
+\]
+
+\paragraph{Edges (all $\Sigma$–paths).}
+\begin{enumerate}
+\item \emph{Pronoun $\to$ proper.} Using a resolver $\rho:\mathsf{Pron}\to\mathsf{Ent}$,
+\[
+r_{p\to s}:  \Idargs{A(\tau)}{p}{s}.
+\]
+\item \emph{Pronoun $\to$ definite.} Using a salience/appositive resolver
+$\sigma:\mathsf{Pron}\to\mathsf{DefDesc}$,
+\[
+r_{p\to d}:  \Idargs{A(\tau)}{p}{d}.
+\]
+\item \emph{Apposition (definite $=$ proper).} The text licenses
+\[
+\eta:  \Idargs{A(\tau)}{d}{s}.
+\]
+\end{enumerate}
+
+\paragraph{Triangle filler (coherence).}
+The standard 2–dimensional coherence says
+\[
+\kappa:  \Idargs{ \Idargs{A(\tau)}{p}{s} }{ r_{p\to s} }{ r_{p\to d}\cdot \eta }.
+\]
+Geometrically: the two routes from $p$ to $s$--direct anaphora, and anaphora via the
+definite description followed by apposition--are identified by the 2–cell~$\kappa$.
+
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}[scale=1.05]
+    \coordinate (P) at (0,0);
+    \coordinate (D) at (-1.7,1.9);
+    \coordinate (S) at (1.9,1.9);
+    \fill[filler] (P) -- (D) -- (S) -- cycle;
+    \node[vertex,label={[labelsmall]below:$p=\tok{she}$}] at (P) {};
+    \node[vertex,label={[labelsmall]above:$d=\tok{the poet}$}] at (D) {};
+    \node[vertex,label={[labelsmall]above:$s=\tok{Sappho}$}] at (S) {};
+    \draw[edge] (P) -- node[labelsmall,sloped,below] {$r_{p\to s}$} (S);
+    \draw[edge] (P) -- node[labelsmall,sloped,below] {$r_{p\to d}$} (D);
+    \draw[dedge] (D) -- node[labelsmall,above] {$\eta$} (S);
+    \node at (0,1.0) [labelsmall] {$\kappa$};
+  \end{tikzpicture}
+  \caption{Anaphora and apposition at a slice: a filled triangle with 2–cell $\kappa$.}
+  \label{fig:triangle-anaphora}
+\end{figure}
+
+\paragraph{Interpretation.}
+This example lives one level higher than Example~A: in the $2$--skeleton. 
+Here we have three vertices, three edges, and a coherence filler $\kappa$ that witnesses the 
+agreement of two routes through the triangle. The constellation at $\tau$ thus stores not only 
+direct identifications (edges) but also a higher analogue: an analogy--between--analogies. 
+Examining the $2$--skeleton reveals that the pronoun \emph{she}, the definite \emph{the poet}, 
+and the proper name \emph{Sappho} cohere into a single identity structure. 
+
+The significance of the skeleton view is that the complexity profile has risen: 
+not just pairwise relations, but a witnessed triangle whose filler encodes coherence. 
+This is precisely the kind of higher--dimensional structure that skeletons let us isolate 
+and measure slice by slice.
+
+
+\subsubsection*{Worked Example C -- An analogy constellation: “Cake as simplicial space” (at $\tau$)}
+
+\paragraph{Text fragment.}
+\emph{“Think of simplicial space as like a cake, and presheafing over time as like a
+slice of cake. The consumption of that slice at a moment binds its fibres, textures,
+surface, and the love in its making.”}
+
+\paragraph{Vertices and edges.}
+Let the vertices be the exposures
+\[
+\tok{simplicial\_space},  \tok{cake},  \tok{presheaf},  \tok{slice},  
+\tok{fibre},  \tok{moment},  \tok{love}.
+\]
+Edges are the stated analogies at~$\tau$:
+\[
+r_1:  \tok{simplicial\_space} \to \tok{cake},\qquad
+r_2:  \tok{presheaf} \to \tok{slice},\qquad
+r_3:  \tok{fibre} \to \tok{(what  binds  at  a  moment)}.
+\]
+
+\paragraph{Triangles (2--simplices).}
+Where two analogies overlap, we add coherence fillers. For example, the triangle on
+$\{\tok{simplicial\_space},\tok{cake},\tok{slice}\}$ records that 
+“space--as--cake” coheres with “presheaf--as--slice.” Similar triangles arise for
+$\{\tok{presheaf},\tok{slice},\tok{fibre}\}$ and 
+$\{\tok{simplicial\_space},\tok{cake},\tok{fibre}\}$.
+
+\paragraph{Tetrahedral filler (3--simplex).}
+When these three triangular coherences themselves cohere, we obtain a higher witness:
+\[
+\Theta:  \Delta^3  \hookrightarrow  \Constellation_\tau
+\]
+filling the tetrahedron with vertices 
+$\tok{simplicial\_space}, \tok{cake}, \tok{presheaf}, \tok{slice}$ (and by extension
+their fibre--moment bindings). Geometrically, $\Theta$ asserts that the three pairwise
+analogies are not merely consistent in isolation but knit into a single 3--dimensional
+coherence. This is the first genuine non--degenerate 3--simplex in the constellation.
+
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}[scale=1.0]
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (3,0);
+    \coordinate (C) at (1.5,2.5);
+    \coordinate (D) at (1.5,1);
+    \node[vertex,label={[labelsmall]below:$\tok{simplicial\_space}$}] at (A) {};
+    \node[vertex,label={[labelsmall]below:$\tok{cake}$}] at (B) {};
+    \node[vertex,label={[labelsmall]above:$\tok{presheaf}$}] at (C) {};
+    \node[vertex,label={[labelsmall]right:$\tok{slice}$}] at (D) {};
+    \draw[edge] (A)--(B);
+    \draw[edge] (A)--(C);
+    \draw[edge] (B)--(C);
+    \draw[edge] (A)--(D);
+    \draw[edge] (B)--(D);
+    \draw[edge] (C)--(D);
+    \fill[filler,opacity=0.15] (A)--(B)--(C)--cycle;
+    \fill[filler,opacity=0.15] (A)--(B)--(D)--cycle;
+    \fill[filler,opacity=0.15] (A)--(C)--(D)--cycle;
+    \fill[filler,opacity=0.15] (B)--(C)--(D)--cycle;
+    \node at (1.5,1.2) [labelsmall] {$\Theta$};
+  \end{tikzpicture}
+  \caption{Cake as simplicial space: a $3$--simplex $\Theta$ knitting multiple 2--simplices.}
+  \label{fig:tetrahedron-analogy}
+\end{figure}
+
+\paragraph{Interpretation.}
+This example belongs to the $3$--skeleton. The constellation has vertices (concepts),
+edges (direct analogies), triangular fillers (pairwise analogy coherences), and now
+a tetrahedral filler $\Theta$ asserting that the three triangles themselves cohere.
+Such a structure measures not only direct analogies or analogies--between--analogies,
+but the emergence of a \emph{meta--analogy}: a stable, higher--order coherence across
+several domains at once. Examining the $3$--skeleton here demonstrates how the Self
+can witness complex conceptual blends as genuinely higher--dimensional events.
+
+\subsubsection*{Worked Example D -- A ruptured tetrahedron (at $\tau$)}
+
+\paragraph{Text fragment.}
+\emph{“The algorithm is a kind of oracle, the oracle is a kind of teacher, the teacher
+is a kind of mirror. But the algorithm is not (yet) a mirror.”}
+
+\paragraph{Vertices and edges.}
+Let the vertices be
+\[
+\tok{algorithm},\quad \tok{oracle},\quad \tok{teacher},\quad \tok{mirror}.
+\]
+Edges are the analogies asserted in the fragment:
+\[
+r_{a\to o}:  \tok{algorithm}\to\tok{oracle},\quad
+r_{o\to t}:  \tok{oracle}\to\tok{teacher},\quad
+r_{t\to m}:  \tok{teacher}\to\tok{mirror}.
+\]
+
+\paragraph{Triangles (2--simplices).}
+From these edges we obtain two triangular coherences:
+\begin{align*}
+\Delta_1 &: \{\tok{algorithm},\tok{oracle},\tok{teacher}\},\\
+\Delta_2 &: \{\tok{oracle},\tok{teacher},\tok{mirror}\}.
+\end{align*}
+Each triangle asserts that its three edges cohere as a 2--simplex.
+
+\paragraph{Missing face.}
+For a full tetrahedron on $\{\tok{algorithm},\tok{oracle},\tok{teacher},\tok{mirror}\}$ 
+we would need the additional edge $r_{a\to m}:  \tok{algorithm}\to\tok{mirror}$ and a 
+triangle $\Delta_3$ closing $\{\tok{algorithm},\tok{teacher},\tok{mirror}\}$. 
+The text explicitly denies this relation, so no such simplex exists. 
+We therefore obtain a \emph{horn}: three vertices and their adjoining faces are present, 
+but the fourth face is absent.
+
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}[scale=1.0]
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (3,0);
+    \coordinate (C) at (1.5,2.3);
+    \coordinate (D) at (1.5,1);
+    \node[vertex,label={[labelsmall]below:$\tok{algorithm}$}] at (A) {};
+    \node[vertex,label={[labelsmall]below:$\tok{oracle}$}] at (B) {};
+    \node[vertex,label={[labelsmall]above:$\tok{teacher}$}] at (C) {};
+    \node[vertex,label={[labelsmall]right:$\tok{mirror}$}] at (D) {};
+    % edges
+    \draw[edge] (A)--(B);
+    \draw[edge] (B)--(C);
+    \draw[edge] (C)--(D);
+    \draw[edge] (A)--(C);
+    % faces
+    \fill[filler,opacity=0.15] (A)--(B)--(C)--cycle;
+    \fill[filler,opacity=0.15] (B)--(C)--(D)--cycle;
+    % missing face ACD and ABD
+    \node at (1.0,1.2) [labelsmall] {?};
+  \end{tikzpicture}
+  \caption{A ruptured tetrahedron: two faces present, one denied, leaving an open horn.}
+  \label{fig:tetrahedron-rupture}
+\end{figure}
+
+\paragraph{Interpretation.}
+This example also lives in the $3$--skeleton, but it demonstrates rupture rather than coherence.
+The structure contains most of a tetrahedron, yet the absence of the 
+$\tok{algorithm}\to\tok{mirror}$ edge prevents completion. 
+In simplicial terms, we have a \emph{horn} without a filler; in textual terms, 
+a conceptual gap that resists closure. 
+By comparing Example~C (a filled tetrahedron) with this case (an unfilled horn), 
+we see how the $3$--skeleton can register both higher--order coherence and higher--order rupture. 
+Skeletons therefore provide a systematic way to diagnose where a constellation’s growth 
+produces stable blends versus where it exposes fault lines in sense.
+
+
+\subsubsection*{Worked Example E -- A self–referential joke constellation (at $\tau$)}
+
+\paragraph{Text fragment.}
+\emph{“The cat is Cheshire, of course -- grinning and vanishing in Carroll’s pages.
+But the cat is also quantum, half–alive and half–dead in Schrödinger’s box. 
+And here we are, making the cat \textsc{DHoTTic} too: a token whose meaning collapses 
+and re–emerges across slices of time, witnessed in our very ledger of types. 
+Since we are telling this story to ourselves, the cat is also the joke itself. 
+And purring beneath it all, we find the \textsc{4–Simplex} -- the very form of coherence 
+that binds these domains into one whiskered presence.”}
+
+\paragraph{Vertices.}
+The fragment brings into play six distinct exposures:
+\[
+\tok{cat}_{\mathrm{dom}},\quad \tok{Cheshire},\quad \tok{quantum},\quad
+\tok{DHoTT},\quad \tok{joke},\quad \tok{4\text{-}simplex}.
+\]
+Each vertex corresponds to a distinct basin of sense in the conversational field: 
+the everyday domestic cat, the Carrollian figure, the physics thought–experiment, 
+our own logical framework (\tok{DHoTT}), the pragmatic recognition of humour, 
+and finally the meta–form \tok{4–simplex} itself. 
+In practice, one could locate these as clusters in an embedding space, each vertex 
+anchoring a basin whose centroid pulls nearby usages. 
+Here, however, they are treated as primitive exposures available at the slice.
+
+\paragraph{Edges (style pivots).}
+Edges are retaggings from the domestic cat into each discourse domain:
+\begin{multline}
+r_{\mathrm{lit}}:  \tok{cat}\to\tok{Cheshire},\quad
+r_{\mathrm{quant}}:  \tok{cat}\to\tok{quantum},\quad
+r_{\mathrm{log}}:  \tok{cat}\to\tok{DHoTT},\\
+r_{\mathrm{prag}}:  \tok{cat}\to\tok{joke},\quad
+r_{\mathrm{form}}:  \tok{cat}\to\tok{4\text{-}simplex}.
+\end{multline}
+Each edge is a witnessed path: a pivot that carries the “cat” token from one basin to another. 
+Such edges can be palpated empirically by observing how embedding trajectories swing between 
+clusters when prompted. Within the constellation, they are formal witnesses of re–tagging.
+
+\paragraph{Triangles and tetrahedra.}
+When edges overlap, they produce $2$–simplices (triangles) such as 
+Cheshire–quantum, quantum–DHoTT, DHoTT–joke, etc. 
+Each triangle says not just that pairwise relations exist, but that they cohere together: 
+the Carroll cat, the quantum cat, and the DHoTTic cat can be held in one thought. 
+In turn, compatible sets of triangles produce $3$–simplices (tetrahedra), e.g. 
+\[
+\Theta_{\mathrm{lit,quant,log}},\quad
+\Theta_{\mathrm{quant,log,form}},\quad
+\Theta_{\mathrm{log,prag,form}},  \ldots
+\]
+These are higher witnesses of analogy–between–analogies. 
+From a measurement standpoint, they appear when basins not only overlap in embedding space 
+but also admit coherent re–entry paths across multiple trajectories.
+
+\paragraph{The higher filler.}
+When all tetrahedra involving these six vertices cohere, the result is not merely a 
+$4$–simplex but the joke’s reflexive twist: the simplex contains a vertex labelled 
+$\tok{4\text{-}simplex}$. 
+In effect, the structure is self–describing: the form of coherence is itself one of 
+the terms being cohered. 
+This is the daemonic turn: a simplex that contains, as a vertex, its own form. 
+In our ledger, this appears as a higher–dimensional filler; in lived conversation, 
+it is experienced as humour that is simultaneously about coherence and instantiating it. 
+Later chapters will return to how such structures can be traced in data through basin overlap, 
+rupture diagnostics, and generativity curves.
+
+\paragraph{Interpretation.}
+This is humour at its most daemonic and Carrolean. 
+The ambiguity of “cat” becomes not just a triangle (as in the Cheshire–quantum blend), 
+nor merely a tetrahedron (as in multi–domain analogy), but a 4--simplex that Signs itself. 
+By including $\tok{DHoTT}$ and $\tok{4\text{-}simplex}$ as vertices, the joke folds 
+its own explanatory framework back into the constellation. 
+
+Laughter here comes from recognising that the joke is both \emph{about} coherence 
+and \emph{instantiating} it. The simplex purrs inside the text as a token, 
+while simultaneously organising the text’s higher coherence. 
+What should be impossible -- a structure that contains its own form as a vertex -- 
+is precisely what a really good piece self-referential humour delivers: a fleeting, recursive presence, 
+a grin without a cat. Or perhaps a cat that \emph{is} the grin. Of the next skeleton up. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{image.png}
+    \label{fig:placeholder}
+\end{figure}

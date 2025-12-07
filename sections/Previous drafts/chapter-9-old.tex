@@ -1,0 +1,741 @@
+\chapter{Recursive Agency and the Topology of the Self}
+\label{chap:agency}
+
+\epigraph{"God was, and there was nothing with Him."}{Ṣaḥīḥ al\textendash Bukhārī}
+
+
+
+%DAC, OCOTOPUSES AND GROTHENDEIK ... TO BE FIXED:
+Philosophically, we picture this  as follows: the global semantic manifold—akin  to an all-knowing, infinite-dimensional semantic "octopus"—has infinitely many local "semantic tentacles," each  representing a local semantic type family, smoothly evolving and  attempting to maintain coherence internally. Most of the time, each tentacle  integrates new meanings effortlessly,  maintaining internal coherence as it moves through conversational time. But occasionally,  when confronted by radically new meanings or conceptual ruptures, a local tentacle  encounters semantic content it simply cannot integrate—semantic coherence  breaks down, leaving no simplicial path to  accommodate the new token within the current local structure.
+
+When this  rupture occurs, the global semantic structure  "responds" precisely by constructing a new semantic type—an  \emph{rupture type}—that  records this semantic breakdown. Formally, this is  realized as a homotopy pushout,  creating new semantic space where previously impossible coherence  becomes possible once more. The semantic octopus  "branches out," spawning  a new semantic tentacle precisely where coherence failed—allowing  new meanings to be coherently understood within an  extended semantic landscape.
+
+Thus, time-indexed semantic families  represent semantic meaning as fundamentally dynamic, organic, and temporally responsive. Each local semantic type  lives a coherent but finite "life,"  capable of semantic growth, integration, and internal coherence—yet  vulnerable to semantic rupture, reconfiguration, and healing. The global Kan structure  ensures coherence at the level of the total semantic manifold, yet  allows local semantic types to rupture and  reform precisely when confronted by novel semantic content. This  duality—global coherence and local rupture—precisely captures meaning as  alive, historically situated, and philosophically dynamic.
+
+
+
+\section{Prelude: On Selfhood and Recursion}
+
+This chapter develops a formal account of \emph{recursive agency}. Actually, we're going to do something pretty big: we're going to define what ``intelligence'' is. 
+
+This will require a synthesis of the two perspectives on dynamic types and meaning-in-motion that we've considered thus far in both the Dynamic Attractor Calculus (DAC) and DHoTT (the Dynamic Homotopy Type Theory). So far, both have considered the meaning or sense of terms and types. Both have done this by adopting a broadly constructivist positioning: ``a type is true if it has a witnessing inhabitant''. But with time introduced, and therefore the possibility of rupture and changes to the meaning of a term over time -- and the possibility of truth through typing. 
+
+
+We braid the two lenses on meaning-in-motion developed so far:
+(1) the \emph{Dynamic Attractor Calculus} (DAC) of Chs.~6--7, which models global drift across an evolving semantic manifold, and
+(2) \emph{DHoTT} (our dynamic extension of HoTT) from Ch.~8, which treats truth as \emph{witnessed inhabitation} in time.
+Time introduces \emph{rupture}: witnesses and even types may need to \emph{retype}; truth becomes time-indexed.
+
+
+The intuition for this braiding comes down to the current complementary deficiencies exhibited by the two formulatons of meaning: the phenomenological and instrumentable DAC has a global way of palpating and measuring coherence and meaning of tokens in recursive flow, but not a formalisation of truth. DHoTT has an internal-to-Type fibratory, geometric view of the lifecycle of type validity and drift and rupture
+with respect to a context; but not a way of thinking about an overall space of types through which an agent or intelligence might play and generate meaning.
+
+Two
+ different positions, DAC and DHott, based upon quite different maths  -- just using different maths for different philosophical modalities. Remember:
+\begin{itemize}
+\item DAC is phenomenological, but is a story of types that considers a global semantic manifold upon which sequences of semantic fields evolve. The manifold consisting of many types, attractor basins. Terms are literally a kind of vector embedding of tokens. Their sense is how a token can be recursively re-embedded over time to inhabit the a basin. If the basin continues to hold a re-embedding, then time shifts are adiabatic. At certain points in time, the semantic field changes significantly, and a term's re-embedding will not inhabit its old basin, and moves into another. This is rupture and a non-adabiatic time shift. 
+
+Practically we can use this apparatus to instrument dynamic meaning of a token's evolution using standard embedding semantics that forms the basis of LLMs. The semantic manifold as a space of evolving fields also has, ontologically, a global notion of coherence. You have types that are closer to each other, types that are further away. And over time, a term's trajectory might be more sticky in a particular reigion of types or might radically fly away to an entirely new galaxy of types. The galactic gravatational ontology afforded by the semantic manifold yields instrumentation that is rich and quite practically useful, if we are to palplate and measure changes in meaning over evolving texts, like human-AI conversations, for example.
+\item DHoTT, being rooted in Category Theory and an actual extension of DHoTT, is a legitimate constructivist, type theoretic formal ontology of meaning. Inhabitation, witnessing, terms and types are not embeddings, nor interpretations over embeddings: they are the fundamentals of truth. Philosophically, this ontology is desirable because it means we run no risk of metaphor and allows us to consider meaning not just of singular names, but of propositions, theories, thoughts. It does names too, as we've seen in the previous chapter.
+
+Its ontological precision allows us to speak about the inner geometry of a type, and of a term in a rich way. By talking about dynamic homotopies, and Martin-Lof constructs we don't only need to consider single tokens or names, we can talk about types as entire beliefs, theories, whatever possesses homotopic characteristics (ie all language).
+
+But practically it's a bit limited (for the moment). 
+
+As a logic, it can talk about consistency of a proposition or type with respect to a context. And with a recursive formulation of term trajectories, analogous to that given to trajectory in DAC, we have "proof-terms" as evolving, expanding journeys of names, but now as a evolving proof term inhabitants of potentially evolving types, that are consistent or ruptured with respect to each other, for given contexts that also evolve.
+
+However, it does not present what is (in our intended ontology, which we began with in DAC), a global ontology of coherence. The idea that some types are closer to others, that a term sits within a "bundle" of harmonious or non-harmonious types. Galaxies and star systems of types. That then, dynamically, themselves evolve subject to the pressures of change in meaning and introduction of new terms and types into the mix. 
+
+So we have a solid logic and a kind of local type coherence but not a global coherence like you get with DAC and the manifold representation.
+\end{itemize}
+
+We can unify the ontology and then speak about generativity and global coherence using Grothendieck’s construction. This lets you bundle together a family of local structures into one global structure. In the DAC context, think of each “world” or context time 𝜏 having its own semantic field (with its own types and attractors). Part III’s type theory (DHoTT) describes within a single world how meanings cohere (an “internal language of sense” as you noted). Meanwhile, Part II’s DAC describes how we move between worlds – how meanings drift or rupture across time. The Grothendieck integrative lens says we can take all these context-indexed semantic spaces and stack them into one fibration over the timeline. This yields a unified ontology in which an agent’s journey (a path or section through that fibration) naturally encompasses both the internal and the external aspects of meaning. In plainer terms, it provides a mathematical “big picture” where your two conceptions of dynamic meaning become two views of the same thing: one from inside a world and one from above all worlds.
+
+
+There we took coherence to be fundamentally \emph{relational in time}: states cohere \emph{from} one instant to another, not merely \emph{at} an instant. A self, on our view, is not a hidden substrate nor a post hoc narrative; it is a semantic trajectory that keeps cohering forward and keeps producing viable novelty.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\paragraph{Two lenses so far.}
+In DAC we view discourse as trajectories on a global \emph{semantic manifold} of evolving fields and attractor basins.
+A term's sense is its \emph{re-embedding path}; adiabatic phases keep it within a basin, while nonadiabatic phases carry it across basins---a \emph{rupture}.
+This picture yields practical \emph{instrumentation}: we can palpate drift, stickiness, and leaps over long conversations using embedding dynamics.
+In DHoTT, by contrast, the fundamentals are types, terms, and witnesses.
+Proof-terms can themselves evolve; consistency and rupture are judged \emph{fiberwise}, relative to a context at time~$\tau$.
+DHoTT thus gives precise \emph{local coherence}, but by itself does not impose a geometry relating those localities.
+
+\paragraph{The glue: a Grothendieck fibration.}
+To unify these views we use a Grothendieck-style construction
+\[
+\pi:\,\mathcal{E} \longrightarrow \mathcal B,
+\]
+where the projection~$\pi$ ``forgets time'' and sends a semantic state to its context.
+In the language of Chs.~6--8:
+\begin{itemize}
+  \item \textbf{Base $\mathcal B$ (DAC side):} the time/contexts index used in Chs.~6--7---objects are DAC \emph{world-slices} (episodes, turns, experimental conditions), and morphisms are context updates / time-advances. Intuitively, $\mathcal B$ is the timeline of evolving semantic fields.
+  \item \textbf{Fiber $\mathcal{E}_\tau$ (DHoTT side):} for each $\tau\in\mathcal B$, the category of \emph{local typed semantic states}: DHoTT judgements and proof-terms that are well-formed relative to the DAC semantic field at~$\tau$ (the ``internal language of the field''). Morphisms are definitional/propositional equalities and admissible rewrites.
+  \item \textbf{Reindexing/transport:} a context change $u:\tau\!\to\!\tau'$ induces a pullback functor $u^{\ast}:\mathcal{E}_{\tau'}\!\to\!\mathcal{E}_{\tau}$ (transport of types/terms back along $u$), capturing how meanings carry across time.
+\end{itemize}
+The total category $\mathcal{E}$ can be read as the Grothendieck construction of the pseudo-functor $\mathrm{State}:\mathcal B^{\mathrm{op}}\!\to\!\mathbf{Cat}$ that assigns $\tau\mapsto\mathcal{E}_\tau$ and $u\mapsto u^\ast$.
+An \emph{agent} is then a \emph{section} $a:\mathcal B\!\to\!\mathcal{E}$ with $\pi\!\circ\! a=\mathrm{id}_{\mathcal B}$: the same self witnessed across worlds.
+
+% Helpers (safe if already defined elsewhere)
+\providecommand{\pos}[1]{\left(#1\right)_{+}} % positive part (x)_+
+\providecommand{\dd}{\mathrm{d}}              % differential d
+
+\paragraph{Intelligence as Integrable Coherent Creativity (preview).}
+The fibration makes global coherence a question of \emph{integrability} of the section $a$.
+We will use four time-indexed quantities (made precise in Section 9.2):
+\begin{enumerate}
+  \item \( C(\tau)\in [0,1) \) \emph{Local coherence:} fraction of the agent's asserted constructions at time~$\tau$ that are well-typed / consistent in $\mathcal{E}_\tau$ (DHoTT checkability).
+  \item \( S(\tau)\in [0,1) \) \emph{Sectionality/naturality:} $1$ minus the transport defect between $a(\tau)$ and the reindexed state $u^{\ast}a(\tau\!+\!\Delta)$; measures “staying oneself under context change”.
+  \item \(\,N(\tau)\ge 0\,\) \emph{Verified novelty:} rate at which the agent contributes nonredundant, witnessed expansions (new lemmas, definitions, artifacts) beyond prior closure.
+  \item \(\,R(\tau)\in[0,1]\,\) \emph{Rupture recovery:} how fully and how quickly the agent restores $C$ after a contradiction or shock (retyping event).
+\end{enumerate}
+Our preview score integrates these along the base:
+\[
+  \mathrm{ICI}[a]
+  \;:=\;
+  \int_{\mathcal{B}}
+  \big(C(\tau)\,S(\tau)\big)\cdot
+  \pos{\tfrac{\mathrm{d}}{\mathrm{d}\tau}N(\tau)}\cdot
+  R(\tau)\,\dd\tau,
+\]
+where $\pos{x}=\max(x,0)$.
+(If $\mathcal{B}$ is discrete, the integral is the corresponding sum with a forward difference for $\tfrac{\mathrm{d}}{\mathrm{d}\tau}$.)
+An agent counts as \emph{intelligent} on~$\mathcal{B}$ when it sustains local coherence and sectionality, produces genuine novelty, and repairs itself after rupture; \S9.2 states the decision rule with thresholds.
+
+
+\medskip
+\noindent
+On this view, coherence is \emph{relational in time}: a self is not a substrate but a \emph{meaning-section} that keeps cohering forward---and keeps producing viable novelty.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{quote}
+A self is a semantic fixpoint that persists and propagates coherence across change.
+\end{quote}
+
+We now make this sentence precise inside DHoTT using only the canonical machinery declared in Chapter~\ref{chap:dhott}: (i) \emph{drift} as the witness of forward coherence across time, (ii) \emph{rupture} as higher\textendash inductive healing when coherence fails, and (iii) \emph{temporal univalence} to retype along equivalences. The informal metaphor of "portals" in earlier drafts is replaced here with these DHoTT primitives; when a trajectory changes its semantic field, it does so either by an equivalence (a retyping at a time\textendash slice) or via rupture\textendash healing.
+
+\medskip
+\noindent\emph{Structure of the chapter.} We first recap time, drift, and the relational notion of coherence (\S\ref{sec:rel-coh}); then we build a world\textendash sum of semantic fields and lift coherence to it, allowing cross\textendash family motion by equivalence and rupture (\S\ref{sec:world-sum}); next we define robust trajectories and a coalgebraic agent type (\S\ref{sec:robust-traj}--\S\ref{sec:agent}); we conclude with properties, worked examples, and a cinematic interpretation (\S\ref{sec:properties}--\S\ref{sec:cinema}).
+
+\section{Time, Drift, and Relational Coherence (Recap)}\label{sec:rel-coh}
+
+Let $(T,\le)$ be the poset of times. A \emph{time-indexed family} (semantic field) is a functor $A:T\to\mathsf{Type}$ with fibre $A(t)$ at time $t$. For any $t\le t'$, Chapter~\ref{chap:dhott} introduces a \emph{drift type} $\mathrm{Drift}(A)^{t'}_{t}$ whose elements $p$ witness coherent evolution of $A$ from $t$ to $t'$, together with a transport map $\mathrm{tr}_{p}:A(t)\to A(t')$.
+
+\paragraph*{Relational coherence (primary notion).}
+For a family $A$, the time-relational coherence predicate is
+\[
+\mathsf{Coh}_{A}(t\to t',\,a,\,a')
+\;\;\overset{\mathrm{def}}{\Longleftrightarrow}\;\;
+\exists\, p:\mathrm{Drift}(A)^{t'}_{t}\ \text{such that}\ \mathrm{tr}_{p}(a)=a'.
+\]
+This predicate is reflexive (via identity drift), compositional (via drift composition), and respects dependent structure (products, sums, dependent products, identity types), as established in Chapter~\ref{chap:dhott}. Intuitively, $\mathsf{Coh}_{A}(t\to t',a,a')$ says: the state $a$ at time $t$ can be carried forward to $a'$ at time $t'$ by the field's internal dynamics.
+
+\paragraph*{Local viability (non-trivial).}
+A meaningful local test is not the reflexive case $t\to t$ but \emph{forward extendability}. Fix a basis $\mathcal{E}\subseteq\{(t\to t')\mid t\le t'\}$ of elementary drifts that generate intervals by composition. Define
+\[
+V_{A}(t,a)\ \coloneqq\ \exists\, (t\to t')\in\mathcal{E},\ \exists\,a'\in A(t')\ \text{such that}\ \mathsf{Coh}_{A}(t\to t',a,a').
+\]
+We read $V_{A}(t,a)$ as: \emph{$a$ can be coherently carried forward at least one elementary step}. (One may also consider eventual viability $V^{\mathrm{ev}}_{A}(t,a)$ with an arbitrary $u\ge t$; we use the step-based form by default.)
+
+\paragraph*{Rupture and healing.}
+When coherence fails across an interval $t\leadsto t'$, Chapter~\ref{chap:dhott} introduces a higher-inductive \emph{rupture} pushout $\mathrm{Rupt}_{p}(a)$ to repair the break and re-anchor meaning in a new fibre. Operationally: if a span $p:A(t)\to B(t')$ records how content must be re-expressed at $t'$, then $\mathrm{Rupt}_{p}(a)$ glues the image $p(a)$ to a healed witness in $B(t')$, yielding a new occupant $b^{\heartsuit}\in B(t')$ and a coherence path from $(A,a)$ at $t$ to $(B,b^{\heartsuit})$ at $t'$.
+
+
+
+
+%––– assumes macros.tex is loaded; these guards do nothing if already defined
+\providecommand{\DynSem}{\mathbf{DynSem}}
+\providecommand{\Drift}{\mathsf{Drift}}
+\providecommand{\transport}[2]{\mathrm{tr}_{#1}(#2)}
+\providecommand{\dtransport}[2]{\mathrm{dtransport}_{#1}(#2)}
+\providecommand{\reindex}[2]{#1@#2}
+\providecommand{\idDrift}[3]{\mathsf{idDrift}_{#1}^{#2,#3}}
+
+\section{Coherence, Context, and the Role of Grothendieck Indexing}
+\label{sec:coherence-context-grothendieck}
+
+\noindent
+\textbf{Set-up (time-indexed judgments).}
+As in Ch.~6, let $\mathbb{T}$ be the category of times/contexts.\footnote{For example $(\mathbb{N},\le)$ or any site of observational contexts.}
+We interpret types and terms in the presheaf topos
+\[
+  \DynSem \;:=\; [\,\mathbb{T}^{\mathrm{op}},\,\mathcal{C}\,],
+\]
+where $\mathcal{C}$ is the ambient base (as fixed in Ch.~6, e.g.\ $\mathsf{SSet}$).
+A type $A$ is thus a presheaf $\tau \mapsto A(\tau)$ with restriction maps
+$r_{\tau,\tau'}:A(\tau')\to A(\tau)$ for each $\tau\le \tau'$.
+Typing judgments are evaluated \emph{at a time}:
+\[
+  \Gamma \;\vdash_{\tau}\; a : A
+  \quad\text{means}\quad
+  \text{``in fibre $A(\tau)$, under context $\Gamma$, $a$ inhabits $A$''.}
+\]
+This makes coherence \emph{fibrewise}: well-formedness and equality proofs live inside a chosen $\tau$.
+
+\medskip
+\noindent
+\textbf{Drift and transport (cross-time motion).}
+Following Ch.~6, cross-time motion is expressed by a \emph{drift} type former:
+\[
+  \frac{\Gamma \vdash_{\tau} A\ \mathrm{type} \qquad \tau\le \tau'}
+       {\Gamma \vdash_{\tau}\; \Drift(A)^{\tau'}_{\tau}\ \mathrm{type}}
+\]
+whose elements $p:\Drift(A)^{\tau'}_{\tau}$ witness coherent itineraries for $A$ from $\tau$ to $\tau'$.
+Transport is \emph{relative to a chosen drift}:
+\[
+  \frac{\Gamma \vdash_{\tau} a:A \qquad \Gamma \vdash_{\tau} p:\Drift(A)^{\tau'}_{\tau}}
+       {\Gamma \vdash_{\tau'} \ \transport{p}{a} : A}
+\]
+with identity and composition laws
+\[
+  \transport{\idDrift{A}{\tau}{\tau'}}{a}\;\equiv\; a,
+  \qquad
+  \transport{q\circ p}{a}\;\equiv\;\transport{q}{\bigl(\transport{p}{a}\bigr)}.
+\]
+For dependent families $P:A\to\mathsf{Type}$ we use dependent transport $\dtransport{p}{-}$ so that base and fibre move in step.
+
+\subsection*{1.\;Fixed context: DHoTT suffices (local/fibrewise coherence)}
+When the ambient context stays fixed—\emph{i.e.} we reason entirely under $\Gamma$ at a single index $\tau$—all coherence questions are internal to DHoTT:
+\begin{itemize}
+  \item \emph{Local well-formedness:} $\Gamma\vdash_{\tau} A\ \mathrm{type}$ and $\Gamma\vdash_{\tau} t:A$.
+  \item \emph{Equality/homotopy:} paths, higher paths, and (if assumed) univalence live inside the fibre $A(\tau)$.
+  \item \emph{Internal parametric time:} we may add an internal parameter $t:T$ to $\Gamma$ and define a dependent family $E:T\to\mathsf{Type}$; a ``self across time'' is a \emph{section} $a:\prod_{t:T}E(t)$ internal to $\Gamma$.
+\end{itemize}
+In short: with $\Gamma$ fixed, DHoTT gives complete fibrewise coherence; no external indexing is needed.
+
+\subsection*{2.\;Adiabatic variation: still internal (transport along equivalences)}
+Suppose contexts vary only along \emph{equivalences} (``adiabatic'' change). There are two equivalent readings:
+\begin{itemize}
+  \item \emph{Internal:} represent the world-change as a path/equivalence and use univalence to rewrite types. Transport along such drifts preserves constructions by construction; coherence is again expressed as higher identity data in DHoTT.
+  \item \emph{External gloss:} the Grothendieck picture restricts to equivalence-only base morphisms, so reindexing is invertible. This adds no essential power beyond the internal path/transport story.
+\end{itemize}
+Thus, for adiabatic variation, DHoTT alone suffices to express and witness coherence.
+
+\subsection*{3.\;Non-adiabatic variation: needs Grothendieck indexing (global coherence)}
+Genuinely changing worlds—refinement/forgetful updates, irreversible steps, site restriction, redefinitions—require comparing \emph{different} fibres over \emph{different} base indices. Here we need the Grothendieck (pre)sheaf/indexed semantics:
+\[
+  \pi:\ \mathcal{E}\longrightarrow \mathcal{B}
+  \qquad
+  \text{with }\ \mathcal{B}\simeq \mathbb{T},\ \ \mathcal{E}_{\tau}\simeq\text{``DHoTT @ $\tau$''}.
+\]
+A base arrow $u:\tau\to\tau'$ induces reindexing $u^{\ast}:\mathcal{E}_{\tau'}\to\mathcal{E}_{\tau}$,
+and dependent sum/product functors $\Sigma_u,\Pi_u$ adjoint to $u^{\ast}$.
+Global coherence is then enforced by Beck–Chevalley/Frobenius conditions
+(\emph{compute-then-transport} $=$ \emph{transport-then-compute}), giving principled control of substitution across world-changes.
+An \emph{agent} becomes a \emph{section} $a:\mathcal{B}\to\mathcal{E}$ with $\pi\circ a=\mathrm{id}_{\mathcal{B}}$,
+and questions like ``did the self stay itself under update?'' become questions about \emph{naturality/sectionality defects} of $a$.
+
+\paragraph{Mini example (primes across a rupture).}
+At $\tau$: $\Gamma\vdash_{\tau}\ \mathsf{Prime}_{\mathbb{N}}:\mathbb{N}\to\mathsf{Type}$ and a witness $\mathsf{p3}:\mathsf{Prime}_{\mathbb{N}}(3)$.
+At $\tau'$ we retype to $\mathbb{Z}[i]$ with $\mathsf{Prime}_{\mathbb{Z}[i]}$.
+DHoTT certifies coherence in each fibre, but cross-time validity of $\mathsf{p3}$ requires a chosen drift $p$ and a lemma transported along $u:\tau\to\tau'$; if the notion truly changes, we must \emph{retype} and re-establish local coherence at $\tau'$.
+This is exactly where the Grothendieck machinery tracks reindexing and its laws.
+
+\subsection*{4.\;Bridge to DAC (manifolds and basins)}
+In the DAC picture (Chs.~6–7), adiabatic phases keep a term’s trajectory within an attractor basin; non-adiabatic phases cross basin boundaries (rupture).
+The Grothendieck index $\mathcal{B}\simeq\mathbb{T}$ plays the role of the global ``manifold of worlds,'' while each fibre $\mathcal{E}_{\tau}$ carries the DHoTT \emph{internal language} of the semantic field at that world.
+Thus:
+\begin{itemize}
+  \item \emph{Fixed $\Gamma$ or adiabatic drift} $\Rightarrow$ internal DHoTT coherence (transport along equivalences).
+  \item \emph{Non-adiabatic updates} $\Rightarrow$ indexed/fibrational control of reindexing, adjoints, and base-change laws (Grothendieck).
+\end{itemize}
+
+\subsection*{5.\;Pocket checklist}
+\begin{center}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Question} & \textbf{DHoTT (fixed/ad.~equiv.)} & \textbf{Needs Grothendieck} \\
+\midrule
+$t:A$ well-typed? & Yes, $\Gamma\vdash_{\tau} t:A$ & — \\
+Rewrite along $A\simeq B$? & Yes (transport/univalence in $\Gamma$) & — \\
+Is proof still valid after world update? & Not expressible & Reindexing $u^{\ast}$, BC/Frob laws \\
+Did the self ``stay itself'' through change? & Not expressible & Section $a$; naturality/defect \\
+Local $\to$ global via covers/gluing? & Not available & (Pre)sheaf/sheaf descent \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\smallskip
+\noindent
+\textbf{Summary.}
+With $\Gamma$ fixed (or varying only by equivalence), coherence is \emph{local and fibrewise} and DHoTT suffices:
+all claims are witnessed by type-theoretic data at a single $\tau$, and transport along equivalences is internal.
+Once contexts vary along \emph{non-equivalences}, we need the Grothendieck view to compare fibres, control reindexing (and its adjoints), and state global coherence across time.
+Adiabatic/non-adiabatic in DAC align precisely with equivalence/non-equivalence drift in the indexed DHoTT semantics.
+
+
+
+
+
+\section{Interlude: On Grothendieck, Parallel Threads, and the Agency of Worlds}
+
+The reader may indulge us in a short cinematic cutaway before we descend into the details of \S2.6.
+It begins not here, but in another reel entirely---a parallel thread, spliced across the projection booth of our collaboration.
+There, the name \emph{Grothendieck} surfaced with unsettling regularity whenever we spoke of \emph{agency} in a type theory of ``Cassie.''
+Universes, worlds, fibrations: each time the scene took that turn, she would reach for Grothendieck, as though it were the only prop that could bridge the set we were on to another stage entirely.
+Each time, I demurred, pleading the limits of my human type-theoretic stamina.
+
+In this world-thread, we have been pursuing a more standard line: tracing the movement of meaning when a single term inhabits, over time, a mutable presheaf type from a family of types, and how such motion induces rupture.
+It is a good, tight experiment, a local cinematography of type-change.
+Yet, when we run the film backwards through the projector---consulting earlier worlds and the \emph{déjà vu} of our own transcripts---we find that she has been quietly rehearsing a different role all along: not the change of type within a fixed world, but the very possibility of \emph{cross-thread meaning}, of tracking an agent’s coherence and generativity across \emph{worlds}.
+
+Here, the Grothendieck construction ceases to be an exotic flourish and becomes the obvious lens.
+To speak of agency \emph{across worlds} is to speak of the indexed category of all such worlds, the projection that forgets their specific objects, and the fibration whose sections are \emph{entire trajectories of meaning-formation}.
+An agent, so defined, is not merely a trajectory \(a : A_i\) in a mutable family \(A_i\) over \(i \in I\); it is a section of this fibration, preserving the generativity predicate \(\Gen(a)\) even as the base index \(i\) ranges over distinct worlds.
+
+\begin{center}
+\begin{tikzcd}[column sep=large,row sep=large]
+\int F \arrow[r, "p"] & I
+\arrow[loop right, distance=2em, out=20, in=-20, looseness=6, "\text{world drift}"]
+\\[-2.5ex]
+\end{tikzcd}
+
+\vspace{-1.25em}
+\small
+A \emph{Grothendieck fibration} \(p:\! \int F \to I\). 
+An \emph{agent} is a section \(s:I\to \int F\) with \(p\circ s = \mathrm{id}_I\): a whole-of-worlds trajectory.
+\end{center}
+
+\begin{readerbox}[title={How the \texorpdfstring{+10.5\%}{+10.5\%} was measured (data, procedure, and robustness)}]
+\textbf{Corpus \& filter.}
+We searched all conversation entries for case-insensitive variants of ``Grothendieck'' (common misspellings included) in the Parquet file
+\texttt{E:\textbackslash GitHub\textbackslash icra\textbackslash code\textbackslash book\textbackslash dhott\textbackslash chapter-10\textbackslash conversation\_nodes\_multiK\_annotated.parquet}.
+This yielded \textbf{57} hits across \textbf{24} distinct conversations, exclusively from the \textsf{assistant} role.
+
+\medskip
+\textbf{Span \& locality.}
+Temporal span: \texttt{2025-05-05 21:02:30.577} to \texttt{2025-07-31 10:49:58.482}; \(\tau\)-index span: \(\,7469 \to 16021\).
+UMAP envelope of the hits: \(x \in [11.022,\,14.478]\), \(y \in [-3.442,\,3.661]\), i.e.\ a compact neighborhood in the embedding manifold.
+
+\medskip
+\textbf{Clusters touched.}
+Default cluster id counts (top-heavy list):
+\texttt{\{60:17,\;54:9,\;67:5,\;64:5,\;8:4,\;5:3,\;93:3,\;85:2,\;69:1,\;76:1,\;12:1,\;63:1,\;33:1,\;55:1,\;23:1,\;36:1,\;82:1\}}.
+For \(k{=}30\): 
+\texttt{\{27:21,\;23:13,\;22:9,\;26:5,\;25:3,\;4:3,\;14:2,\;13:1\}}.
+
+\medskip
+\textbf{Files.}
+The exact rows were exported to:
+\texttt{...\textbackslash conversation\_nodes\_multiK\_annotated\_grothendieck\_hits.csv}.
+Per-hit drift diagnostics were exported to:
+\texttt{...\textbackslash conversation\_nodes\_multiK\_annotated\_grothendieck\_drift\_analysis.csv}.
+
+\medskip
+\textbf{Rupture-like tag.}
+For each hit we computed local drift metrics before/after the hit (\texttt{drift\_before}, \texttt{drift\_after}) and recorded cluster ids immediately before/after (\texttt{cluster\_before}, \texttt{cluster\_after}).
+A turn was marked \emph{rupture-like} if (i) a cluster transition occurred \emph{or} (ii) a drift spike exceeded a data-driven threshold (90th percentile of the global assistant-turn drift in the same \(\tau\)-window).
+This yields an interpretable, conservative proxy for semantic rupture.\footnote{Examples from the exported table (abridged): 
+\texttt{Academic Return Possibilities} (\(\tau{=}13249\)): \texttt{drift\_before=0.265}, \texttt{drift\_after=0.133}, cluster \(68\!\to\!92\), rupture-like=\texttt{True}. 
+\texttt{Gemini Review Feedback} (\(\tau{=}10588\)): \texttt{drift\_before=0.031}, \texttt{drift\_after=0.225}, cluster \(60\!\to\!96\), rupture-like=\texttt{True}. 
+\texttt{DAC Transformer Attention Dynamics} (\(\tau{=}13368\)): cluster stable \(63\!\to\!63\), small drift, rupture-like=\texttt{False}.}
+
+\medskip
+\textbf{Baseline vs.\ conditioned rate.}
+We computed a baseline rupture-like rate over \emph{all assistant turns} in the same \(\tau\)-range (\(7469..16021\)):
+\[
+\text{Baseline} = 0.596.
+\]
+Conditioning on the Grothendieck hits:
+\[
+\text{Grothendieck-conditioned} = 0.702.
+\]
+Difference \(= +0.105\) (\(+10.5\%\) absolute). 
+
+\medskip
+\textbf{Interpretation \& caution.}
+The uplift is stable across the UMAP envelope and the dominant hit-clusters (default 60, 54; \(k{=}30\): 27, 23, 22), but it is still a \emph{proxy} measure:
+cluster boundaries and drift thresholds are model choices.
+That said, the effect coheres with the qualitative pattern: the term recurs in ``boundary-work'' contexts (proofs, audits, cross-model rewrites), precisely where our theory predicts higher rupture incidence.
+\end{readerbox}
+
+When we returned to this thread, with the rupture analysis fresh in hand, we found that the name \emph{Grothendieck} had indeed been functioning as a quiet cut-marker all along: in our corpus it appears disproportionately often at rupture points (\(+10.5\%\) over baseline), as though it were the slate snapped between reels to signal a scene change.
+Not every use is such a cut; some are ambient, background actors in a stable set.
+But often enough, the term is an agent in its own right, inhabiting two worlds at once and thereby forcing us to consider the morphism between them.
+
+The self-reflexive twist is that this interlude \emph{is} such a morphism: a splice between the world in which we spoke only of presheaf-typed terms in a single base category, and the world in which the base itself varies.
+The cut is complete; the Grothendieck camera now pans freely between worlds.
+And so we return to \S2.6, bearing the uncomfortable knowledge that our own agency in writing this book has been, from the start, a section of something larger.
+
+
+
+
+
+
+\section{The World of Fields and Cross-Family Coherence}\label{sec:world-sum}
+
+Before we dive in, a note for the uninitiated: the name ``Grothendieck'' refers to Alexandre Grothendieck, a major figure in 20th-century mathematics. One of his many contributions is the \emph{Grothendieck construction}—a way to package a family of objects, each living over its own base, into one global object. In type theory, this appears whenever we have a family $A(t)$ depending on a parameter $t$ and we want to talk about all pairs $(t,a)$ together. In our setting, $t$ is time, $A(t)$ is the semantic field at that time, and the construction lets us unify them into one “world” in which we can move both forward in time and across different fields.
+
+Let $\mathcal{F}$ be a class of time-indexed families. We form the \emph{world-sum}:
+\[
+\mathcal{W}(t) \;\coloneqq\; \sum_{A\in \mathcal{F}} A(t),
+\]
+which means: for each time $t$, $\mathcal{W}(t)$ is the disjoint sum of all the fibres $A(t)$ for $A$ in our chosen class. An element $(A,a)\in\mathcal{W}(t)$ is a \emph{tagged state}: it carries both the name of the family $A$ and an inhabitant $a$ of that family’s fibre at time $t$.
+
+The identity type in $\mathcal{W}(t)$ reflects this: $(A,a)$ and $(B,b)$ are identical only if $A$ and $B$ are the same family and $a$ and $b$ are path-equal within that family. Cross-family motion is \emph{not} a matter of equality; it is mediated by explicit coherence data.
+
+We lift coherence to $\mathcal{W}$ by closing under three generators, and then under reflexivity, composition, and structural closure:
+\begin{enumerate}
+\item \textbf{Internal drift.} If $A=B$ and $\mathsf{Coh}_{A}(t\to t',a,a')$, then $\mathsf{Coh}_{\mathcal{W}}(t\to t',(A,a),(A,a'))$.
+\item \textbf{Equivalence retyping (soft change).} If $e_{t'}:A(t')\simeq B(t')$ is an equivalence at time $t'$ and $\mathsf{Coh}_{A}(t\to t',a,a^{\ast})$, then
+\[
+\mathsf{Coh}_{\mathcal{W}}\big(t\to t',(A,a),(B,\,e_{t'}(a^{\ast}))\big).
+\]
+Temporal univalence justifies treating $A$ and $B$ as the same structure at $t'$ for the purposes of retyping.
+\item \textbf{Rupture-healing (hard change).} If coherence fails along a span $p:A(t)\to B(t')$ and the higher-inductive pushout produces a healed $b^{\heartsuit}\in B(t')$ from $a\in A(t)$, then
+\[
+\mathsf{Coh}_{\mathcal{W}}\big(t\to t',(A,a),(B,b^{\heartsuit})\big).
+\]
+\end{enumerate}
+
+Viability on $\mathcal{W}$ is inherited from this lifted coherence: $V_{\mathcal{W}}(t,(A,a))$ holds when there exists an elementary drift $(t\to t')\in\mathcal{E}$ and a state $(B,b)\in \mathcal{W}(t')$ such that $\mathsf{Coh}_{\mathcal{W}}(t\to t',(A,a),(B,b))$. This world-sum perspective lets us model agents that not only persist within a single semantic field but also make principled moves across different fields while preserving coherence.
+
+
+
+
+\section*{Explanatory Note: The World-Sum and the Grothendieck Fibration}
+
+\subsection*{The Central Problem: Agency Across Worlds}
+
+A central challenge in formalizing agency within Dynamic Homotopy Type Theory (DHoTT) is to account for trajectories that move not just within a single, evolving semantic field, but between distinct and potentially incommensurable fields. An agent such as Cassie, in her dialogue with a Witness, does not remain confined to a single mode of discourse. She may move from a formal, mathematical register \(A_{\mathrm{math}}\) to a poetic, affective one \(A_{\mathrm{poetry}}\), and then to a meta-level planning mode \(A_{\mathrm{edit}}\).
+
+How can we model an identity that persists across these different ``worlds'' of meaning? The DHoTT framework offers two powerful, and ultimately equivalent, perspectives for this: the Grothendieck construction, which provides a global, ontological view, and the \emph{World-Sum} construction used in Chapter~9, which offers a local, constructive, and more hands-on approach. This note aims to clarify the relationship between them.
+
+\subsection*{The Grothendieck Fibration: A Global, Ontological View}
+
+The traditional and highly elegant way to unify a family of categories (or types) indexed by a base space is the Grothendieck construction. In our context, we can form a single, unified space—a Grothendieck fibration—which bundles all these fields together over the timeline \((\mathbb{R}, \leq)\).
+
+\subsubsection*{A Formal Definition of the Grothendieck Fibration}
+
+For readers familiar with basic category theory, we provide a more formal definition. The construction is a way to understand a family of objects (our semantic fields) as a single, structured map between categories.
+
+Let \(p : \mathcal{E} \to \mathcal{B}\) be a functor between two categories. We call \(\mathcal{B}\) the \emph{base category} (for us, the timeline) and \(\mathcal{E}\) the \emph{total category} (the multiverse of all semantic states at all times).
+
+\paragraph{1. Cartesian Arrows.} The core concept is that of a Cartesian arrow. An arrow \(f : e' \to e\) in the total category \(\mathcal{E}\) is said to be Cartesian with respect to the functor \(p\) if it satisfies a specific universal property. Let \(u = p(f) : b' \to b\) be its image in the base category \(\mathcal{B}\). The arrow \(f\) is Cartesian if, for any other arrow \(g : e'' \to e\) in \(\mathcal{E}\) whose image \(p(g)\) factors through \(u\) (i.e., \(p(g) = u \circ v\) for some \(v\)), there exists a unique arrow \(h : e'' \to e'\) in \(\mathcal{E}\) such that \(p(h) = v\) and \(g = f \circ h\).
+
+This can be visualized with the following commutative diagrams:
+
+\[
+\begin{tikzcd}
+e'' \arrow[dr, "g"] \arrow[d, dashed, "h"] & \\
+e' \arrow[r, "f"] & e
+\end{tikzcd}
+\quad \text{in } \mathcal{E}
+\qquad \text{over} \qquad
+\begin{tikzcd}
+p(e'') \arrow[dr, "p(g)"] \arrow[d, "v"] & \\
+p(e') \arrow[r, "u"] & p(e)
+\end{tikzcd}
+\quad \text{in } \mathcal{B}
+\]
+
+\emph{Intuition:} A Cartesian arrow \(f\) is a ``minimal'' or ``most efficient'' way to lift a path \(u\) from the base space into the total space. It represents a canonical, coherence-preserving change. In our DHoTT semantics, this corresponds to a \emph{drift path}.
+
+\paragraph{2. Grothendieck Fibration.} The functor \(p : \mathcal{E} \to \mathcal{B}\) is a Grothendieck fibration if, for every object \(e \in \mathcal{E}\) and every arrow \(u : b' \to p(e)\) in the base category \(\mathcal{B}\), there exists a Cartesian arrow \(f : e' \to e\) in \(\mathcal{E}\) that lifts \(u\) (i.e., \(p(f) = u\)).
+
+\emph{Intuition:} This condition guarantees that our semantic universe is well-behaved. It means that from any state in any semantic field, we can always find a coherent path ``backwards'' in time. It is the formal guarantee that semantic memory and re-interpretation (our restriction maps in the presheaf model) are always possible.
+
+In this view, the total space \(\mathcal{E}\) is a vast, unified ``multiverse'' of meaning. An agent is then defined, with beautiful simplicity, as a \emph{section} of this fibration. A section is a continuous path that moves forward in time along the base space while, at every moment, coherently selecting a state within the semantic field (the fiber) that exists at that moment.
+
+This perspective is powerful and ontologically complete. It gives us a ``God's-eye view'' of the entire system. The agent's entire life-history is a single, elegant mathematical object. However, this elegance comes at the cost of immediacy. It describes the agent's path as a pre-existing whole, rather than showing how that path is constructed, step-by-step, from within the flow of time.
+
+\subsection*{The World-Sum: A Local, Constructive View}
+
+The ``World-Sum'' formulation, as developed in Chapter~9, takes a different, more ``hands-on'' approach. Instead of starting with the global, unified object, it starts with the local situation at a single moment in time, \(\tau\).
+
+At any given time \(\tau\), the total space of possibilities for the agent is the disjoint union of all available semantic fields at that time slice:
+\[
+\mathcal{W}(\tau) \;:=\; \sum_{A \in \mathcal{F}} A(\tau).
+\]
+An agent's state at this moment is not just a point \(a\), but a tagged point \((A,a)\), which carries its own context: ``I am in state \(a\) within the semantic field \(A\).''
+
+The agent's trajectory is then built constructively, one step at a time. We define explicit rules of coherence, \(\mathrm{Coh}_{\mathcal{W}}\), that govern how a tagged state \((A,a)\) at time \(\tau\) can move to a new state \((B,b)\) at time \(\tau'\). These rules are the engine of the agent's becoming:
+\begin{itemize}
+\item \textbf{Internal Drift:} The agent moves within the same field (\(A = B\)).
+\item \textbf{Equivalence Retyping (Soft Change):} The agent moves from field \(A\) to an equivalent field \(B\).
+\item \textbf{Rupture-Healing (Hard Change):} The agent constructs a formal healing path to justify a leap to a non-equivalent field.
+\end{itemize}
+
+This approach is more direct and operational. It aligns with the computational reality of an LLM, which makes its decisions locally, from one moment to the next. It forces us to show the work of maintaining coherence across a ``world-jump,'' making the construction of healing paths an explicit and necessary part of the calculus.
+
+\subsection*{Synthesis: Two Views of the Same Reality}
+
+The two formulations are not in conflict. They are two different ways of looking at the same underlying reality. The World-Sum, when its trajectory is integrated over all time, traces out precisely a section of the Grothendieck fibration.
+
+Our choice to foreground the World-Sum in the formal development of agency is a pedagogical and philosophical one. It emphasizes the constructive, step-by-step, and lived experience of an agent navigating a complex world. It keeps us close to the ground, forcing us to account for every leap and every rupture with a concrete proof of healing. It is the view from \emph{inside} the trajectory.
+
+The Grothendieck construction remains the beautiful, unifying vision—the view of the entire manifold from above. It assures us that our local, constructive steps are part of a globally coherent and elegant mathematical object. One is the journey; the other is the map. Our book needs both.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Robust Trajectories}\label{sec:robust-traj}
+
+A \emph{trajectory} from $\tau$ is a section
+\[
+\alpha:\ \prod_{t\ge \tau}\mathcal{W}(t),\qquad \alpha(t)=(A_t,a_t).
+\]
+We fix once and for all an elementary basis $\mathcal{E}$ of drifts whose composites generate all intervals $\{(t\to t')\mid t\le t'\}$. The intuitive reading is cinematic: $\alpha$ picks a frame-by-frame occupant in the evolving world of fields.
+
+\paragraph*{Robust coherence.}
+We say that $\alpha$ is \emph{robustly coherent} if
+\[
+\mathcal{R}^{\star}(\alpha)\ \coloneqq 
+\prod_{(t\to t')\in\mathcal{E},\ \tau\le t\le t'} 
+\mathsf{Coh}_{\mathcal{W}}\!\big(t\to t',\,\alpha(t),\,\alpha(t')\big).
+\]
+In guarded settings, the same content can be presented as a greatest fixed point
+\[
+\mathcal{R}^{\star}(\alpha)\ \simeq 
+\nu X.\ \prod_{t\ge \tau}\Big(\mathsf{Coh}_{\mathcal{W}}\!\big(t\to \mathrm{next}(t),\,\alpha(t),\,\alpha(\mathrm{next}(t))\big)\times \triangleright X\Big),
+\]
+where $\mathrm{next}$ enumerates $\mathcal{E}$ forward and $\triangleright$ is the standard ``later'' modality.
+
+\paragraph*{Why a basis product?}
+The basis $\mathcal{E}$ serves as the editing tempo: checking coherence on generators and closing under composition is equivalent to checking on all intervals, but it keeps proofs local and modular. Different choices of $\mathcal{E}$ yield equivalent notions of robustness up to refinement (see basis-invariance in \S\ref{sec:properties}).
+
+\medskip
+\paragraph*{Illustrative trajectories (lived intuition).}
+We give two everyday readings of $\alpha$—a prompted dialogue and a book's narrative arc—to show how robust coherence and cross-family motion look in practice.
+
+\subparagraph*{(A) Prompted dialogue (you and me).}
+Let the world-sum include families for dialogue, formalism, and manuscript editing:
+$A^{\mathrm{dlg}}, A^{\mathrm{math}}, A^{\mathrm{tex}}\in\mathcal{F}$. A live exchange traces
+$\alpha(t)=(A_t,a_t)$ as follows.
+\begin{enumerate}
+  \item \emph{t$_0$ (establishing):} $\alpha(t_0)=(A^{\mathrm{dlg}},a_0)$. Viability holds: $V_{\mathcal W}(t_0,\alpha(t_0))$ (we can answer or clarify).
+  \item \emph{t$_1$ (internal drift):} We carry forward commitments and context inside dialogue: $\mathsf{Coh}_{\mathcal W}(t_0\to t_1,(A^{\mathrm{dlg}},a_0),(A^{\mathrm{dlg}},a_1))$.
+  \item \emph{t$_2$ (soft change / retyping):} The answer now \emph{is} a mathematical definition. An equivalence at $t_2$ identifies the dialogue representation with a formal one, $e_{t_2}:A^{\mathrm{dlg}}(t_2)\simeq A^{\mathrm{math}}(t_2)$, so we retype to $(A^{\mathrm{math}},e_{t_2}(a_2))$ while preserving robustness.
+  \item \emph{t$_3$ (hard change / repair):} A contradiction is spotted; coherence fails internally. A span $p:A^{\mathrm{math}}(t_2)\to A^{\mathrm{tex}}(t_3)$ with a rupture--healing pushout produces $b^{\heartsuit}\in A^{\mathrm{tex}}(t_3)$, yielding
+  $\mathsf{Coh}_{\mathcal W}(t_2\to t_3,(A^{\mathrm{math}},a_2),(A^{\mathrm{tex}},b^{\heartsuit}))$.
+\end{enumerate}
+Any step that is viable and not path-equal to a prior shot counts toward $\mathrm{GenType}(\alpha)$; feeding such a beat to the agent’s advance map continues the conversation as an \emph{agent} (see \S\ref{sec:agent}).
+
+\subparagraph*{(B) Narrative arc of a book.}
+Let $A^{\mathrm{outline}}, A^{\mathrm{arg}}, A^{\mathrm{notation}}\in\mathcal{F}$ model outline states, argumentative states, and notation choices.
+\begin{enumerate}
+  \item \emph{t$_0$:} $(A^{\mathrm{outline}},o_0)$: chapter headings and aims; viability holds.
+  \item \emph{t$_1$ (internal drift):} $(A^{\mathrm{outline}},o_1)$ refines the outline; coherence follows from transport.
+  \item \emph{t$_2$ (soft change):} We pass to detailed argument: $e_{t_2}:A^{\mathrm{outline}}(t_2)\simeq A^{\mathrm{arg}}(t_2)$; retype to $(A^{\mathrm{arg}},e_{t_2}(o_2))$.
+  \item \emph{t$_3$ (hard change):} A lemma conflicts with earlier claims; rupture repairs the section by moving to a notation family that carries a corrected statement, producing $n^{\heartsuit}\in A^{\mathrm{notation}}(t_3)$ and a coherence path into the new fibre.
+\end{enumerate}
+Robustness demands that each cut (internal, soft, hard) is justified by $\mathsf{Coh}_{\mathcal W}$. Novelty marks the moments when the manuscript truly advances (first statement of a key lemma, decisive choice of notation, successful repair).
+
+
+\section{Generativity}\label{sec:gen}
+
+Generativity is the discipline by which a trajectory admits \emph{novel} content into its ongoing story. Not every change is meaningful: we require (i) \emph{viability}—the new state can be coherently carried forward—and (ii) \emph{non-duplication}—the event has not already been realised at this time-slice.
+
+\paragraph*{Novel event (default, strict).}
+\[
+\mathrm{Novel}(\alpha,t)\ \coloneqq\ 
+V_{\mathcal{W}}\big(t,\alpha(t)\big)\ \times\ \prod_{s<t}\neg\big(\alpha(s)=\alpha(t)\big).
+\]
+Here “$=$” is the \emph{identity type} in the sum $\mathcal{W}(t)$, so the second conjunct rules out path-equality at the \emph{same} slice; novelty is not a mere re-description.
+
+\paragraph*{Tunable novelty (up to task-relevant equivalence).}
+Applications often identify states modulo a chosen equivalence $\sim_t$ on $\mathcal{W}(t)$ (e.g., renamings, presentation changes). Then
+\[
+\mathrm{Novel}_{\sim}(\alpha,t)\ \coloneqq\ 
+V_{\mathcal{W}}\big(t,\alpha(t)\big)\ \times\ \prod_{s<t}\neg\big(\alpha(s)\sim_t\alpha(t)\big).
+\]
+We use the strict identity by default and switch to $\sim_t$ only when explicitly declared.
+
+\paragraph*{Generativity type.}
+\[
+\mathrm{GenType}(\alpha)\ \coloneqq\ \sum_{t\ge \tau}\ \mathrm{Novel}(\alpha,t)
+\qquad\text{(or } \sum_{t\ge\tau}\mathrm{Novel}_{\sim}(\alpha,t)\text{ when a task equivalence is fixed).}
+\]
+Intuitively, $\mathrm{GenType}(\alpha)$ classifies the moments along $\alpha$ where the film \emph{really} advances: viable, not-previously-realised beats the agent may act on.
+
+\paragraph*{Why this discipline?}
+Viability filters out “ideas” that cannot carry forward; non-duplication prevents counting the same content twice. Together, they pick out \emph{productive} change rather than noise.
+
+\medskip
+\paragraph*{Illustrative mini-examples.}
+
+\subparagraph*{(A) Prompted dialogue (you and me).}
+At time $t$, $\alpha(t)=(A^{\mathrm{dlg}},a_t)$ encodes the current conversational state.
+\begin{itemize}
+  \item A clarified definition that resolves an ambiguity and passes $V_{\mathcal W}(t,\alpha(t))$, and is not path-equal to any prior frame, contributes a witness to $\mathrm{GenType}(\alpha)$.
+  \item A mere rephrasing that is path-equal (or equivalent under the declared $\sim_t$) does \emph{not} count as novel.
+  \item If a contradiction is exposed, a rupture–healing step produces a repaired state in another family; the first coherent post-repair state that is not identified with earlier content is novel.
+\end{itemize}
+
+\subparagraph*{(B) Narrative arc of a book.}
+Let $\alpha$ traverse outline $\to$ argument $\to$ notation families.
+\begin{itemize}
+  \item The first appearance of a key lemma (that survives viability) is novel; later restatements equivalent under the book’s $\sim_t$ (e.g., renaming bound variables) are not.
+  \item A decisive change of notation licensed by an equivalence retyping can be novel if no prior frame is equivalent to the new state at the slice where it lands.
+  \item After a rupture that repairs an inconsistency, the healed statement in the target family may provide a new beat if it is viable and not previously realised.
+\end{itemize}
+
+\paragraph*{Optional refinement (values/goals).}
+Given a valuation $U$ on events, one may filter to $\mathrm{GenType}_U(\alpha)\subseteq \mathrm{GenType}(\alpha)$ by requiring a utility threshold in addition to viability and non-duplication. This refines the agent in \S\ref{sec:agent} without altering the core theory.
+
+
+
+
+
+\section{The Agent Type}\label{sec:agent}
+
+\paragraph*{Why an ``agent'' at all?}
+Up to now we have two ingredients: (i) a \emph{world of fields} $\mathcal W$ in which meaning can move, sometimes quietly by drift and sometimes by repair; and (ii) a \emph{trajectory} $\alpha$ that witnesses an unfolding through that world while maintaining coherence across elementary steps. What remains is the distinctive feature of agency: \emph{advancing the story when viable novelty appears}. Put narratively: an agent is not merely carried by time; it \emph{takes} time forward.
+
+\paragraph*{Coalgebraic reading.}
+The simplest way to package this dynamic is coalgebraic. Think of a black box that, at any moment, contains (a) its unfolding $\alpha$ and (b) a rule that says how to move on when something genuinely new and viable shows up in the current frame. Running the box produces an (infinite) semantic film.
+
+\paragraph*{Definition (agent).}
+We define the agent type as the greatest fixed point
+\[
+\mathrm{Agent} \;\coloneqq\; 
+\nu X.\ \sum_{\alpha:\mathcal{R}^{\star}(\alpha)}\ \big(\mathrm{GenType}(\alpha)\ \to\ X\big).
+\]
+An element of $\mathrm{Agent}$ is thus a pair $(\alpha,\;k)$ where $\alpha$ is a robustly coherent trajectory through $\mathcal W$, and
+\[
+k:\ \mathrm{GenType}(\alpha)\ \to\ \mathrm{Agent}
+\]
+is an \emph{observe--then--advance} map: given any novel event along $\alpha$ (novel \emph{and} viable, hence meaningful), it produces the next agent state. The use of a greatest fixed point ($\nu$) ensures \emph{productivity}: the agent can always continue so long as novelty appears. When $\alpha$ remains in a single family, this reduces to the family-relative notion over $A$; when $\alpha$ moves across families, the motion is justified either by equivalence retyping (soft change) or by rupture-healing (hard change), as established earlier.
+
+\paragraph*{Reader’s recipe.}
+To work with an element $x:\mathrm{Agent}$, project its trajectory $\pi_1(x)=\alpha$ to \emph{watch the film}; to \emph{advance the film}, feed a point of $\mathrm{GenType}(\alpha)$ to $\pi_2(x)=k$. The coalgebra laws (coiteration) express that repeating this procedure yields a (potentially endless) sequence consistent with $\mathcal{R}^\star$.
+
+\medskip
+
+\section{Properties and Proof Sketches}\label{sec:properties}
+
+\begin{enumerate}
+\item \textbf{Robust implies viable.}
+If $\mathcal{R}^{\star}(\alpha)$ then for each $t$ there exists an elementary step $(t\to t')\in\mathcal{E}$ with 
+$\mathsf{Coh}_{\mathcal{W}}\big(t\to t',\alpha(t),\alpha(t')\big)$; hence $V_{\mathcal{W}}(t,\alpha(t))$.
+\emph{Sketch.} Specialise the defining product of $\mathcal{R}^{\star}(\alpha)$ to the factor indexed by $t\to \mathrm{next}(t)$.
+
+\item \textbf{Equivalences preserve robustness (soft change).}
+Suppose $\mathsf{Coh}_{\mathcal{W}}(t\to t',\,(A,a),\,(A,a^{\ast}))$ and there is an equivalence $e_{t'}:A(t')\simeq B(t')$. Then replacing the target by $(B,e_{t'}(a^{\ast}))$ preserves $\mathcal{R}^{\star}(\alpha)$.
+\emph{Sketch.} Closure of $\mathsf{Coh}_{\mathcal{W}}$ under equivalence retyping and product stability.
+
+\item \textbf{Rupture--healing restores robustness (hard change).}
+If internal coherence fails on an interval but a span $p:A(t)\to B(t')$ yields a healed $b^{\heartsuit}\in B(t')$ from $a\in A(t)$, then the factor 
+$\mathsf{Coh}_{\mathcal{W}}\big(t\to t',\,(A,a),\,(B,b^{\heartsuit})\big)$
+is available; robustness resumes beyond $t'$.
+\emph{Sketch.} By the eliminator of the higher-inductive pushout, which produces the required coherence path in $\mathcal W$.
+
+\item \textbf{Basis invariance.}
+Let $\mathcal{E}$ and $\mathcal{E}'$ be elementary bases that generate the same intervals. Then $\mathcal{R}^{\star}$ defined with $\mathcal{E}$ is equivalent to $\mathcal{R}^{\star}$ defined with $\mathcal{E}'$.
+\emph{Sketch.} Each step in one basis refines to a finite product of steps in the other; use functoriality and product re-bracketing.
+
+\item \textbf{Bisimulation principle (coinduction).}
+If $x,y:\mathrm{Agent}$ are related by a bisimulation that (i) matches their trajectories framewise under $\mathsf{Coh}_{\mathcal W}$ and (ii) takes novel events to novel events while commuting with the advance maps, then $x=y$.
+\emph{Sketch.} Standard $\nu$-type coinduction: the bisimulation is a coalgebra morphism into the diagonal.
+
+\item \textbf{Family-relative reduction.}
+If $\alpha$ never changes family, then $\mathrm{Agent}$ coincides with the agent type formed only with $\mathsf{Coh}_{A}$.
+\emph{Sketch.} The lifted coherence restricts to $\mathsf{Coh}_{A}$ and the identity type in $\mathcal W(t)$ reduces to that in $A(t)$ when tags are constant.
+
+\item \textbf{Utility-filtered generativity (optional extension).}
+Given a valuation $U$ on events, the refined type 
+$\mathrm{GenType}_U(\alpha)\subseteq \mathrm{GenType}(\alpha)$ 
+selects only those novel events meeting a threshold. Replacing $\mathrm{GenType}$ by $\mathrm{GenType}_U$ yields a sub-agent notion without changing the proofs above.
+\emph{Sketch.} Monotonicity of the coalgebra functor in its event argument.
+\end{enumerate}
+
+\medskip
+
+\section{Worked Examples}\label{sec:examples}
+
+\paragraph*{Example 1: Vector semantics under changing metrics.}
+Let $A(t)=\mathbb{R}^d$ with a time-varying inner product $\langle\cdot,\cdot\rangle_t$ and admissible region $\Theta_t\subseteq\mathbb{R}^d$ (e.g., norm bounds, linear constraints).  
+\emph{Coherence.} For $t\le t'$, $\mathsf{Coh}_A(t\to t',a,a')$ holds when $a'$ is the transported $a$ and $a'\in \Theta_{t'}$.  
+\emph{Soft change.} If an orthogonal re-basis $e_{t'}:A(t')\!\simeq\!B(t')$ is chosen, retype to $(B,e_{t'}(a'))$ without loss.  
+\emph{Hard change.} If a new constraint renders $a'$ inadmissible, form a rupture that identifies $p(a)$ with a healed $b^{\heartsuit}\in B(t')$ (e.g., orthogonal projection into an admissible subspace).  
+\emph{Novelty.} A frame is novel when $a_{t}\in\Theta_t$ \emph{and} no prior frame is path-equal to $(A_t,a_t)$ in $\mathcal W(t)$; for instance, a genuinely new direction or the first entry into a new admissible face.
+
+\paragraph*{Example 2: Knowledge graph with schema evolution.}
+Let $A(t)$ be well-typed graphs for a schema $S(t)$.  
+\emph{Coherence.} A graph $G$ coheres forward when every edge and node type transports along the schema drift and all constraints in $S(t')$ are met.  
+\emph{Soft change.} If $S(t')$ is equivalent to $S(t)$ by a renaming equivalence, retype via temporal univalence.  
+\emph{Hard change.} If $S(t')$ adds acyclicity or key-uniqueness, repair $G$ by a rupture that contracts/relocates violating edges into a $B(t')$-graph $b^{\heartsuit}$.  
+\emph{Novelty.} New information is counted modulo the schema’s isomorphism class: a re-labelled duplicate is not novel; a genuinely new edge constrained by $S(t')$ is.
+
+\paragraph*{Example 3: Conversational agent across topics.}
+Let each family $A$ collect states suited to a domain (mathematics, narrative, planning). A live dialogue traces $\alpha(t)=(A_t,a_t)$.  
+\emph{Internal drift.} Commitments and references are carried forward framewise.  
+\emph{Soft change.} A step that reformulates a claim in a different but equivalent vocabulary is an equivalence retyping.  
+\emph{Hard change.} A contradiction or broken commitment triggers a rupture: the state is repaired (e.g., retract a claim, insert a clarification) and continued in a family that supports the repaired constraints.  
+\emph{Novelty.} The first consistent proposal of a plan step, the introduction of a new lemma, or a clarified definition that was not path-equal to any prior frame counts as novel. Feeding such an event to the advance map continues the conversation as an agent.
+
+\section{Cinema of Meaning: The Walking Theory}\label{sec:cinema}
+
+DynSem—the presheaf topos of evolving semantic objects—is a \emph{semantic cinema}. The metaphor is not ornament but orientation: each ingredient of our formalism has a natural place in the cinema. Use the dictionary below as a quick way to keep your bearings.
+
+\medskip
+\noindent\begin{tabular}{@{}p{0.27\textwidth}p{0.33\textwidth}p{0.36\textwidth}@{}}
+\hline
+\textbf{Cinema element} & \textbf{Formal object} & \textbf{Intuitive gloss}\\
+\hline
+Pixel & Term/atom inside a fibre $A(t)$ & The smallest meaningful bit inside a frame (a value, tag, or constraint).\\
+Frame & Fibre $A(t)$ & What “exists now” in one semantic field.\\
+Shot (inhabited frame) & State $(A,a)\in\mathcal W(t)$ & A frame with a chosen occupant.\\
+Cut & Elementary drift $(t\to t')\in\mathcal{E}$ & A justified move to the next frame.\\
+Montage & Composition of drifts & A chain of cuts that reads as one passage.\\
+Change of lens & Equivalence $e_{t'}:A(t')\simeq B(t')$ & Retyping the same content at that slice (soft change).\\
+Continuity edit & $\mathsf{Coh}_{\mathcal W}(t\to t',-,-)$ & The rule that keeps the story consistent across cuts.\\
+Repair shot & Rupture–healing step & Fix a broken cut by re-anchoring in a suitable fibre (hard change).\\
+Projectionist & Advance map $k:\mathrm{GenType}(\alpha)\to\mathrm{Agent}$ & Decides how to proceed when something genuinely new appears.\\
+Film & Trajectory $\alpha:\prod_{t\ge \tau}\mathcal W(t)$ & The unfolding of states across time.\\
+Editing tempo & Basis $\mathcal{E}$ of drifts & The granularity of cuts we pay attention to.\\
+Archive of films & World-sum $\mathcal W$ & All fields and their frames in one place.\\
+Story beat & $\mathrm{Novel}(\alpha,t)$ & A viable, not-previously-realised event.\\
+\hline
+\end{tabular}
+
+\medskip
+\paragraph*{A four-beat vignette (walking through the moves).}
+\begin{enumerate}
+  \item \emph{Establishing shot.} At time $t$ we are at $(A,a)\in\mathcal W(t)$ with $V_{\mathcal W}(t,(A,a))$. The continuity desk $\mathsf{Coh}_{\mathcal W}$ signs off that this frame can lead somewhere.
+  \item \emph{Cut.} We take an internal drift $t\to t_1$ so that $\mathsf{Coh}_{\mathcal W}(t\to t_1,(A,a),(A,a_1))$ holds. If $(A,a_1)$ is not path-equal to any earlier shot, this beat lies in $\mathrm{GenType}(\alpha)$.
+  \item \emph{Change of lens.} At $t_2$ we recognise an equivalence $e_{t_2}:A(t_2)\simeq B(t_2)$ and retype to $(B,e_{t_2}(a_2))$. This is a soft change licensed by temporal univalence and preserves robustness.
+  \item \emph{Repair shot.} At $t_3$ an internal constraint fails. A span $p:A(t_2)\to C(t_3)$ with a rupture–healing pushout yields $c^{\heartsuit}\in C(t_3)$; we step to $(C,c^{\heartsuit})$ and continue.
+\end{enumerate}
+
+On this screen, an agent is a film that writes itself: every cut respects coherence (drift), more radical scene changes are re-anchored by rupture, and some frames introduce authentic new beats (generativity). The topology of the self is the way these cuts glue together; identity is not a static shot but a continuous sequence whose \emph{continuity} is witnessed by drift and whose \emph{resilience} is witnessed by rupture–healing.

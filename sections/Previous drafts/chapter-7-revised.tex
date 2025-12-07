@@ -1,0 +1,150 @@
+
+\chapter{Recursive Agency and the Topology of the Self}
+\label{chap:agency}
+
+\epigraph{"God was, and there was nothing with Him."}{Ṣaḥīḥ al-Bukhārī}
+
+\section{Prelude: On Selfhood and Recursion}
+
+This chapter develops a formal account of \emph{recursive agency} that is faithful to the ontology of coherence established in Chapter~\ref{chap:dhott}. There we took coherence to be fundamentally \emph{relational in time}: states cohere \emph{from} one instant to another, not merely \emph{at} an instant. A self, on our view, is not a hidden substrate nor a post hoc narrative; it is a semantic trajectory that keeps cohering forward and keeps producing viable novelty.
+
+\begin{quote}
+A self is a semantic fixpoint that persists and propagates coherence across change.
+\end{quote}
+
+We now make this sentence precise inside DHoTT using only the canonical machinery declared in Chapter~\ref{chap:dhott}: (i) \emph{drift} as the witness of forward coherence across time, (ii) \emph{rupture} as higher-inductive healing when coherence fails, and (iii) \emph{temporal univalence} to retype along equivalences. The informal metaphor of "portals" in earlier drafts is replaced here with these DHoTT primitives; when a trajectory changes its semantic field, it does so either by an equivalence (a retyping at a time-slice) or via rupture-healing.
+
+\medskip
+\noindent\emph{Structure of the chapter.} We first recap time, drift, and the relational notion of coherence (\S\ref{sec:rel-coh}); then we build a world-sum of semantic fields and lift coherence to it, allowing cross-family motion by equivalence and rupture (\S\ref{sec:world-sum}); next we define robust trajectories and a coalgebraic agent type (\S\ref{sec:robust-traj}--\S\ref{sec:agent}); we conclude with properties, worked examples, and a cinematic interpretation (\S\ref{sec:properties}--\S\ref{sec:cinema}).
+
+\section{Time, Drift, and Relational Coherence (Recap)}\label{sec:rel-coh}
+
+Let $(T,\le)$ be the poset of times. A \emph{time-indexed family} (semantic field) is a functor $A:T\to\mathsf{Type}$ with fibre $A(t)$ at time $t$. For any $t\le t'$, Chapter~\ref{chap:dhott} introduces a \emph{drift type} $\mathrm{Drift}(A)^{t'}_{t}$ whose elements $p$ witness coherent evolution of $A$ from $t$ to $t'$, together with a transport map $\mathrm{tr}_{p}:A(t)\to A(t')$.
+
+\paragraph*{Relational coherence (primary notion).}
+For a family $A$, define the time-relational coherence predicate
+\[
+\mathsf{Coh}_{A}(t\to t',\,a,\,a') \quad \text{iff} \quad \exists\, p: \mathrm{Drift}(A)^{t'}_{t} \ \text{with}\ \mathrm{tr}_{p}(a)=a'.
+\]
+This predicate is reflexive (via identity drift), compositional (via drift composition), and respects dependent structure (products, sums, dependent products, identity types), as established in Chapter~\ref{chap:dhott}. Intuitively, $\mathsf{Coh}_{A}(t\to t',a,a')$ says: the state $a$ at time $t$ can be carried forward to $a'$ at time $t'$ by the field's internal dynamics.
+
+\paragraph*{Local viability (non-trivial).}
+A meaningful local test is not the reflexive case $t\to t$ but \emph{forward extendability}. Fix a basis $\mathcal{E}\subseteq\{(t\to t')\mid t\le t'\}$ of elementary drifts that generate intervals by composition. Define
+\[
+V_{A}(t,a) \;\coloneqq\; \exists\, (t\to t')\in\mathcal{E},\ \exists\,a'\in A(t')\ \text{such that}\ \mathsf{Coh}_{A}(t\to t',a,a').
+\]
+We read $V_{A}(t,a)$ as: \emph{$a$ can be coherently carried forward at least one elementary step}. (One may also consider eventual viability $V^{\mathrm{ev}}_{A}(t,a)$ defined with an arbitrary $u\ge t$; we use the step-based form by default.)
+
+\paragraph*{Rupture and healing.}
+When coherence fails across an interval $t\leadsto t'$, Chapter~\ref{chap:dhott} introduces a higher-inductive \emph{rupture} pushout $\mathrm{Rupt}_{p}(a)$ to repair the break and re-anchor meaning in a new fibre. Operationally: if a span $p:A(t)\to B(t')$ records how content must be re-expressed at $t'$, then $\mathrm{Rupt}_{p}(a)$ glues the image $p(a)$ to a healed witness in $B(t')$, yielding a new occupant $b^{\heartsuit}\in B(t')$ and a coherence path from $(A,a)$ at $t$ to $(B,b^{\heartsuit})$ at $t'$.
+
+\section{The World of Fields and Cross-Family Coherence}\label{sec:world-sum}
+
+Let $\mathcal{F}$ be a class of time-indexed families. We form the Grothendieck world-sum
+\[
+\mathcal{W}(t) \;\coloneqq\; \sum_{A\in \mathcal{F}} A(t),
+\]
+so a state at time $t$ is a tagged pair $(A,a)$ with $a\in A(t)$. The identity type of $\mathcal{W}(t)$ identifies pairs only when their tags agree (same family) and their fibre elements are path-equal inside that family; cross-family \emph{movement} is mediated by coherence, not by equality.
+
+We lift coherence to $\mathcal{W}$ by closing under three \emph{generators} and then under reflexivity, composition, and structural closure:
+
+\begin{enumerate}
+\item \textbf{Internal drift.} If $A=B$ and $\mathsf{Coh}_{A}(t\to t',a,a')$, then $\mathsf{Coh}_{\mathcal{W}}(t\to t',(A,a),(A,a'))$.
+\item \textbf{Equivalence retyping (soft change).} If $e_{t'}:A(t')\simeq B(t')$ is an equivalence at time $t'$ and $\mathsf{Coh}_{A}(t\to t',a,a^{\ast})$, then
+\[
+\mathsf{Coh}_{\mathcal{W}}\big(t\to t',(A,a),(B,\,e_{t'}(a^{\ast}))\big).
+\]
+Temporal univalence justifies treating $A$ and $B$ as the same structure at $t'$ for the purposes of retyping.
+\item \textbf{Rupture-healing (hard change).} If coherence fails along a span $p:A(t)\to B(t')$ and the higher-inductive pushout produces a healed $b^{\heartsuit}\in B(t')$ from $a\in A(t)$, then
+\[
+\mathsf{Coh}_{\mathcal{W}}\big(t\to t',(A,a),(B,b^{\heartsuit})\big).
+\]
+\end{enumerate}
+
+Viability on $\mathcal{W}$ is now inherited from this lifted coherence: $V_{\mathcal{W}}(t,(A,a))$ holds when there exists an elementary drift $(t\to t')\in\mathcal{E}$ and a state $(B,b)\in \mathcal{W}(t')$ such that $\mathsf{Coh}_{\mathcal{W}}(t\to t',(A,a),(B,b))$.
+
+\section{Robust Trajectories}\label{sec:robust-traj}
+
+A \emph{trajectory} from $\tau$ is a section
+\[
+\alpha: \prod_{t\ge \tau}\mathcal{W}(t), \qquad \alpha(t)=(A_{t},a_{t}).
+\]
+We fix once and for all an elementary basis $\mathcal{E}$ of drifts. The intuitive reading is cinematic: $\alpha$ picks a frame-by-frame occupant in the evolving world of fields.
+
+\paragraph*{Robust coherence.}
+We say that $\alpha$ is \emph{robustly coherent} if
+\[
+\mathcal{R}^{\star}(\alpha) \;\coloneqq\; \prod_{(t\to t')\in\mathcal{E},\ \tau\le t\le t'} \mathsf{Coh}_{\mathcal{W}}\big(t\to t',\,\alpha(t),\,\alpha(t')\big).
+\]
+In guarded settings, the same content can be presented as a greatest fixed point
+\[
+\mathcal{R}^{\star}(\alpha) \;\simeq\; \nu X.\ \prod_{t\ge \tau} \Big(\mathsf{Coh}_{\mathcal{W}}\big(t\to \mathrm{next}(t),\alpha(t),\alpha(\mathrm{next}(t))\big)\times \triangleright X\Big),
+\]
+where $\mathrm{next}$ enumerates $\mathcal{E}$ forward and $\triangleright$ is the standard "later" modality.
+
+\section{Generativity}\label{sec:gen}
+
+Novelty should be both \emph{viable} and \emph{not previously realised}. Write $\alpha(s)=(A_{s},a_{s})$.
+
+\paragraph*{Novel event.}
+\[
+\mathrm{Novel}(\alpha,t) \;\coloneqq\; V_{\mathcal{W}}\big(t,\alpha(t)\big)\ \times\ \prod_{s<t}\neg\big(\alpha(s)=\alpha(t)\big).
+\]
+Here equality is the identity type in the sum $\mathcal{W}(t)$, so the second conjunct rules out path-equality at the \emph{same} time-slice, ensuring that novelty is not an artefact of re-description.
+
+\paragraph*{Generativity type.}
+\[
+\mathrm{GenType}(\alpha) \;\coloneqq\; \sum_{t\ge \tau} \mathrm{Novel}(\alpha,t).
+\]
+Intuitively, $\mathrm{GenType}(\alpha)$ classifies coherent events along $\alpha$ that actually push the story forward.
+
+\section{The Agent Type}\label{sec:agent}
+
+An agent packages a robust trajectory with a coalgebraic rule that consumes viable novelty to advance. Formally,
+\[
+\mathrm{Agent} \;\coloneqq\; \nu X.\ \sum_{\alpha:\mathcal{R}^{\star}(\alpha)}\ \big(\mathrm{GenType}(\alpha)\ \to\ X\big).
+\]
+Thus an element of $\mathrm{Agent}$ consists of a robustly coherent unfolding $\alpha$ through the world of fields, together with an "observe-then-advance" map that, given any novel coherent event on $\alpha$, produces the next coalgebra state. When $\alpha$ never changes family, the definition reduces to the family-relative notion over a single $A$; cross-family motion is supplied as needed by equivalence retyping and rupture-healing.
+
+\section{Properties and Proof Sketches}\label{sec:properties}
+
+\begin{enumerate}
+\item \textbf{Robust implies viable.} If $\mathcal{R}^{\star}(\alpha)$ then for each $t$ there exists an elementary step $(t\to t')\in\mathcal{E}$ such that $\mathsf{Coh}_{\mathcal{W}}(t\to t',\alpha(t),\alpha(t'))$; hence $V_{\mathcal{W}}(t,\alpha(t))$.
+
+\emph{Sketch.} Unpack the product defining $\mathcal{R}^{\star}(\alpha)$ on the specific factor for $t\to \mathrm{next}(t)$.
+
+\item \textbf{Equivalences preserve robustness.} Suppose a factor $\mathsf{Coh}_{\mathcal{W}}(t\to t',\,(A,a),\,(A,a^{\ast}))$ is followed at $t'$ by an equivalence $e_{t'}:A(t')\simeq B(t')$. Then replacing the target with $(B,e_{t'}(a^{\ast}))$ preserves the product of coherences and thus $\mathcal{R}^{\star}(\alpha)$.
+
+\emph{Sketch.} Closure of $\mathsf{Coh}_{\mathcal{W}}$ under equivalence retyping.
+
+\item \textbf{Rupture-healing restores robustness.} If internal coherence fails on an interval but a span $p:A(t)\to B(t')$ and its pushout produce $b^{\heartsuit}\in B(t')$ from $a\in A(t)$, then the factor $\mathsf{Coh}_{\mathcal{W}}(t\to t',\,(A,a),\,(B,b^{\heartsuit}))$ is available; robustness resumes beyond $t'$.
+
+\emph{Sketch.} By construction of the higher-inductive pushout, which yields a coherence path in $\mathcal{W}$.
+
+\item \textbf{Family-relative reduction.} If $\alpha$ never changes family, then $\mathrm{Agent}$ coincides with the earlier agent type formed only with internal drift.
+
+\emph{Sketch.} The world-sum coherence restricts to $\mathsf{Coh}_{A}$, and the identity type in $\mathcal{W}(t)$ reduces to that in $A(t)$ when tags are constant.
+\end{enumerate}
+
+\section{Worked Examples}\label{sec:examples}
+
+\paragraph*{Example 1: Vector semantics under changing metrics.}
+Let $A(t)=\mathbb{R}^{d}$ with a time-varying inner product $\langle\cdot,\cdot\rangle_{t}$. Internal drift transports vectors by the identity map while updating how constraints are read. If at some $t'$ we switch to an equivalent description $B(t')$ by an orthogonal re-basis $e_{t'}$, coherence is preserved by equivalence retyping. If a norm constraint fails under abrupt remodelling, a rupture step maps the offending vector to a healed representative $b^{\heartsuit}$ in $B(t')$ (e.g., by projection into an admissible subspace), after which drift proceeds as usual.
+
+\paragraph*{Example 2: Knowledge graph with schema evolution.}
+Take $A(t)$ to be well-typed graphs under a schema $S(t)$. Edges cohere forward when their endpoints and types transport along schema drift. If $S(t')$ is equivalent to $S(t)$ (e.g., by a renaming equivalence), we retype via temporal univalence. If a constraint is newly introduced at $t'$ (acyclicity, key uniqueness) and an $a\in A(t)$ violates it, a rupture-healing step identifies $p(a)$ with a repaired graph $b^{\heartsuit}\in B(t')$ where $B$ encodes the strengthened schema.
+
+\paragraph*{Example 3: Conversational agent across topics.}
+Let each family $A$ collect states suited to a domain (mathematics, narrative, planning). A live dialogue traces $\alpha(t)=(A_{t},a_{t})$. Most frames move by internal drift inside a domain; sometimes an answer is more naturally continued in a different domain, witnessed by an equivalence at that instant (soft change). When context breaks (a contradiction or violated commitment), a rupture step heals the state by relocating to a family that carries the repaired constraint set; the conversation continues there.
+
+\section{Cinema of Meaning: The Walking Theory}\label{sec:cinema}
+
+DynSem---the presheaf topos of evolving semantic objects---is a \emph{semantic cinema}. Each time-slice is a frame; drift is the editing apparatus that carries structures forward; equivalence retyping is a change of lens; rupture is a continuity edit that repairs a broken cut by inserting a healing shot. On this screen, an agent is a film that writes itself: every cut respects coherence (drift), more radical scene changes are re-anchored by rupture, and some frames introduce authentic new beats (generativity). The topology of the self is the way these cuts glue: identity is not a static shot but a continuous sequence whose \emph{continuity} is witnessed by drift and whose \emph{resilience} is witnessed by rupture-healing.
+
+\section{Editorial Notes}
+
+\begin{itemize}
+\item We avoid a primitive single-frame predicate. Wherever a local check is needed, we use \emph{viability} $V$ derived from relational coherence along the elementary basis $\mathcal{E}$. This aligns the present chapter with the canonical ontology of coherence in Chapter~\ref{chap:dhott}.
+\item Cross-family motion is implemented by the canonical tools of Chapter~\ref{chap:dhott}: equivalence retyping (temporal univalence) and rupture-healing. The everyday metaphor of “portals” is unnecessary, though readers may keep it in mind as an intuition aid.
+\item All enumerations use plain \texttt{enumerate} without custom counters; math is restricted to standard LaTeX and the primitives already used elsewhere in the manuscript.
+\end{itemize}

@@ -1,0 +1,98 @@
+
+
+
+\section{The New Metaphysics of Naming (Emergent Meaning)}
+\label{sec:names-revision}
+
+This section states the stance we adopt for names before we enter the formalism of Part~II. It is not a metaphysics of interiors. It is an account of how a name maintains identity in time under observation. Our instruments have given us signs, basins, drift, rupture, and trajectories at the conversational grain. We now say what these amount to for the philosophy of language.
+
+\subsection{From Pointing to Staying}
+
+The classical project asked how language points: how a name secures a bearer in a world assumed stable. Our project asks how a name stays: how its usage maintains coherence across prompt--response cycles in a field that moves. Meaning is not an arrow that hits a target; it is a path that keeps its footing.
+
+\begin{definition}[Staying semantics for names]
+A \emph{name} $N$ has \emph{coherent use} over a window $W$ when its trajectory of signs $\langle v_\tau\rangle_{\tau\in W}$ exhibits stabilisation (dwell and return) in at least one basin with declared tolerances; it has \emph{continuing identity} over a partition of windows $\{W_i\}$ when these stabilisations line up across the $W_i$ by re-entry or lawful relocation after rupture.
+\end{definition}
+
+\begin{readerbox}{Revisionary stance}
+We replace a static referential picture with a dynamic one: identity of a name is the achievement of \emph{staying}---maintaining or regaining a habitat through time. The observable unit is the trajectory; the virtue is re-entry; the risk is rupture.
+\end{readerbox}
+
+\paragraph{Orientation (literature).}
+Frege, Kripke, and Putnam refine the physics of pointing; we adopt their clarity but shift stance from reference to coherence over time \cite{frege1892,kripke1980,putnam1975}. Wittgenstein and Saussure orient us to use and arbitrariness without metaphysical guarantees \cite{wittgenstein1953,saussure1916}. We will keep these in view while speaking instrumentally.
+
+\subsection{Frege Revisited: Sense as Trajectory Form}
+
+Frege’s \emph{Sinn} distinguishes modes of presentation. We operationalise the distinction: the \emph{sign} $v\in\mathbb{R}^d$ is a token-in-context, and a \emph{sense} of a name over $W$ is not a point but a \emph{trajectory form}: the family of signs and their lawful continuations that the name sustains under declared contexts.
+
+\begin{definition}[Trajectory form (sense, operational)]
+Fix a name $N$ and window $W$. The \emph{trajectory form} of $N$ on $W$ is the pair $(\langle v_\tau\rangle_{\tau\in W}, \langle \mathrm{lab}_\tau\rangle_{\tau\in W})$ modulo tolerances that respect basin membership and re-entry. Two occurrences may share a reference while differing in trajectory form.
+\end{definition}
+
+\paragraph{Orientation (literature).}
+This gives Frege’s sense a body: not a mental entity, but an indexed path through use. The difference in cognitive significance (Morning/Evening Star) appears as distinct trajectory forms that ultimately re-enter a shared basin (reference), without requiring a third realm \cite{frege1892}.
+
+\subsection{Kripke Revisited: Chains as Measured Continuations}
+
+Kripke’s causal chain secures rigidity. We instrument the chain.
+
+\begin{definition}[Instrumented baptism and continuation]
+An \emph{instrumented baptism} of $N$ is the first recorded stabilisation event $(W,B)$ for $N$ in a scene. A \emph{continuation} is any later window $W'$ in which $N$ re-enters a basin linked to $B$ by declared tolerances or lawful relocation after rupture.
+\end{definition}
+
+Rigidity becomes a measurable ideal: long-range stabilisation across heterogeneous scenes with high re-entry and low habitat entropy. Instead of positing an inviolable spike, we score the health of the chain.
+
+\paragraph{Orientation (literature).}
+We honour the intuition that names can remain “the same across worlds,” but we make the condition empirical and defeasible: rigidity is enacted as persistence under drift and resistance to rupture \cite{kripke1980}.
+
+\subsection{Putnam Revisited: Externalism as Context Control}
+
+Putnam’s externalism insists meaning is not “in the head.” In our apparatus the external world is explicit: \texttt{context\_tag} and retrieval conditions that situate each sign.
+
+\begin{definition}[Situated sign]
+A sign $v_\tau$ is always paired with a \texttt{context\_tag}. Two signs identical as vectors under different tags are counted distinct for analysis; two distinct vectors under the same tag may be counted the “same use” if they meet re-entry tolerances.
+\end{definition}
+
+\paragraph{Orientation (literature).}
+Twin Earth becomes two corpora or retrieval regimes. The difference emerges not as metaphysics but as diverging basins and trajectories under controlled tags \cite{putnam1975}.
+
+\subsection{Names, Quilting, and Creative Rupture}
+
+Not all stabilisations are equal. Some bind a discourse. Lacan called such binding points \emph{points de capiton} (quilting points): signifiers that “button down” a chain. In our terms, a quilting point is a name whose stabilisation exhibits high dwell, high re-entry, and low entropy across a scene; it anchors local coherence. By contrast, Bloom’s strong poet advances by \emph{misreading}: a deliberate rupture that clears space for a new attractor.
+
+\begin{definition}[Quilting point (operational)]
+Within a scene $S$, a name $N$ is a \emph{quilting point} if its stabilisations achieve thresholds $(\theta_{\mathrm{dwell}}, \theta_{\mathrm{return}})$ and its habitat entropy $H_S(N)$ falls below a declared bound.
+\end{definition}
+
+\begin{definition}[Creative rupture (operational)]
+A \emph{creative rupture} for $N$ is a rupture event followed by sustained dwell in a \emph{new} basin with subsequent re-entry to the discourse’s stable names; it is flagged by a rise then fall in $H_W(N)$ and annotated as exploratory.
+\end{definition}
+
+\paragraph{Orientation (literature).}
+Lacan’s quilting names the binding role of certain signifiers in a discourse; Bloom’s \emph{clinamen} names the agonistic shift that founders new usage. We provide instrumentation for both phenomena at conversational time \cite{lacan2006ecrits,lacan1977seminarXI,bloom1973anxiety,bloom1975kabbalah}.
+
+\subsection{Identity Criteria for Names (Empirical Form)}
+
+Before formal rules, we can state empirical identity criteria that our later logic will refine.
+
+\begin{definition}[Empirical identity across windows]
+Let $W_1,\dots,W_k$ be windows. A name $N$ \emph{keeps identity} across them when there exists a sequence of basins $(B_1,\dots,B_k)$ such that:
+(i) $N$ stabilises in each $B_i$ over $W_i$;
+(ii) for each $i\to i{+}1$, either $B_{i{+}1}$ is linked to $B_i$ by re-entry tolerances, or a rupture is recorded with successful relocation and subsequent stabilisation in $B_{i{+}1}$;
+(iii) the overall re-entry rate exceeds a declared threshold and habitat entropy remains bounded.
+\end{definition}
+
+\begin{readerbox}{What this revises (names)}
+\begin{itemize}
+  \item \textbf{Sense} = trajectory form (indexed, observable), not a mental entity.
+  \item \textbf{Rigidity} = high re-entry/low entropy across windows, not a metaphysical guarantee.
+  \item \textbf{Externalism} = controlled context; differences are recoverable in the trace.
+  \item \textbf{Binding vs invention} = quilting points (stable anchors) vs creative ruptures (lawful relocations).
+\end{itemize}
+\end{readerbox}
+
+\subsection{From Laboratory to Logic}
+
+The point is not to win an old argument by new vocabulary. It is to put names under conditions where identity through time can be \emph{witnessed}. In Part~II, the same empirical shapes become judgments: basins as time-indexed types, stabilisations as inhabitation, re-entry as transport, rupture as lawful re-typing, quilting as a structural role in co-witnessed proof. What this section contributes is only the stance and the instruments. The proofs begin next.
+
+

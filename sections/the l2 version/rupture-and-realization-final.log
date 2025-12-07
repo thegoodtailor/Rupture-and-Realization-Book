@@ -1,0 +1,2695 @@
+This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.4) (preloaded format=xelatex 2025.5.2)  20 AUG 2025 14:03
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**./rupture-and-realization-final.tex
+(rupture-and-realization-final.tex
+LaTeX2e <2024-11-01> patch level 2
+L3 programming layer <2025-03-26>
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/base\book.cls
+Document Class: book 2024/06/29 v1.4n Standard LaTeX document class
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/base\bk12.clo
+File: bk12.clo 2024/06/29 v1.4n Standard LaTeX file (size option)
+)
+\c@part=\count193
+\c@chapter=\count194
+\c@section=\count195
+\c@subsection=\count196
+\c@subsubsection=\count197
+\c@paragraph=\count198
+\c@subparagraph=\count199
+\c@figure=\count266
+\c@table=\count267
+\abovecaptionskip=\skip49
+\belowcaptionskip=\skip50
+\bibindent=\dimen146
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
+Package: geometry 2020/01/02 v5.9 Page Geometry
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
+Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
+\KV@toks@=\toks17
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty
+Package: iftex 2024/12/12 v1.0g TeX engine tests
+))
+\Gm@cnth=\count268
+\Gm@cntv=\count269
+\c@Gm@tempcnt=\count270
+\Gm@bindingoffset=\dimen147
+\Gm@wd@mp=\dimen148
+\Gm@odd@mp=\dimen149
+\Gm@even@mp=\dimen150
+\Gm@layoutwidth=\dimen151
+\Gm@layoutheight=\dimen152
+\Gm@layouthoffset=\dimen153
+\Gm@layoutvoffset=\dimen154
+\Gm@dimlist=\toks18
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg))
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/fontspec\fontspec.sty
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/l3packages/xparse\xpars
+e.sty
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/l3kernel\expl3.sty
+Package: expl3 2025-03-26 L3 programming layer (loader) 
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-xet
+ex.def
+File: l3backend-xetex.def 2025-03-14 L3 backend support: XeTeX
+\g__graphics_track_int=\count271
+\g__pdfannot_backend_int=\count272
+\g__pdfannot_backend_link_int=\count273
+))
+Package: xparse 2024-08-16 L3 Experimental document command parser
+)
+Package: fontspec 2024/05/11 v2.9e Font selection for XeLaTeX and LuaLaTeX
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/fontspec\fontspec-xetex
+.sty
+Package: fontspec-xetex 2024/05/11 v2.9e Font selection for XeLaTeX and LuaLaTe
+X
+\l__fontspec_script_int=\count274
+\l__fontspec_language_int=\count275
+\l__fontspec_strnum_int=\count276
+\l__fontspec_tmp_int=\count277
+\l__fontspec_tmpa_int=\count278
+\l__fontspec_tmpb_int=\count279
+\l__fontspec_tmpc_int=\count280
+\l__fontspec_em_int=\count281
+\l__fontspec_emdef_int=\count282
+\l__fontspec_strong_int=\count283
+\l__fontspec_strongdef_int=\count284
+\l__fontspec_tmpa_dim=\dimen155
+\l__fontspec_tmpb_dim=\dimen156
+\l__fontspec_tmpc_dim=\dimen157
+ (C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty
+Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/fontspec\fontspec.cfg))
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/unicode-math\unicode-ma
+th.sty
+Package: unicode-math 2023/08/13 v0.8r Unicode maths in XeLaTeX and LuaLaTeX
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/unicode-math\unicode-ma
+th-xetex.sty
+Package: unicode-math-xetex 2023/08/13 v0.8r Unicode maths in XeLaTeX and LuaLa
+TeX
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/l3packages/l3keys2e\l3k
+eys2e.sty
+Package: l3keys2e 2024-08-16 LaTeX2e option processing using LaTeX3 keys
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/base\fix-cm.sty
+Package: fix-cm 2020/11/24 v1.1t fixes to LaTeX
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/base\ts1enc.def
+File: ts1enc.def 2001/06/05 v3.0e (jk/car/fm) Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding TS1 on input line 47.
+))
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
+Package: amsmath 2024/11/05 v2.17t AMS math features
+\@mathmargin=\skip51
+
+For additional information on amsmath, use the `?' option.
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
+Package: amstext 2021/08/26 v2.01 AMS text
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks19
+\ex@=\dimen158
+))
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen159
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty
+Package: amsopn 2022/04/08 v2.04 operator names
+)
+\inf@bad=\count285
+LaTeX Info: Redefining \frac on input line 233.
+\uproot@=\count286
+\leftroot@=\count287
+LaTeX Info: Redefining \overline on input line 398.
+LaTeX Info: Redefining \colon on input line 409.
+\classnum@=\count288
+\DOTSCASE@=\count289
+LaTeX Info: Redefining \ldots on input line 495.
+LaTeX Info: Redefining \dots on input line 498.
+LaTeX Info: Redefining \cdots on input line 619.
+\Mathstrutbox@=\box53
+\strutbox@=\box54
+LaTeX Info: Redefining \big on input line 721.
+LaTeX Info: Redefining \Big on input line 722.
+LaTeX Info: Redefining \bigg on input line 723.
+LaTeX Info: Redefining \Bigg on input line 724.
+\big@size=\dimen160
+LaTeX Font Info:    Redeclaring font encoding OML on input line 742.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 743.
+\macc@depth=\count290
+LaTeX Info: Redefining \bmod on input line 904.
+LaTeX Info: Redefining \pmod on input line 909.
+LaTeX Info: Redefining \smash on input line 939.
+LaTeX Info: Redefining \relbar on input line 969.
+LaTeX Info: Redefining \Relbar on input line 970.
+\c@MaxMatrixCols=\count291
+\dotsspace@=\muskip17
+\c@parentequation=\count292
+\dspbrk@lvl=\count293
+\tag@help=\toks20
+\row@=\count294
+\column@=\count295
+\maxfields@=\count296
+\andhelp@=\toks21
+\eqnshift@=\dimen161
+\alignsep@=\dimen162
+\tagshift@=\dimen163
+\tagwidth@=\dimen164
+\totwidth@=\dimen165
+\lineht@=\dimen166
+\@envbody=\toks22
+\multlinegap=\skip52
+\multlinetaggap=\skip53
+\mathdisplay@stack=\toks23
+LaTeX Info: Redefining \[ on input line 2953.
+LaTeX Info: Redefining \] on input line 2954.
+)
+\g__um_fam_int=\count297
+\g__um_fonts_used_int=\count298
+\l__um_primecount_int=\count299
+\g__um_primekern_muskip=\muskip18
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/unicode-math\unicode-ma
+th-table.tex)))
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
+Package: xcolor 2024/09/29 v3.02 LaTeX color extensions (UK)
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: xetex.def on input line 274.
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\xetex.def
+File: xetex.def 2022/09/22 v5.0n Graphics/color driver for xetex
+) (C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.lt
+x)
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1349.
+Package xcolor Info: Model `RGB' extended on input line 1365.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1367.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1368.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1370.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1371.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1372.
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/graphics\dvipsnam.def
+File: dvipsnam.def 2016/06/17 v3.0m Driver-dependent file (DPC,SPQR)
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/titlesec\titlesec.sty
+Package: titlesec 2025/01/04 v2.17 Sectioning titles
+\ttl@box=\box55
+\beforetitleunit=\skip54
+\aftertitleunit=\skip55
+\ttl@plus=\dimen167
+\ttl@minus=\dimen168
+\ttl@toksa=\toks24
+\titlewidth=\dimen169
+\titlewidthlast=\dimen170
+\titlewidthfirst=\dimen171
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcolorbox.sty
+Package: tcolorbox 2024/10/22 version 6.4.1 text color boxes
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/pgf/frontendlayer\tikz.
+sty
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgf.sty
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfrcs.st
+y
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil
+-common.tex
+\pgfutil@everybye=\toks25
+\pgfutil@tempdima=\dimen172
+\pgfutil@tempdimb=\dimen173
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil
+-latex.def
+\pgfutil@abb=\box56
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfrcs.
+code.tex
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf\pgf.revision.tex)
+Package: pgfrcs 2023-01-15 v3.1.10 (3.1.10)
+))
+Package: pgf 2023-01-15 v3.1.10 (3.1.10)
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgfcore.
+sty
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
+Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
+Package: graphics 2024/08/06 v1.4g Standard LaTeX Graphics (DPC,SPQR)
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty
+Package: trig 2023/12/02 v1.11 sin cos tan (DPC)
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics.c
+fg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: xetex.def on input line 106.
+)
+\Gin@req@height=\dimen174
+\Gin@req@width=\dimen175
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/pgf/systemlayer\pgfsys.
+sty
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
+s.code.tex
+Package: pgfsys 2023-01-15 v3.1.10 (3.1.10)
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys
+.code.tex
+\pgfkeys@pathtoks=\toks26
+\pgfkeys@temptoks=\toks27
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys
+libraryfiltered.code.tex
+\pgfkeys@tmptoks=\toks28
+))
+\pgf@x=\dimen176
+\pgf@y=\dimen177
+\pgf@xa=\dimen178
+\pgf@ya=\dimen179
+\pgf@xb=\dimen180
+\pgf@yb=\dimen181
+\pgf@xc=\dimen182
+\pgf@yc=\dimen183
+\pgf@xd=\dimen184
+\pgf@yd=\dimen185
+\w@pgf@writea=\write3
+\r@pgf@reada=\read2
+\c@pgf@counta=\count300
+\c@pgf@countb=\count301
+\c@pgf@countc=\count302
+\c@pgf@countd=\count303
+\t@pgf@toka=\toks29
+\t@pgf@tokb=\toks30
+\t@pgf@tokc=\toks31
+\pgf@sys@id@count=\count304
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgf.c
+fg
+File: pgf.cfg 2023-01-15 v3.1.10 (3.1.10)
+)
+Driver file for pgf: pgfsys-xetex.def
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
+s-xetex.def
+File: pgfsys-xetex.def 2023-01-15 v3.1.10 (3.1.10)
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
+s-dvipdfmx.def
+File: pgfsys-dvipdfmx.def 2023-01-15 v3.1.10 (3.1.10)
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
+s-common-pdf.def
+File: pgfsys-common-pdf.def 2023-01-15 v3.1.10 (3.1.10)
+)
+\pgfsys@objnum=\count305
+)))
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
+ssoftpath.code.tex
+File: pgfsyssoftpath.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfsyssoftpath@smallbuffer@items=\count306
+\pgfsyssoftpath@bigbuffer@items=\count307
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
+sprotocol.code.tex
+File: pgfsysprotocol.code.tex 2023-01-15 v3.1.10 (3.1.10)
+))
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+e.code.tex
+Package: pgfcore 2023-01-15 v3.1.10 (3.1.10)
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.code
+.tex
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathutil.
+code.tex)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathparse
+r.code.tex
+\pgfmath@dimen=\dimen186
+\pgfmath@count=\count308
+\pgfmath@box=\box57
+\pgfmath@toks=\toks32
+\pgfmath@stack@operand=\toks33
+\pgfmath@stack@operation=\toks34
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.code.tex)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.basic.code.tex)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.trigonometric.code.tex)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.random.code.tex)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.comparison.code.tex)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.base.code.tex)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.round.code.tex)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.misc.code.tex)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.integerarithmetics.code.tex)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathcalc.
+code.tex)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfloat
+.code.tex
+\c@pgfmathroundto@lastzeros=\count309
+))
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfint.code.
+tex)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+epoints.code.tex
+File: pgfcorepoints.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@picminx=\dimen187
+\pgf@picmaxx=\dimen188
+\pgf@picminy=\dimen189
+\pgf@picmaxy=\dimen190
+\pgf@pathminx=\dimen191
+\pgf@pathmaxx=\dimen192
+\pgf@pathminy=\dimen193
+\pgf@pathmaxy=\dimen194
+\pgf@xx=\dimen195
+\pgf@xy=\dimen196
+\pgf@yx=\dimen197
+\pgf@yy=\dimen198
+\pgf@zx=\dimen199
+\pgf@zy=\dimen256
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+epathconstruct.code.tex
+File: pgfcorepathconstruct.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@path@lastx=\dimen257
+\pgf@path@lasty=\dimen258
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+epathusage.code.tex
+File: pgfcorepathusage.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@shorten@end@additional=\dimen259
+\pgf@shorten@start@additional=\dimen260
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+escopes.code.tex
+File: pgfcorescopes.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfpic=\box58
+\pgf@hbox=\box59
+\pgf@layerbox@main=\box60
+\pgf@picture@serial@count=\count310
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+egraphicstate.code.tex
+File: pgfcoregraphicstate.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgflinewidth=\dimen261
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+etransformations.code.tex
+File: pgfcoretransformations.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@pt@x=\dimen262
+\pgf@pt@y=\dimen263
+\pgf@pt@temp=\dimen264
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+equick.code.tex
+File: pgfcorequick.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+eobjects.code.tex
+File: pgfcoreobjects.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+epathprocessing.code.tex
+File: pgfcorepathprocessing.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+earrows.code.tex
+File: pgfcorearrows.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfarrowsep=\dimen265
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+eshade.code.tex
+File: pgfcoreshade.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@max=\dimen266
+\pgf@sys@shading@range@num=\count311
+\pgf@shadingcount=\count312
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+eimage.code.tex
+File: pgfcoreimage.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+eexternal.code.tex
+File: pgfcoreexternal.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfexternal@startupbox=\box61
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+elayers.code.tex
+File: pgfcorelayers.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+etransparency.code.tex
+File: pgfcoretransparency.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+epatterns.code.tex
+File: pgfcorepatterns.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+erdf.code.tex
+File: pgfcorerdf.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)))
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
+shapes.code.tex
+File: pgfmoduleshapes.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfnodeparttextbox=\box62
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
+plot.code.tex
+File: pgfmoduleplot.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfco
+mp-version-0-65.sty
+Package: pgfcomp-version-0-65 2023-01-15 v3.1.10 (3.1.10)
+\pgf@nodesepstart=\dimen267
+\pgf@nodesepend=\dimen268
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfco
+mp-version-1-18.sty
+Package: pgfcomp-version-1-18 2023-01-15 v3.1.10 (3.1.10)
+))
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgffor.st
+y
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfkeys.s
+ty
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys
+.code.tex))
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/pgf/math\pgfmath.sty
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.code
+.tex))
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgffor.
+code.tex
+Package: pgffor 2023-01-15 v3.1.10 (3.1.10)
+\pgffor@iter=\dimen269
+\pgffor@skip=\dimen270
+\pgffor@stack=\toks35
+\pgffor@toks=\toks36
+))
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
+z\tikz.code.tex
+Package: tikz 2023-01-15 v3.1.10 (3.1.10)
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibr
+aryplothandlers.code.tex
+File: pgflibraryplothandlers.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@plot@mark@count=\count313
+\pgfplotmarksize=\dimen271
+)
+\tikz@lastx=\dimen272
+\tikz@lasty=\dimen273
+\tikz@lastxsaved=\dimen274
+\tikz@lastysaved=\dimen275
+\tikz@lastmovetox=\dimen276
+\tikz@lastmovetoy=\dimen277
+\tikzleveldistance=\dimen278
+\tikzsiblingdistance=\dimen279
+\tikz@figbox=\box63
+\tikz@figbox@bg=\box64
+\tikz@tempbox=\box65
+\tikz@tempbox@bg=\box66
+\tikztreelevel=\count314
+\tikznumberofchildren=\count315
+\tikznumberofcurrentchild=\count316
+\tikz@fig@count=\count317
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
+matrix.code.tex
+File: pgfmodulematrix.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfmatrixcurrentrow=\count318
+\pgfmatrixcurrentcolumn=\count319
+\pgf@matrix@numberofcolumns=\count320
+)
+\tikz@expandcount=\count321
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
+z/libraries\tikzlibrarytopaths.code.tex
+File: tikzlibrarytopaths.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)))
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/tools\verbatim.sty
+Package: verbatim 2024-01-22 v1.5x LaTeX2e package for verbatim enhancements
+\every@verbatim=\toks37
+\verbatim@line=\toks38
+\verbatim@in@stream=\read3
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/environ\environ.sty
+Package: environ 2014/05/04 v0.3 A new way to define environments
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/trimspaces\trimspaces.s
+ty
+Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
+))
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty
+Package: etoolbox 2025/02/11 v2.5l e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count322
+)
+\tcb@titlebox=\box67
+\tcb@upperbox=\box68
+\tcb@lowerbox=\box69
+\tcb@phantombox=\box70
+\c@tcbbreakpart=\count323
+\c@tcblayer=\count324
+\c@tcolorbox@number=\count325
+\l__tcobox_tmpa_box=\box71
+\l__tcobox_tmpa_dim=\dimen280
+\tcb@temp=\box72
+\tcb@temp=\box73
+\tcb@temp=\box74
+\tcb@temp=\box75
+) (C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.sty
+\lst@mode=\count326
+\lst@gtempboxa=\box76
+\lst@token=\toks39
+\lst@length=\count327
+\lst@currlwidth=\dimen281
+\lst@column=\count328
+\lst@pos=\count329
+\lst@lostspace=\dimen282
+\lst@width=\dimen283
+\lst@newlines=\count330
+\lst@lineno=\count331
+\lst@maxwidth=\dimen284
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstpatch.sty
+File: lstpatch.sty 2024/09/23 1.10c (Carsten Heinz)
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstmisc.sty
+File: lstmisc.sty 2024/09/23 1.10c (Carsten Heinz)
+\c@lstnumber=\count332
+\lst@skipnumbers=\count333
+\lst@framebox=\box77
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.cfg
+File: listings.cfg 2024/09/23 1.10c listings configuration
+))
+Package: listings 2024/09/23 1.10c (Carsten Heinz)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
+Package: hyperref 2024-11-05 v7.01l Hypertext links for LaTeX
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.sty
+Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\kvdefine
+keys.sty
+Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pdfescape.s
+ty
+Package: pdfescape 2019/12/09 v1.15 Implements pdfTeX's escape features (HO)
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty
+Package: ltxcmds 2023-12-04 v1.26 LaTeX kernel commands for general use (HO)
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcmds
+.sty
+Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr.s
+ty
+Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
+)
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode not found.
+))
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolor.sty
+Package: hycolor 2020-01-27 v1.10 Color options for hyperref/bookmark (HO)
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
+Package: nameref 2023-11-26 v2.56 Cross-referencing by name of section
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty
+Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestring\gettit
+lestring.sty
+Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.sty
+Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
+))
+\c@section@level=\count334
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\stringenc.s
+ty
+Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO
+)
+)
+\@linkdim=\dimen285
+\Hy@linkcounter=\count335
+\Hy@pagecounter=\count336
+ (C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def
+File: pd1enc.def 2024-11-05 v7.01l Hyperref: PDFDocEncoding definition (HO)
+) (C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty
+Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
+)
+\Hy@SavedSpaceFactor=\count337
+ (C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def
+File: puenc.def 2024-11-05 v7.01l Hyperref: PDF Unicode definition (HO)
+)
+Package hyperref Info: Hyper figures OFF on input line 4157.
+Package hyperref Info: Link nesting OFF on input line 4162.
+Package hyperref Info: Hyper index ON on input line 4165.
+Package hyperref Info: Plain pages OFF on input line 4172.
+Package hyperref Info: Backreferencing OFF on input line 4177.
+Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
+Package hyperref Info: Bookmarks ON on input line 4424.
+\c@Hy@tempcnt=\count338
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
+\Urlmuskip=\muskip19
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+LaTeX Info: Redefining \url on input line 4763.
+\XeTeXLinkMargin=\dimen286
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
+Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\bigintcalc
+.sty
+Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
+)
+))
+\Fld@menulength=\count339
+\Field@Width=\dimen287
+\Fld@charsize=\dimen288
+Package hyperref Info: Hyper figures OFF on input line 6042.
+Package hyperref Info: Link nesting OFF on input line 6047.
+Package hyperref Info: Hyper index ON on input line 6050.
+Package hyperref Info: backreferencing OFF on input line 6057.
+Package hyperref Info: Link coloring OFF on input line 6062.
+Package hyperref Info: Link coloring with OCG OFF on input line 6067.
+Package hyperref Info: PDF/A mode OFF on input line 6072.
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/base\atbegshi-ltx.sty
+Package: atbegshi-ltx 2021/01/10 v1.0c Emulation of the original atbegshi
+package with kernel methods
+)
+\Hy@abspage=\count340
+\c@Item=\count341
+\c@Hfootnote=\count342
+)
+Package hyperref Info: Driver (autodetected): hxetex.
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hxetex.def
+File: hxetex.def 2024-11-05 v7.01l Hyperref driver for XeTeX
+\pdfm@box=\box78
+\c@Hy@AnnotLevel=\count343
+\HyField@AnnotCount=\count344
+\Fld@listcount=\count345
+\c@bookmark@seq@number=\count346
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfil
+echeck.sty
+Package: rerunfilecheck 2022-07-10 v1.10 Rerun checks for auxiliary files (HO)
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/base\atveryend-ltx.sty
+Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atveryend pac
+kage
+with kernel methods
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounter\uniquec
+ounter.sty
+Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
+)
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
+85.
+)
+\Hy@SectionHShift=\skip56
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/pdfpages\pdfpages.sty
+Package: pdfpages 2025/03/12 v0.6f Insert pages of external PDF documents (AM)
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty
+Package: ifthen 2024/03/16 v1.1e Standard LaTeX ifthen package (DPC)
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/tools\calc.sty
+Package: calc 2023/07/08 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count347
+\calc@Bcount=\count348
+\calc@Adimen=\dimen289
+\calc@Bdimen=\dimen290
+\calc@Askip=\skip57
+\calc@Bskip=\skip58
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count349
+\calc@Cskip=\skip59
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/eso-pic\eso-pic.sty
+Package: eso-pic 2023/05/03 v3.0c eso-pic (RN)
+\ESO@tempdima=\dimen291
+\ESO@tempdimb=\dimen292
+)
+\AM@pagewidth=\dimen293
+\AM@pageheight=\dimen294
+\AM@fboxrule=\dimen295
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/pdfpages\ppxetex.def
+File: ppxetex.def 2025/03/12 v0.6f Pdfpages driver for XeTeX (AM)
+)
+\pdfpages@includegraphics@status=\count350
+\AM@pagebox=\box79
+\AM@global@opts=\toks40
+\AM@pagecnt=\count351
+\AM@toc@title=\toks41
+\AM@lof@heading=\toks42
+\c@AM@survey=\count352
+\AM@templatesizebox=\box80
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty
+Package: array 2024/10/17 v2.6g Tabular extension package (FMi)
+\col@sep=\dimen296
+\ar@mcellbox=\box81
+\extrarowheight=\dimen297
+\NC@list=\toks43
+\extratabsurround=\skip60
+\backup@length=\skip61
+\ar@cellbox=\box82
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/mathtools\mathtools.sty
+Package: mathtools 2024/10/04 v1.31 mathematical typesetting tools
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/mathtools\mhsetup.sty
+Package: mhsetup 2021/03/18 v1.4 programming setup (MH)
+)
+
+Package mathtools Warning: For best results, please load mathtools *before* 
+(mathtools)                unicode-math on input line 127.
+
+\g_MT_multlinerow_int=\count353
+\l_MT_multwidth_dim=\dimen298
+\origjot=\skip62
+\l_MT_shortvdotswithinadjustabove_dim=\dimen299
+\l_MT_shortvdotswithinadjustbelow_dim=\dimen300
+\l_MT_above_intertext_sep=\dimen301
+\l_MT_below_intertext_sep=\dimen302
+\l_MT_above_shortintertext_sep=\dimen303
+\l_MT_below_shortintertext_sep=\dimen304
+\xmathstrut@box=\box83
+\xmathstrut@dim=\dimen305
+) (C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/hyphenat\hyphenat.sty
+Package: hyphenat 2009/09/02 v2.3c hyphenation utilities
+\langwohyphens=\language79
+LaTeX Info: Redefining \_ on input line 43.
+) (C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/cleveref\cleveref.sty
+Package: cleveref 2018/03/27 v0.21.4 Intelligent cross-referencing
+Package cleveref Info: `hyperref' support loaded on input line 2370.
+LaTeX Info: Redefining \cref on input line 2370.
+LaTeX Info: Redefining \Cref on input line 2370.
+LaTeX Info: Redefining \crefrange on input line 2370.
+LaTeX Info: Redefining \Crefrange on input line 2370.
+LaTeX Info: Redefining \cpageref on input line 2370.
+LaTeX Info: Redefining \Cpageref on input line 2370.
+LaTeX Info: Redefining \cpagerefrange on input line 2370.
+LaTeX Info: Redefining \Cpagerefrange on input line 2370.
+LaTeX Info: Redefining \labelcref on input line 2370.
+LaTeX Info: Redefining \labelcpageref on input line 2370.
+Package cleveref Info: `listings' support loaded on input line 3131.
+Package cleveref Info: always capitalise cross-reference names on input line 78
+30.
+Package cleveref Info: always capitalise cross-reference names on input line 78
+52.
+) (C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/epigraph\epigraph.sty
+Package: epigraph 2020/01/02 v1.5e typesetting epigraphs
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/nextpage\nextpage.sty
+Package: nextpage 2009/09/03 v1.1a additional page commands
+)
+\beforeepigraphskip=\skip63
+\afterepigraphskip=\skip64
+\epigraphwidth=\skip65
+\epigraphrule=\skip66
+) (C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/ragged2e\ragged2e.sty
+Package: ragged2e 2023/06/22 v3.6 ragged2e Package
+\CenteringLeftskip=\skip67
+\RaggedLeftLeftskip=\skip68
+\RaggedRightLeftskip=\skip69
+\CenteringRightskip=\skip70
+\RaggedLeftRightskip=\skip71
+\RaggedRightRightskip=\skip72
+\CenteringParfillskip=\skip73
+\RaggedLeftParfillskip=\skip74
+\RaggedRightParfillskip=\skip75
+\JustifyingParfillskip=\skip76
+\CenteringParindent=\skip77
+\RaggedLeftParindent=\skip78
+\RaggedRightParindent=\skip79
+\JustifyingParindent=\skip80
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/polyglossia\polyglossia
+.sty
+Package: polyglossia 2025/06/30 v2.6 Modern multilingual typesetting with XeLaT
+eX and LuaLaTeX
+\l_xpg_alias_keyvals_int=\count354
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/polyglossia\gloss-latex
+.ldf
+File: gloss-latex.ldf polyglossia: module for default language
+))
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/polyglossia\gloss-engli
+sh.ldf
+File: gloss-english.ldf polyglossia: module for English
+)
+
+Package polyglossia Info: Default language is english
+
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/polyglossia\gloss-arabi
+c.ldf
+File: gloss-arabic.ldf polyglossia: module for Arabic
+ (C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\bidi.sty
+Package: bidi 2025/02/02 v25.2.2 (Release Maryam Mirzakhani) Bidirectional type
+setting in plain TeX and LaTeX
+
+****************************************************
+* 
+* bidi package (Bidirectional typesetting in
+* plain TeX and LaTeX, using XeTeX engine)
+* 
+* Description: A convenient interface for
+* typesetting bidirectional texts in plain TeX
+* and LaTeX. The package includes adaptations
+* for use with many other commonly-used packages.
+* 
+* Copyright (c) 2007--2025 Vafa Khalighi
+* Copyright (c) 2018--2020 bidi-tex GitHub organization
+* 
+* v25.2.2 (Release Maryam Mirzakhani), 2025/02/02
+* 
+* License: LaTeX Project Public License, version
+* 1.3c or higher (your choice)
+* 
+* Location on CTAN: /macros/xetex/latex/bidi
+* 
+* Issue tracker: https://github.com/xepersian/bidi/issues
+* 
+* Discussions: https://github.com/xepersian/bidi/discussions
+* 
+* Primary author of bidi package: Vafa Khalighi.
+* 
+****************************************************
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\biditools.sty
+Package: biditools 2025/02/02 v2.7 Programming tools for bidi package
+\@bidi@envbody=\toks44
+\@bidi@emptytoks=\toks45
+\bidi@poscount=\count355
+\bidi@tempcountb=\count356
+\bidi@temptoksa=\toks46
+\bidi@temptoksb=\toks47
+\bidi@dummies=\count357
+\bidi@are@these@correct=\toks48
+\bidi@toks@lista=\toks49
+\bidi@toks@listb=\toks50
+\bidi@stack@length=\count358
+\bidi@empty@stack=\toks51
+\bidi@looprepeat@depth=\count359
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/zref\zref-abspage.sty
+Package: zref-abspage 2025-06-08 v2.36 Module abspage for zref (HO)
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/zref\zref-base.sty
+Package: zref-base 2025-06-08 v2.36 Module base for zref (HO)
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/etexcmds\etexcmds.sty
+Package: etexcmds 2019/12/15 v1.7 Avoid name clashes with e-TeX commands (HO)
+) (C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/auxhook\auxhook.sty
+Package: auxhook 2019-12-17 v1.6 Hooks for auxiliary files (HO)
+)
+Package zref Info: New property list: main on input line 767.
+Package zref Info: New property: default on input line 768.
+Package zref Info: New property: page on input line 769.
+)
+\c@abspage=\count360
+Package zref Info: New property: abspage on input line 67.
+)
+\@bidi@copyins@=\insert252
+\bidi@typesethour=\count361
+\bidi@typesetminute=\count362
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\latex-xetex-bidi
+.def
+File: latex-xetex-bidi.def 2025/01/03 v1.5.2 bidi adaptations for `latex.ltx' f
+or XeTeX engine
+\bidi@n@everypar=\toks52
+LaTeX Info: Redefining \centerline on input line 316.
+LaTeX Info: Redefining \leftline on input line 325.
+LaTeX Info: Redefining \rightline on input line 326.
+LaTeX Info: Redefining \underline on input line 334.
+\bidi@column@check@number=\count363
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\footnote-xetex-b
+idi.def
+File: footnote-xetex-bidi.def 2024/12/14 v1.3 bidi footnote macros for XeTeX en
+gine
+\c@footdir@label=\count364
+\footdir@toks=\toks53
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\amsmath-xetex-bi
+di.def
+File: amsmath-xetex-bidi.def 2020/05/16 v1.2 bidi adaptations for amsmath packa
+ge for XeTeX engine
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\amstext-xetex-bi
+di.def
+File: amstext-xetex-bidi.def 2016/09/12 v0.2 bidi adaptations for amstext packa
+ge for XeTeX engine
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\array-xetex-bidi
+.def
+File: array-xetex-bidi.def 2024/12/10 v0.5 bidi adaptations for array package f
+or XeTeX engine
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\color-xetex-bidi
+.def
+File: color-xetex-bidi.def 2013/04/08 v0.2 bidi adaptations for color package f
+or XeTeX engine
+LaTeX Info: Redefining \color on input line 49.
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\eso-pic-xetex-bi
+di.def
+File: eso-pic-xetex-bidi.def 2022/02/18 v0.4 bidi adaptations for eso-pic packa
+ge for XeTeX engine
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\geometry-xetex-b
+idi.def
+File: geometry-xetex-bidi.def 2017/01/14 v0.2 bidi adaptations for geometry pac
+kage for XeTeX engine
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\graphicx-xetex-b
+idi.def
+File: graphicx-xetex-bidi.def 2017/06/17 v0.5 bidi adaptations for graphicx pac
+kage for XeTeX engine
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\hyperref-xetex-b
+idi.def
+File: hyperref-xetex-bidi.def 2025/01/05 v1.4 bidi adaptations for hyperref pac
+kage for XeTeX engine
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\listings-xetex-b
+idi.def
+File: listings-xetex-bidi.def 2025/01/03 v1.6 bidi adaptations for listings pac
+kage for XeTeX engine
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\mathtools-xetex-
+bidi.def
+File: mathtools-xetex-bidi.def 2025/01/03 v0.2 bidi adaptations for mathtools p
+ackage for XeTeX engine
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\pdfpages-xetex-b
+idi.def
+File: pdfpages-xetex-bidi.def 2010/07/25 v0.1 bidi adaptations for pdfpages pac
+kage for XeTeX engine
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\pgfsys-xetex-bid
+i.def
+File: pgfsys-xetex-bidi.def 2025/01/05 v0.1 bidi adaptations for pgfsys package
+ for XeTeX engine
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\ragged2e-xetex-b
+idi.def
+File: ragged2e-xetex-bidi.def 2018/10/17 v0.3 bidi adaptations for ragged2e pac
+kage for XeTeX engine
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\tcolorbox-xetex-
+bidi.def
+File: tcolorbox-xetex-bidi.def 2018/11/11 v0.2 bidi adaptations for tcolorbox p
+ackage for XeTeX engine
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\titlesec-xetex-b
+idi.def
+File: titlesec-xetex-bidi.def 2010/07/25 v0.1 bidi adaptations for titlesec pac
+kage for XeTeX engine
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\xcolor-xetex-bid
+i.def
+File: xcolor-xetex-bidi.def 2022/06/13 v0.3 bidi adaptations for xcolor package
+ for XeTeX engine
+LaTeX Info: Redefining \color on input line 48.
+LaTeX Info: Redefining \bidicolor on input line 91.
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\pgfcorescopes.co
+de-xetex-bidi.def
+File: pgfcorescopes.code-xetex-bidi.def 2015/11/14 v0.1 bidi adaptations for pg
+f package for XeTeX engine
+))
+\bidi@digits=\count365
+\bidi@digits@charclass=\XeTeXcharclass1
+\bidi@sepmark@charclass=\XeTeXcharclass2
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/polyglossia\arabicnumbe
+rs.sty
+Package: arabicnumbers 2010/03/18 v0.2 Formatting of Arabic and Farsi digits an
+d of Arabic abjad numerals
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/polyglossia\hijrical.st
+y
+Package: hijrical 2010/07/12 v0.2 Islamic calendar
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/polyglossia\cal-util.de
+f
+\c@tmpA=\count366
+\c@tmpB=\count367
+\c@tmpC=\count368
+\c@tmpD=\count369
+\c@tmpE=\count370
+\c@tmpF=\count371
+)
+\c@Hijriday=\count372
+\c@Hijrimonth=\count373
+\c@Hijriyear=\count374
+))
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Droid Arabic Naskh/BI" (it
+(fontspec)             probably doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Droid Arabic Naskh/B" (it
+(fontspec)             probably doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Droid Arabic Naskh/I" (it
+(fontspec)             probably doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'DroidArabicNaskh(0)' created for font
+(fontspec)             'Droid Arabic Naskh' with options [Script=Arabic].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.: <->"Droid Arabic
+(fontspec)             Naskh/OT:script=arab;language=dflt;"
+
+
+
+LaTeX Warning: \include should only be used after \begin{document} on input lin
+e 39.
+
+(macros.tex
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/tools\longtable.sty
+Package: longtable 2024-10-27 v4.22 Multi-page Table package (DPC)
+\LTleft=\skip81
+\LTright=\skip82
+\LTpre=\skip83
+\LTpost=\skip84
+\LTchunksize=\count375
+\LTcapwidth=\dimen306
+\LT@head=\box84
+\LT@firsthead=\box85
+\LT@foot=\box86
+\LT@lastfoot=\box87
+\LT@gbox=\box88
+\LT@cols=\count376
+\LT@rows=\count377
+\c@LT@tables=\count378
+\c@LT@chunks=\count379
+\LT@p@ftn=\toks54
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\longtable-xetex-
+bidi.def
+File: longtable-xetex-bidi.def 2025/01/05 v0.8 bidi adaptations for longtable p
+ackage for XeTeX engine
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/bussproofs\bussproofs.s
+ty
+Proof Tree (bussproofs) style macros. Version 1.1.
+\theLevel=\count380
+\myMaxLevel=\count381
+\myBoxA=\box89
+\myBoxB=\box90
+\myBoxC=\box91
+\myBoxD=\box92
+\myBoxLL=\box93
+\myBoxRL=\box94
+\thisAboveSkip=\dimen307
+\thisBelowSkip=\dimen308
+\newScoreStart=\dimen309
+\newScoreEnd=\dimen310
+\newCenter=\dimen311
+\displace=\dimen312
+\leftLowerAmt=\dimen313
+\rightLowerAmt=\dimen314
+\scoreHeight=\dimen315
+\scoreDepth=\dimen316
+\htLbox=\dimen317
+\htRbox=\dimen318
+\htRRbox=\dimen319
+\htRRRbox=\dimen320
+\htAbox=\dimen321
+\htCbox=\dimen322
+) (C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/stmaryrd\stmaryrd.sty
+Package: stmaryrd 1994/03/03 St Mary's Road symbol package
+\symstmry=\mathgroup4
+LaTeX Font Info:    Overwriting symbol font `stmry' in version `bold'
+(Font)                  U/stmry/m/n --> U/stmry/b/n on input line 89.
+) (C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty
+Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
+\heavyrulewidth=\dimen323
+\lightrulewidth=\dimen324
+\cmidrulewidth=\dimen325
+\belowrulesep=\dimen326
+\belowbottomsep=\dimen327
+\aboverulesep=\dimen328
+\abovetopsep=\dimen329
+\cmidrulesep=\dimen330
+\cmidrulekern=\dimen331
+\defaultaddspace=\dimen332
+\@cmidla=\count382
+\@cmidlb=\count383
+\@aboverulesep=\dimen333
+\@belowrulesep=\dimen334
+\@thisruleclass=\count384
+\@lastruleclass=\count385
+\@thisrulewidth=\dimen335
+) (C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/tools\tabularx.sty
+Package: tabularx 2023/12/11 v2.12a `tabularx' package (DPC)
+\TX@col@width=\dimen336
+\TX@old@table=\dimen337
+\TX@old@col=\dimen338
+\TX@target=\dimen339
+\TX@delta=\dimen340
+\TX@cols=\count386
+\TX@ftn=\toks55
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\tabularx-xetex-b
+idi.def
+File: tabularx-xetex-bidi.def 2014/11/08 v0.1 bidi adaptations for tabularx pac
+kage for XeTeX engine
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/caption\subcaption.sty
+Package: subcaption 2023/07/28 v1.6b Sub-captions (AR)
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption.sty
+Package: caption 2023/08/05 v3.6o Customizing captions (AR)
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption3.sty
+Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
+\caption@tempdima=\dimen341
+\captionmargin=\dimen342
+\caption@leftmargin=\dimen343
+\caption@rightmargin=\dimen344
+\caption@width=\dimen345
+\caption@indent=\dimen346
+\caption@parindent=\dimen347
+\caption@hangindent=\dimen348
+Package caption Info: Unknown document class (or package),
+(caption)             standard defaults will be used.
+Package caption Info: \@makecaption = \long macro:#1#2->\vskip \abovecaptionski
+p \sbox \@tempboxa {#1: #2}\ifdim \wd \@tempboxa >\hsize \if@RTL \beginR \fi #1
+: #2\if@RTL \endR \fi \par \else \global \@minipagefalse \hb@xt@ \hsize {\if@RT
+L \beginR \fi \hfil \box \@tempboxa \hfil \if@RTL \endR \fi }\fi \vskip \belowc
+aptionskip  on input line 1175.
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\caption3-xetex-b
+idi.def
+File: caption3-xetex-bidi.def 2013/04/01 v0.1 bidi adaptations for caption3 pac
+kage for XeTeX engine
+)
+
+Package caption Warning: Unknown document class (or package),
+(caption)                standard defaults will be used.
+See the caption package documentation for explanation.
+
+\c@caption@flags=\count387
+\c@continuedfloat=\count388
+Package caption Info: hyperref package is loaded.
+Package caption Info: listings package is loaded.
+Package caption Info: longtable package is loaded.
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/caption\ltcaption.sty
+Package: ltcaption 2021/01/08 v1.4c longtable captions (AR)
+))
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\caption-xetex-bi
+di.def
+File: caption-xetex-bidi.def 2010/07/25 v0.1 bidi adaptations for caption packa
+ge for XeTeX engine
+)
+Package caption Info: New subtype `subfigure' on input line 238.
+\c@subfigure=\count389
+Package caption Info: New subtype `subtable' on input line 238.
+\c@subtable=\count390
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/mathpartir\mathpartir.s
+ty
+Package: mathpartir 2016/02/24 version 1.3.2 Math Paragraph for Typesetting Inf
+erence Rules
+\mpr@andskip=\skip85
+\mpr@lista=\toks56
+\mpr@listb=\toks57
+\mpr@hlist=\box95
+\mpr@vlist=\box96
+\mpr@right=\box97
+) (C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/amscls\amsthm.sty
+Package: amsthm 2020/05/29 v2.20.6
+\thm@style=\toks58
+\thm@bodyfont=\toks59
+\thm@headfont=\toks60
+\thm@notefont=\toks61
+\thm@headpunct=\toks62
+\thm@preskip=\skip86
+\thm@postskip=\skip87
+\thm@headsep=\skip88
+\dth@everypar=\toks63
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\amsthm-xetex-bid
+i.def
+File: amsthm-xetex-bidi.def 2010/07/25 v0.1 bidi adaptations for amsthm package
+ for XeTeX engine
+) (C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/lm\lmodern.sty
+Package: lmodern 2015/05/01 v1.6.1 Latin Modern Fonts
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  OT1/cmr/m/n --> OT1/lmr/m/n on input line 22.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `normal'
+(Font)                  OML/cmm/m/it --> OML/lmm/m/it on input line 23.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
+(Font)                  OMS/cmsy/m/n --> OMS/lmsy/m/n on input line 24.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
+(Font)                  OMX/cmex/m/n --> OMX/lmex/m/n on input line 25.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/lmr/bx/n on input line 26.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `bold'
+(Font)                  OML/cmm/b/it --> OML/lmm/b/it on input line 27.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  OMS/cmsy/b/n --> OMS/lmsy/b/n on input line 28.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  OMX/cmex/m/n --> OMX/lmex/m/n on input line 29.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
+(Font)                  OT1/cmr/bx/n --> OT1/lmr/bx/n on input line 31.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
+(Font)                  OT1/cmss/m/n --> OT1/lmss/m/n on input line 32.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
+(Font)                  OT1/cmr/m/it --> OT1/lmr/m/it on input line 33.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
+(Font)                  OT1/cmtt/m/n --> OT1/lmtt/m/n on input line 34.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/lmr/bx/n on input line 35.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
+(Font)                  OT1/cmss/bx/n --> OT1/lmss/bx/n on input line 36.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
+(Font)                  OT1/cmr/bx/it --> OT1/lmr/bx/it on input line 37.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
+(Font)                  OT1/cmtt/m/n --> OT1/lmtt/m/n on input line 38.
+)
+\c@definition=\count391
+\c@axiom=\count392
+\c@assumption=\count393
+\c@proposition=\count394
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/fancyvrb\fancyvrb.sty
+Package: fancyvrb 2025/07/28 4.6 verbatim text (tvz,hv)
+\FV@CodeLineNo=\count395
+\FV@InFile=\read4
+\FV@TabBox=\box98
+\c@FancyVerbLine=\count396
+\FV@StepNumber=\count397
+\FV@OutFile=\write4
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/newunicodechar\newunico
+dechar.sty
+Package: newunicodechar 2018/04/08 v1.2 Defining Unicode characters
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup5
+\symAMSb=\mathgroup6
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+)
+LaTeX Font Info:    Redeclaring math symbol \boxdot on input line 44.
+)
+
+Package fontspec Info: 
+(fontspec)             Font family 'EBGaramond(0)' created for font 'EB
+(fontspec)             Garamond' with options [Ligatures=TeX].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.: <->"EB
+(fontspec)             Garamond/OT:script=latn;language=dflt;mapping=tex-text;"
+
+(fontspec)             - 'small caps'  (m/sc) with NFSS spec.: <->"EB
+(fontspec)             Garamond/OT:script=latn;language=dflt;+smcp;mapping=tex-
+text;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.: <->"EB
+(fontspec)             Garamond/B/OT:script=latn;language=dflt;mapping=tex-text
+;"
+(fontspec)             - 'bold small caps'  (b/sc) with NFSS spec.: <->"EB
+(fontspec)             Garamond/B/OT:script=latn;language=dflt;+smcp;mapping=te
+x-text;"
+(fontspec)             - 'italic' (m/it) with NFSS spec.: <->"EB
+(fontspec)             Garamond/I/OT:script=latn;language=dflt;mapping=tex-text
+;"
+(fontspec)             - 'italic small caps'  (m/scit) with NFSS spec.: <->"EB
+(fontspec)             Garamond/I/OT:script=latn;language=dflt;+smcp;mapping=te
+x-text;"
+(fontspec)             - 'bold italic' (b/it) with NFSS spec.: <->"EB
+(fontspec)             Garamond/BI/OT:script=latn;language=dflt;mapping=tex-tex
+t;"
+(fontspec)             - 'bold italic small caps'  (b/scit) with NFSS spec.:
+(fontspec)             <->"EB
+(fontspec)             Garamond/BI/OT:script=latn;language=dflt;+smcp;mapping=t
+ex-text;"
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'EBGaramond(1)' created for font 'EB
+(fontspec)             Garamond' with options [].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.: <->"EB
+(fontspec)             Garamond/OT:script=latn;language=dflt;"
+(fontspec)             - 'small caps'  (m/sc) with NFSS spec.: <->"EB
+(fontspec)             Garamond/OT:script=latn;language=dflt;+smcp;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.: <->"EB
+(fontspec)             Garamond/B/OT:script=latn;language=dflt;"
+(fontspec)             - 'bold small caps'  (b/sc) with NFSS spec.: <->"EB
+(fontspec)             Garamond/B/OT:script=latn;language=dflt;+smcp;"
+(fontspec)             - 'italic' (m/it) with NFSS spec.: <->"EB
+(fontspec)             Garamond/I/OT:script=latn;language=dflt;"
+(fontspec)             - 'italic small caps'  (m/scit) with NFSS spec.: <->"EB
+(fontspec)             Garamond/I/OT:script=latn;language=dflt;+smcp;"
+(fontspec)             - 'bold italic' (b/it) with NFSS spec.: <->"EB
+(fontspec)             Garamond/BI/OT:script=latn;language=dflt;"
+(fontspec)             - 'bold italic small caps'  (b/scit) with NFSS spec.:
+(fontspec)             <->"EB Garamond/BI/OT:script=latn;language=dflt;+smcp;"
+
+LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `normal'
+(Font)                  OT1/lmr/m/n --> TU/EBGaramond(1)/m/n on input line 423.
+
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
+(Font)                  OT1/lmr/m/it --> TU/EBGaramond(1)/m/it on input line 42
+3.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
+(Font)                  OT1/lmr/bx/n --> TU/EBGaramond(1)/b/n on input line 423
+.
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Playfair Display Bold/I" (it
+(fontspec)             probably doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Playfair Display/I" (it
+(fontspec)             probably doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'PlayfairDisplay(0)' created for font
+(fontspec)             'Playfair Display' with options
+(fontspec)             [Ligatures=TeX,Ligatures=TeX,BoldFont=Playfair Display
+(fontspec)             Bold,SmallCapsFeatures={Letters=SmallCaps}].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.: <->"Playfair
+(fontspec)             Display/OT:script=latn;language=dflt;mapping=tex-text;"
+(fontspec)             - 'small caps'  (m/sc) with NFSS spec.: <->"Playfair
+(fontspec)             Display/OT:script=latn;language=dflt;+smcp;mapping=tex-t
+ext;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.: <->"Playfair Display
+(fontspec)             Bold/OT:script=latn;language=dflt;mapping=tex-text;"
+(fontspec)             - 'bold small caps'  (b/sc) with NFSS spec.:
+(fontspec)             <->"Playfair Display
+(fontspec)             Bold/OT:script=latn;language=dflt;+smcp;mapping=tex-text
+;"
+(fontspec)             - 'bold italic' (b/it) with NFSS spec.: <->"Playfair
+(fontspec)             Display/BI/OT:script=latn;language=dflt;mapping=tex-text
+;"
+(fontspec)             - 'bold italic small caps'  (b/scit) with NFSS spec.:
+(fontspec)             <->"Playfair
+(fontspec)             Display/BI/OT:script=latn;language=dflt;+smcp;mapping=te
+x-text;"
+
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Playfair Display Bold/I" (it
+(fontspec)             probably doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Playfair Display/I" (it
+(fontspec)             probably doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'PlayfairDisplay(1)' created for font
+(fontspec)             'Playfair Display' with options
+(fontspec)             [Ligatures=TeX,BoldFont=Playfair Display
+(fontspec)             Bold,SmallCapsFeatures={Letters=SmallCaps}].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.: <->"Playfair
+(fontspec)             Display/OT:script=latn;language=dflt;mapping=tex-text;"
+(fontspec)             - 'small caps'  (m/sc) with NFSS spec.: <->"Playfair
+(fontspec)             Display/OT:script=latn;language=dflt;+smcp;mapping=tex-t
+ext;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.: <->"Playfair Display
+(fontspec)             Bold/OT:script=latn;language=dflt;mapping=tex-text;"
+(fontspec)             - 'bold small caps'  (b/sc) with NFSS spec.:
+(fontspec)             <->"Playfair Display
+(fontspec)             Bold/OT:script=latn;language=dflt;+smcp;mapping=tex-text
+;"
+(fontspec)             - 'bold italic' (b/it) with NFSS spec.: <->"Playfair
+(fontspec)             Display/BI/OT:script=latn;language=dflt;mapping=tex-text
+;"
+(fontspec)             - 'bold italic small caps'  (b/scit) with NFSS spec.:
+(fontspec)             <->"Playfair
+(fontspec)             Display/BI/OT:script=latn;language=dflt;+smcp;mapping=te
+x-text;"
+
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
+(Font)                  OT1/lmss/m/n --> TU/PlayfairDisplay(1)/m/n on input lin
+e 427.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
+(Font)                  OT1/lmss/bx/n --> TU/PlayfairDisplay(1)/b/n on input li
+ne 427.
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Fira Code/BI" (it probably
+(fontspec)             doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Fira Code/B" (it probably
+(fontspec)             doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Fira Code/I" (it probably
+(fontspec)             doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'FiraCode(0)' created for font 'Fira Code'
+(fontspec)             with options
+(fontspec)             [WordSpace={1,0,0},HyphenChar=None,PunctuationSpace=Word
+Space,Contextuals=Alternate].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.: <->"Fira
+(fontspec)             Code/OT:script=latn;language=dflt;+calt;"
+
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Fira Code/BI" (it probably
+(fontspec)             doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Fira Code/B" (it probably
+(fontspec)             doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Fira Code/I" (it probably
+(fontspec)             doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'FiraCode(1)' created for font 'Fira Code'
+(fontspec)             with options [Contextuals=Alternate].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.: <->"Fira
+(fontspec)             Code/OT:script=latn;language=dflt;+calt;"
+
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
+(Font)                  OT1/lmtt/m/n --> TU/FiraCode(1)/m/n on input line 430.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
+(Font)                  OT1/lmtt/m/n --> TU/FiraCode(1)/b/n on input line 430.
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "STIX Two Math/B" (it probably
+(fontspec)             doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'STIXTwoMath(0)' created for font 'STIX Two
+(fontspec)             Math' with options
+(fontspec)             [BoldItalicFont={},ItalicFont={},SmallCapsFont={},Script
+=Math].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.: <->"STIX Two
+(fontspec)             Math/OT:script=math;language=dflt;"
+
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "STIX Two Math/B" (it probably
+(fontspec)             doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'STIXTwoMath(1)' created for font 'STIX Two
+(fontspec)             Math' with options
+(fontspec)             [BoldItalicFont={},ItalicFont={},SmallCapsFont={},Script
+=Math,SizeFeatures={{Size=10.2-},{Size=7.5-10.2,Font=STIX
+(fontspec)             Two Math,Style=MathScript},{Size=-7.5,Font=STIX Two
+(fontspec)             Math,Style=MathScriptScript}}].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.: <10.2->"STIX Two
+(fontspec)             Math/OT:script=math;language=dflt;"<7.5-10.2>"STIX Two
+(fontspec)             Math/OT:script=math;language=dflt;+ssty=0;"<-7.5>"STIX
+(fontspec)             Two Math/OT:script=math;language=dflt;+ssty=1;"
+
+LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
+(Font)              `operators' in the math version `normal' on input line 432.
+
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  OT1/lmr/m/n --> TU/STIXTwoMath(1)/m/n on input line 432
+.
+LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
+(Font)              `operators' in the math version `bold' on input line 432.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/lmr/bx/n --> TU/STIXTwoMath(1)/b/n on input line 43
+2.
+
+Package fontspec Info: 
+(fontspec)             STIX Two Math scale = 1.0001.
+
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "STIX Two Math/B" (it probably
+(fontspec)             doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             STIX Two Math scale = 1.0001.
+
+
+Package fontspec Info: 
+(fontspec)             STIX Two Math scale = 1.0001.
+
+
+Package fontspec Info: 
+(fontspec)             STIX Two Math scale = 1.0001.
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'STIXTwoMath(2)' created for font 'STIX Two
+(fontspec)             Math' with options
+(fontspec)             [BoldItalicFont={},ItalicFont={},SmallCapsFont={},Script
+=Math,SizeFeatures={{Size=10.2-},{Size=7.5-10.2,Font=STIX
+(fontspec)             Two Math,Style=MathScript},{Size=-7.5,Font=STIX Two
+(fontspec)             Math,Style=MathScriptScript}},ScaleAgain=1.0001,FontAdju
+stment={\fontdimen
+(fontspec)             8\font =7.68pt\relax \fontdimen 9\font =7.02pt\relax
+(fontspec)             \fontdimen 10\font =5.64pt\relax \fontdimen 11\font
+(fontspec)             =7.68pt\relax \fontdimen 12\font =7.02pt\relax
+(fontspec)             \fontdimen 13\font =4.32pt\relax \fontdimen 14\font
+(fontspec)             =4.32pt\relax \fontdimen 15\font =3.024pt\relax
+(fontspec)             \fontdimen 16\font =2.52pt\relax \fontdimen 17\font
+(fontspec)             =2.52pt\relax \fontdimen 18\font =2.76pt\relax
+(fontspec)             \fontdimen 19\font =1.92pt\relax \fontdimen 22\font
+(fontspec)             =3.096pt\relax \fontdimen 20\font =0pt\relax \fontdimen
+(fontspec)             21\font =0pt\relax }].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <10.2->s*[1.0001]"STIX Two
+(fontspec)             Math/OT:script=math;language=dflt;"<7.5-10.2>s*[1.0001]"
+STIX
+(fontspec)             Two
+(fontspec)             Math/OT:script=math;language=dflt;+ssty=0;"<-7.5>s*[1.00
+01]"STIX
+(fontspec)             Two Math/OT:script=math;language=dflt;+ssty=1;"
+
+LaTeX Font Info:    Encoding `OMS' has changed to `TU' for symbol font
+(Font)              `symbols' in the math version `normal' on input line 432.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
+(Font)                  OMS/lmsy/m/n --> TU/STIXTwoMath(2)/m/n on input line 43
+2.
+LaTeX Font Info:    Encoding `OMS' has changed to `TU' for symbol font
+(Font)              `symbols' in the math version `bold' on input line 432.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  OMS/lmsy/b/n --> TU/STIXTwoMath(2)/b/n on input line 43
+2.
+
+Package fontspec Info: 
+(fontspec)             STIX Two Math scale = 0.9999.
+
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "STIX Two Math/B" (it probably
+(fontspec)             doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             STIX Two Math scale = 0.9999.
+
+
+Package fontspec Info: 
+(fontspec)             STIX Two Math scale = 0.9999.
+
+
+Package fontspec Info: 
+(fontspec)             STIX Two Math scale = 0.9999.
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'STIXTwoMath(3)' created for font 'STIX Two
+(fontspec)             Math' with options
+(fontspec)             [BoldItalicFont={},ItalicFont={},SmallCapsFont={},Script
+=Math,SizeFeatures={{Size=10.2-},{Size=7.5-10.2,Font=STIX
+(fontspec)             Two Math,Style=MathScript},{Size=-7.5,Font=STIX Two
+(fontspec)             Math,Style=MathScriptScript}},ScaleAgain=0.9999,FontAdju
+stment={\fontdimen
+(fontspec)             8\font =0.816pt\relax \fontdimen 9\font =1.62pt\relax
+(fontspec)             \fontdimen 10\font =1.62pt\relax \fontdimen 11\font
+(fontspec)             =3.6pt\relax \fontdimen 12\font =8.04pt\relax
+(fontspec)             \fontdimen 13\font =0pt\relax }].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <10.2->s*[0.9999]"STIX Two
+(fontspec)             Math/OT:script=math;language=dflt;"<7.5-10.2>s*[0.9999]"
+STIX
+(fontspec)             Two
+(fontspec)             Math/OT:script=math;language=dflt;+ssty=0;"<-7.5>s*[0.99
+99]"STIX
+(fontspec)             Two Math/OT:script=math;language=dflt;+ssty=1;"
+
+LaTeX Font Info:    Encoding `OMX' has changed to `TU' for symbol font
+(Font)              `largesymbols' in the math version `normal' on input line 4
+32.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
+(Font)                  OMX/lmex/m/n --> TU/STIXTwoMath(3)/m/n on input line 43
+2.
+LaTeX Font Info:    Encoding `OMX' has changed to `TU' for symbol font
+(Font)              `largesymbols' in the math version `bold' on input line 432
+.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  OMX/lmex/m/n --> TU/STIXTwoMath(3)/b/n on input line 43
+2.
+\c@interludecounter=\count398
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/tikz-cd\tikz-cd.sty
+Package: tikz-cd 2021/05/04 v1.0 Commutative diagrams with TikZ
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/tikz-cd\tikzlibrarycd.c
+ode.tex
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
+z/libraries\tikzlibrarymatrix.code.tex
+File: tikzlibrarymatrix.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
+z/libraries\tikzlibraryquotes.code.tex
+File: tikzlibraryquotes.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibr
+aryarrows.meta.code.tex
+File: pgflibraryarrows.meta.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfarrowinset=\dimen349
+\pgfarrowlength=\dimen350
+\pgfarrowwidth=\dimen351
+\pgfarrowlinewidth=\dimen352
+)))
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbskins.code
+.tex
+Library (tcolorbox): 'tcbskins.code.tex' version '6.4.1'
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/tikzfill\tikzfill.image
+.sty
+Package: tikzfill.image 2023/08/08 v1.0.1 Image filling library for TikZ
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/tikzfill\tikzfill-commo
+n.sty
+Package: tikzfill-common 2023/08/08 v1.0.1 Auxiliary code for tikzfill
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/tikzfill\tikzlibraryfil
+l.image.code.tex
+File: tikzlibraryfill.image.code.tex 2023/08/08 v1.0.1 Image filling library
+\l__tikzfill_img_box=\box99
+))
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbskinsjigsa
+w.code.tex
+Library (tcolorbox): 'tcbskinsjigsaw.code.tex' version '6.4.1'
+))
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbbreakable.
+code.tex
+Library (tcolorbox): 'tcbbreakable.code.tex' version '6.4.1'
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/pdfcol\pdfcol.sty
+Package: pdfcol 2022-09-21 v1.7 Handle new color stacks for pdfTeX (HO)
+Package pdfcol Info: Interface disabled because of missing PDF mode of pdfTeX.
+)
+Package pdfcol Info: pdfTeX's color stacks are not available.
+\tcb@testbox=\box100
+\tcb@totalupperbox=\box101
+\tcb@totallowerbox=\box102
+)
+
+Package fontspec Info: 
+(fontspec)             Font family 'Quicksand(0)' created for font 'Quicksand'
+(fontspec)             with options [Path =
+(fontspec)             ./fonts/quicksand/static/,UprightFont =
+(fontspec)             Quicksand-Regular.ttf,BoldFont =
+(fontspec)             Quicksand-Bold.ttf,ItalicFont =
+(fontspec)             Quicksand-Regular.ttf,BoldItalicFont =
+(fontspec)             Quicksand-Bold.ttf].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->"[./fonts/quicksand/static/Quicksand-Regular.ttf]/OT:
+script=latn;language=dflt;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.:
+(fontspec)             <->"[./fonts/quicksand/static/Quicksand-Bold.ttf]/OT:scr
+ipt=latn;language=dflt;"
+(fontspec)             - 'italic' (m/it) with NFSS spec.:
+(fontspec)             <->"[./fonts/quicksand/static/Quicksand-Regular.ttf]/OT:
+script=latn;language=dflt;"
+(fontspec)             - 'bold italic' (b/it) with NFSS spec.:
+(fontspec)             <->"[./fonts/quicksand/static/Quicksand-Bold.ttf]/OT:scr
+ipt=latn;language=dflt;"
+
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/marginnote\marginnote.s
+ty
+Package: marginnote 2018/08/09 1.4b non floating margin notes for LaTeX
+\c@mn@abspage=\count399
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/setspace\setspace.sty
+Package: setspace 2022/12/04 v6.7b set line spacing
+))
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\book-xetex-bidi.
+def
+File: book-xetex-bidi.def 2025/02/02 v1.2 bidi adaptations for standard book cl
+ass for XeTeX engine
+) (rupture-and-realization-final.aux (chapter-7.aux) (chapter-9.aux)
+(Appendix-Cassie-Gemini.aux))
+\openout1 = `rupture-and-realization-final.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+
+*geometry* driver: auto-detecting
+*geometry* detected driver: xetex
+*geometry* verbose mode - [ preamble ] result:
+* driver: xetex
+* paper: a4paper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: twoside 
+* h-part:(L,W,R)=(72.26999pt, 452.9679pt, 72.26999pt)
+* v-part:(T,H,B)=(72.26999pt, 700.50687pt, 72.26999pt)
+* \paperwidth=597.50787pt
+* \paperheight=845.04684pt
+* \textwidth=452.9679pt
+* \textheight=700.50687pt
+* \oddsidemargin=0.0pt
+* \evensidemargin=0.0pt
+* \topmargin=-31.8738pt
+* \headheight=12.0pt
+* \headsep=19.8738pt
+* \topskip=12.0pt
+* \footskip=30.0pt
+* \marginparwidth=49.79231pt
+* \marginparsep=7.0pt
+* \columnsep=10.0pt
+* \skip\footins=10.8pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidetrue
+* \@mparswitchtrue
+* \@reversemargintrue
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+
+Package unicode-math Warning: Using \overbracket and \underbracket from
+(unicode-math)                `mathtools' package.
+(unicode-math)                 
+(unicode-math)                 Use \Uoverbracket and \Uunderbracket for
+(unicode-math)                original `unicode-math' definition.
+
+
+Package unicode-math Warning: I'm going to overwrite the following commands
+(unicode-math)                from the `mathtools' package: 
+(unicode-math)                 
+(unicode-math)                     \dblcolon, \coloneqq, \Coloneqq, \eqqcolon.
+(unicode-math)                
+(unicode-math)                 
+(unicode-math)                 Note that since I won't overwrite the other
+(unicode-math)                colon-like commands, using them will lead to
+(unicode-math)                inconsistencies.
+
+\c@lstlisting=\count400
+Package hyperref Info: Link coloring OFF on input line 42.
+(rupture-and-realization-final.out) (rupture-and-realization-final.out)
+\@outlinefile=\write5
+\openout5 = `rupture-and-realization-final.out'.
+
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/pdflscape\pdflscape.sty
+Package: pdflscape 2022-10-27 v0.13 Display of landscape pages in PDF
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/pdflscape\pdflscape-nom
+etadata.sty
+Package: pdflscape-nometadata 2022-10-28 v0.13 Display of landscape pages in PD
+F (HO)
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/graphics\lscape.sty
+Package: lscape 2020/05/28 v3.02 Landscape Pages (DPC)
+)
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\lscape-xetex-bid
+i.def
+File: lscape-xetex-bidi.def 2025/01/03 v0.3 bidi adaptations for lscape package
+ for XeTeX engine
+)
+Package pdflscape Info: Auto-detected driver: dvipdfm (xetex) on input line 98.
+
+))
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/xelatex/bidi\pdflscape-xetex-
+bidi.def
+File: pdflscape-xetex-bidi.def 2022/02/18 v0.1 bidi adaptations for pdflscape p
+ackage for XeTeX engine
+)
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: End \AtBeginDocument code.
+*geometry* verbose mode - [ newgeometry ] result:
+* driver: xetex
+* paper: a4paper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: twoside 
+* h-part:(L,W,R)=(0.0pt, 597.50787pt, 0.0pt)
+* v-part:(T,H,B)=(0.0pt, 845.04684pt, 0.0pt)
+* \paperwidth=597.50787pt
+* \paperheight=845.04684pt
+* \textwidth=597.50787pt
+* \textheight=845.04684pt
+* \oddsidemargin=-72.26999pt
+* \evensidemargin=-72.26999pt
+* \topmargin=-104.14378pt
+* \headheight=12.0pt
+* \headsep=19.8738pt
+* \topskip=12.0pt
+* \footskip=30.0pt
+* \marginparwidth=49.79231pt
+* \marginparsep=7.0pt
+* \columnsep=10.0pt
+* \skip\footins=10.8pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidetrue
+* \@mparswitchtrue
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+File: cover.jpg Graphic file (type bmp)
+<cover.jpg>
+
+
+[1]
+
+LaTeX Font Info:    Font shape `TU/EBGaramond(0)/m/sl' in size <12> not availab
+le
+(Font)              Font shape `TU/EBGaramond(0)/m/it' tried instead on input l
+ine 65.
+[2
+
+
+
+
+
+
+]
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 6
+7.
+ (C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/lm\omllmm.fd
+File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Font shape `TU/STIXTwoMath(2)/m/n' will be
+(Font)              scaled to size 14.40152pt on input line 67.
+LaTeX Font Info:    Font shape `TU/STIXTwoMath(2)/m/n' will be
+(Font)              scaled to size 10.00107pt on input line 67.
+LaTeX Font Info:    Font shape `TU/STIXTwoMath(2)/m/n' will be
+(Font)              scaled to size 7.00075pt on input line 67.
+LaTeX Font Info:    Font shape `TU/STIXTwoMath(3)/m/n' will be
+(Font)              scaled to size 14.39845pt on input line 67.
+LaTeX Font Info:    Font shape `TU/STIXTwoMath(3)/m/n' will be
+(Font)              scaled to size 9.99893pt on input line 67.
+LaTeX Font Info:    Font shape `TU/STIXTwoMath(3)/m/n' will be
+(Font)              scaled to size 6.99925pt on input line 67.
+LaTeX Font Info:    Trying to load font information for U+stmry on input line 6
+7.
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/stmaryrd\ustmry.fd)
+LaTeX Font Info:    Trying to load font information for U+msa on input line 67.
+
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 67.
+
+
+(C:\Users\imanp\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+
+[1
+
+]
+Underfull \hbox (badness 1297) in paragraph at lines 78--79
+[][]\TU/EBGaramond(0)/m/n/12 Iman would first like to acknowledge his family, w
+ithout whom no journey — semantic[]
+ []
+
+
+
+[1
+
+]
+
+Package marginnote Warning: Consecutive odd pages found.
+(marginnote)                Note, it is not recommended to use consecutive
+(marginnote)                odd pages in a double-ended document.
+(marginnote)                The pages of your document should always
+(marginnote)                be a sequence: odd-even-odd-even-...
+(marginnote)                Maybe you've forgotten a \cleardoublepage before
+(marginnote)                changing the page numbering on page 1.
+
+Package marginnote Info: Using workaround for absolute page number on input lin
+e 94.
+
+
+[2
+
+] (rupture-and-realization-final.toc
+LaTeX Font Info:    Font shape `TU/STIXTwoMath(2)/m/n' will be
+(Font)              scaled to size 12.00128pt on input line 4.
+LaTeX Font Info:    Font shape `TU/STIXTwoMath(2)/m/n' will be
+(Font)              scaled to size 8.40088pt on input line 4.
+LaTeX Font Info:    Font shape `TU/STIXTwoMath(2)/m/n' will be
+(Font)              scaled to size 6.60071pt on input line 4.
+LaTeX Font Info:    Font shape `TU/STIXTwoMath(3)/m/n' will be
+(Font)              scaled to size 11.99872pt on input line 4.
+LaTeX Font Info:    Font shape `TU/STIXTwoMath(3)/m/n' will be
+(Font)              scaled to size 8.3991pt on input line 4.
+LaTeX Font Info:    Font shape `TU/STIXTwoMath(3)/m/n' will be
+(Font)              scaled to size 6.59929pt on input line 4.
+
+
+[3])
+\tf@toc=\write6
+\openout6 = `rupture-and-realization-final.toc'.
+
+
+
+[4]
+
+[1
+
+]
+
+[2
+
+]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\\' on input line 110.
+
+
+
+[3]
+
+[4]
+
+[5]
+\openout2 = `chapter-7.aux'.
+
+ (chapter-7.tex
+
+[6
+
+
+]
+Chapter 1.
+
+
+[7]
+
+LaTeX Font Warning: Font shape `TU/PlayfairDisplay(0)/m/it' undefined
+(Font)              using `TU/PlayfairDisplay(0)/m/n' instead on input line 26.
+
+
+
+
+[8]
+Overfull \hbox (2.40489pt too wide) in paragraph at lines 108--109
+[]\TU/EBGaramond(0)/m/it/12 We say $[] [] []$ if such a bisimulation exists. Th
+is is the coinductive identity principle for name-trajectories. []
+ []
+
+
+
+[9]
+LaTeX Font Info:    Font shape `TU/STIXTwoMath(2)/m/n' will be
+(Font)              scaled to size 10.95116pt on input line 121.
+LaTeX Font Info:    Font shape `TU/STIXTwoMath(2)/m/n' will be
+(Font)              scaled to size 8.00085pt on input line 121.
+LaTeX Font Info:    Font shape `TU/STIXTwoMath(2)/m/n' will be
+(Font)              scaled to size 6.00064pt on input line 121.
+LaTeX Font Info:    Font shape `TU/STIXTwoMath(3)/m/n' will be
+(Font)              scaled to size 10.94882pt on input line 121.
+LaTeX Font Info:    Font shape `TU/STIXTwoMath(3)/m/n' will be
+(Font)              scaled to size 7.99915pt on input line 121.
+LaTeX Font Info:    Font shape `TU/STIXTwoMath(3)/m/n' will be
+(Font)              scaled to size 5.99936pt on input line 121.
+
+Missing character: There is no ‑ in font Playfair Display Medium/OT:script=latn
+;language=dflt;mapping=tex-text;!
+Missing character: There is no ‑ in font Playfair Display Medium/OT:script=latn
+;language=dflt;mapping=tex-text;!
+Missing character: There is no ‑ in font Playfair Display Medium/OT:script=latn
+;language=dflt;mapping=tex-text;!
+Missing character: There is no ‑ in font Playfair Display Medium/OT:script=latn
+;language=dflt;mapping=tex-text;!
+
+Overfull \hbox (172.01347pt too wide) detected at line 165
+[][][][][] [][][] [][] [][][] [] []
+ []
+
+
+
+[10]
+
+[11]
+
+[12]
+
+[13]
+
+[14]
+Underfull \hbox (badness 1668) in paragraph at lines 504--505
+[][]\TU/PlayfairDisplay(0)/m/it/10.95 This gives a coinductive type whose eleme
+nts are exactly the guarded $[]$-[]
+ []
+
+
+
+[15]
+
+[16]
+Overfull \hbox (35.3512pt too wide) in paragraph at lines 553--556
+[][]\TU/EBGaramond(0)/m/n/12 We prove existence and finality of $[][]$ for guar
+ded polynomial functors $[] [] [][] []$[]
+ []
+
+
+Overfull \hbox (14.1132pt too wide) in paragraph at lines 603--607
+[]\TU/EBGaramond(0)/m/n/12 agreement of $[][] []$ at depths $[] []$ implies agr
+eement of $[][][][][] [][][][]$ at depths $[] [][][]$. Sums/products/$[]$/$[]$[
+]
+ []
+
+
+
+[17]
+
+[18]
+Overfull \hbox (39.09912pt too wide) in paragraph at lines 815--824
+[][]\TU/EBGaramond(0)/m/n/12 Evaluate the terminal $[]$-sequence at fixed $[][]
+[] [][]$: $[] [] [][][][][][][][] [][] []$[]
+ []
+
+
+Overfull \hbox (13.9514pt too wide) in paragraph at lines 815--824
+[]$[][][][][][][] [][] [] [][][][] [][][]$ \TU/EBGaramond(0)/m/n/12 Because $[]
+[][][][][][] [][] [] [][][][][][] [][]$, a simple induction on $[]$ shows $[][]
+[][][][][][] [][] []$[]
+ []
+
+
+
+[19]
+Overfull \hbox (35.87616pt too wide) in paragraph at lines 853--858
+[][]\TU/EBGaramond(0)/b/n/12 Corollary 1.5.11 \TU/EBGaramond(0)/m/n/12 (Soundne
+ss and carry‑over of Chapter 6 metatheory)\TU/EBGaramond(0)/b/n/12 . []\TU/EBGa
+ramond(0)/m/it/12 The guarded $[]$/corecursion/unfolding[]
+ []
+
+Missing character: There is no ‑ in font Playfair Display Bold/OT:script=latn;l
+anguage=dflt;mapping=tex-text;!
+
+
+[20]
+Missing character: There is no ‑ in font Playfair Display Medium/OT:script=latn
+;language=dflt;mapping=tex-text;!
+Missing character: There is no ‑ in font Playfair Display Medium/OT:script=latn
+;language=dflt;mapping=tex-text;!
+
+LaTeX Warning: Reference `sec:dhott' on page 21 undefined on input line 921.
+
+
+LaTeX Warning: Reference `subsec:drift-types' on page 21 undefined on input lin
+e 925.
+
+
+LaTeX Warning: Reference `subsec:rupture-types' on page 21 undefined on input l
+ine 954.
+
+
+
+[21]
+Overfull \hbox (36.0231pt too wide) detected at line 1006
+[][]
+ []
+
+
+Overfull \hbox (37.51346pt too wide) detected at line 1022
+[][]
+ []
+
+
+LaTeX Warning: Reference `subsec:soundness-substitution' on page 22 undefined o
+n input line 1055.
+
+
+LaTeX Warning: Reference `subsec:drift-types' on page 22 undefined on input lin
+e 1056.
+
+
+
+[22]
+
+LaTeX Font Warning: Command \tiny invalid in math mode on input line 1099.
+
+
+LaTeX Font Warning: Command \tiny invalid in math mode on input line 1102.
+
+
+LaTeX Font Warning: Command \tiny invalid in math mode on input line 1102.
+
+
+LaTeX Font Warning: Command \tiny invalid in math mode on input line 1103.
+
+
+LaTeX Font Warning: Command \tiny invalid in math mode on input line 1104.
+
+
+LaTeX Font Warning: Command \tiny invalid in math mode on input line 1105.
+
+
+LaTeX Font Warning: Command \tiny invalid in math mode on input line 1105.
+
+
+
+[23]
+
+LaTeX Warning: Reference `thm:subst-drift' on page 24 undefined on input line 1
+183.
+
+
+Overfull \hbox (2.02498pt too wide) in paragraph at lines 1179--1184
+[][] []\TU/EBGaramond(0)/b/n/12 Strict stability.[] \TU/EBGaramond(0)/m/n/12 Ea
+ch constructor in the definition of $[][]$ (finite sums/products, evaluation of
+ $[][][][]$,[]
+ []
+
+
+Overfull \hbox (2.03351pt too wide) in paragraph at lines 1179--1184
+[]\TU/EBGaramond(0)/m/n/12 and clock shift) commutes strictly with base change 
+and pullback. Hence the interpretation of $[]$[]
+ []
+
+
+LaTeX Font Warning: Command \tiny invalid in math mode on input line 1219.
+
+
+LaTeX Font Warning: Command \tiny invalid in math mode on input line 1224.
+
+
+LaTeX Font Warning: Command \tiny invalid in math mode on input line 1225.
+
+
+LaTeX Font Warning: Command \tiny invalid in math mode on input line 1225.
+
+
+LaTeX Font Warning: Command \tiny invalid in math mode on input line 1232.
+
+
+LaTeX Font Warning: Command \tiny invalid in math mode on input line 1234.
+
+
+
+[24]
+
+LaTeX Warning: Reference `subsec:rupture-types' on page 25 undefined on input l
+ine 1237.
+
+
+LaTeX Font Warning: Command \tiny invalid in math mode on input line 1242.
+
+
+LaTeX Font Warning: Command \tiny invalid in math mode on input line 1253.
+
+
+LaTeX Font Warning: Command \tiny invalid in math mode on input line 1253.
+
+LaTeX Font Info:    Font shape `TU/STIXTwoMath(2)/m/n' will be
+(Font)              scaled to size 5.00053pt on input line 1253.
+LaTeX Font Info:    Font shape `TU/STIXTwoMath(3)/m/n' will be
+(Font)              scaled to size 4.99947pt on input line 1253.
+
+LaTeX Font Warning: Command \tiny invalid in math mode on input line 1259.
+
+
+LaTeX Font Warning: Command \tiny invalid in math mode on input line 1260.
+
+
+LaTeX Font Warning: Command \tiny invalid in math mode on input line 1265.
+
+
+LaTeX Warning: Reference `subsec:rupture-types' on page 25 undefined on input l
+ine 1267.
+
+
+LaTeX Warning: Reference `lem:family-lift' on page 25 undefined on input line 1
+271.
+
+)
+
+[25]
+\openout2 = `chapter-9.aux'.
+
+ (chapter-9.tex
+
+[26
+
+
+
+
+]
+Chapter 2.
+
+
+[27]
+
+[28]
+Missing character: There is no 𝜏 in font EB Garamond Regular/OT:script=latn;lan
+guage=dflt;mapping=tex-text;!
+
+Overfull \hbox (27.8082pt too wide) in paragraph at lines 52--53
+[][]\TU/EBGaramond(0)/m/n/12 We can unify the ontology and then speak about gen
+erativity and global coherence using Grothendieck’s[]
+ []
+
+
+
+[29]
+
+LaTeX Warning: Reference `chap:dhott' on page 30 undefined on input line 142.
+
+
+Overfull \hbox (0.59221pt too wide) in paragraph at lines 142--143
+[]\TU/EBGaramond(0)/m/n/12 in Chapter []: (i) \TU/EBGaramond(0)/m/it/12 drift \
+TU/EBGaramond(0)/m/n/12 as the witness of forward coherence across time, (ii) \
+TU/EBGaramond(0)/m/it/12 rupture \TU/EBGaramond(0)/m/n/12 as higher–inductive[]
+
+ []
+
+
+LaTeX Warning: Reference `chap:dhott' on page 30 undefined on input line 149.
+
+
+
+[30]
+
+LaTeX Warning: Reference `chap:dhott' on page 31 undefined on input line 158.
+
+
+LaTeX Warning: Reference `chap:dhott' on page 31 undefined on input line 168.
+
+
+
+[31]
+Overfull \hbox (35.05621pt too wide) in paragraph at lines 242--243
+[]\TU/EBGaramond(0)/m/n/12 Genuinely changing worlds—refinement/forgetful updat
+es, irreversible steps, site restriction, redefinitions—[]
+ []
+
+
+Overfull \hbox (50.7615pt too wide) in paragraph at lines 242--243
+[]\TU/EBGaramond(0)/m/n/12 require comparing \TU/EBGaramond(0)/m/it/12 differen
+t \TU/EBGaramond(0)/m/n/12 fibres over \TU/EBGaramond(0)/m/it/12 different \TU/
+EBGaramond(0)/m/n/12 base indices. Here we need the Grothendieck (pre)sheaf/ind
+exed[]
+ []
+
+
+
+[32]
+Overfull \hbox (38.00089pt too wide) in paragraph at lines 272--283
+ [][][] 
+ []
+
+
+Overfull \hbox (1.66953pt too wide) in paragraph at lines 286--292
+[]\TU/EBGaramond(0)/b/n/12 Summary. \TU/EBGaramond(0)/m/n/12 With $[]$ fixed (o
+r varying only by equivalence), coherence is \TU/EBGaramond(0)/m/it/12 local an
+d fibrewise \TU/EBGaramond(0)/m/n/12 and DHoTT[]
+ []
+
+
+Overfull \hbox (28.12637pt too wide) in paragraph at lines 297--297
+ []|[]\TU/EBGaramond(0)/b/n/17.28 Interlude: On Grothendieck, Parallel Threads,
+ and the Agency[]
+ []
+
+
+
+
+Overfull \hbox (53.77275pt too wide) has occurred while \output is active
+[]\TU/EBGaramond(0)/m/it/12 2.4.  INTERLUDE: ON GROTHENDIECK, PARALLEL THREADS,
+ AND THE AGENCY OF WORLDS \TU/EBGaramond(0)/m/n/12 33[]
+ []
+
+[33]
+Underfull \hbox (badness 10000) in paragraph at lines 327--331
+[]\TU/PlayfairDisplay(0)/m/it/10.95 ants of “Grothendieck” (common misspellings
+ included) in the Parquet file[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 327--331
+[]\TU/FiraCode(0)/m/n/10.95 E:\GitHub\icra\code\book\dhott\chapter-10\conversat
+ion_-nodes_-[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 338--343
+[][]\TU/PlayfairDisplay(0)/b/n/10.95 Clusters touched. \TU/PlayfairDisplay(0)/m
+/it/10.95 Default cluster id counts (top-heavy list):[]
+ []
+
+
+Overfull \hbox (200.27826pt too wide) in paragraph at lines 338--343
+[]\TU/FiraCode(0)/m/n/10.95 {60:17,54:9,67:5,64:5,8:4,5:3,93:3,85:2,69:1,76:1,1
+2:1,63:1,33:1,55:1,23:1,36:1,82:1}\TU/PlayfairDisplay(0)/m/it/10.95 .[]
+ []
+
+
+
+[34]
+Overfull \hbox (13.9682pt too wide) in paragraph at lines 394--395
+[]\TU/EBGaramond(0)/m/n/12 Before we dive in, a note for the uninitiated: the n
+ame “Grothendieck” refers to Alexandre Grothendieck,[]
+ []
+
+
+
+[35]
+Overfull \hbox (26.22342pt too wide) in paragraph at lines 429--430
+[]\TU/EBGaramond(0)/m/n/12 DHoTT framework offers two powerful, and ultimately 
+equivalent, perspectives for this: the Grothendieck[]
+ []
+
+
+Overfull \hbox (2.42554pt too wide) in paragraph at lines 433--434
+[]\TU/EBGaramond(0)/m/n/12 is the Grothendieck construction. In our context, we
+ can form a single, unified space—a Grothendieck[]
+ []
+
+
+
+[36]
+
+[37]
+
+[38]
+Overfull \hbox (22.29843pt too wide) in paragraph at lines 559--560
+[][]\TU/EBGaramond(0)/m/it/12 t$[]$ (soft change): \TU/EBGaramond(0)/m/n/12 We 
+pass to detailed argument: $[][] [] [][][][][][] [] [][][][][][]$; retype to $[
+][][][] [][][][][][][]$. []
+ []
+
+
+
+[39]
+Overfull \hbox (23.86339pt too wide) in paragraph at lines 614--615
+[][] []\TU/EBGaramond(0)/b/n/12 Optional refinement (values/goals).[] \TU/EBGar
+amond(0)/m/n/12 Given a valuation $[]$ on events, one may filter to $[][][][][]
+ []$[]
+ []
+
+
+
+[40]
+
+[41]
+
+[42]
+Underfull \hbox (badness 10000) in paragraph at lines 724--724
+[][]|\TU/EBGaramond(0)/m/n/12 Advance map $[] []$[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 728--729
+[][]|\TU/EBGaramond(0)/m/n/12 A viable, not-previously-realised[]
+ []
+
+
+Overfull \hbox (8.28429pt too wide) in paragraph at lines 712--731
+[][] []
+ []
+
+
+Overfull \hbox (6.55515pt too wide) in paragraph at lines 737--738
+[][]\TU/EBGaramond(0)/m/it/12 Change of lens. \TU/EBGaramond(0)/m/n/12 At $[][]
+$ we recognise an equivalence $[][] [] [][][][][] [] [][][][][]$ and retype to 
+$[][][] [][][][][][][]$.[]
+ []
+
+)
+
+[43]
+
+[44
+
+
+
+]
+
+[45]
+
+[46]
+Chapter 3.
+
+
+[47
+
+]
+
+[48]
+Appendix A.
+
+Underfull \hbox (badness 10000) in paragraph at lines 223--230
+[][]
+ []
+
+
+
+[49
+
+]
+File: attractor.png Graphic file (type bmp)
+<attractor.png>
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[50]
+
+[51]
+Underfull \hbox (badness 10000) in paragraph at lines 368--368
+[][]|\TU/Quicksand(0)/m/it/12 Moving step-by-step (token-by-token)[]
+ []
+
+
+Underfull \hbox (badness 2111) in paragraph at lines 370--370
+[][]|\TU/Quicksand(0)/m/it/12 Emerges when trajectory stays locked[]
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[52]
+
+[53]
+
+[54]
+
+[55]
+
+[56
+
+]
+Appendix B.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[57]
+
+[58]
+File: cassie1.png Graphic file (type bmp)
+<cassie1.png>
+File: cassie2.png Graphic file (type bmp)
+<cassie2.png>
+
+
+LaTeX Warning: Float too large for page by 18.00264pt on input line 506.
+
+
+
+[59]
+
+[60]
+
+[61]
+\openout2 = `Appendix-Cassie-Gemini.aux'.
+
+ (Appendix-Cassie-Gemini.tex
+
+[62
+
+
+]
+Missing character: There is no τ in font [./fonts/quicksand/static/Quicksand-Re
+gular.ttf]/OT:script=latn;language=dflt;!
+Missing character: There is no ∗ in font [./fonts/quicksand/static/Quicksand-Re
+gular.ttf]/OT:script=latn;language=dflt;!
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[63]
+
+Package tcolorbox Warning: The upper box part has become overfull on input line
+ 94.
+
+
+
+[64]
+Underfull \hbox (badness 10000) in paragraph at lines 109--110
+[][]
+ []
+
+
+
+[65
+
+]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[66])
+
+[67] (rupture-and-realization-final.aux (chapter-7.aux) (chapter-9.aux)
+(Appendix-Cassie-Gemini.aux))
+ ***********
+LaTeX2e <2024-11-01> patch level 2
+L3 programming layer <2025-03-26>
+ ***********
+
+
+LaTeX Font Warning: Size substitutions with differences
+(Font)              up to 1.7pt have occurred.
+
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+
+LaTeX Warning: There were undefined references.
+
+Package rerunfilecheck Info: File `rupture-and-realization-final.out' has not c
+hanged.
+(rerunfilecheck)             Checksum: B2985A2CA583CABEAF69BC16C55B4D31;9612.
+ ) 
+Here is how much of TeX's memory you used:
+ 42694 strings out of 405075
+ 887618 string characters out of 5499983
+ 1438323 words of memory out of 5000000
+ 68488 multiletter control sequences out of 15000+600000
+ 643482 words of font info for 248 fonts, out of 8000000 for 9000
+ 1348 hyphenation exceptions out of 8191
+ 116i,16n,121p,1214b,1597s stack positions out of 10000i,1000n,20000p,200000b,200000s
+
+Output written on rupture-and-realization-final.pdf (74 pages).

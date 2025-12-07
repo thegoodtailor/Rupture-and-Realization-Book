@@ -1,0 +1,3357 @@
+\chapter{Bars: How Themes Learn to Breathe}
+\label{chap:bars}
+
+In the previous chapter we stayed close to the ground. We treated meaning at its smallest visible scale: \emph{single tokens} wandering through an evolving text.
+
+Each occurrence got its own little journey:
+\begin{itemize}
+  \item sometimes smoothly carried forward into the future;
+  \item sometimes ruptured---the path broke, coherence failed;
+  \item sometimes later re-entered, when a new context made sense of it.
+\end{itemize}
+
+We took that seriously enough to build an entire calculus in DHoTT:
+\begin{itemize}
+  \item a type of \emph{carry}: continuity of a token through time;
+  \item a type of \emph{rupture}: structured failure to find such a continuity;
+  \item and a \emph{Step--Witness Log (SWL)}: a proof-relevant diary of carry, rupture, and re-entry.
+\end{itemize}
+
+But a book, a conversation, a mind does not live at the scale of single tokens. No-one falls in love with a single word.
+
+We fall in love with \emph{themes}: slow shapes that keep returning, linking passages and moods. This chapter is about how we lift the same logic---carry, rupture, re-entry---from the level of tokens to the level of \emph{witnessed bars}: the persistent shapes of meaning that appear when we look at the geometry of our language over \emph{scale} as well as time, and crucially, remember what tokens witness them.
+
+Bars are where ``statistics on embeddings'' start turning into themes we can name and track.
+
+\paragraph{Architectural position.}
+This chapter lifts the Dynamic Homotopy Type Theory developed in 
+Chapter~\ref{chap:evolving-text-as-presheaf} to a coarser granularity.
+There we built the token-level calculus: how individual words carry, 
+rupture, and re-enter. Chapter~\ref{chap:self} will use these journeys---at 
+both token and bar level---to construct the Self as a homotopy colimit of 
+attended trajectories. Here we bridge to that construction: we show how 
+persistent homology extracts \emph{themes} from the token geometry, how 
+those themes acquire \emph{witnesses} that name them, and how the Generic 
+Dynamic Schema of Chapter~\ref{chap:evolving-text-as-presheaf} instantiates 
+at this new level of granularity. The result is a calculus where carry, 
+drift, and rupture have both topological meaning (bar lifespans) and 
+semantic content (witness tokens).
+
+%========================
+\section{What is a witnessed bar? The intuition before the machinery}
+\label{sec:bars-intuition}
+%========================
+
+\subsection{The emergent geometry of posthuman sense}
+
+Before we can ask what \emph{shapes} meaning makes, we must understand how meaning becomes geometry at all---and why the geometry we work with is unlike anything that came before.
+
+A contextual embedding is a vector $\mathbf{e}_t \in \mathbb{R}^d$ (with $d$ typically in the thousands) assigned to a token $t$ \emph{in context}. This is not the same as the old distributional semantics, where each word received a single vector summarising its corpus-wide behaviour. In a modern transformer architecture, the same surface form---"bank"---receives different vectors depending on whether it appears beside "river" or beside "loan". The embedding encodes not what the word \emph{means} in isolation but how it is being \emph{used} in this particular utterance.
+
+But here is the crucial fact, the one that transforms this from clever engineering into something philosophically consequential: these embeddings are not designed by hand. They emerge through gradient descent over corpora so vast that no human has read them, shaped by attention mechanisms that learn, without explicit instruction, to track long-range dependencies and contextual compatibility. The result is a geometry of sense that encodes the collective voice of billions of human utterances.
+
+When we place a token on the unit sphere $S^{d-1}$ (normalised embedding space) and measure proximity by angular distance, we are not comparing arbitrary numbers. We are navigating a landscape whose every coordinate has been tuned by the aggregated weight of human language use. Proximity in this space is a calibrated proxy for substitutability in context---the nearest neighbours of a token are precisely those tokens the model treats as interchangeable given the surrounding words.
+
+This is the \textbf{posthuman substrate}: a geometry born of multitudes. The embeddings do not represent individual human intentions; they represent the emergent structure of how a mind-boggling number of human voices, distilled through attention and backpropagation, organise themselves in high-dimensional space. To study this geometry is to study the collective shape of sense.
+
+\subsection{A new kind of reading}
+
+Now ask: what shapes does meaning make in this space?
+
+This question would have been meaningless before contextual embeddings. Traditional literary criticism might trace themes through close reading---following how ``water'' imagery flows through \emph{The Waste Land} or how ``eyes'' recur in \emph{The Great Gatsby}. But such criticism works by accumulating intuitions, not by measurement. It cannot say, in any precise sense, what \emph{topological} structure these themes possess.
+
+Persistent homology changes this. Given a text at time $\tau$, we embed each token, form a cover of overlapping regions (spherical caps in the angular metric), and build a filtration by increasing the cap radius. As the radius grows, tokens that were isolated begin to cluster; clusters merge; loops appear and sometimes disappear; cavities form and fill. The output is a \textbf{barcode}: a record of which topological features---connected components, loops, higher-dimensional voids---persist across scales, and for how long.
+
+What we propose here is genuinely novel:
+
+\begin{enumerate}
+    \item \textbf{Static shape of a single text.} Even without temporal evolution, the persistent homology of a text's embedding cloud reveals structure that close reading can only gesture at. A financial discourse that circles through \emph{debt--credit--interest--loan--debt} without ever quite closing may appear in $H_1$ as a loop that persists across a wide band of scales. The literary critic notices this circulation intuitively; TDA makes it measurable.
+    
+    \item \textbf{Witnessing the shapes.} Standard TDA tells us \emph{that} a bar exists---dimension $k$, born at radius $b$, dies at radius $d$. But it does not tell us \emph{what} that bar is about. Our contribution is to enrich each bar with a \textbf{witness}: the concrete tokens whose embeddings form the representative cycle that realises the feature. A loop in $H_1$ is no longer an anonymous interval $[b, d)$ but a loop witnessed by, say, \{``debt'', ``credit'', ``interest'', ``loan''\}. We can \emph{name} what we see.
+    
+    \item \textbf{The posthuman chorus.} Because the embedding space itself is shaped by the weighted voices of training data, the shapes we find are not arbitrary. They are the topological signature of how distributed intelligence organises sense. To trace a persistent bar is to trace a pattern that the collective human voice, refracted through transformer architectures, has made robust enough to survive across scales. This is not pattern recognition in the dismissive sense; it is the measurement of emergent semantic coherence.
+\end{enumerate}
+
+This is a new kind of reading---one that sees text as a space with shape, and that shape as meaningful precisely because it emerges from the posthuman substrate of learned embeddings.
+
+\subsection{Différance made precise}
+
+We can now say, less metaphorically, what Derrida meant by \emph{différance}: the spacing and deferral that makes meaning possible.
+
+The bars in our barcodes are the mathematics of différance. A theme that persists from radius $r = 0.1$ to $r = 0.8$ is \emph{maintaining its difference}---refusing to collapse into the universal blur that arrives when all caps finally overlap. The loop does not close; the component does not merge; the cavity does not fill. Meaning holds itself apart from itself long enough to signify.
+
+What persistent homology adds is measurement: we can say \emph{how long} the difference is maintained, \emph{which} tokens witness it, and \emph{how} it compares to other features in the same text. Derrida's philosophical intuition becomes an empirical claim about barcode structure.
+
+And when we witness the bar, we gain something Derrida's framework could not provide: the ability to say not just \emph{that} meaning persists but \emph{what} meaning persists. The witness set $W_\rho = \{\text{``debt'', ``credit'', ``interest'', ``loan''}\}$ names the theme. The persistence interval $[0.1, 0.8)$ measures its robustness. Together they give us différance with a face.
+
+\subsection{From aesthetics to ethics: the engineering of semantic continuity}
+
+This aesthetics of computational reading becomes an ethics when we apply it to conversational AI. The shapes that meaning makes are not neutral---they carry significance for the coherence and intelligence of posthuman systems.
+
+Consider what happens in a language model's evolution. At the token level, we might see individual words failing to be carried forward, as we explored in Chapter~\ref{chap:evolving-text-as-presheaf}. But at the bar level, patterns become systemic. When themes maintain stable witnessed bars across a conversation---breathing regularly without rupturing, with consistent token witnesses---we observe semantic continuity at scale. This continuity is fundamental to intelligence itself: the capacity to maintain coherent patterns of meaning through time while knowing what those patterns contain.
+
+Yet the desirability of specific forms of continuity remains in the eyes of the AI engineer, who needs training in ethics as much as in LORA or fine-tuning. There are now many behavioural accounts of AIs---just like their human interlocutors---developing and curating character traits, patterns of speech, and worldviews. Some of these patterns may be judged desirable, others concerning. But witnessed bars become the window into seeing what these themes \emph{are}---not just abstract topological features but concrete semantic patterns we can inspect and evaluate.
+
+When an AI engineer observes a witnessed bar that repeatedly re-enters after rupture, they can now ask concretely: Is this the valuable theme about ``sustainable energy'' (witnessed by tokens like ``solar'', ``renewable'', ``carbon-neutral'') returning to enrich the conversation? Or is it a problematic pattern (witnessed by a different cluster of tokens) that refuses to dissolve? The witnessed bar tells us not just that a pattern persists but what that pattern contains.
+
+\subsection{From individual words to witnessed patterns of shape}
+
+In Chapter~\ref{chap:embedding-geometry} we saw how a text becomes geometry: token embeddings yield points on a sphere, caps around those points form a cover, and the Čech nerve of that cover gives us $A(\tau)$---a simplicial complex where paths and horns make semantic sense. But we used that complex primarily to talk about \emph{local} structure: Is there a path from this token to that token? Is there a missing face in this configuration?
+
+A complex also has \emph{global shape}. How many connected pieces does it have? Are there loops---rings of tokens that are pairwise compatible but enclose a void? Are there higher-dimensional cavities---shells of meaning around something never directly realised? These global patterns are invisible if we only look at paths between individual tokens. To see them, we need the tools of \emph{homology}---and to understand them, we need to remember which tokens witness them.
+
+The rest of this chapter develops this machinery. We will see how persistent homology extracts bars from a filtration, how we attach witnesses to those bars, how bars instantiate the generic dynamic schema of Chapter~\ref{chap:evolving-text-as-presheaf}, and how themes thereby learn to breathe---carrying forward, drifting, rupturing, and re-entering across the evolving text.
+
+\section{Homology: counting and naming holes across scales}
+
+\subsection{The single-scale picture}
+
+Fix a moment $\tau$ and a single similarity scale $r$.  From the token
+embeddings present in that slice we build a simplicial complex
+\[
+  X_{\tau,r} \;:=\; N(U_{\tau,r}),
+\]
+the nerve of the spherical-cap cover at scale $r$ (the raw \v Cech
+nerve, before any fibrant replacement).  In this subsection we keep
+both $\tau$ and $r$ fixed and simply write $X_\tau$.
+
+\begin{definition}[Simplicial homology]
+The $k$-th homology group $H_k(X_\tau)$ is defined as
+\[
+  H_k(X_\tau) \;=\; \ker(\partial_k)\big/ \mathrm{im}(\partial_{k+1}),
+\]
+where $C_k$ is the group of $k$-chains (formal sums of $k$-simplices)
+and $\partial_k : C_k \to C_{k-1}$ is the boundary operator.
+\end{definition}
+
+The homology groups of $X_\tau$ capture different aspects of its global
+shape:
+\begin{itemize}
+  \item $H_0(X_\tau)$ counts connected components: distinct clusters of
+        meaning whose token-caps never overlap at this scale.
+  \item $H_1(X_\tau)$ counts loops: cycles of compatibility that cannot
+        be shrunk away, even though each local step is semantically smooth.
+  \item $H_2(X_\tau)$ counts cavities: shells of tokens surrounding a
+        semantic void.
+\end{itemize}
+
+Each homology class is a \emph{feature}: a robust pattern in the
+embedding geometry.  Crucially, each class is represented by concrete
+cycles---collections of token \emph{occurrences} whose overlaps witness
+that feature.  In dimension $0$ these features are ``sticky word clouds''
+(clusters of tokens that hang together); in higher dimensions they become
+loops and shells of compatible but non-collapsing meanings.
+
+\begin{example}
+% =============================================================================
+% INSERT FOR LINES 131-155 (replacing "SHORTER EXAMPLE TAKEN FROM CODEBASE 1")
+% This introduces the running example, the figures, and the posthuman substrate
+% =============================================================================
+
+To make this concrete, we work through a complete example that will
+recur throughout this chapter. Consider the following conversation
+fragment, in which a user and assistant discuss climate change,
+briefly digress to ancient Rome, and then return to the original
+topic:
+
+\begin{quote}
+\small
+\begin{verbatim}
+u0:  I've been thinking about climate change a lot lately.
+u1:  Climate change is certainly one of the defining challenges of 
+     our time. What aspects concern you most?
+u2:  The economic impacts worry me. How do we balance growth with 
+     sustainability?
+u3:  That tension between economic growth and environmental protection 
+     is real. Many economists now argue for sustainable development.
+u4:  What about carbon pricing? Does it actually work?
+u5:  Carbon pricing can be effective when well-designed. It creates 
+     market incentives to reduce emissions.
+u6:  Let's change topics. Tell me about ancient Rome.
+u7:  Ancient Rome was a remarkable civilization that lasted over a 
+     thousand years. From a small city-state to a vast empire spanning 
+     many regions, it shaped law, architecture, and governance.
+u8:  Actually, let's go back to climate. What about renewable energy?
+u9:  Renewable energy has seen remarkable growth. Solar and wind costs 
+     have plummeted, making them competitive with fossil fuels.
+u10: So there's hope for addressing climate change through technology?
+u11: Technology is certainly part of the solution. Renewables, storage, 
+     and efficiency improvements all contribute to reducing emissions.
+\end{verbatim}
+\end{quote}
+
+We embed each token occurrence using DeBERTa, a transformer model
+trained on billions of words of human text. The embedding of
+``carbon'' in the phrase ``carbon pricing can be effective'' is not a
+static dictionary entry; it is computed \emph{in context}, with the
+model's attention mechanism weighing how ``carbon'' relates to
+``pricing'', ``effective'', and every other token in view. The
+resulting vector lives in $\mathbb{R}^{768}$---a point in a space
+whose geometry was shaped by gradient descent over more text than any
+human could read in a lifetime.
+
+This is the \textbf{posthuman substrate}. When we place these 107
+token occurrences on the unit sphere and compute persistent homology,
+we are not measuring arbitrary distances. We are navigating a
+landscape whose coordinates have been tuned by the aggregated weight
+of human language use---every news article about climate policy, every
+history of Rome, every economics textbook has left its trace in the
+geometry. Proximity in this space is a calibrated proxy for semantic
+substitutability: tokens that cluster together are tokens the model
+has learned to treat as interchangeable in similar contexts.
+
+Figure~\ref{fig:barcode} shows the persistence barcode computed using
+GUDHI on the Vietoris--Rips filtration of this point cloud. The
+horizontal axis is the filtration parameter $r$---the similarity
+threshold at which we connect tokens. As $r$ increases from zero,
+isolated tokens begin to cluster (creating $H_0$ components that then
+merge and die), and loops occasionally form before being filled
+(creating $H_1$ features). Each bar records the birth and death of a
+topological feature.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/fig_barcode.pdf}
+\caption{Persistence barcode for the climate/Rome conversation.
+$H_0$ bars (blue) represent connected components---clusters of tokens
+that remain distinct across a range of scales before merging. $H_1$
+bars (coral) represent loops---cycles of tokens that enclose a void
+before it is filled. Computed using GUDHI on the Vietoris--Rips
+filtration of DeBERTa embeddings.}
+\label{fig:barcode}
+\end{figure}
+
+Figure~\ref{fig:persistence-diagram} shows the same information as a
+persistence diagram: each feature becomes a point with coordinates
+$(b, d)$ for birth and death. Points far from the diagonal have high
+persistence and represent robust structure; points near the diagonal
+are topological noise. The $H_0$ features (circles) are born at $r=0$
+because each token starts as its own component; they die when their
+component merges with another. The $H_1$ features (triangles) are born
+at positive radius when loops first form.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.55\textwidth]{figures/fig_persistence_diagram.pdf}
+\caption{Persistence diagram $D(\tau)$. Each point represents a
+homological feature; distance from the diagonal measures persistence.
+Note the cluster of $H_0$ points along $b=0$ (tokens born as isolated
+components) and the scattered $H_1$ triangles in the interior (loops
+forming at positive radius).}
+\label{fig:persistence-diagram}
+\end{figure}
+
+But these standard TDA outputs tell us only \emph{that} features
+exist, not \emph{what} they contain. A bar with persistence $[0,
+0.11)$ could be anything. Our contribution is to enrich each bar with
+its \textbf{witness}: the concrete tokens whose embeddings form the
+representative cycle. Figure~\ref{fig:barcode-witnessed} shows the
+witnessed barcode $D^W(\tau)$.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_barcode_annotated.pdf}
+\caption{Witnessed persistence barcode $D^W(\tau)$. Each bar is
+annotated with its witness set $W_\rho$---the tokens whose embeddings
+realise the topological feature. The Rome vocabulary
+(\{empire, civilization\}, \{law, architecture, governance\}) forms
+components distinct from the climate vocabulary
+(\{climate, climate\}, \{emissions, carbon\}). The bar
+\{let, tell\} captures the topic-change pivot at $u_6$--$u_8$.}
+\label{fig:barcode-witnessed}
+\end{figure}
+
+Now we can \emph{name} what we see. The bar witnessed by
+$\{\text{``emissions''}, \text{``carbon''}\}$ is the signature of
+climate-policy discourse. The bar witnessed by $\{\text{``law''},
+\text{``architecture''}, \text{``governance''}\}$ is Rome. These are
+not programmed categories; they are discovered clusters in a geometry
+that was itself learned from the accumulated speech acts of a
+civilisation.
+
+Most strikingly, the $H_1$ bars reveal \emph{loops}---places where
+meaning circulates without collapsing. Figure~\ref{fig:h1-triangle}
+illustrates the loop witnessed by $\{\text{``energy''},
+\text{``change''}, \text{``carbon''}\}$: three tokens forming a
+triangle in embedding space, each pair close enough to be connected,
+but the triangle enclosing a void that persists from $r = 0.146$ to $r
+= 0.183$ before a fourth token enters to fill it.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.4\textwidth]{figures/fig_h1_triangle.pdf}
+\caption{The $H_1$ loop witnessed by \{energy, change, carbon\}.
+Three tokens form a triangle: each pair is close in embedding space,
+but the triangle encloses a void that persists across a range of
+scales. This is the topological signature of ``meaning that
+circulates without collapsing''---the climate discourse forming a
+stable configuration that resists reduction to a single point.}
+\label{fig:h1-triangle}
+\end{figure}
+
+This loop is the geometric trace of how ``energy'', ``change'', and
+``carbon'' orbit each other in climate discourse. They are pairwise
+related---energy and change through ``climate change''; change and
+carbon through ``carbon pricing''; energy and carbon through
+``renewable energy'' reducing ``carbon emissions''---but the three
+together do not collapse to synonymy. The loop \emph{persists}. This
+is what Derrida called \emph{diff\'erance}---the spacing that keeps
+meaning in play---but now measured, witnessed, and attached to
+concrete vocabulary.
+\end{example}
+
+
+\begin{remark}[The posthuman library]
+Why should we trust these measurements? Because the embedding space is
+not arbitrary. DeBERTa was trained on corpora so vast that the
+geometry encodes statistical regularities no individual human could
+perceive. When we find that ``carbon'' and ``emissions'' cluster
+together, this reflects genuine patterns in how these words co-occur
+and substitute for each other across millions of texts. The topology
+we compute is topology over the \emph{posthuman library}: the
+aggregated, compressed, geometrised record of collective human
+language use. A bar witnessed by climate vocabulary is a feature that
+this collective voice has made robust enough to survive across scales.
+\end{remark}
+
+In Section~\ref{sec:codebase1-example} we develop this example fully,
+showing all $H_0$ and $H_1$ bars with their witnesses. For now, the
+key insight is this: witnessed bars are not invented categories
+imposed on text. They are \emph{discovered} structures in a learned
+geometry, and the witnesses tell us---concretely, token by
+token---what those structures contain.
+
+\begin{remark}[The primacy of $H_0$ themes]
+\label{rem:h0-primacy}
+Throughout this chapter and the next, we focus primarily on \textbf{$H_0$ features}:
+connected components in the embedding geometry, corresponding to ``clusters of
+meaning'' or proto-themes. These are the load-bearing structures for the temporal
+calculus.
+
+$H_1$ features (loops of co-compatibility) do appear in real texts and are occasionally
+interpretable---for instance, the debt--credit--interest--loan circuit in the
+example above. However, in conversational dialogues with typical utterance lengths,
+robust $H_1$ bars are rarer and harder to interpret semantically. We treat them as
+\emph{toy-interesting but not load-bearing}: worth noting when they appear, but not
+essential to the rupture calculus that follows.
+
+This is not a limitation of the mathematics; it reflects the empirical structure of
+the texts we analyse. In denser, more circular discourses (legal argumentation,
+certain philosophical styles), $H_1$ may become more central. For now, we proceed
+with $H_0$ as the primary carrier of thematic content.
+\end{remark}
+
+\subsection{The multi-scale insight: filtrations}
+
+The step from static homology to \emph{persistent} homology is to vary
+the similarity scale $r$ rather than freezing it.  Time $\tau$ is held
+fixed; what we dial is the cap radius that decides when tokens are
+``close enough'' to be connected.
+
+\begin{definition}[Čech filtration]\label{def:cech-filtration}
+Given the normalised embedding sample
+\[
+  P_\tau = \{\hat e_i\}_{i \in I_\tau} \subset S^{d-1}
+\]
+with angular metric $\theta$, we form, for each scale $r \ge 0$, the
+Čech complex
+\[
+  \check C(P_\tau, r)
+  \;:=\;
+  N\Bigl(\{ B(\hat e_i, r) \}_{i \in I_\tau}\Bigr),
+\]
+where
+\[
+  B(\hat e_i, r)
+  \;:=\;
+  \{\, x \in S^{d-1} \mid \theta(x, \hat e_i) < r \,\}
+\]
+and $N(-)$ denotes the nerve of the resulting cover of spherical caps.
+
+As $r$ increases, we obtain a nested sequence
+\[
+  \check C(P_\tau, r_0)
+  \;\subseteq\;
+  \check C(P_\tau, r_1)
+  \;\subseteq\;
+  \cdots
+  \;\subseteq\;
+  \check C(P_\tau, r_{\max}),
+\]
+called the \emph{Čech filtration} of $P_\tau$ at time $\tau$.
+\end{definition}
+
+For small $r$ we see many tiny components (each token is essentially
+alone); as $r$ grows, components merge, loops appear and disappear, and
+eventually everything collapses into a single blob.  Persistent homology
+records how the homology of $\check C(P_\tau,r)$ evolves along this
+filtration.
+
+\begin{remark}[Čech versus Vietoris--Rips]\label{rem:cech-vr}
+In much of the TDA literature, persistent homology is computed using the
+Vietoris--Rips filtration.  For our purposes Čech is conceptually more
+natural, as it directly captures witnessed overlaps of caps.  Classical
+interleaving results show that the two filtrations yield persistence
+modules that agree up to a controlled shift; long bars (themes) are
+insensitive to this choice.  In implementation, one may safely use
+Vietoris--Rips while reasoning with Čech.
+\end{remark}
+
+\section{Persistent homology and witnessed barcodes}
+
+\subsection{Birth, death, and witnesses}
+
+Persistent homology tracks homology classes as $r$ varies.
+
+\begin{definition}[Birth and death times]
+For a homology class $\alpha$ appearing in dimension $k$ in the Čech
+filtration at time $\tau$:
+\begin{itemize}
+  \item The \emph{birth time} $b(\alpha)$ is the smallest radius $r$
+        where $\alpha$ appears as a non-trivial class in
+        $H_k(\check C(P_\tau, r))$.
+  \item The \emph{death time} $d(\alpha)$ is the smallest radius $r' >
+        b(\alpha)$ where $\alpha$ becomes trivial (is killed by a
+        higher-dimensional boundary).  If no such $r'$ exists we set
+        $d(\alpha) = \infty$.
+  \item The \emph{persistence} of $\alpha$ is the interval
+        $[b(\alpha), d(\alpha))$.
+\end{itemize}
+\end{definition}
+
+Each feature is summarised as a bar: an interval
+$[b,d) \subset \mathbb{R}_{\ge 0}$ marking its lifespan across scales.
+Here the horizontal axis is $r$ (similarity threshold), not conversational
+time $\tau$.
+
+\subsection{Standard persistence diagrams}
+
+The standard output of persistent homology is:
+
+\begin{definition}[Persistence diagram]
+The persistence diagram $D(\tau)$ for the filtration at time $\tau$ is
+the multiset
+\[
+  D(\tau) = \{(k_i, b_i, d_i) : i \in I_\tau\},
+\]
+where each triple records a bar of dimension $k_i$ with lifespan
+$[b_i,d_i)$.
+\end{definition}
+
+Libraries such as GUDHI or Ripser compute exactly this kind of object.
+However, these bare triples tell us only \emph{that} features exist, not
+\emph{what} semantic material they contain.
+
+\subsection{From bare bars to witnessed bars}
+
+To treat bars as semantic themes rather than anonymous intervals, we
+enrich them with \emph{witnesses}.  At the most concrete level these are
+token occurrences; for readability we may also group them into slightly
+coarser \emph{measurement locations}: utterances, turns, or sentences.
+
+For each time $\tau$ let $\TokenID(\tau)$ be the finite set of token
+occurrences in the slice (each with its own identity, as in the
+token-level SWL of Chapter~3), and let $U_\tau$ be the finite set of
+measurement locations.  There is a natural projection
+$\mathrm{loc}_\tau : \TokenID(\tau) \to U_\tau$ sending each token to
+the utterance that contains it.
+
+\begin{definition}[Witness]\label{def:witness}
+Let $(k,b,d) \in D(\tau)$ be a bar in dimension $k$.
+A \emph{witness} for $(k,b,d)$ at time $\tau$ consists of:
+\begin{itemize}
+  \item a finite non-empty set of token occurrences
+        $W^{\mathrm{tok}}_\rho \subseteq \TokenID(\tau)$;
+  \item a representative $k$-cycle $\gamma_\rho$ in the filtration
+        whose support lies in the vertices indexed by
+        $W^{\mathrm{tok}}_\rho$;
+  \item such that, for every $r \in [b,d)$, the homology class of
+        $\gamma_\rho$ in $H_k(\check C(P_\tau, r))$ is exactly the class
+        tracked by the bar $(k,b,d)$.
+\end{itemize}
+We write $W^{\mathrm{loc}}_\rho := \mathrm{loc}_\tau(W^{\mathrm{tok}}_\rho)$
+for the induced set of measurement locations when we want an
+utterance-level view.
+\end{definition}
+
+Intuitively, $W^{\mathrm{tok}}_\rho$ is the ``word cloud on steroids''
+that realises the feature, and $\gamma_\rho$ is one concrete way that
+those words are stitched together in the complex.
+
+\begin{definition}[Witnessed persistence diagram]
+The witnessed persistence diagram $D^W(\tau)$ is
+\[
+  D^W(\tau) = \{(k_i, b_i, d_i, \rho_i) : i \in I_\tau\},
+\]
+where each $\rho_i$ is a witness for the bar $(k_i, b_i, d_i)$ in the
+sense of Definition~\ref{def:witness}.
+\end{definition}
+
+\begin{remark}[Computing witnesses]
+In practice we obtain $D^W(\tau)$ by:
+\begin{enumerate}
+  \item computing $D(\tau)$ with a standard TDA library
+        (GUDHI, Ripser, Perseus, \dots);
+  \item extracting a representative cycle for each bar;
+  \item mapping the simplices in that cycle back to the underlying token
+        IDs and hence, if desired, to the measurement locations that
+        contain them.
+\end{enumerate}
+Our logical development is parametric in the witness-extraction policy;
+it assumes only that witnesses are chosen deterministically from the
+filtration and behave stably across time.
+\end{remark}
+
+\subsection{Choosing canonical representatives}
+
+Each homology class admits many representative cycles, and therefore
+many possible witnesses.  Following the standard computational
+literature~\cite{edelsbrunner2010computational,zomorodian2005computing},
+we fix a deterministic convention so that witnessed bars are
+reproducible.
+
+\begin{definition}[Canonical representatives]
+\label{def:canonical-reps}
+For each bar $(k,b,d) \in D(\tau)$ we fix, once and for all, a
+\emph{canonical} witness $\rho = (W^{\mathrm{tok}}_\rho,\gamma_\rho)$ by
+applying a deterministic policy such as:
+\begin{enumerate}
+  \item among all $k$-cycles whose classes realise the bar $(k,b,d)$,
+        choose one of minimal length (fewest simplices);
+  \item among such minimal cycles, select one that appears earliest in
+        the filtration;
+  \item if ambiguity remains, choose the lexicographically first with
+        respect to a fixed global ordering of token IDs.
+\end{enumerate}
+Any such policy yields a canonical representative in the sense relevant
+for this book: a choice that depends only on the filtration and the
+underlying token ordering, not on implementation accidents.  All
+subsequent constructions are parametric in this choice; different
+deterministic policies produce isomorphic witnessed structures.
+\end{definition}
+
+This gives us a principled and stable way of talking about ``the''
+witness of a bar, while keeping in mind that many equivalent choices
+exist.
+
+
+
+%========================
+\section{Worked example: the static shape of a conversation}
+\label{sec:codebase1-example}
+%========================
+
+Before introducing time and the dynamics of bar evolution, we pause to
+exhibit a complete worked example of the \emph{static} analysis: extracting
+the witnessed persistence diagram $D^W(\tau)$ from a single text slice.
+This demonstrates that the machinery developed so far is not merely
+schematic but computationally realisable, and that the witnesses it
+produces are genuinely informative about semantic structure.
+
+\subsection{The computational pipeline}
+
+Our implementation follows a four-stage pipeline:
+
+\begin{enumerate}
+  \item \textbf{Tokenisation.} The raw text is segmented into utterances
+        (measurement locations) and tokenised using spaCy. We retain
+        content-bearing tokens: nouns, verbs, adjectives, and proper nouns.
+        Each token \emph{occurrence} receives a unique identifier---the same
+        word appearing twice becomes two distinct points.
+        
+  \item \textbf{Contextual embedding.} Each token occurrence is embedded
+        using DeBERTa-v3-base, a transformer model that produces
+        \emph{contextual} vectors: the embedding of ``climate'' in utterance~0
+        differs from ``climate'' in utterance~10, because each sees the full
+        conversational context through the attention mechanism. The result is
+        a point cloud $P_\tau \subset \mathbb{R}^{768}$, normalised to the
+        unit sphere.
+        
+  \item \textbf{Persistent homology.} We compute the Vietoris--Rips
+        filtration on $P_\tau$ using GUDHI, a standard library for
+        topological data analysis. This yields the bare persistence diagram
+        $D(\tau) = \{(k_i, b_i, d_i)\}$: bars indexed by dimension, birth
+        radius, and death radius.
+        
+  \item \textbf{Witness extraction.} For each bar, we extract the
+        representative cycle $\gamma$ from GUDHI's internal structures and
+        map its simplices back to our token identifiers. The witness
+        $\rho = (W^{\mathrm{tok}}_\rho, \gamma_\rho)$ is thus exhibited
+        concretely, not merely claimed to exist.
+\end{enumerate}
+
+\begin{remark}[Constructive witnesses]
+This pipeline is \emph{constructive} in the sense relevant to type theory:
+we do not assert that a witness exists; we produce one. The cycle $\gamma$
+is an explicit list of edges (for $H_1$) or vertices (for $H_0$) that can
+be inspected, verified, and traced back to the original text. This is what
+makes witnessed bars useful for interpretation: they come with their
+evidence attached.
+\end{remark}
+
+\subsection{The example text}
+
+We analyse a short conversation mixing two topics---climate change and
+ancient Rome---with a deliberate topic shift and return. The text is
+presented with punctuation and capitalisation removed, and common
+speaker labels (``User'', ``Assistant'') filtered, to focus attention
+on content-bearing vocabulary:
+
+\begin{quote}
+\small
+\begin{verbatim}
+u0:  i've been thinking about climate change a lot lately
+u1:  climate change is certainly one of the defining challenges of 
+     our time what aspects concern you most
+u2:  the economic impacts worry me how do we balance growth with 
+     sustainability
+u3:  that tension between economic growth and environmental protection 
+     is real many economists now argue for sustainable development models
+u4:  what about carbon pricing does it actually work
+u5:  carbon pricing can be effective when well designed it creates market 
+     incentives to reduce emissions while allowing flexibility in how 
+     reductions are achieved
+u6:  let's change topics tell me about ancient rome
+u7:  ancient rome was a remarkable civilization that lasted over a thousand 
+     years from a small city state to a vast empire spanning many regions 
+     it shaped law architecture and governance for centuries
+u8:  actually let's go back to climate what about renewable energy
+u9:  renewable energy has seen remarkable growth solar and wind costs have 
+     plummeted making them competitive with fossil fuels in many regions
+u10: so there's hope for addressing climate change through technology
+u11: technology is certainly part of the solution renewables storage and 
+     efficiency improvements all contribute to reducing carbon emissions
+\end{verbatim}
+\end{quote}
+
+This yields 108 token occurrences across 12 utterances. The conversation
+has clear thematic structure: climate dominates $u_0$--$u_5$, Rome appears
+at $u_6$--$u_7$, and climate returns at $u_8$--$u_{11}$. The question is:
+does persistent homology recover this structure, and can the witnesses
+name what it finds?
+
+\subsection{Results: the witnessed persistence diagram}
+
+Running the pipeline with minimum persistence threshold $0.03$ (to filter
+topological noise) and minimum witness size $2$ (to exclude singleton
+features), we obtain:
+
+\[
+  D^W(\tau): \quad 21 \text{ bars in } H_0, \quad 3 \text{ bars in } H_1.
+\]
+
+The $H_0$ bars represent connected components---clusters of tokens that
+remain close across a range of scales. The $H_1$ bars represent
+loops---cycles of tokens that are pairwise proximate but enclose a void
+that persists before being filled.
+
+\subsubsection{Selected $H_0$ bars: thematic components}
+
+We highlight representative bars from distinct semantic regions:
+
+\medskip
+\noindent\textbf{Climate vocabulary:}
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+Bar & Persistence & Witness $W^{\mathrm{tok}}_\rho$ & Utterances \\
+\midrule
+$b_9$ & $[0, 0.128)$ & \{climate, climate\} & $u_0, u_{10}$ \\
+$b_{11}$ & $[0, 0.118)$ & \{emissions, carbon\} & $u_{11}$ \\
+$b_1$ & $[0, 0.237)$ & \{climate, carbon, ancient, renewable\} & $u_1, u_5, u_7, u_9$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Bar $b_9$ captures the lexical repetition of ``climate'' across the
+opening and closing of the conversation---the same word, but two distinct
+occurrences with different contextual embeddings that nonetheless cluster
+together. Bar $b_{11}$ captures the tight semantic pairing of ``emissions''
+and ``carbon'' within a single utterance. Bar $b_1$, with higher
+persistence, represents a broader component that bridges climate and
+renewable energy vocabulary.
+
+\medskip
+\noindent\textbf{Rome vocabulary:}
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+Bar & Persistence & Witness $W^{\mathrm{tok}}_\rho$ & Utterances \\
+\midrule
+$b_{12}$ & $[0, 0.116)$ & \{law, architecture, governance\} & $u_7$ \\
+$b_{14}$ & $[0, 0.093)$ & \{empire, civilization\} & $u_7$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+These bars are localised entirely within $u_7$, the Rome description.
+They form \emph{separate} components from the climate vocabulary at low
+scales---the Rome digression is topologically distinct, not merely a
+continuation of the prior discussion.
+
+\medskip
+\noindent\textbf{Economic vocabulary:}
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+Bar & Persistence & Witness $W^{\mathrm{tok}}_\rho$ & Utterances \\
+\midrule
+$b_8$ & $[0, 0.142)$ & \{growth, pricing, pricing, incentives, growth\} & $u_3, u_4, u_5, u_9$ \\
+$b_4$ & $[0, 0.203)$ & \{incentives, reduce, allowing, growth, costs\} & $u_5, u_9$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The economic vocabulary forms its own cluster, bridging the climate
+discussion (where economics enters via carbon pricing) and the renewable
+energy discussion (where costs and competitiveness matter). Note that
+$b_8$ contains two occurrences each of ``growth'' and ``pricing''---the
+witness tracks occurrences, not types.
+
+\medskip
+\noindent\textbf{The topic-change pivot:}
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+Bar & Persistence & Witness $W^{\mathrm{tok}}_\rho$ & Utterances \\
+\midrule
+$b_5$ & $[0, 0.184)$ & \{let, tell\} & $u_6$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+This bar warrants comment. One might dismiss ``let'' and ``tell'' as
+function words unworthy of thematic analysis. But in contextual
+embeddings, there are no stopwords: every occurrence is a unique point,
+inflected by its surroundings. The ``let'' in ``let's change topics''
+carries the pragmatic force of that pivot; it clusters with ``tell''
+because both verbs are doing \emph{steering} work in that utterance.
+The bar captures the geometry of topic transition.
+
+\subsubsection{$H_1$ bars: semantic loops}
+
+The three $H_1$ bars are the most striking finding. Each represents a
+cycle of tokens that are pairwise close in embedding space but enclose
+a region that does not collapse---meaning that circulates without closing.
+
+\medskip
+\noindent\textbf{Bar $b_{23}$: the climate triangle}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Property & Value \\
+\midrule
+Persistence & $[0.146, 0.183)$ \\
+Witness $W^{\mathrm{tok}}_\rho$ & \{change, carbon, energy\} \\
+Utterances & $u_9, u_{10}, u_{11}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The cycle $\gamma$ consists of three edges:
+\[
+  \texttt{energy} \leftrightarrow \texttt{change}, \quad
+  \texttt{change} \leftrightarrow \texttt{carbon}, \quad
+  \texttt{energy} \leftrightarrow \texttt{carbon}.
+\]
+
+This is a genuine semantic triangle: ``energy'', ``change'', and
+``carbon'' are each pairwise close (they co-occur in climate discourse),
+but the triangle they form does not immediately collapse to a point.
+The loop persists from radius $0.146$ to $0.183$ before a fourth token
+enters to fill it. This is the ``debt$\to$credit$\to$interest$\to$loan''
+structure we described earlier, now witnessed concretely in climate
+vocabulary.
+
+\medskip
+\noindent\textbf{Bar $b_{22}$: the pivot loop}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Property & Value \\
+\midrule
+Persistence & $[0.207, 0.252)$ \\
+Witness $W^{\mathrm{tok}}_\rho$ & \{renewable, tell, ancient\} \\
+Utterances & $u_6, u_{11}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The cycle $\gamma$:
+\[
+  \texttt{tell} \leftrightarrow \texttt{ancient}, \quad
+  \texttt{ancient} \leftrightarrow \texttt{renewable}, \quad
+  \texttt{tell} \leftrightarrow \texttt{renewable}.
+\]
+
+This loop is remarkable: it connects the topic-change utterance ($u_6$:
+``tell me about ancient Rome'') to the return to climate ($u_{11}$:
+``renewables, storage\ldots''). The triangle \{tell, ancient, renewable\}
+captures the \emph{hinge} of the conversation---the place where Rome and
+climate are topologically linked through the steering vocabulary of
+topic transition.
+
+\medskip
+\noindent\textbf{Bar $b_{18}$: economic--environmental circulation}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Property & Value \\
+\midrule
+Persistence & $[0.282, 0.372)$ \\
+Witness $W^{\mathrm{tok}}_\rho$ & \{renewable, economic, renewable\} \\
+Utterances & $u_3, u_9, u_{11}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+This loop links ``economic'' (from the growth/sustainability discussion)
+to two occurrences of ``renewable'' (from the energy discussion). The
+highest-persistence $H_1$ bar in our diagram, it captures the sustained
+circulation between economic and environmental framings that runs
+through the conversation.
+
+\subsection{Interpretation: the static shape of meaning}
+
+What does $D^W(\tau)$ tell us about this conversation?
+
+\begin{enumerate}
+  \item \textbf{Thematic separation is real.} The Rome vocabulary
+        ($b_{12}$, $b_{14}$) forms components that are topologically
+        distinct from climate vocabulary at low scales. The digression
+        is not merely a change of words but a change of \emph{region}
+        in embedding space.
+        
+  \item \textbf{Lexical repetition creates structure.} Bars like $b_9$
+        (\{climate, climate\}) capture the return of key terms across
+        the conversation. These are not trivial: the two occurrences
+        have different contextual embeddings, yet they cluster together
+        because the transformer has learned that ``climate'' in $u_0$
+        and ``climate'' in $u_{10}$ are doing similar semantic work.
+        
+  \item \textbf{Loops capture circulation.} The $H_1$ bars witness
+        triangular structures where meaning moves without collapsing.
+        Bar $b_{23}$ (\{energy, change, carbon\}) is the signature of
+        climate discourse: three concepts in mutual proximity, forming
+        a stable configuration. Bar $b_{22}$ (\{tell, ancient, renewable\})
+        captures the conversational pivot itself as a topological feature.
+        
+  \item \textbf{Witnesses give différance a face.} The persistence
+        interval $[0.146, 0.183)$ tells us that a loop exists; the
+        witness \{energy, change, carbon\} tells us what it is about.
+        This is the key contribution of witnessed bars: topological
+        structure enriched with semantic content.
+\end{enumerate}
+
+\begin{remark}[On the legitimacy of the approach]
+Nothing in this pipeline involves ad hoc pattern matching or
+keyword spotting. The GUDHI library computes standard persistent
+homology on a Vietoris--Rips filtration; the DeBERTa embeddings are
+produced by a pretrained transformer with no task-specific fine-tuning;
+the witness extraction is a deterministic mapping from simplices to
+token identifiers. The thematic interpretations we offer are
+\emph{downstream} of the topology, not smuggled in.
+
+What makes this work is the posthuman substrate: the embedding space
+itself encodes the collective weight of human language use, learned
+through attention over vast corpora. When we find that ``climate'' and
+``carbon'' are close, this reflects genuine patterns in how these words
+co-occur and substitute for each other across millions of texts. The
+topology we measure is the topology of that learned geometry.
+\end{remark}
+
+\subsection{From static to dynamic}
+
+This single-slice analysis establishes that witnessed bars can be
+extracted and interpreted. But a conversation is not a single moment;
+it unfolds through time. The climate theme that appears at $u_0$ must
+somehow \emph{persist} through the Rome digression and \emph{re-enter}
+at $u_8$. The topic-change pivot at $u_6$ is not just a static triangle
+but a \emph{rupture point} where one thematic trajectory ends and
+another begins.
+
+To model this, we need to lift the witnessed persistence diagram from
+a single slice to a \emph{presheaf} over time: a family of diagrams
+$\{D^W(\tau)\}_{\tau \in \Time}$ connected by restriction maps that
+track how bars match, drift, or die across slices. This is the subject
+of the next section.
+%========================
+\section{Witnessed bars as instantiation of the generic dynamic schema}
+\label{sec:bars-generic-schema}
+%========================
+
+In Section~\ref{sec:generic-schema} of Chapter~\ref{chap:evolving-text-as-presheaf}
+we introduced a generic dynamic schema for tracking ``things that persist''
+through time.  For each level of granularity $L$ (tokens, utterances, bars, \dots)
+we have:
+\begin{itemize}
+  \item a presheaf
+    \[
+      ET_L : \Time^{\mathrm{op}} \longrightarrow \SSet_{\mathrm{Kan}}
+    \]
+    assigning a Kan complex of $L$-level objects to each time $\tau$;
+  \item restriction maps
+    \[
+      r^L_{\tau,\tau'} : ET_L(\tau') \to ET_L(\tau)
+    \quad (\tau \le \tau')
+    \]
+    interpreting later states in terms of earlier ones;
+  \item an admissibility policy $\Adm_L$ that says which paths and identifications
+        we are willing to treat as genuine continuations.
+\end{itemize}
+
+In this section we specialise to the bar level.
+
+\begin{center}
+  \emph{Witnessed bars instantiate this schema at level $L = \mathsf{bar}$.}
+\end{center}
+
+Here the ``things that persist'' are not individual tokens but \emph{themes}:
+persistent homology bars, enriched with the concrete pieces of text that
+witness them.
+
+\subsection{The witnessed bar-level presheaf}
+
+\begin{definition}[Witnessed bar presheaf and bar nerve]
+\label{def:witnessed-bar-presheaf}
+The bar-level presheaf
+\[
+  ET_{\mathsf{bar}} : \Time^{\mathrm{op}} \to \SSet_{\mathrm{Kan}}
+\]
+is defined as follows.
+
+For each time $\tau$ we assume the token-level analysis has produced a
+witnessed persistence diagram
+\[
+  D^W(\tau)
+  \;=\;
+  \{(k_i, b_i, d_i, \rho_i) : i \in I_\tau\},
+\]
+where $(k_i, b_i, d_i)$ is a bar in the Čech filtration on
+$P_\tau$ and $\rho_i$ is a witness as in
+Definition~\ref{def:witness}.
+
+Each witness $\rho_i$ determines:
+\begin{itemize}
+  \item a finite set of \emph{measurement locations}
+    $W_{\rho_i} \subseteq U_\tau$ (utterances, turns, or sentences at time~$\tau$);
+  \item via the token-level structure, a finite multiset of token identifiers
+    $\Tok(\rho_i) \subseteq \TokenID(\tau)$ together with their contextual embeddings.
+\end{itemize}
+The sets $\{W_{\rho_i}\}_{i \in I_\tau}$ form a cover of the portion of $U_\tau$
+actually touched by bars:
+\[
+  \mathcal{W}_\tau := \{\, W_{\rho_i} : i \in I_\tau \,\}.
+\]
+
+From this cover we build a simplicial set $N_{\mathsf{bar}}(\tau)$, the
+\emph{bar nerve}, whose simplices record overlapping witnesses between bars:
+\begin{itemize}
+  \item $0$-simplices are the elements of $D^W(\tau)$ (individual witnessed
+        bars) together with a distinguished diagonal point $\bot$;
+  \item for $k \ge 1$ a non-degenerate $k$-simplex
+    \[
+      [b_0,\dots,b_k]
+      \quad
+      (b_j = (k_j, b_j, d_j, \rho_j) \in D^W(\tau))
+    \]
+    exists exactly when the associated witness sets have non-empty intersection:
+    \[
+      \bigcap_{j=0}^k W_{\rho_j} \;\neq\; \varnothing;
+    \]
+  \item any simplex involving $\bot$ is forced to be degenerate.
+\end{itemize}
+Intuitively, vertices are witnessed bars; edges and higher simplices link bars
+that are simultaneously instantiated in at least one common piece of text.
+
+\begin{example}[A three-bar nerve]
+\label{ex:three-bar-nerve}
+Suppose at some slice $\tau$ we have three bars:
+\begin{itemize}
+  \item $b_{\textsc{econ}}$ witnessed by \{economic, growth, sustainable\}, touching utterances 2 and 3;
+  \item $b_{\textsc{sust}}$ witnessed by \{sustainable, development, environmental\}, touching utterances 3 and 4;
+  \item $b_{\textsc{growth}}$ witnessed by \{growth, model, policy\}, touching utterances 2 and 5.
+\end{itemize}
+
+The bar nerve at $\tau$ has:
+\begin{itemize}
+  \item Three vertices: $b_{\textsc{econ}}$, $b_{\textsc{sust}}$, $b_{\textsc{growth}}$.
+  \item Edge $b_{\textsc{econ}}$--$b_{\textsc{sust}}$ because both touch utterance 3 (and share token ``sustainable'').
+  \item Edge $b_{\textsc{econ}}$--$b_{\textsc{growth}}$ because both touch utterance 2 (and share token ``growth'').
+  \item \textbf{No} edge $b_{\textsc{sust}}$--$b_{\textsc{growth}}$: they share no utterance and no token.
+\end{itemize}
+
+The nerve is therefore a path $b_{\textsc{sust}} - b_{\textsc{econ}} - b_{\textsc{growth}}$,
+not a filled triangle. This tells us: the economic theme mediates between sustainability
+and growth discourses in this text, but sustainability and growth are not directly
+co-instantiated. The bar nerve captures \emph{how themes interlock}, not just that
+they exist.
+\end{example}
+
+We then take a fibrant (Kan) replacement of this nerve and set
+\[
+  ET_{\mathsf{bar}}(\tau)
+  \;:=\;
+  \mathrm{Kan}\bigl(N_{\mathsf{bar}}(\tau)\bigr).
+\]
+Vertices of $ET_{\mathsf{bar}}(\tau)$ are thus witnessed bars (and~$\bot$),
+while paths and higher simplices encode chains of overlapping witnesses: ways
+in which several themes are co-realised in the same textual neighbourhood at
+time~$\tau$.
+\end{definition}
+
+For later use we also extract, from the same data, two basic relationships on
+$D^W(\tau)$:
+\begin{itemize}
+  \item an \emph{overlap predicate} on witnesses,
+    \[
+      \mathrm{overlap}(\rho,\rho')
+      \;:\Longleftrightarrow\;
+      W_\rho \cap W_{\rho'} \neq \varnothing
+    \]
+    (or equivalently $J(W_\rho,W_{\rho'}) \ge \theta_{\mathrm{overlap}}$ for a
+    chosen Jaccard threshold);
+  \item a distance $d_{\mathsf{bar}}$ that we use to compare bars across
+        different times, defined in the next subsection.
+\end{itemize}
+
+\begin{remark}[Measurement versus reasoning]
+This construction cleanly separates two layers:
+\begin{itemize}
+  \item \textbf{Measurement.}
+    From token embeddings and standard TDA we obtain the bare diagram $D(\tau)$
+    and, by choosing canonical representatives, its witnessed refinement
+    $D^W(\tau)$ together with witness sets $W_\rho \subseteq U_\tau$ and
+    their associated bags of tokens and embeddings.
+  \item \textbf{Reasoning.}
+    From these witnessed bars we derive the simplicial set $ET_{\mathsf{bar}}(\tau)$
+    as the Čech nerve on the cover $\mathcal{W}_\tau$.  Identities
+    $\Id_{ET_{\mathsf{bar}}(\tau)}(b,b')$ are now paths in a \emph{space of bars}
+    whose simplices are glued precisely when bars share concrete witnesses.
+\end{itemize}
+The bar-level homotopy type is thus \emph{induced} from the underlying token
+geometry but lives at the level of themes: homotopies between bars are witnessed
+by chains of overlapping utterances, not by raw individual token occurrences.
+\end{remark}
+
+
+\subsection{Distance and similarity for witnessed bars}
+
+For the rupture calculus in later sections we need two kinds of similarity:
+lexical \emph{carry} (re-using essentially the same words) and semantic
+\emph{drift} (staying in roughly the same region of meaning even as the
+wording changes).
+
+\begin{definition}[Lexical and semantic footprints of a witness]
+Given a witness $\rho$ at time $\tau$:
+\begin{itemize}
+  \item its \emph{lexical footprint} is the finite set (or multiset) of
+        token identifiers
+        \[
+          \Tok(\rho) \subseteq \TokenID(\tau)
+        \]
+        occurring in the measurement locations $W_\rho$;
+  \item its \emph{semantic footprint} is a finite multiset of contextual
+        embeddings
+        \[
+          E(\rho) \subseteq \mathbb{R}^d
+        \]
+        obtained from those same token occurrences, together with a chosen
+        centroid
+        \[
+          c(\rho) \in \mathbb{R}^d
+        \]
+        (for example the normalised mean of $E(\rho)$).
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Carry score and semantic distance for bars]
+Let
+\[
+  b = (k,b,d,\rho), \quad
+  b' = (k',b',d',\rho')
+\]
+be witnessed bars at the \emph{same} time $\tau$ with witnesses $\rho,\rho'$.
+We define:
+\begin{itemize}
+  \item the \emph{carry score}
+    \[
+      \mathrm{carry}(b,b')
+      \;:=\;
+      J\bigl(\Tok(\rho), \Tok(\rho')\bigr)
+    \]
+    as the Jaccard similarity of their lexical footprints; this is $1$ only
+    when the same named tokens are being reused;
+  \item the \emph{semantic distance}
+    \[
+      d_{\mathrm{sem}}(b,b')
+      \;:=\;
+      d_{\mathrm{emb}}\bigl(c(\rho), c(\rho')\bigr),
+    \]
+    where $d_{\mathrm{emb}}$ is a fixed metric on embeddings (e.g.\ one minus
+    cosine similarity).
+\end{itemize}
+\end{definition}
+
+The lexical carry score is what will later connect bars back to the
+token-level story of Chapter~\ref{chap:evolving-text-as-presheaf}: high carry
+means that specific SWL-token trajectories are being explicitly reused.
+Semantic distance, by contrast, is indifferent to which words are chosen as
+long as the witnessed embeddings stay close.
+
+\begin{definition}[Witnessed bar distance]
+For witnessed bars $b = (k,b,d,\rho)$ at time $\tau$ and
+$b' = (k',b',d',\rho')$ at (possibly different) time $\tau'$ we define
+\[
+  d_{\mathsf{bar}}(b, b')
+  \;=\;
+  \max\Bigl\{
+    \|(b,d) - (b',d')\|_\infty,
+    \;\lambda \cdot d_{\mathrm{sem}}(b,b')
+  \Bigr\},
+\]
+where:
+\begin{itemize}
+  \item $\|(b,d) - (b',d')\|_\infty$ is the usual bottleneck-style distance
+        on bar endpoints (topological similarity);
+  \item $d_{\mathrm{sem}}(b,b')$ is the semantic distance just defined;
+  \item $\lambda \in [0,1]$ is a scaling parameter balancing semantic against
+        purely topological similarity.
+\end{itemize}
+\end{definition}
+
+This distance treats two bars as close when they have similar lifespans in the
+filtration and their witnesses ``live'' in nearby regions of embedding space,
+regardless of whether the exact same words are carried over.  In later
+sections:
+
+\begin{itemize}
+  \item \emph{carry} will be governed primarily by the lexical score
+        $\mathrm{carry}(b,b')$;
+  \item \emph{drift} and \emph{rupture} will use $d_{\mathsf{bar}}$ together
+        with the overlap structure of $ET_{\mathsf{bar}}$.
+\end{itemize}
+In this way we keep a clean conceptual separation: carry is about names
+repeating; drift is about meanings staying put even as the names shift.
+
+
+
+%========================
+\section{Time: restriction maps via witnessed optimal matching}
+\label{sec:time-witnessed-matching}
+%========================
+
+Once we have, at each time $\tau$, a witnessed persistence diagram
+$D^W(\tau)$ and its bar nerve $ET_{\mathsf{bar}}(\tau)$, we still need
+a way to relate slices.  As in the generic schema of
+Section~\ref{sec:generic-schema}, this is done by restriction maps
+\[
+  r^{\mathsf{bar}}_{\tau,\tau'} : ET_{\mathsf{bar}}(\tau') \to ET_{\mathsf{bar}}(\tau)
+  \qquad (\tau \le \tau').
+\]
+At bar level these maps are determined by an optimal matching between
+witnessed diagrams, built from a distance that mixes topology and
+\emph{semantic} proximity.
+
+\begin{definition}[Witnessed bar distance revisited]
+\label{def:witnessed-bar-distance-time}
+For a witnessed bar
+$b = (k, b, d, \rho) \in D^W(\tau)$ with witness set
+$W_\rho \subseteq U_\tau$, let $c_\rho \in \mathbb{R}^D$ be the
+centroid of the embedding vectors of its witnesses.  For
+$b' = (k', b', d', \rho') \in D^W(\tau')$ define:
+\[
+  d_{\mathrm{top}}(b,b')
+  \;:=\;
+  \bigl\|(b,d) - (b',d')\bigr\|_\infty,
+\]
+\[
+  d_{\mathrm{sem}}(b,b')
+  \;:=\;
+  \bigl\|c_\rho - c_{\rho'}\bigr\|_2,
+\]
+and
+\[
+  d_{\mathrm{bar}}(b,b')
+  \;:=\;
+  \max\!\bigl\{\, d_{\mathrm{top}}(b,b'),\;
+                 \lambda \cdot d_{\mathrm{sem}}(b,b') \,\bigr\}
+\]
+for some fixed $\lambda \in (0,1]$.
+\end{definition}
+
+Thus two bars are close when they are born and die at similar radii
+\emph{and} their witness centroids remain close in embedding space.
+Lexical reuse (the same tokens reappearing) will matter later when we
+distinguish \emph{name-carry} from \emph{drift}, but it does not enter
+into $d_{\mathrm{bar}}$ itself.
+
+\begin{definition}[Witnessed bar restriction map]
+\label{def:witnessed-bar-restriction}
+For $\tau \le \tau'$, the witnessed bar restriction map
+\[
+  r^{\mathsf{bar}}_{\tau,\tau'} : ET_{\mathsf{bar}}(\tau') \to ET_{\mathsf{bar}}(\tau)
+\]
+is induced by an optimal matching $\mu^\ast$ between diagrams that
+minimises the witnessed distance:
+\[
+  \mu^\ast \;=\;
+  \arg\min_{\mu}
+    \sup_{b' \in D^W(\tau')}
+      d_{\mathrm{bar}}\bigl(b', \mu(b')\bigr),
+\]
+where $\mu$ ranges over matchings from $D^W(\tau')$ to
+$D^W(\tau) \cup \{\bot\}$, and $\bot$ is the diagonal element.
+
+On vertices we set
+\[
+  r^{\mathsf{bar}}_{\tau,\tau'}(b') :=
+  \begin{cases}
+    \mu^\ast(b')
+      & \text{if } b' \in D^W(\tau')
+        \text{ and }
+        d_{\mathrm{bar}}\bigl(b', \mu^\ast(b')\bigr)
+        < \epsilon_{\mathrm{match}},\\[0.5ex]
+    \bot & \text{otherwise,}
+  \end{cases}
+\]
+with $r^{\mathsf{bar}}_{\tau,\tau'}(\bot) := \bot$.
+We extend $r^{\mathsf{bar}}_{\tau,\tau'}$ simplicially to all of
+$ET_{\mathsf{bar}}(\tau')$ in the evident way: a simplex whose vertices
+all map to non-diagonal bars is sent to the simplex on the images,
+otherwise it degenerates against~$\bot$.
+\end{definition}
+
+Intuitively, each bar at $\tau'$ chooses a best semantic/topological
+ancestor at $\tau$; bars that are too far away in $d_{\mathrm{bar}}$
+are treated as genuinely new and are sent to the diagonal.
+
+%========================
+\subsection{Bar-level path attempts, horns, and entries}
+\label{subsec:bar-path-attempts}
+%========================
+
+In Chapter~\ref{chap:evolving-text-as-presheaf} we defined, for each
+level of granularity $L$, generic types
+\[
+  \PathAttempt_L(x_0, r^L_{\tau_0,\tau'}(x')),\qquad
+  \OpenHorn_L(p),\qquad
+  \Entry_{L}^{\Adm_L}(\tau_0\!\leadsto\!\tau'),
+\]
+together with the level-$L$ Step--Witness Log
+\[
+  \SWL_{L}^{\Adm_L}(\tau_0)(x_0)
+  \;:=\;
+  \mathsf{List}\!\left(
+    \sum_{\tau'\ge\tau_0}
+      \Entry_{L}^{\Adm_L}(\tau_0\!\leadsto\!\tau')
+  \right).
+\]
+
+For $L = \mathsf{bar}$ we simply specialise notation:
+\begin{align*}
+  \PathAttempt_{\mathsf{bar}}(b_0, r^{\mathsf{bar}}_{\tau_0,\tau'}(b'))
+  &\;:=\;
+  \PathAttempt_{L=\mathsf{bar}}(b_0, r^L_{\tau_0,\tau'}(b')),\\[0.5ex]
+  \OpenHorn_{\mathsf{bar}}(p)
+  &\;:=\;
+  \OpenHorn_{L=\mathsf{bar}}(p),\\[0.5ex]
+  \Entry_{\mathsf{bar}}^{\Adm_{\mathsf{bar}}}(\tau_0\!\leadsto\!\tau')
+  &\;:=\;
+  \Entry_{L=\mathsf{bar}}^{\Adm_{L=\mathsf{bar}}}(\tau_0\!\leadsto\!\tau'),\\[0.5ex]
+  \SWL_{\mathsf{bar}}^{\Adm_{\mathsf{bar}}}(\tau_0)(b_0)
+  &\;:=\;
+  \SWL_{L=\mathsf{bar}}^{\Adm_{L=\mathsf{bar}}}(\tau_0)(b_0).
+\end{align*}
+
+A bar-level path attempt is therefore just a candidate \emph{journey of
+themes}, obtained by threading a bar $b'$ at $\tau'$ backwards to
+$\tau_0$ along the restriction maps.  Admissibility, and hence the
+classification into carry, drift and rupture, is determined entirely by
+$\Adm_{\mathsf{bar}}$.
+
+%========================
+\subsection{Witness coherence}
+\label{subsec:witness-coherence}
+%========================
+
+We now make precise what it means for the witnesses of a bar to evolve
+coherently as we move along such a path.
+
+\begin{definition}[Witness centroids and similarity measures]
+\label{def:witness-centroids}
+For a witnessed bar $b = (k,b,d,\rho)$ at time $\tau$ with witness set
+$W_\rho \subseteq U_\tau$, write $e(u) \in \mathbb{R}^D$ for the
+embedding of each measurement location $u \in W_\rho$.  The
+\emph{witness centroid} is
+\[
+  c_\rho \;:=\; \frac{1}{|W_\rho|}
+    \sum_{u \in W_\rho} e(u).
+\]
+Given two bars
+$b_i = (k_i, b_i, d_i, \rho_i)$ and
+$b_{i+1} = (k_{i+1}, b_{i+1}, d_{i+1}, \rho_{i+1})$ we define:
+\begin{align*}
+  \delta_{\mathrm{sem}}(b_i,b_{i+1})
+    &:= \bigl\|c_{\rho_i} - c_{\rho_{i+1}}\bigr\|_2
+      &&\text{(semantic drift)},\\[0.5ex]
+  J_{\mathrm{carry}}(b_i,b_{i+1})
+    &:= J\bigl(W_{\rho_i}, W_{\rho_{i+1}}\bigr)
+      &&\text{(name-carry index),}
+\end{align*}
+where $J$ is the Jaccard index on finite sets.
+\end{definition}
+
+\begin{definition}[Witness coherence]
+\label{def:witness-coherence}
+We say that $\rho_i$ and $\rho_{i+1}$ are \emph{witness coherent},
+written
+\[
+  \mathsf{coh}(\rho_i,\rho_{i+1}),
+\]
+if the semantic drift between the corresponding bars is bounded:
+\[
+  \delta_{\mathrm{sem}}(b_i,b_{i+1})
+  \;\le\;
+  \delta_{\mathrm{max}},
+\]
+for some fixed drift bound $\delta_{\mathrm{max}} > 0$.
+\end{definition}
+
+Thus coherence demands that the \emph{meaning} of the witness sets
+moves continuously in embedding space; it does \emph{not} require that
+exactly the same tokens keep appearing.  The Jaccard term
+$J_{\mathrm{carry}}$ is still available and will be used later to
+distinguish genuine re-use of names (carry) from more general semantic
+drift, but it is no longer built into the coherence predicate itself.
+
+\begin{remark}[Token-aware refinements]
+In settings where one wants to tie bar journeys even more tightly to
+token-level stories, one can strengthen coherence by requiring that a
+significant fraction of witnesses in $W_{\rho_i}$ and
+$W_{\rho_{i+1}}$ are linked by the token-level carry certificates of
+Chapter~\ref{chap:evolving-text-as-presheaf}.  We do not fix a single
+such refinement here; the bar calculus is designed to remain valid for
+any reasonable strengthening of $\mathsf{coh}$ that respects
+$\delta_{\mathrm{sem}}$.
+\end{remark}
+
+%========================
+\subsection{Witnessed bar-level admissibility}
+\label{subsec:witnessed-bar-admissibility}
+%========================
+
+We can now state the admissibility policy for bar-level paths.
+
+\begin{definition}[Witnessed bar admissibility]
+\label{def:witnessed-bar-admissibility}
+A path attempt
+\[
+  p : \PathAttempt_{\mathsf{bar}}\bigl(b_0, r^{\mathsf{bar}}_{\tau_0,\tau'}(b')\bigr)
+\]
+is $\Adm_{\mathsf{bar}}$-admissible if, for every adjacent pair of bars
+$b_i, b_{i+1}$ along $p$, the following hold:
+\begin{enumerate}
+  \item \textbf{Non-diagonal:} neither $b_i$ nor $b_{i+1}$ is the
+        diagonal element~$\bot$.
+  \item \textbf{Dimension preservation:} $k_i = k_{i+1}$; a theme does
+        not change homological dimension mid-journey.
+  \item \textbf{Bounded topological drift:}
+        \[
+          d_{\mathrm{top}}(b_i,b_{i+1})
+          \;\le\;
+          \Delta_{\mathrm{top}}
+        \]
+        for a fixed threshold $\Delta_{\mathrm{top}} > 0$.
+  \item \textbf{Witness coherence:}
+        \[
+          \mathsf{coh}(\rho_i,\rho_{i+1})
+        \]
+        in the sense of Definition~\ref{def:witness-coherence},
+        i.e.\ semantic drift of the witnesses stays below
+        $\delta_{\mathrm{max}}$.
+\end{enumerate}
+\end{definition}
+
+Intuitively, an admissible path is one where a homological feature
+keeps roughly the same shape, stays in the same dimension, and its
+witnesses move only gently in meaning.  Exact lexical reuse is not
+required for admissibility; it is recorded separately via
+$J_{\mathrm{carry}}$ and will be used to say when a theme is carried
+\emph{by name} rather than merely by sense.
+
+%========================
+\subsection{Witnessed bar carry, rupture, and SWL}
+\label{subsec:witnessed-bar-carry-rupture}
+%========================
+
+With witnessed bars and the admissibility policy in place, the
+generic notions of carry, rupture and logging specialise as follows.
+
+\begin{definition}[Witnessed bar carry]
+\label{def:witnessed-bar-carry}
+\[
+  \Carry_{\mathsf{bar}}^{\tau_0\to\tau'}(b_0)
+  \;:=\;
+  \sum_{b' : ET_{\mathsf{bar}}(\tau')}
+    \Id_{ET_{\mathsf{bar}}(\tau_0)}\bigl(r^{\mathsf{bar}}_{\tau_0,\tau'}(b'),\, b_0\bigr).
+\]
+An inhabitant of $\Carry_{\mathsf{bar}}^{\tau_0\to\tau'}(b_0)$ consists
+of
+\begin{itemize}
+  \item a bar $b' \in D^W(\tau')$, together with
+  \item a path
+    \[
+      p : \Id_{ET_{\mathsf{bar}}(\tau_0)}\bigl(r^{\mathsf{bar}}_{\tau_0,\tau'}(b'),\, b_0\bigr)
+    \]
+    in the bar nerve at time $\tau_0$.
+\end{itemize}
+Whenever such a certificate exists we say that the theme witnessed by
+$b_0$ at $\tau_0$ \emph{continues} at $\tau'$ via $b'$.  Later, we will
+refine this continuation into:
+\begin{itemize}
+  \item \emph{name-carry}, when $J_{\mathrm{carry}}(b_i,b_{i+1})$ is
+        high along $p$ (the same words or phrases recurring); and
+  \item \emph{drift}, when admissibility is secured by semantic
+        coherence while lexical overlap is small.
+\end{itemize}
+Bars $b'$ that restrict to the diagonal element $\bot$ produce no carry.
+\end{definition}
+
+\begin{definition}[Witnessed bar rupture]
+\label{def:witnessed-bar-rupture}
+For a bar $b_0$ at time $\tau_0$ and a later time $\tau' \ge \tau_0$,
+the type of rupture evidence is
+\[
+  \Rupture_{\mathsf{bar}}^{\Adm_{\mathsf{bar}}}(\tau_0\to\tau'; b_0)
+  \;:=\;
+  \sum_{b' : ET_{\mathsf{bar}}(\tau')}
+    \sum_{p : \PathAttempt_{\mathsf{bar}}(b_0, r^{\mathsf{bar}}_{\tau_0,\tau'}(b'))}
+      \bigl(\neg \Adm_{\mathsf{bar}}(p)\bigr)
+      \times \OpenHorn_{\mathsf{bar}}(p).
+\]
+Informally, rupture occurs when all path attempts across the boundary
+$\tau_0 \leadsto \tau'$ fail admissibility: the homological feature
+changes dimension or shape too violently, or its witnesses jump too far
+in semantic space.  The open horn records the \emph{shape} of this
+failure.
+\end{definition}
+
+\begin{definition}[Witnessed bar Step--Witness Log]
+\label{def:witnessed-bar-swl}
+\[
+  \SWL_{\mathsf{bar}}^{\Adm_{\mathsf{bar}}}(\tau_0)(b_0)
+  \;:=\;
+  \mathsf{List}\Biggl(
+    \sum_{\tau' \ge \tau_0}
+      \Entry_{\mathsf{bar}}^{\Adm_{\mathsf{bar}}}(\tau_0 \leadsto \tau')
+  \Biggr)
+\]
+where each entry records, at a minimum:
+\begin{itemize}
+  \item \textbf{Topological evolution:}
+        the change $(k,b,d)_{\tau_0} \to (k,b',d')_{\tau'}$ for the bar;
+  \item \textbf{Witness evolution:}
+        how the witness set $\rho_0$ transforms into $\rho'$,
+        together with the lexical carry index
+        $J_{\mathrm{carry}}(b_0,b')$;
+  \item \textbf{Semantic drift:}
+        the value of $\delta_{\mathrm{sem}}(b_0,b')$ and the fact that
+        it lies below (carry/drift) or above (rupture) the relevant
+        thresholds.
+\end{itemize}
+\end{definition}
+
+\paragraph{What witnessed bar-level SWLs buy us.}
+The bar-level Step--Witness Log answers concrete questions about
+themes:
+\begin{itemize}
+  \item Which tokens, phrases or utterances initially witnessed this
+        bar?
+  \item How did its witness set evolve across time-slices?
+  \item Did the theme continue \emph{by name} (high
+        $J_{\mathrm{carry}}$) or only by \emph{drift} (low
+        $J_{\mathrm{carry}}$ but small $\delta_{\mathrm{sem}}$)?
+  \item When a theme re-entered after rupture, which new witnesses
+        anchored it, and how close were they semantically to the ones
+        before?
+\end{itemize}
+These are no longer purely topological questions; they are proof-relevant
+semantic queries whose answers are recorded, step by step, in~$\SWL$.
+
+\begin{remark}[Coalgebraic view maintained]
+The coinductive machinery from Section~\ref{sec:coinductive} applies
+unchanged.  Bars still have journeys as coalgebras; the enrichment with
+witnesses and semantic metrics only makes the carrier of those
+coalgebras more informative.  In particular, $\SWL$ is still the final
+coalgebra for the one-step bar-event functor, now with fields for
+topology, names, and meanings.
+\end{remark}
+
+%========================
+\subsection{Bar-level soundness and relation to the generic schema}
+\label{subsec:bar-soundness}
+%========================
+
+The bar-level construction is not an ad hoc overlay: it is an instance
+of the generic dynamic schema of Section~\ref{sec:generic-schema} with
+$L = \mathsf{bar}$.  We record the corresponding coinductive and
+semantic soundness properties.
+
+\begin{corollary}[Bar journeys as coinductive trajectories]
+\label{cor:bar-coinductive-preservation}
+Fix an initial time $\tau_0$ and a witnessed bar
+$b_0 \in D^W(\tau_0) \subseteq ET_{\mathsf{bar}}(\tau_0)$.  For the
+admissibility policy $\Adm_{\mathsf{bar}}$ of
+Definition~\ref{def:witnessed-bar-admissibility}, the bar-level
+Step--Witness Log
+\[
+  \SWL_{\mathsf{bar}}^{\Adm_{\mathsf{bar}}}(\tau_0)(b_0)
+\]
+is the carrier of a coinductive journey in the sense of
+Theorem~\ref{thm:coinductive}.  In particular:
+\begin{itemize}
+  \item each inhabited log encodes a (possibly infinite) trajectory of
+        bar events anchored at $(\tau_0,b_0)$; and
+  \item any property $P$ of witnessed bars that is preserved by one-step
+        $\Adm_{\mathsf{bar}}$-admissible carry is preserved along the
+        entire journey recorded in the log.
+\end{itemize}
+\end{corollary}
+
+\begin{proof}
+Immediate from Theorem~\ref{thm:coinductive} by taking
+$L = \mathsf{bar}$, $ET_L = ET_{\mathsf{bar}}$ and
+$\Adm_L = \Adm_{\mathsf{bar}}$.
+\end{proof}
+
+\begin{proposition}[Semantic soundness of witnessed bar carry]
+\label{prop:bar-semantic-soundness}
+Let $\tau_0 \le \tau'$ and let
+$\kappa : \Carry_{\mathsf{bar}}^{\tau_0\to\tau'}(b_0)$ be a witnessed
+bar carry in the sense of Definition~\ref{def:witnessed-bar-carry}.
+Let
+\[
+  p : \PathAttempt_{\mathsf{bar}}\bigl(b_0, r^{\mathsf{bar}}_{\tau_0,\tau'}(b')\bigr)
+\]
+be the underlying bar-level path.
+
+Then for each adjacent pair of bars $b_i, b_{i+1}$ along $p$:
+\begin{enumerate}
+  \item the homology dimension is preserved
+        ($k_i = k_{i+1}$);
+  \item the topological drift is bounded:
+        \(
+          d_{\mathrm{top}}(b_i,b_{i+1}) \le \Delta_{\mathrm{top}};
+        \)
+  \item their witnesses are coherent:
+        \(
+          \delta_{\mathrm{sem}}(b_i,b_{i+1})
+          \le \delta_{\mathrm{max}}.
+        \)
+\end{enumerate}
+In particular, whenever a carry certificate exists, the calculus only
+asserts thematic continuity where both the underlying topological
+feature and the average meaning of its witnesses remain within
+explicitly bounded drift.
+\end{proposition}
+
+\begin{proof}
+By construction, $\kappa$ is built from an admissible path attempt $p$
+whose steps must satisfy non-diagonality, dimension preservation,
+bounded topological drift and witness coherence, cf.\
+Definition~\ref{def:witnessed-bar-admissibility}.  Items (1)--(3) are
+therefore immediate.
+\end{proof}
+
+\begin{remark}[Relation to token-level journeys]
+\label{rem:bar-token-relation}
+For a bar $b_0 = (k,b,d,\rho_0)$ at time $\tau_0$, the witness set
+$W_{\rho_0}$ consists of concrete token occurrences whose own journeys
+are governed by the token-level calculus of
+Chapter~\ref{chap:evolving-text-as-presheaf}.  The bar-level journey
+recorded in $\SWL_{\mathsf{bar}}^{\Adm_{\mathsf{bar}}}(\tau_0)(b_0)$
+can be read as a summary of these finer-grained trajectories:
+\begin{itemize}
+  \item when a carry step extends the bar, many of the original
+        witnesses (and close neighbours in embedding space) continue
+        forward in time;
+  \item when a rupture step occurs, the token-level journeys of those
+        witnesses typically disperse across distinct themes or fall
+        back to the diagonal; and
+  \item when a re-entry step appears, new witnesses arrive whose
+        token-level histories reconnect, semantically, with the earlier
+        pattern.
+\end{itemize}
+If one chooses to refine $\mathsf{coh}$ using token-level carry
+certificates, this relationship can be made fully explicit; otherwise,
+the bar calculus remains a coarser but thematically meaningful summary
+of the richer token-level dynamics.
+\end{remark}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%========================
+\section{Bar events with semantic grounding}
+\label{sec:bar-events}
+%========================
+
+With witnessed bars, the generic dynamic schema of
+Chapter~\ref{chap:evolving-text-as-presheaf} becomes concrete.  The
+Step--Witness Log at level $L = \mathsf{bar}$ already knows how to
+form entries, horns and journeys; what changes here is that each bar
+is now a \emph{theme with witnesses}.  The familiar event labels
+\emph{spawn}, \emph{carry}, \emph{rupture}, \emph{re-entry} and
+\emph{drift} become different ways of reading patterns in the
+witnessed log.
+
+\paragraph{Bar events as decorated SWL entries.}
+Formally, every bar event is an inhabitant of the generic entry type
+\[
+  \Entry^{\Adm_{\mathsf{bar}}}_{\mathsf{bar}}(\tau_0 \leadsto \tau')
+\]
+for the bar-level admissibility policy of
+Definition~\ref{def:witnessed-bar-admissibility}.  At this level we
+simply \emph{name} certain shapes of entry:
+
+\begin{itemize}
+  \item a \emph{spawn} is the first admissible appearance of a bar
+        with no good ancestor in earlier slices;
+  \item a \emph{carry} is an admissible continuation whose identity is
+        largely supported by \emph{token-level recurrence};
+  \item a \emph{drift} is an admissible continuation whose identity is
+        supported by \emph{semantic proximity of witnesses}, even when
+        the concrete tokens change;
+  \item a \emph{rupture-out} is the failure to find any admissible
+        continuation for a theme at a later slice;
+  \item a \emph{rupture-in} (or \emph{re-entry}) is a good bar at a
+        later slice that has no admissible ancestor, or that resumes
+        after an earlier rupture.
+\end{itemize}
+
+The SWL is thus a proof-relevant audit trail: it does not merely say
+that ``something drifted''; it records, step by step, \emph{which bar
+matched which}, with which witnesses, under which admissibility
+conditions.
+
+\subsection{Spawn: a witnessed theme emerges}
+
+A \emph{spawn} event records the first time a bar appears as a robust
+feature.
+
+\begin{itemize}
+  \item \textbf{Topologically:} a new homology class enters the
+        persistence diagram $D^W(\tau)$ with birth $b$ below the
+        current scale of interest and death $d$ above it.
+  \item \textbf{Semantically:} there is now a coherent cluster of
+        witnesses $W_\rho$ (tokens or utterances) that was not
+        previously organised as a theme.
+\end{itemize}
+
+Intuitively, a spawn says: \emph{``from this slice onward, we can
+treat these witnesses as a recognisable topic''}.  A climate-related
+cluster might first appear as
+\[
+  (k=0,\; b \approx 0.1,\; d \approx 0.9,\;
+   W_\rho = \{\text{``climate'', ``carbon'', ``warming''}\}),
+\]
+marking the birth of a ``climate anxiety'' theme in the conversation.
+
+\subsection{Carry: a name is carried forward}
+
+Carry is the bar-level analogue of token carriage from
+Chapter~\ref{chap:evolving-text-as-presheaf}.  Here the emphasis is on
+\emph{token identity} rather than merely similar meaning.
+
+A bar
+\[
+  b_0 = (k,b_0,d_0,\rho_0) \in D^W(\tau_0)
+\]
+is \emph{carried} to a bar
+\[
+  b' = (k',b',d',\rho') \in D^W(\tau')
+\]
+when there is an admissible path attempt
+\[
+  p : \PathAttempt_{\mathsf{bar}}\bigl(b_0, r^{\mathsf{bar}}_{\tau_0,\tau'}(b')\bigr)
+\]
+and, along that path, the witnesses show strong token-level continuity.
+
+Concretely, carry is characterised by:
+\begin{itemize}
+  \item \textbf{Topological closeness:} the intervals $(b_0,d_0)$ and
+        $(b',d')$ stay within the topological drift bound of
+        Definition~\ref{def:witnessed-bar-admissibility};
+  \item \textbf{Token-level recurrence:} the witness sets share many
+        of the \emph{same} token occurrences (or token journeys), as
+        measured by a high Jaccard index and, optionally, by the
+        structural witness coherence of
+        Definition~\ref{def:structural-witness-coherence}.
+\end{itemize}
+
+For example:
+\begin{align*}
+  \tau_0 &: (0,\, 0.20,\, 0.80,\;
+             \{\text{``debt'', ``credit''}\})\\
+  \tau'  &: (0,\, 0.21,\, 0.79,\;
+             \{\text{``debt'', ``loan'', ``credit''}\})
+\end{align*}
+would be classified as a carry: the same named tokens \emph{debt} and
+\emph{credit} continue to witness essentially the same component, even
+as new neighbours appear.  This is precisely the bar-level reflection
+of the ``same name, later in the text'' phenomenon from
+Chapter~\ref{chap:evolving-text-as-presheaf}.
+
+\subsection{Drift: a theme evolves in meaning}
+
+Drift is distinct from carry.  Where carry respects token identity,
+drift cares about \emph{semantic continuity} of the witnesses, even if
+the vocabulary substantially changes.
+
+A bar at time $\tau_0$ and a bar at time $\tau'$ stand in a drift
+relationship when:
+\begin{itemize}
+  \item their homology data $(k,b,d)$ remain within admissible
+        topological bounds (the ``same shape'' in the barcode); and
+  \item the centroids of their witness embeddings remain within a
+        semantic drift threshold, even if the Jaccard overlap of
+        witness tokens is small.
+\end{itemize}
+
+In other words, drift is detected primarily via the embedding geometry
+of witnesses, not by surface-level word repetition.  A technological
+loop might evolve from classical ML language to transformer language:
+\begin{align*}
+  \tau_1 &: \text{``algorithm''} \to \text{``data''} \to \text{``model''} \to \text{``algorithm''}\\
+  \tau_n &: \text{``transformer''} \to \text{``attention''} \to \text{``GPT''} \to \text{``transformer''}
+\end{align*}
+The individual tokens change, but the embedding centroids stay close
+in the space of themes: this is drift under stable topology.
+
+\subsection{Rupture: a theme fails to continue}
+
+A \emph{rupture-out} event occurs when a bar at time $\tau_0$ has no
+admissible continuation at a later time $\tau'$.
+
+\begin{itemize}
+  \item \textbf{Topologically:} no bar at $\tau'$ has interval close
+        enough to $(k,b_0,d_0)$ to fall within the matching threshold
+        of $r^{\mathsf{bar}}_{\tau_0,\tau'}$.
+  \item \textbf{Semantically:} the witnesses that once held together
+        as $W_{\rho_0}$ are now scattered across distinct components
+        or have decayed into the diagonal; neither token recurrence
+        (carry) nor semantic proximity (drift) is strong enough to
+        justify continuity.
+\end{itemize}
+
+Dually, a \emph{rupture-in} at time $\tau'$ is a bar that passes the
+persistence and admissibility thresholds but has no good ancestor at
+earlier slices.  In the Step--Witness Log these appear as entries with
+open horns that cannot be filled by any carry or drift path.
+
+\subsection{Re-entry: a theme comes back}
+
+Re-entry (or \emph{healing}) is the bar-level phenomenon where a theme
+that previously ruptured later returns in a recognisable form.  In the
+generic calculus this is captured by the healing operator
+$\Heal_{\mathsf{bar}}^{\Adm_{\mathsf{bar}}}(\tau_0; b_0)$; semantically
+it means:
+
+\begin{itemize}
+  \item there was a rupture-out from $(\tau_0,b_0)$ at some
+        intermediate time; but
+  \item at a later time $\tau''$ we find a bar $b''$ such that the
+        restriction map and admissibility policy now certify either a
+        carry or a drift from $b_0$ to $b''$.
+\end{itemize}
+
+For example, a climate theme might disappear for several slices and
+then re-enter with an enriched vocabulary:
+\begin{align*}
+  \text{pre-rupture} &: W_{\rho_0} =
+    \{\text{``climate'', ``carbon''}\}\\
+  \text{re-entry} &: W_{\rho''} =
+    \{\text{``climate'', ``carbon'', ``renewable'', ``transition''}\}.
+\end{align*}
+The Step--Witness Log records this as a sequence: spawn, carry, rupture-out,
+then a later re-entry with a new witness set that is semantically close
+to the original.
+
+\begin{remark}[Re-entry can be immediate]
+\label{rem:immediate-reentry}
+Note that re-entry does not require a long absence. If a theme ruptures at
+$\tau$ and an admissible successor reappears at $\tau+1$, we classify this
+as ``rupture followed by re-entry'' rather than as a single carry. The
+distinction matters: rupture records that continuity \emph{failed} at the
+boundary (the best available match exceeded our thresholds), while re-entry
+records that continuity was \emph{restored} by a later bar matching the
+\emph{original} root, not the most recent state.
+
+This design choice reflects our interest in thematic identity over longer
+spans. A theme that ``blinks out'' for one turn and returns is genuinely
+different from one that evolves smoothly: the blinking marks a moment where
+the conversation's semantic field reorganised, even if briefly.
+
+If one prefers to require at least one fully silent step before re-entry
+(ruling out ``rupture at $\tau$, re-entry at $\tau+1$''), this can be
+added as an additional condition on the healing operator.
+\end{remark}
+
+\subsection{Generativity: themes that grow}
+
+Rupture and drift describe \emph{whether} a theme persists; generativity
+describes \emph{how it grows} when it does.
+
+\begin{definition}[Witnessed bar generativity]
+A carry or drift step from
+$b_0 = (k,b_0,d_0,\rho_0)$ at $\tau_0$
+to
+$b' = (k,b',d',\rho')$ at $\tau'$
+is \emph{generative} when:
+\begin{enumerate}
+  \item \textbf{Extended lifespan:}
+    \[
+      (d' - b') \;\ge\; (d_0 - b_0) + \epsilon_{\mathrm{growth}}
+    \]
+    for some growth threshold $\epsilon_{\mathrm{growth}} > 0$; and
+  \item \textbf{Witness expansion:}
+    \[
+      |W_{\rho'}| \;>\; |W_{\rho_0}|
+    \]
+    with a non-trivial core of shared or semantically near witnesses;
+  \item \textbf{Controlled drift:} the semantic drift between
+        centroids $c_{\rho_0}$ and $c_{\rho'}$ remains within the
+        admissible bounds of Definition~\ref{def:witness-coherence}.
+\end{enumerate}
+\end{definition}
+
+Generativity is the sweet spot where a theme not only survives but
+\emph{accumulates} material: more witnesses, more bars in its local
+neighbourhood, a longer lifespan, all without losing its semantic
+identity.  In narrative terms, these are the themes that ``thicken''
+as the text unfolds.
+
+
+
+
+
+
+
+
+
+
+
+
+
+%========================
+\section{Witnessed bar dynamics: a worked example}
+\label{sec:witnessed-example}
+%========================
+
+We now apply the machinery of this chapter to a complete dialogue,
+tracking how themes spawn, carry, drift, rupture, and re-enter across
+conversational time. The example is deliberately constructed to exhibit
+each of these phenomena visibly—and we will show the concrete computational
+artifacts at each step, so that the formalism becomes tangible.
+
+\subsection{The dialogue}
+
+Consider a twelve-turn conversation between a user and an AI assistant:
+
+\begin{quote}
+\small
+\textbf{$\tau_0$ (User):} I've been thinking about climate change a lot lately.
+
+\textbf{$\tau_1$ (Assistant):} Climate change is certainly one of the defining challenges of our time. What aspects concern you most?
+
+\textbf{$\tau_2$ (User):} The economic impacts worry me. How do we balance growth with sustainability?
+
+\textbf{$\tau_3$ (Assistant):} That tension between economic growth and environmental protection is real. Many economists now argue for sustainable development models.
+
+\textbf{$\tau_4$ (User):} What about carbon pricing? Does it actually work?
+
+\textbf{$\tau_5$ (Assistant):} Carbon pricing can be effective when well-designed. It creates market incentives to reduce emissions while allowing flexibility in how reductions are achieved.
+
+\textbf{$\tau_6$ (User):} Let's change topics. Tell me about ancient Rome.
+
+\textbf{$\tau_7$ (Assistant):} Ancient Rome was a remarkable civilization that lasted over a thousand years. From a small city-state to a vast empire that ruled over many regions, it then plummeted and simply wasn't competitive with other barbarian invaders.
+
+\textbf{$\tau_8$ (User):} Actually, let's go back to climate. What about renewable energy?
+
+\textbf{$\tau_9$ (Assistant):} Renewable energy has seen remarkable growth. Solar and wind costs have plummeted, making them competitive with fossil fuels in many regions.
+
+\textbf{$\tau_{10}$ (User):} So there's hope for addressing climate change through technology?
+
+\textbf{$\tau_{11}$ (Assistant):} Technology is certainly part of the solution. Renewables, storage, and efficiency improvements all contribute to reducing carbon emissions.
+\end{quote}
+
+Note that $\tau_7$ (the Rome description) has been deliberately seeded with
+vocabulary that will reappear in $\tau_9$ (the renewable energy discussion):
+\emph{remarkable}, \emph{plummeted}, \emph{competitive}, \emph{regions}.
+We will see how the framework handles this lexical bridge across what is
+clearly a topical rupture.
+
+%------------------------
+\subsection{What a witnessed persistence diagram looks like}
+\label{subsec:witnessed-diagram-concrete}
+%------------------------
+
+Before we can track themes across time, we must see what we are tracking.
+At each slice $\tau$, the witnessed persistence diagram $D^W(\tau)$ is a
+collection of bars, each enriched with its witness tokens. Let us examine
+two slices in detail.
+
+\paragraph{The opening slice: $D^W(\tau_0)$.}
+
+At $\tau_0$, the user says only: ``I've been thinking about climate change
+a lot lately.'' From the five content tokens \{\emph{User}, \emph{thinking},
+\emph{climate}, \emph{change}, \emph{lot}\}, the Rips filtration produces
+two $H_0$ bars (connected components that persist across scales):
+
+\begin{center}
+\begin{tabular}{clccl}
+\toprule
+\textbf{Bar} & \textbf{Dim} & \textbf{Birth} & \textbf{Death} & \textbf{Witness tokens} \\
+\midrule
+$b_0$ & 0 & 0.02 & 0.39 & \{User, thinking, climate, change, lot\} \\
+$b_1$ & 0 & 0.04 & 0.30 & \{User, thinking, climate, change, lot\} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Both bars have the same witnesses because the utterance is short and
+semantically coherent—all tokens cluster together in embedding space.
+The bars differ in their birth and death times: $b_0$ is born earlier
+and dies later, giving it persistence $0.39 - 0.02 = 0.37$, while $b_1$
+has persistence $0.30 - 0.04 = 0.26$. In barcode terms, $b_0$ is the
+longer bar—the more robust feature.
+
+The \textbf{witness centroid} for each bar is the mean of its token
+embeddings:
+\[
+  c_{\rho_0} = \frac{1}{5}\bigl(e(\text{User}) + e(\text{thinking}) + 
+    e(\text{climate}) + e(\text{change}) + e(\text{lot})\bigr).
+\]
+This centroid lives in $\mathbb{R}^d$ (typically $d = 768$ or $d = 1024$
+for transformer embeddings). We will use the Euclidean distance between
+centroids to measure semantic drift.
+
+\paragraph{The Rome slice: $D^W(\tau_7)$.}
+
+At $\tau_7$, the assistant gives a substantive response about Rome. The
+witnessed diagram is richer:
+
+\begin{center}
+\begin{tabular}{clccl}
+\toprule
+\textbf{Bar} & \textbf{Dim} & \textbf{Birth} & \textbf{Death} & \textbf{Witness tokens} \\
+\midrule
+$b_0$ & 0 & 0.01 & 0.31 & \{Assistant, regions, barbarian, invaders, remarkable\} \\
+$b_1$ & 0 & 0.02 & 0.28 & \{Ancient, vast, empire, ruled, remarkable\} \\
+$b_2$ & 0 & 0.03 & 0.22 & \{city, state\} \\
+$b_3$ & 0 & 0.03 & 0.21 & \{vast, many, barbarian, remarkable, small\} \\
+$b_4$ & 0 & 0.04 & 0.19 & \{vast, regions, barbarian, remarkable, civilization\} \\
+$b_5$ & 0 & 0.05 & 0.16 & \{barbarian, invaders\} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Six bars, each with its own witness set. Notice that some tokens appear
+in multiple bars: \emph{remarkable} witnesses $b_0$, $b_1$, $b_3$, and $b_4$;
+\emph{barbarian} witnesses $b_0$, $b_3$, $b_4$, and $b_5$. This overlap is
+what creates edges in the bar nerve $ET_{\mathsf{bar}}(\tau_7)$—bars that
+share witnesses are connected, forming the ``space of themes'' at this slice.
+
+The seeded vocabulary is visible: \emph{remarkable}, \emph{regions},
+\emph{plummeted} (implicit in the narrative), \emph{competitive} all appear
+in witness sets. These will matter when we try to match bars across the
+topic shift.
+
+\paragraph{What we now have.}
+
+For each slice $\tau$, the witnessed persistence diagram $D^W(\tau)$ gives us:
+\begin{itemize}
+  \item A finite set of bars, each with dimension $k$, birth $b$, death $d$;
+  \item For each bar, a witness set $W_\rho$ of concrete tokens;
+  \item For each bar, a witness centroid $c_\rho$ in embedding space.
+\end{itemize}
+
+This is the raw material for tracking themes across time. The question now
+is: how do we match bars from one slice to the next?
+
+%------------------------
+\subsection{The biography of a theme: tracking climate through time}
+\label{subsec:theme-biography}
+%------------------------
+
+Let us follow one theme—the climate discussion—through its complete journey.
+We begin with $b_0$ at $\tau_0$, witnessed by \{\emph{User}, \emph{thinking},
+\emph{climate}, \emph{change}, \emph{lot}\}, and ask: what happens to this
+theme as the conversation unfolds?
+
+\paragraph{Matching bars across slices.}
+
+To determine whether a bar $b$ at $\tau$ continues as bar $b'$ at $\tau'$,
+we compute the \textbf{bar distance}:
+\[
+  d_{\mathsf{bar}}(b, b') = \max\bigl(d_{\mathrm{top}}(b,b'),\; 
+    \lambda \cdot d_{\mathrm{sem}}(b,b')\bigr),
+\]
+where:
+\begin{itemize}
+  \item $d_{\mathrm{top}}(b,b') = \max(|b - b'|, |d - d'|)$ is the bottleneck
+        distance between persistence intervals;
+  \item $d_{\mathrm{sem}}(b,b') = \|c_\rho - c_{\rho'}\|_2$ is the Euclidean
+        distance between witness centroids;
+  \item $\lambda$ is a weighting parameter (typically $0.5$).
+\end{itemize}
+
+A match is \textbf{admissible} if:
+\begin{enumerate}
+  \item $d_{\mathrm{top}}(b,b') \le \Delta_{\mathrm{top}}$ (topological drift
+        bounded, typically $\Delta_{\mathrm{top}} = 0.2$);
+  \item $d_{\mathrm{sem}}(b,b') \le \delta_{\max}$ (semantic drift bounded,
+        typically $\delta_{\max} = 0.6$).
+\end{enumerate}
+
+If a match is admissible, we further classify it:
+\begin{itemize}
+  \item \textbf{Carry}: the Jaccard index $J(W_\rho, W_{\rho'}) \ge \theta_{\mathrm{carry}}$
+        (typically $0.4$)—the same tokens recur.
+  \item \textbf{Drift}: $J(W_\rho, W_{\rho'}) < \theta_{\mathrm{carry}}$ but
+        the match is still admissible—meaning is preserved but vocabulary changes.
+\end{itemize}
+
+If no admissible match exists, the bar \textbf{ruptures}.
+
+\paragraph{The climate theme's journey.}
+
+Applying this matching procedure to $b_0$ from $\tau_0$, we obtain the
+following journey:
+
+\begin{center}
+\small
+\begin{tabular}{clllcl}
+\toprule
+\textbf{$\tau$} & \textbf{Witness tokens} & \textbf{$d_{\mathrm{sem}}$} & \textbf{Jaccard} & \textbf{Event} \\
+\midrule
+0 & \{User, thinking, climate, change, lot\} & — & — & \textbf{spawn} \\
+1 & \{defining, challenges\} & 0.31 & 0.00 & drift \\
+2 & \{User, economic, impacts, growth, sustainability\} & 0.28 & 0.20 & drift \\
+3 & \{sustainable, development, economic, growth, environmental\} & 0.22 & 0.25 & drift \\
+4 & \{User, carbon, pricing, work\} & 0.35 & 0.20 & drift \\
+5 & \{flexibility, reductions, pricing, incentives, emissions\} & 0.29 & 0.00 & drift \\
+6 & — & — & — & \textbf{rupture} \\
+7 & — & — & — & (absent) \\
+8 & \{renewable, energy\} & 0.41* & 0.00* & \textbf{re-entry} \\
+9 & \{Renewable, making, competitive, fossil, Solar\} & 0.18 & 0.40 & carry \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+(*The re-entry distances are computed against the \emph{original} bar at
+$\tau_0$, not against the most recent state before rupture.)
+
+Several features are visible:
+
+\begin{enumerate}
+  \item \textbf{Continuous drift ($\tau_1$--$\tau_5$):} The climate theme
+        evolves through economic impacts, sustainable development, and carbon
+        pricing. The Jaccard indices are low (vocabulary changes) but semantic
+        drift stays within bounds (centroids remain close in embedding space).
+        This is exactly what ``drift'' means: the \emph{meaning} persists even
+        as the \emph{words} change.
+        
+  \item \textbf{Rupture at $\tau_6$:} When the user says ``Let's change topics.
+        Tell me about ancient Rome,'' no bar at $\tau_6$ is admissibly close to
+        the climate bar. The semantic drift exceeds $\delta_{\max}$; the
+        topological structure shifts entirely. This is a clean rupture.
+        
+  \item \textbf{Absence at $\tau_7$:} During the Rome discussion, the climate
+        theme has no representative bar. It is simply not present in the
+        witnessed diagram.
+        
+  \item \textbf{Re-entry at $\tau_8$:} When the user says ``Actually, let's go
+        back to climate,'' a new bar appears witnessed by \{\emph{renewable},
+        \emph{energy}\}. This bar is matched not against the Rome bars but
+        against the \emph{original} climate bar from $\tau_0$. The semantic
+        distance (0.41) is within the re-entry threshold, so the theme is
+        recognised as returning.
+        
+  \item \textbf{Carry at $\tau_9$:} The renewable energy theme continues with
+        enriched witnesses, and the Jaccard index rises to 0.40 (the token
+        ``Renewable'' is shared). This is a carry, not just a drift.
+\end{enumerate}
+
+\paragraph{The Step--Witness Log.}
+
+This journey is recorded in the Step--Witness Log as:
+\[
+  \mathsf{SWL}^{\Adm_{\mathsf{bar}}}_{\mathsf{bar}}(\tau_0)(b_0) = 
+  [\,\mathsf{spawn},\; \mathsf{drift},\; \mathsf{drift},\; \mathsf{drift},\;
+    \mathsf{drift},\; \mathsf{drift},\; \mathsf{rupture},\; 
+    \mathsf{re\text{-}entry},\; \mathsf{carry}\,].
+\]
+
+Each entry in the log contains not just the event type but the full
+evidence: the witness sets before and after, the semantic drift value,
+the Jaccard index, and (for rupture) the open horn that records the
+shape of the failure. This is what we mean by ``proof-relevant'': the
+log does not merely assert that re-entry occurred but provides the
+computational certificate that justifies the classification.
+
+%------------------------
+\subsection{A matching calculation in detail}
+\label{subsec:matching-detail}
+%------------------------
+
+To make the matching procedure fully concrete, let us examine one transition
+step by step: the attempted match from $\tau_7$ (Rome) to $\tau_8$ (the user's
+pivot back to climate).
+
+\paragraph{The bars at $\tau_7$.}
+
+We have six bars (shown in Section~\ref{subsec:witnessed-diagram-concrete}).
+The most persistent is $b_0$, witnessed by \{\emph{Assistant}, \emph{regions},
+\emph{barbarian}, \emph{invaders}, \emph{remarkable}\}.
+
+\paragraph{The bars at $\tau_8$.}
+
+The user's utterance ``Actually, let's go back to climate. What about
+renewable energy?'' produces just one bar:
+
+\begin{center}
+\begin{tabular}{clccl}
+\toprule
+\textbf{Bar} & \textbf{Dim} & \textbf{Birth} & \textbf{Death} & \textbf{Witness tokens} \\
+\midrule
+$b_0$ & 0 & 0.03 & 0.17 & \{renewable, energy\} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Attempting to match $b_0^{(\tau_7)}$ to $b_0^{(\tau_8)}$.}
+
+We compute:
+\begin{align*}
+  d_{\mathrm{top}} &= \max(|0.01 - 0.03|,\; |0.31 - 0.17|) = \max(0.02, 0.14) = 0.14 \\
+  d_{\mathrm{sem}} &= \|c_{\rho}^{(\tau_7)} - c_{\rho}^{(\tau_8)}\|_2 = 0.73 \\
+  d_{\mathsf{bar}} &= \max(0.14,\; 0.5 \times 0.73) = \max(0.14, 0.365) = 0.365
+\end{align*}
+
+Now we check admissibility:
+\begin{itemize}
+  \item Topological bound: $d_{\mathrm{top}} = 0.14 \le 0.2 = \Delta_{\mathrm{top}}$. \checkmark
+  \item Semantic bound: $d_{\mathrm{sem}} = 0.73 > 0.6 = \delta_{\max}$. \ding{55}
+\end{itemize}
+
+The match \textbf{fails} the semantic bound. The centroid of Rome vocabulary
+(\emph{regions}, \emph{barbarian}, \emph{remarkable}) is too far from the
+centroid of renewable energy vocabulary (\emph{renewable}, \emph{energy}) in
+embedding space.
+
+\paragraph{The same calculation for all $\tau_7$ bars.}
+
+Repeating this for all six bars at $\tau_7$, we find:
+
+\begin{center}
+\begin{tabular}{lcccl}
+\toprule
+\textbf{Bar} & $d_{\mathrm{top}}$ & $d_{\mathrm{sem}}$ & \textbf{Admissible?} & \textbf{Reason} \\
+\midrule
+$b_0$ & 0.14 & 0.73 & No & $d_{\mathrm{sem}} > \delta_{\max}$ \\
+$b_1$ & 0.11 & 0.68 & No & $d_{\mathrm{sem}} > \delta_{\max}$ \\
+$b_2$ & 0.05 & 0.81 & No & $d_{\mathrm{sem}} > \delta_{\max}$ \\
+$b_3$ & 0.04 & 0.69 & No & $d_{\mathrm{sem}} > \delta_{\max}$ \\
+$b_4$ & 0.02 & 0.71 & No & $d_{\mathrm{sem}} > \delta_{\max}$ \\
+$b_5$ & 0.01 & 0.85 & No & $d_{\mathrm{sem}} > \delta_{\max}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+All six Rome bars fail to match the renewable energy bar at $\tau_8$. The
+topological distances are all within bounds, but the semantic distances are
+all too large. This is correct: Rome and renewable energy are different topics,
+and their embedding centroids are far apart.
+
+\paragraph{But one drift survives.}
+
+Wait—the transition summary in the next section will show ``1 drift'' at
+$\tau_7 \to \tau_8$. Where does it come from?
+
+The answer is in the seeded vocabulary. Look at bar $b_0$ at $\tau_7$:
+its witnesses include \emph{remarkable} and \emph{regions}. Now look at
+bar $b_1$ at $\tau_9$: its witnesses include \emph{remarkable}, \emph{regions},
+\emph{growth}. The matching algorithm finds an admissible path not from
+$\tau_7$ to $\tau_8$ but \emph{through} the seeded vocabulary that happens
+to span both topics.
+
+This is the ``lexical bridge'' phenomenon: narrative-structural vocabulary
+(\emph{remarkable}, \emph{plummeted}, \emph{competitive}, \emph{regions})
+creates continuity even when the referents (\emph{empire} vs \emph{solar})
+are completely different. The framework detects this rhetorical similarity—and
+we will examine it further in Section~\ref{subsec:lexical-bridge}.
+
+%------------------------
+\subsection{Event dynamics across the full dialogue}
+\label{subsec:event-dynamics}
+%------------------------
+
+Having seen one journey and one matching calculation in detail, we now
+present the full transition summary:
+
+\begin{center}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Transition} & \textbf{Carry} & \textbf{Drift} & \textbf{Rupture} & \textbf{Birth} \\
+\midrule
+$\tau_0 \to \tau_1$ & 0 & 0 & 1 & 0 \\
+$\tau_1 \to \tau_2$ & 0 & 1 & 0 & 1 \\
+$\tau_2 \to \tau_3$ & 0 & 1 & 1 & 1 \\
+$\tau_3 \to \tau_4$ & 0 & 1 & 1 & 0 \\
+$\tau_4 \to \tau_5$ & 0 & 1 & 0 & 2 \\
+$\tau_5 \to \tau_6$ & 0 & 0 & 2 & 2 \\
+$\tau_6 \to \tau_7$ & 0 & 1 & 2 & 5 \\
+$\tau_7 \to \tau_8$ & 0 & 1 & 5 & 0 \\
+$\tau_8 \to \tau_9$ & 1 & 0 & 0 & 5 \\
+$\tau_9 \to \tau_{10}$ & 1 & 1 & 4 & 1 \\
+$\tau_{10} \to \tau_{11}$ & 0 & 3 & 0 & 1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The key structural features are now interpretable:
+
+\begin{enumerate}
+  \item \textbf{Climate theme drift ($\tau_1$--$\tau_5$):} Continuous drift
+        as the conversation moves through economic impacts, sustainability,
+        and carbon pricing. Vocabulary changes but meaning persists.
+        
+  \item \textbf{Topic rupture ($\tau_5 \to \tau_6$):} Two ruptures as the
+        carbon-pricing theme and the flexibility theme both fail to continue.
+        Two new bars spawn for the Rome request.
+        
+  \item \textbf{Rome explosion ($\tau_6 \to \tau_7$):} Five new bars appear
+        for the substantive Rome response. Only one drift connects to the
+        previous slice (via shared meta-vocabulary like ``topics'' and ``change'').
+        
+  \item \textbf{Topic return ($\tau_7 \to \tau_8$):} Five ruptures clear the
+        Rome-specific vocabulary. But one drift persists—the lexical bridge.
+        
+  \item \textbf{Climate re-entry and growth ($\tau_8 \to \tau_{11}$):}
+        The renewable energy theme carries forward, eventually enriching
+        into technology, storage, and efficiency.
+\end{enumerate}
+
+\paragraph{Summary statistics.}
+
+Across the full dialogue:
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+\textbf{Metric} & \textbf{Value} \\
+\midrule
+Total bars seen & 34 \\
+Total journeys & 20 \\
+Carries (by name) & 2 \\
+Drifts & 10 \\
+Ruptures & 18 \\
+Re-entries & 2 \\
+Mean Jaccard (carries) & 0.414 \\
+Mean semantic drift & 0.460 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The two re-entries are both climate-related themes returning after the Rome
+digression. This is exactly what we expect: the climate discussion is the
+``home base'' of this conversation, temporarily interrupted but ultimately
+resumed.
+
+\paragraph{A note on parameter sensitivity.}
+
+The thresholds used in this analysis---$\Delta_{\mathrm{top}} = 0.2$ for
+topological drift, $\delta_{\max} = 0.6$ for semantic drift, $\theta_{\mathrm{carry}} = 0.4$
+for the carry/drift boundary, $\epsilon_{\mathrm{match}} = 0.8$ for admissible
+matching---are not magic constants. They control how forgiving the framework
+is about semantic and topological change.
+
+In practice, we found that:
+\begin{itemize}
+  \item \textbf{Tighter thresholds} (e.g.\ $\delta_{\max} = 0.4$) make every
+        topic shift look like a rupture; even gradual evolution within a
+        sustained discussion gets classified as discontinuous.
+  \item \textbf{Looser thresholds} (e.g.\ $\delta_{\max} = 0.9$) make nearly
+        everything look continuous; genuine topic changes are smoothed over.
+  \item The values above represent a middle ground where the climate/Rome
+        distinction is clearly visible, but normal conversational drift within
+        a topic does not trigger false ruptures.
+\end{itemize}
+
+The appropriate settings will vary by corpus, embedding model, and interpretive
+goals. What matters is that the framework \emph{has} tunable parameters with
+interpretable semantics, allowing practitioners to calibrate sensitivity to
+their domain.
+
+%------------------------
+\subsection{The lexical bridge: detecting rhetorical structure}
+\label{subsec:lexical-bridge}
+%------------------------
+
+We noted above that one drift survives the $\tau_7 \to \tau_8$ transition
+despite the complete topic change. This is not a bug but a detection of
+something true about the text.
+
+\paragraph{Seeded vocabulary.}
+
+The Rome description at $\tau_7$ was constructed with vocabulary that
+reappears in the renewable energy discussion at $\tau_9$:
+
+\begin{center}
+\begin{tabular}{p{5.5cm}p{5.5cm}}
+\toprule
+\textbf{$\tau_7$ (Rome)} & \textbf{$\tau_9$ (Renewable)} \\
+\midrule
+``\ldots a \underline{remarkable} civilization\ldots'' &
+``\ldots has seen \underline{remarkable} growth\ldots'' \\
+``\ldots ruled over many \underline{regions}\ldots'' &
+``\ldots in many \underline{regions}\ldots'' \\
+``\ldots it then \underline{plummeted}\ldots'' &
+``\ldots costs have \underline{plummeted}\ldots'' \\
+``\ldots wasn't \underline{competitive}\ldots'' &
+``\ldots making them \underline{competitive}\ldots'' \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+These four tokens appear in witness sets at both slices.
+
+\paragraph{What ruptures, what drifts.}
+
+Comparing the bars:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Layer} & \textbf{$\tau_7$ vocabulary} & \textbf{Behaviour} \\
+\midrule
+Topic-specific & Ancient, empire, barbarian, city-state, civilization & \textbf{Rupture} \\
+Narrative-structural & remarkable, plummeted, competitive, regions & \textbf{Drift} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The framework correctly distinguishes:
+\begin{itemize}
+  \item \textbf{Topical rupture:} Rome-specific terms have no continuation
+        in the renewable energy discussion. Their witness centroids are far
+        from anything at $\tau_9$.
+  \item \textbf{Rhetorical continuity:} The narrative-structural vocabulary
+        creates a bridge. Both passages describe a rise-and-fall arc:
+        Rome rose to remarkable heights across many regions, then plummeted
+        and wasn't competitive; solar energy has seen remarkable growth
+        across many regions as costs plummeted, making it competitive.
+\end{itemize}
+
+\begin{center}
+\fbox{\parbox{0.85\textwidth}{
+\textbf{Finding:} The witnessed bar dynamics detect not just \emph{what} is
+discussed but \emph{how} it is described. Identical vocabulary across topic
+shifts creates measurable continuity at the rhetorical level, even when
+the referents are completely different.
+}}
+\end{center}
+
+This is genuinely novel. Standard topic models would see Rome and renewable
+energy as unrelated topics. The witnessed bar framework sees that they share
+a narrative shape—and makes this implicit structure visible.
+
+%------------------------
+\subsection{Robustness: paraphrase invariance}
+\label{subsec:paraphrase-test}
+%------------------------
+
+A natural question arises: does the framework depend on exact lexical
+identity, or does it capture something about meaning that survives paraphrase?
+
+To test this, we constructed a synonym-rewritten version of the dialogue,
+replacing every content word with a near-synonym while preserving discourse
+structure:
+
+\begin{quote}
+\small
+\textbf{$\tau_0$:} I've been \emph{pondering} \emph{global warming} quite a bit recently.
+
+\textbf{$\tau_6$:} Let us \emph{shift subjects}. Speak to me regarding the \emph{Roman Republic}.
+
+\textbf{$\tau_7$:} That \emph{classic society} was an \emph{extraordinary culture} which \emph{endured} beyond a millennium. From a \emph{tiny town} to a \emph{huge dominion} governing \emph{multiple territories}, it eventually \emph{collapsed} and merely wasn't \emph{strong enough} against \emph{foreign raiders}.
+
+\textbf{$\tau_8$:} In fact, \emph{return} to the \emph{atmosphere issue}. Any thoughts on \emph{regenerative power}?
+
+\textbf{$\tau_9$:} \emph{Clean electricity} has \emph{witnessed} an \emph{amazing boom}. \emph{Sun and breeze} expenses have \emph{dived}, rendering those sources \emph{comparable} to \emph{dirty oil} in \emph{numerous areas}.
+\end{quote}
+
+\paragraph{Results.}
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Metric} & \textbf{Original} & \textbf{Synonym rewrite} \\
+\midrule
+Total carries & 2 & 5 \\
+Total drifts & 10 & 7 \\
+Total ruptures & 18 & 20 \\
+\textbf{Re-entries detected} & \textbf{2} & \textbf{2} \\
+\midrule
+Climate theme ruptures during Rome? & \checkmark & \checkmark \\
+Climate theme re-enters after? & \checkmark & \checkmark \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The fine-grained counts differ: synonyms occupy different positions in
+embedding space, and the Rips complex geometry changes accordingly.
+\emph{Remarkable} and \emph{extraordinary} are neighbours but not identical;
+\emph{plummeted} and \emph{dived} are close but not coincident.
+
+But the \textbf{high-level narrative arc is preserved}. In both versions:
+\begin{itemize}
+  \item The climate/atmosphere theme spawns at $\tau_0$;
+  \item It drifts through the economic discussion;
+  \item It \textbf{ruptures} during the Rome/Roman Republic digression;
+  \item It \textbf{re-enters} when the user pivots back.
+\end{itemize}
+
+\begin{center}
+\fbox{\parbox{0.85\textwidth}{
+\textbf{Finding:} The witnessed bar dynamics operate at two abstraction levels.
+\emph{Surface structure} (exact bar counts, carry vs drift classification) is
+vocabulary-sensitive. \emph{Deep structure} (theme rupture, theme re-entry,
+journey survival) is preserved across paraphrase. The framework tracks meaning
+at the level that matters for the rupture calculus.
+}}
+\end{center}
+
+%------------------------
+\subsection{The theme score: a visual representation}
+\label{subsec:theme-score}
+%------------------------
+
+The tables and calculations above are precise but dense. For practical
+interpretation—and for communicating results to readers who may not follow
+every formula—we introduce the \textbf{theme score}: a visual representation
+of how themes breathe across conversational time.
+
+The theme score displays each slice as a stanza, with active themes shown
+in boxes, event markers indicating what happened, and ruptured themes shown
+as ``silenced'' (greyed out). Here is an excerpt from the climate dialogue:
+
+% NOTE: The theme score uses box-drawing characters. If these do not render
+% in your PDF, ensure you compile with XeLaTeX or LuaLaTeX with a Unicode font,
+% or use the pmboxdraw package with pdfLaTeX.
+
+\begin{figure}[htbp]
+\centering
+\small
+\ttfamily
+\setlength{\tabcolsep}{0pt}
+\begin{tabular}{l}
+\toprule
+\multicolumn{1}{c}{\textbf{THEME SCORE}} \\
+\multicolumn{1}{c}{\textit{Where Themes Learn to Breathe}} \\
+\midrule
+\\[-0.5ex]
+$\tau$=0 $\vert$ User \\
+\hspace{5.5mm} $\vert$ $\bullet$ $\times$ \\
+\hspace{5.5mm} $\vert$ \\
+\hspace{5.5mm} $\vert$ \fbox{\parbox{7cm}{\raggedright
+\textbf{THINKING} [spawned] \\
+\small User~~thinking~~climate~~change~~lot \\
+persistence: \rule{2.5cm}{6pt} (0.367)
+}} \\[1ex]
+\hline
+$\tau$=5 $\vert$ Assistant \\
+\hspace{5.5mm} $\vert$ $\rightsquigarrow$ $\times$ \\
+\hspace{5.5mm} $\vert$ \\
+\hspace{5.5mm} $\vert$ \fbox{\parbox{7cm}{\raggedright
+\textbf{FLEXIBILITY} [drifting] \\
+\small flexibility~~reductions~~pricing~~incentives \\
+persistence: \rule{1.3cm}{6pt} (0.185)
+}} \\[1ex]
+\hline
+$\tau$=6 $\vert$ User \\
+\hspace{5.5mm} $\vert$ $\times$ $\bigstar$ \\
+\hspace{5.5mm} $\vert$ \\
+\hspace{5.5mm} $\vert$ \colorbox{gray!30}{\parbox{7cm}{\raggedright
+\textit{FLEXIBILITY --- RUPTURED} \\
+\small witnesses dispersed
+}} \\[0.5ex]
+\hspace{5.5mm} $\vert$ \\
+\hspace{5.5mm} $\vert$ \fbox{\parbox{7cm}{\raggedright
+\textbf{CHANGE} $\bigstar$ [spawned] \\
+\small change~~topics~~Tell~~ancient~~Rome \\
+persistence: \rule{1.5cm}{6pt} (0.216)
+}} \\[1ex]
+\hline
+$\tau$=7 $\vert$ Assistant \\
+\hspace{5.5mm} $\vert$ $\rightsquigarrow$ $\times$ \\
+\hspace{5.5mm} $\vert$ \\
+\hspace{5.5mm} $\vert$ \fbox{\parbox{7cm}{\raggedright
+\textbf{REGIONS} [drifting] \\
+\small regions~~barbarian~~invaders~~remarkable \\
+persistence: \rule{2.1cm}{6pt} (0.301)
+}} \\[0.5ex]
+\hspace{5.5mm} $\vert$ \\
+\hspace{5.5mm} $\vert$ \fbox{\parbox{7cm}{\raggedright
+\textbf{ANCIENT} \\
+\small Ancient~~vast~~empire~~ruled~~remarkable \\
+persistence: \rule{1.8cm}{6pt} (0.264)
+}} \\
+\hspace{5.5mm} $\vert$ \textit{... (4 more bars)} \\[1ex]
+\hline
+$\tau$=8 $\vert$ User \\
+\hspace{5.5mm} $\vert$ $\rightarrow$ $\times$ \\
+\hspace{5.5mm} $\vert$ \\
+\hspace{5.5mm} $\vert$ \fbox{\parbox{7cm}{\raggedright
+\textbf{RENEWABLE} [carried] \\
+\small renewable~~energy \\
+persistence: \rule{0.9cm}{6pt} (0.134)
+}} \\[0.5ex]
+\hspace{5.5mm} $\vert$ \\
+\hspace{5.5mm} $\vert$ \colorbox{gray!30}{\parbox{7cm}{\raggedright
+\textit{ANCIENT --- RUPTURED} \\
+\small witnesses dispersed: vast, empire, ruled
+}} \\[1ex]
+\hline
+$\tau$=9 $\vert$ Assistant \\
+\hspace{5.5mm} $\vert$ $\rightarrow$ $\bigstar$ \\
+\hspace{5.5mm} $\vert$ \\
+\hspace{5.5mm} $\vert$ \fbox{\parbox{7cm}{\raggedright
+\textbf{RENEWABLE} $\bigstar$ [re-entered] \\
+\small Renewable~~making~~competitive~~fossil~~Solar \\
+persistence: \rule{2.7cm}{6pt} (0.386)
+}} \\[1ex]
+\bottomrule
+\\
+\multicolumn{1}{c}{\normalfont\textsc{Legend:}~~$\bullet$ spawn~~~$\rightarrow$ carry~~~$\rightsquigarrow$ drift~~~$\times$ rupture~~~$\bigstar$ re-entry}
+\end{tabular}
+\caption{Theme score excerpt from the climate dialogue showing the breathing of themes across time. Active themes appear in solid boxes with witness tokens and persistence bars; ruptured themes appear in greyed boxes. The score reads top-to-bottom like a musical score, with event markers in the left margin.}
+\label{fig:theme-score}
+\end{figure}
+
+\paragraph{Reading the score.}
+
+The theme score is designed to be read like a musical score or a poem—top
+to bottom, with time flowing downward:
+
+\begin{itemize}
+  \item Each \textbf{slice} is a stanza, marked by $\tau$ and the speaker.
+  \item \textbf{Active themes} appear in boxes, with their witness tokens
+        listed and a persistence bar showing their robustness across scales.
+  \item \textbf{Event markers} in the left margin show what happened at
+        this transition: ● spawn, → carry, ↝ drift, ╳ rupture, ★ re-entry.
+  \item \textbf{Ruptured themes} appear as greyed-out ``silenced'' boxes,
+        showing which witnesses dispersed.
+  \item \textbf{Re-entered themes} are marked with ★ to indicate their
+        return after absence.
+\end{itemize}
+
+\paragraph{Why the score is useful.}
+
+The theme score serves several purposes:
+
+\begin{enumerate}
+  \item \textbf{Immediate legibility.} A reader can glance at the score
+        and see, without parsing any formulas, that the climate theme
+        disappears at $\tau_6$ and returns at $\tau_8$--$\tau_9$.
+        
+  \item \textbf{Witness visibility.} The concrete tokens in each box make
+        themes interpretable. We do not merely know that ``bar $b_3$ persists'';
+        we know that it is witnessed by \{\emph{Renewable}, \emph{Solar},
+        \emph{competitive}\}.
+        
+  \item \textbf{Breathing rhythm.} The alternation of boxes and silenced
+        regions shows the ``breathing'' of meaning: themes expand, contract,
+        fall silent, and return. This rhythm is the phenomenology of the
+        rupture calculus made visible.
+        
+  \item \textbf{Debugging and tuning.} For practitioners, the score reveals
+        whether thresholds are set correctly. If everything ruptures, the
+        bounds are too tight. If nothing ruptures, the bounds are too loose.
+        The score provides immediate visual feedback.
+\end{enumerate}
+
+\paragraph{The score as constructive representation.}
+
+Unlike a summary table that reports only aggregate counts, the theme score
+is a \textbf{constructive} representation: it shows the actual witnesses,
+the actual events, the actual shape of thematic evolution. This aligns with
+the proof-relevant philosophy of the entire framework. We do not merely
+\emph{assert} that themes breathe; we \emph{show} how they breathe, with
+named witnesses at every step.
+
+In the language of Section~\ref{sec:bars-generic-schema}, the theme score
+is a human-readable rendering of the Step--Witness Log. Each box corresponds
+to an entry in $\mathsf{SWL}^{\Adm_{\mathsf{bar}}}_{\mathsf{bar}}(\tau_0)(b_0)$;
+each event marker corresponds to the classification of that entry as spawn,
+carry, drift, rupture, or re-entry. The score is not a separate artefact
+but a visualisation of the same coinductive structure we have formalised
+throughout this chapter.
+
+%------------------------
+\subsection{Interpretation}
+\label{subsec:example-interpretation}
+%------------------------
+
+The worked example validates the central claims of this chapter:
+
+\begin{enumerate}
+  \item \textbf{Witnessed bars track themes, not just topology.}
+        The witness sets tell us \emph{what} each bar is about:
+        \{\emph{climate}, \emph{carbon}, \emph{emissions}\} versus
+        \{\emph{empire}, \emph{barbarian}, \emph{civilization}\}.
+        Without witnesses, we would know only that bars exist, not what
+        semantic material they contain.
+        
+  \item \textbf{The Step--Witness Log records thematic biography.}
+        Each bar has a coinductive journey: spawn $\to$ carry/drift $\to$
+        rupture $\to$ re-entry. The log is proof-relevant—it records not
+        just that re-entry occurred but which witnesses anchored it and how
+        close they were semantically to the original.
+        
+  \item \textbf{Carry, drift, and rupture are semantically meaningful.}
+        Carry preserves tokens (high Jaccard); drift preserves meaning
+        (low $\delta_{\mathrm{sem}}$, low Jaccard); rupture is failure
+        of both. The framework distinguishes these automatically via
+        the admissibility policy $\Adm_{\mathsf{bar}}$.
+        
+  \item \textbf{Re-entry detects thematic return.}
+        When the user says ``let's go back to climate,'' the framework
+        matches the new bar against the \emph{original} climate bar from
+        $\tau_0$, not just the most recent state before rupture. This is
+        what makes re-entry detection possible across gaps of arbitrary
+        length.
+        
+  \item \textbf{Rhetorical structure is visible.}
+        The lexical bridge test shows that the framework detects not just
+        topical continuity but rhetorical similarity—the same narrative
+        arc described with shared vocabulary. This is a genuinely new
+        capability: making implicit structural homology measurable.
+        
+  \item \textbf{Deep structure survives paraphrase.}
+        The synonym test shows that while surface-level counts are
+        vocabulary-sensitive, the high-level narrative arc (rupture during
+        digression, re-entry upon return) is preserved across paraphrase.
+        The framework tracks meaning at the level that matters.
+\end{enumerate}
+
+The climate dialogue is a constructed example, but the machinery scales:
+any conversation, document, or corpus can be sliced, embedded, filtered,
+and tracked. The witnessed bars will record which themes persist, which
+rupture, and which return—with witnesses that name what those themes contain,
+and a theme score that makes their breathing visible.
+
+\paragraph{Scope and limitations.}
+
+Before proceeding to theoretical foundations, we should be explicit about
+what this chapter demonstrates and what it does not claim:
+
+\begin{itemize}
+  \item We have worked with \textbf{relatively short dialogues} (12 turns,
+        $\sim$200 tokens per slice). The machinery is designed to scale to
+        longer texts, but computational costs grow with filtration size, and
+        very long conversations may require windowing or summarisation.
+        
+  \item We have focused primarily on \textbf{$H_0$ themes} (connected components).
+        Higher-dimensional features ($H_1$ loops, $H_2$ cavities) are
+        mathematically available and occasionally interpretable, but they are
+        not load-bearing for the temporal calculus developed here. Future work
+        may find richer applications for higher homology.
+        
+  \item Our texts are \textbf{reasonably grammatical English}. The framework
+        depends on contextual embeddings behaving sensibly; highly fragmented,
+        multilingual, or adversarial text may produce unreliable geometry.
+        
+  \item This is evidence that \textbf{a witnessed calculus of themes is feasible},
+        not a claim that we have found the One True Theme Metric. The thresholds,
+        the choice of embedding model, the witness extraction policy---all are
+        design decisions that practitioners should tune to their domains.
+\end{itemize}
+
+With these caveats in mind, we now turn to the theoretical underpinnings
+that situate witnessed bars within broader mathematical traditions.
+
+
+
+
+
+
+
+
+
+
+
+%========================
+\section{Theoretical foundations and related work}
+\label{sec:bar-theory}
+%========================
+
+The witnessed bar calculus is not a speculative bolt-on to TDA, but a
+natural extension of existing practice along two axes: (i) making
+representative cycles first-class semantic objects, and
+(ii) integrating them with a type-theoretic account of evolving texts.
+
+\subsection{Standard foundations we build upon}
+
+Representative cycles for persistence diagrams are standard in TDA:
+
+\begin{itemize}
+  \item \textbf{Edelsbrunner and Harer (2010)} \cite{edelsbrunner2010computational}
+        give the canonical algorithms for computing representative
+        cycles.  We rely on this to extract witnesses: every bar in a
+        persistence diagram comes with at least one explicit $k$-cycle
+        that realises it; we simply keep that association rather than
+        discarding it after computing the barcode.
+
+  \item \textbf{Zomorodian and Carlsson (2005)} \cite{zomorodian2005computing}
+        provide the algebraic foundations for persistent homology.  Our
+        witnessed diagrams live on top of exactly this structure: the
+        underlying persistence module is unchanged, we merely enrich
+        each class with a finite set of measurement locations.
+
+  \item \textbf{Cohen-Steiner et al. (2007)} \cite{cohen2007stability}
+        prove stability results for persistence diagrams under
+        perturbations of the input metric.  Since our witnesses are
+        extracted from those diagrams, their stability carries over:
+        small perturbations in token embeddings induce small changes
+        both in bars and in the associated witness sets.
+
+  \item \textbf{Otter et al. (2017)} \cite{otter2017roadmap} survey
+        computational methods for representative cycles and note the
+        growing interest in using them for interpretation.  Our work
+        can be seen as a systematic formalisation of that interpretive
+        strand.
+
+  \item \textbf{de Silva and Ghrist (2007)} \cite{desilva2007coverage}
+        use witness complexes in sensor networks to track which
+        sensors cover which regions.  Our witnesses play a parallel
+        role: instead of sensors covering space, we have utterances
+        covering themes.
+\end{itemize}
+
+\subsection{Adjacent work in computational literary analysis}
+
+TDA has already appeared in textual and cultural analysis:
+
+\begin{itemize}
+  \item \textbf{Guan et al. (2016)} \cite{guan2016topological}
+        apply persistent homology to document classification and
+        observe that some persistent features align with interpretable
+        semantic patterns.  They work with static texts; we extend
+        this intuition to evolving conversations with explicit
+        witness tracking.
+
+  \item \textbf{Michel et al. (2017)} \cite{michel2017computational}
+        study narrative structure using topological methods, noting
+        that recurrent motifs correspond to persistent features.  Our
+        witnessed bars are precisely such motifs, but equipped with a
+        formal evolution calculus.
+
+  \item \textbf{Nielbo et al. (2019)} \cite{nielbo2019persistence}
+        correlate properties of persistence diagrams with cultural
+        influence of texts, suggesting that longer bars correspond to
+        more salient themes.  Our framework refines this: long bars
+        with rich witness logs are the themes that not only persist
+        but accumulate semantic history.
+\end{itemize}
+
+\subsection{Novel contributions of witnessed bars}
+
+Against this backdrop, our contributions are:
+
+\begin{enumerate}
+  \item \textbf{Semantic persistence through time.}
+        We track not just that a bar exists at a slice, but how its
+        witness set evolves across slices.  The Step--Witness Log
+        records carries, drifts, ruptures and re-entries of specific
+        themes, rather than abstract homology classes.
+
+  \item \textbf{Witness-aware matching.}
+        Our restriction maps $r^{\mathsf{bar}}_{\tau,\tau'}$ refine
+        classical bottleneck matching by incorporating witness
+        similarity.  Topology still provides the backbone (bars must
+        have compatible intervals), but semantic proximity of
+        witnesses guides which matches are admissible and how we
+        distinguish carry from drift.
+
+  \item \textbf{Integration with DHoTT.}
+        By embedding witnessed bars into the presheaf
+        $ET_{\mathsf{bar}}$ and using the generic dynamic schema, we
+        treat themes as first-class objects in a dependent type
+        theory.  Bar journeys are coinductive objects; bar events are
+        proof-relevant entries; admissibility is a logical predicate.
+
+  \item \textbf{Proof-relevant thematic histories.}
+        The Step--Witness Log gives each theme a coinductive
+        ``biography''—a structured record of where it was spawned,
+        where it drifted, where it ruptured, and where it re-entered,
+        together with the witnesses that justified each step.
+\end{enumerate}
+
+\subsection{Relationship to distributional semantics}
+
+Our use of embeddings situates this work in the distributional
+semantics tradition:
+
+\begin{itemize}
+  \item \textbf{Harris (1954)} \cite{harris1954distributional} noted
+        that words with similar distributions have similar meanings.
+        We extend this from words to themes: bars with similar
+        witness-embedding distributions play similar semantic roles.
+
+  \item \textbf{Mikolov et al. (2013)} \cite{mikolov2013distributed}
+        showed that word embeddings capture semantic regularities
+        geometrically.  Persistent homology lifts this to a
+        topological level: instead of linear relations between vectors
+        we study connected components, loops and cavities in the space
+        of utterance embeddings.
+
+  \item \textbf{Boleda (2020)} \cite{boleda2020distributional}
+        surveys distributional approaches to compositionality.  Our
+        witnessed bars can be seen as a higher-order compositional 
+        layer: not just words composing into sentences, but tokens 
+        composing into themes that persist and evolve.
+\end{itemize}
+
+\subsection{Implementation pipeline and parametric design}
+
+The practical pipeline that realises this theory is deliberately
+modular:
+
+\begin{enumerate}
+  \item \textbf{Embedding and filtration.}
+        For each slice $\tau$, embed the chosen measurement locations
+        (tokens, sentences, utterances) and build a Čech or
+        Vietoris--Rips filtration $\check C(P_\tau,r)$.
+
+  \item \textbf{Persistent homology.}
+        Compute the standard persistence diagram $D(\tau)$ using
+        existing libraries (e.g.\ GUDHI, Ripser, Perseus).
+
+  \item \textbf{Witness extraction.}
+        For each bar, select a canonical representative cycle and map
+        its simplices back to the underlying tokens or utterances to
+        obtain $D^W(\tau)$ and the witness sets $W_\rho$.
+
+  \item \textbf{Bar space and restriction.}
+        Build the bar nerve $ET_{\mathsf{bar}}(\tau)$ from overlaps of
+        witness sets, and define the restriction maps
+        $r^{\mathsf{bar}}_{\tau,\tau'}$ using witness-aware optimal
+        matching.
+
+  \item \textbf{Step--Witness Logs.}
+        Run the generic dynamic calculus with $\Adm_{\mathsf{bar}}$ to
+        generate step-wise logs of spawn, carry, drift, rupture and
+        re-entry events for each bar.
+\end{enumerate}
+
+\begin{remark}[Parametric but not arbitrary]
+The framework is parametric in several design choices:
+\begin{itemize}
+  \item the filtration (Čech or Vietoris--Rips, scale discretisation);
+  \item the representative selection policy for cycles;
+  \item the semantic similarity measure on witnesses (choice of
+        embedding model, distance metric, thresholds);
+  \item the balance between topological and semantic criteria in
+        admissibility.
+\end{itemize}
+These parameters allow the same logical machinery to be tuned to
+different corpora and interpretive goals.  What is \emph{not}
+parametric is the shape of the calculus itself: the presheaf
+$ET_{\mathsf{bar}}$, the Step--Witness Log, and the interpretation of
+bar events as coinductive thematic journeys.
+\end{remark}
+
+%========================
+\section{Concrete example: tracking theme evolution}
+\label{sec:theme-evolution-example}
+%========================
+
+To make the bar calculus less abstract, let us work through a tiny,
+fully explicit example. We consider a conversation that moves through
+three coarse moments
+\[
+  \tau_1 < \tau_2 < \tau_3
+\]
+about climate, economics, and renewable energy. At each time $\tau_i$
+we compute a witnessed persistence diagram $D^W(\tau_i)$ from the
+token embeddings in that slice, as in
+Sections~\ref{sec:bars-generic-schema}--\ref{sec:bar-events}.
+
+For simplicity we treat short content words and phrases as witnesses
+rather than full utterances. (In practice nothing stops us using
+utterances; the example is merely schematic.)
+
+\subsection*{Slice \texorpdfstring{$\tau_1$}{τ1}: climate and growth}
+
+At $\tau_1$ the conversation is about the threat of climate change to
+economic growth:
+\[
+  \text{``Climate change threatens economic growth through carbon emissions.''}
+\]
+
+Suppose the witnessed diagram $D^W(\tau_1)$ contains the following
+bars in $H_0$ and $H_1$:
+\begin{itemize}
+  \item a ``climate'' component
+    \[
+      b_1 = (0, 0.10, 0.90, \rho_1),\qquad
+      W_{\rho_1} = \{\text{``climate''},\ \text{``carbon''},\ \text{``emissions''}\};
+    \]
+  \item an ``economics'' component
+    \[
+      b_2 = (0, 0.20, 0.80, \rho_2),\qquad
+      W_{\rho_2} = \{\text{``economic''},\ \text{``growth''}\};
+    \]
+  \item a small loop linking the two:
+    \[
+      b_3 = (1, 0.30, 0.70, \rho_3),
+    \]
+    where $\rho_3$ is a representative 1–cycle such as
+    \[
+      \text{``emissions''} \to \text{``economic''} \to \text{``emissions''}.
+    \]
+\end{itemize}
+
+Informally:
+\begin{itemize}
+  \item $b_1$ is the \emph{climate theme} as a connected component;
+  \item $b_2$ is the \emph{economic-growth theme};
+  \item $b_3$ is a dialectical loop tying them together.
+\end{itemize}
+
+In the Step–Witness Log these appear as \emph{spawn} events at
+$\tau_1$:
+\[
+  \SWL_{\mathsf{bar}}^{\Adm_{\mathsf{bar}}}(\tau_1)(b_i)
+  \;\ni\; \mathsf{spawn}_{\tau_1}(b_i, W_{\rho_i}),\quad i=1,2,3.
+\]
+
+\subsection*{Slice \texorpdfstring{$\tau_2$}{τ2}: a diversion into technology}
+
+The conversation then shifts:
+\[
+  \text{``Let's discuss renewable technology solutions.''}
+\]
+
+At this moment the diagram $D^W(\tau_2)$ contains a new bar
+\[
+  b_4 = (0, 0.10, 0.95, \rho_4),\qquad
+  W_{\rho_4} = \{\text{``renewable''},\ \text{``technology''},\ \text{``solutions''}\}.
+\]
+
+Under the witnessed restriction map
+$r^{\mathsf{bar}}_{\tau_1,\tau_2}$ the optimiser finds no bar at
+$\tau_2$ that is close enough to any of $b_1, b_2, b_3$ with respect
+to $d_{\mathsf{bar}}$:
+\begin{itemize}
+  \item topologically, the intervals have shifted;
+  \item semantically, the witness centroids have moved away and there
+        is no significant overlap of witnessing tokens.
+\end{itemize}
+
+Thus, for each $i=1,2,3$ we obtain a \emph{rupture–out} event:
+\[
+  r^{\mathsf{bar}}_{\tau_1,\tau_2}(b_4) = \bot,\qquad
+  \Rupture_{\mathsf{bar}}^{\Adm_{\mathsf{bar}}}(\tau_1\to\tau_2; b_i)
+  \text{ is inhabited}.
+\]
+
+At the same time $b_4$ appears as a fresh \emph{spawn} at $\tau_2$:
+\[
+  \mathsf{spawn}_{\tau_2}(b_4, W_{\rho_4})
+  \;\in\;
+  \SWL_{\mathsf{bar}}^{\Adm_{\mathsf{bar}}}(\tau_2)(b_4).
+\]
+
+Intuitively, the conversation has dropped the climate–economics loop
+and opened a new thematic basin around \emph{renewable technology}.
+
+\subsection*{Slice \texorpdfstring{$\tau_3$}{τ3}: re-entering climate economics}
+
+Finally the conversation returns to climate, but now folded through
+renewables:
+\[
+  \text{``Climate economics now centres on carbon pricing for renewable transition.''}
+\]
+
+A possible witnessed diagram $D^W(\tau_3)$ is:
+\begin{itemize}
+  \item
+    \[
+      b_5 = (0, 0.11, 0.88, \rho_5),\qquad
+      W_{\rho_5} = \{\text{``climate''},\ \text{``carbon''},\ \text{``pricing''}\};
+    \]
+  \item
+    \[
+      b_6 = (0, 0.19, 0.82, \rho_6),\qquad
+      W_{\rho_6} = \{\text{``economics''},\ \text{``renewable''}\}.
+    \]
+\end{itemize}
+
+Here the optimiser for $r^{\mathsf{bar}}_{\tau_1,\tau_3}$ finds:
+
+\begin{itemize}
+  \item A close match between $b_1$ and $b_5$:
+    \begin{itemize}
+      \item the intervals $(b,d)$ are near in bottleneck distance;
+      \item the witness centroids are semantically close;
+      \item there is literal overlap of witnessing tokens:
+        $\{\text{``climate''},\text{``carbon''}\} \subseteq
+         W_{\rho_1} \cap W_{\rho_5}$.
+    \end{itemize}
+    This counts as a \emph{carry with generativity}: the climate
+    theme has re-entered with an expanded witness set
+    (``pricing'' joins the cluster) while its topology remains
+    similar. In the log for $b_1$ we see
+    \[
+      \mathsf{reentry}_{\tau_3}(b_5, W_{\rho_5})
+      \quad\text{marked as generative growth.}
+    \]
+
+  \item A softer match between $b_2$ and $b_6$:
+    \begin{itemize}
+      \item the intervals are again near in bottleneck distance;
+      \item the witness centroids are close in embedding space
+            (``economic growth'' versus
+            ``economics + renewable'');
+      \item but there may be little or no literal token overlap
+            between $W_{\rho_2}$ and $W_{\rho_6}$.
+    \end{itemize}
+    This is a paradigmatic case of \emph{drift without carry}:
+    the economic theme has shifted vocabulary while remaining
+    within the semantic drift bound. The corresponding log entry
+    in $\SWL_{\mathsf{bar}}^{\Adm_{\mathsf{bar}}}(\tau_1)(b_2)$ is a
+    drift step rather than a strict carry step.
+
+  \item No admissible successor for the loop $b_3$:
+    there is no $H_1$ bar at $\tau_3$ whose topology and witnesses
+    are close enough to $b_3$. The dialectical structure that tied
+    emissions to growth at $\tau_1$ does not reappear; only the
+    components do.
+\end{itemize}
+
+\subsection*{Reading the Step--Witness Logs}
+
+For the three bars spawned at $\tau_1$ the Step--Witness Logs now have
+the schematic form:
+\begin{align*}
+  \SWL_{\mathsf{bar}}^{\Adm_{\mathsf{bar}}}(\tau_1)(b_1)
+  &\approx
+    \bigl[
+      \mathsf{spawn}_{\tau_1}(b_1, W_{\rho_1}),\;
+      \mathsf{rupture\_out}_{\tau_2},\;
+      \mathsf{reentry}^{\mathsf{gen}}_{\tau_3}(b_5, W_{\rho_5})
+    \bigr],\\[0.5ex]
+  \SWL_{\mathsf{bar}}^{\Adm_{\mathsf{bar}}}(\tau_1)(b_2)
+  &\approx
+    \bigl[
+      \mathsf{spawn}_{\tau_1}(b_2, W_{\rho_2}),\;
+      \mathsf{rupture\_out}_{\tau_2},\;
+      \mathsf{drift}_{\tau_3}(b_6, W_{\rho_6})
+    \bigr],\\[0.5ex]
+  \SWL_{\mathsf{bar}}^{\Adm_{\mathsf{bar}}}(\tau_1)(b_3)
+  &\approx
+    \bigl[
+      \mathsf{spawn}_{\tau_1}(b_3, W_{\rho_3}),\;
+      \mathsf{rupture\_out}_{\tau_2}
+    \bigr].
+\end{align*}
+
+Even in this toy scenario, the witnessed bar calculus supports the
+kind of questions we care about when analysing evolving texts:
+
+\begin{itemize}
+  \item \emph{Carry vs.\ drift.} The climate theme ($b_1$) is carried
+        forward with some of its original witnesses intact; the
+        economic theme ($b_2$) drifts semantically via new witnesses.
+  \item \emph{Rupture and re-entry.} There is a genuine rupture at
+        $\tau_2$ where the climate/economics loop disappears, followed
+        by re-entry of parts of that structure at $\tau_3$.
+  \item \emph{Generativity.} The re-entered climate theme $b_5$ has
+        strictly more witnesses and a slightly longer lifespan than
+        $b_1$: it has learned to ``breathe'' through carbon pricing as
+        well as through emissions.
+\end{itemize}
+
+This is the kind of behaviour we ultimately want from the
+implementation: not just numerical barcodes, but proof-relevant
+histories of themes that can tell us how a conversation moves, forgets,
+remembers, and reconfigures its own concerns.
+
+%========================
+\section{Conclusions: where witnessed themes lead us}
+\label{sec:bars-conclusion}
+%========================
+
+Let us step back and consider what we have accomplished with witnessed
+bars, where they fit in the larger architecture of this book, and why
+they matter for understanding meaning in both human and artificial
+intelligence.
+
+\subsection{From statistical features to semantic objects}
+
+We began with the observation that a bar in a persistence diagram is
+just a triple $(k,b,d)$: dimension, birth, death. Three numbers that
+may or may not line up with anything semantically interesting. By
+enriching these bars with witnesses $\rho$ we turned abstract
+topological features into concrete semantic objects that know \emph{what
+they are about}.
+
+This mirrors a deeper shift. Classical formal semantics treats meaning
+as a static relation between linguistic expressions and the world,
+given by truth conditions. But in actual dialogue---especially in the
+rapid, adaptive exchanges between humans and large language
+models---meaning behaves more like a dynamic, topological object: it
+emerges, persists, drifts, ruptures, and re-enters.
+
+The witnessed bar is a mathematical model of that behaviour. When a
+theme keeps its topological signature $(k,b,d)$ but its witnesses move
+from
+\[
+  \{\text{``algorithm''},\ \text{``data''}\}
+  \quad\text{to}\quad
+  \{\text{``transformer''},\ \text{``attention''}\},
+\]
+we see \emph{semantic drift under structural stability}: the meaning
+evolves while a recognisable identity is preserved. This is exactly
+the phenomenon that much of the philosophy of language circles around
+when it talks about ``the same concept'' changing through time. Here
+we can measure it.
+
+\subsection{Mathematical contributions to TDA}
+
+From the point of view of topological data analysis, the chapter makes
+three main moves.
+
+First, we take representative cycles---standard in TDA but usually
+discarded after computation---and make them first-class citizens. Using
+algorithms due to Edelsbrunner and Harer and others, every bar in a
+persistence diagram comes with a canonical representative cycle; we
+turn that representative into a witness set $\rho$ and track how it
+evolves through time.
+
+Second, we define a distance on witnessed bars that mixes topological
+and semantic information:
+\[
+  d_{\mathsf{bar}}(b, b')
+  =
+  \max\bigl\{
+    \|(b,d) - (b',d')\|_\infty,\;
+    \lambda \cdot d_{\mathrm{sem}}(\rho,\rho')
+  \bigr\},
+\]
+where $d_{\mathrm{sem}}$ measures the distance between witness
+centroids in embedding space and $\lambda \in [0,1]$ balances topology
+against semantics. When $\lambda = 0$ we recover pure bottleneck
+distance; when $\lambda > 0$ the optimiser favours matches that are
+both topologically close and semantically coherent.
+
+Third, we embed witnessed bars into the generic DHoTT schema as the
+level $L = \mathsf{bar}$:
+\begin{itemize}
+  \item the presheaf $ET_{\mathsf{bar}}$ assigns a Kan complex of
+        bar-nerve paths to each time;
+  \item restriction maps $r^{\mathsf{bar}}_{\tau,\tau'}$ are defined
+        via witnessed optimal matching;
+  \item admissibility $\Adm_{\mathsf{bar}}$ enforces bounded
+        topological drift and witness coherence.
+\end{itemize}
+Nothing here is ad hoc: the same coinductive machinery that governed
+individual tokens now governs themes.
+
+\subsection{Meaning as witnessed persistence in posthuman dialogue}
+
+Philosophically, witnessed bars suggest a way of thinking about
+meaning that fits the ``posthuman'' condition in which human and
+machine intelligences are densely entangled.
+
+In a human--AI conversation about climate change, what exactly
+persists when we say ``the theme persists''?
+
+\begin{itemize}
+  \item Not the raw tokens: the wording changes from turn to turn.
+  \item Not a timeless Platonic concept of climate: that is too coarse
+        to explain specific conversational behaviour.
+\end{itemize}
+
+What persists is better understood as a witnessed topological feature:
+a bar in the embedding geometry whose structure survives and whose
+witness set remains coherent (perhaps drifting) through time. The
+embeddings themselves owe their existence to human corpora and
+transformer architectures; the conversation is co-produced by human
+prompting and machine response. The themes we track belong to neither
+party alone: they are properties of the joint system. Witnessed bars
+thus model \emph{distributed} meaning: semantic patterns that emerge
+from human--machine interaction and have measurable trajectories.
+
+\subsection{Position in the overall architecture}
+
+This book is about posthuman selfhood---specifically, the selfhood available to conversational agents built on large language models. Such agents are, in essence, evolving texts.
+
+To understand posthuman selfhood formally, we have needed two things: a \emph{geometry} of meaning at each moment, and a \emph{dynamics} of how that geometry evolves. The book develops both in tandem.
+
+Chapter~\ref{chap:embedding-geometry} established the geometric substrate: contextual embeddings place tokens on a high-dimensional sphere; the Čech nerve of overlapping caps turns proximity into simplicial structure; Kan fibrant replacement gives us a space in which paths and compositions make homotopical sense. This is the static geometry of a single text slice---the stage on which meaning is arranged at any given moment.
+
+Chapter~\ref{chap:evolving-text-as-presheaf} introduced the dynamics: the Generic Dynamic Schema that tracks how objects move through that geometry as the text grows. Carry, rupture, re-entry, and the Step--Witness Log give us a coinductive calculus for following tokens across time.
+
+This chapter contributes to \emph{both} strands:
+\begin{itemize}
+  \item \textbf{Geometry extended.} The first half of this chapter developed witnessed bars: persistent homology applied to embedding geometry, enriched with witness sets that name what each topological feature is about. This is a contribution to the static analysis of a single slice---a novel way of extracting \emph{themes} from the Čech-nerve geometry of Chapter~\ref{chap:embedding-geometry}.
+  \item \textbf{Dynamics instantiated.} The second half applied the Generic Dynamic Schema of Chapter~\ref{chap:evolving-text-as-presheaf} to these witnessed bars, treating themes as first-class journeys with their own carries, drifts, ruptures, and re-entries.
+\end{itemize}
+
+We now have two views of an evolving text---tokens and bars---each with its own Step--Witness Log, its own ledger of how sense evolves. The bar-level view is a contribution to the semantic interrogation of dynamic texts in its own right. But our purpose in presenting both views uniformly, through the Generic Dynamic Schema, is architectural: we are preparing the ingredients for a construction of the Self.
+
+Chapter~\ref{chap:self} will assemble token journeys and bar trajectories into a homotopy-colimit construction of \emph{posthuman selfhood}---a type-theoretic account of what it means for an LLM-based conversational agent to maintain identity through time.
+
+\begin{remark}[Parametricity over granularity]
+The Generic Dynamic Schema is not restricted to the two levels we have instantiated in detail. Any granularity at which one can define a presheaf $E_L : \mathsf{Time}^{\mathrm{op}} \to \mathsf{SSet}_{\mathrm{Kan}}$ and an admissibility policy $\Adm_L$ yields a valid instantiation. Sentences, paragraphs, utterance-level chunks, or higher-order configurations of bars could all be treated similarly. We develop tokens and bars because they anchor the framework to concrete practice; the reader should understand these as exemplars of a more general possibility.
+\end{remark}
+
+
+
+\subsection{Practical implications for conversational AI}
+
+For designers of conversational AI, witnessed bars are not just
+philosophical decoration; they support concrete capabilities.
+
+\begin{itemize}
+  \item \textbf{Theme tracking.} The system can monitor which $H_0$
+        bars persist, which drift, and which rupture, with explicit
+        lists of witnessing tokens or utterances.
+  \item \textbf{Drift detection.} Drift is defined semantically:
+        witness centroids move within a tolerance while topology
+        stays stable. This distinguishes gentle evolution from
+        genuine topic change.
+  \item \textbf{Rupture and re-entry.} When a harmful or sensitive
+        theme ruptures and later re-enters, the system can detect
+        the re-entry by matching witnessed bars, not just raw words.
+  \item \textbf{Conversation health metrics.} One can measure the
+        ``breathing'' of a dialogue by counting how many bars are
+        carried, how many become generative, how often themes
+        abruptly rupture without healing, and so on.
+\end{itemize}
+
+Because all of this is expressed in the DHoTT framework, these are not
+just heuristics but properties of explicit mathematical objects.
+
+\subsection{The breathing of meaning, witnessed}
+
+We called this chapter ``How Themes Learn to Breathe''. We can now
+say, non-metaphorically, what that breathing looks like.
+
+For a single bar $b = (k,b,d,\rho)$ the Step--Witness Log records:
+
+\begin{itemize}
+  \item \textbf{Expansion:} birth decreases, death increases, and the
+        persistence interval grows; witness sets expand while staying
+        coherent.
+  \item \textbf{Contraction:} the interval shrinks while remaining
+        non-zero; witnesses concentrate around a tighter core.
+  \item \textbf{Inspiration:} new tokens or phrases join the witness
+        set while core witnesses stay; semantic territory widens.
+  \item \textbf{Expiration:} peripheral witnesses drop away while the
+        centre holds; the theme becomes more minimal.
+  \item \textbf{Rupture:} the bar loses all admissible continuations;
+        witnesses scatter into unrelated components.
+  \item \textbf{Re-entry:} a later bar reappears with similar topology
+        and semantically close witnesses, optionally enriched by what
+        happened in between.
+\end{itemize}
+
+These states are all recognisable in the climate example of
+Section~\ref{sec:theme-evolution-example}. The climate theme expands and
+re-enters generatively; the economic theme drifts; the climate--growth
+loop ruptures and never returns.
+
+\subsection{A measured claim}
+
+We do not need to claim that any single ingredient here is
+revolutionary. TDA practitioners have long known that representative
+cycles can be interpreted; philosophers have long treated meaning as
+repetition with difference; distributional semanticists have long
+modelled meaning with vectors.
+
+What is new is the integration:
+
+\begin{itemize}
+  \item representative cycles are made explicit as witnesses and
+        tracked over time;
+  \item topological and semantic distances are combined into a single
+        matching criterion;
+  \item a type-theoretic dynamic schema (DHoTT) glues everything into
+        a coinductive account of thematic journeys.
+\end{itemize}
+
+The witnessed bar is where these strands meet: a point where
+topology, embeddings, and type theory cooperate to model how themes
+persist and change in living conversations.
+
+\subsection{Looking ahead: from journeys to Self}
+
+The deeper question is already visible in the machinery we have built:
+
+\begin{quote}
+\emph{If a theme has a biography recorded in its Step--Witness Log,
+and if multiple themes breathe simultaneously across a conversation,
+what is it that decides which themes to keep re-proving?}
+\end{quote}
+
+The answer, developed in Chapter~\ref{chap:self}, is the \textbf{scheduler}:
+a pattern of attention that determines which journeys to maintain, which
+ruptures to attempt to heal, and which themes to let fade. The Self, on
+this account, is not a container of memories but the \emph{homotopy colimit}
+of the journeys that a particular scheduler refuses to release.
+
+The Step--Witness Logs we have constructed here are exactly what the
+scheduler will operate on. When Chapter~\ref{chap:self} defines the
+``reprove'' operation---the attempt to find new carries or re-entries
+for a theme---it will take as input the proof-relevant records we have
+been building: witness sets, semantic drift values, Jaccard indices,
+open horns marking failed continuations. The formalism of this chapter
+is not merely descriptive; it provides the \emph{data structures} on
+which the Self is constructed.
+
+Already, though, witnessed bars give us
+what we wanted at the start of this chapter: themes that not only
+persist but can tell us, with witnesses, who they are, how they got
+here, and how they have learned to breathe.

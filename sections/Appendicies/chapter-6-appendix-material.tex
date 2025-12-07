@@ -1,0 +1,63 @@
+\appendix
+\section{Alternate Proof of Fibrancy}
+\label{appendix:fibrancy-alt}
+
+\subsection*{Why this matters}
+
+While the main body of the text presents a conceptual argument for fibrancy—motivated by the Hermeneutic Axiom and grounded in the geometry of evolving meaning—this appendix supplies a more technical, model-theoretic justification. For readers familiar with presheaf semantics, model categories, and internal logic, the following derivation shows that each DHoTT type constructor respects Kan fibrancy in the standard projective model structure on simplicial presheaves. This establishes not just intuitive soundness, but a formal guarantee that all semantic types in DHoTT live within a Kan-complete universe, slice by slice.
+
+\vspace{1em}
+
+\begin{lemma}[Fibrancy via projective structure]
+Let $\Gamma \vdash_\tau A : \Type$ be a derivable judgment in DHoTT. Then its interpretation
+\[
+\llbracket A \rrbracket \longrightarrow \llbracket \Gamma \rrbracket
+\]
+is a \emph{small fibration} in the projective model structure on
+\[
+[\Time^{\mathrm{op}}, \mathsf{SSet}],
+\]
+where $\mathsf{SSet}$ carries the Kan–Quillen model structure.
+\end{lemma}
+
+\begin{proof}
+We proceed by structural induction on the derivation of $A$.
+
+\medskip\noindent
+\textbf{Base environment.}
+In the projective model structure on
+$[\Time^{\mathrm{op}}, \mathsf{SSet}]$
+(see Joyal--Tierney~\cite[Thm.\,2.4]{joyal-tierney}),
+a morphism is a fibration (resp. weak equivalence) if and only if it is one
+\emph{object-wise}. Thus, a presheaf is fibrant if each value $A(\tau)$ is a Kan complex in $\mathsf{SSet}$, and each restriction map is a Kan fibration.
+
+\medskip\noindent
+\textbf{Core type formers.}
+For $\Pi$, $\Sigma$, identity types, and standard higher inductive types,
+the interpretation is computed pointwise in $\mathsf{SSet}$. Each constructor in HoTT preserves Kan fibrations at the level of simplicial sets. Since restriction functors commute with these constructions, the resulting presheaf remains object-wise Kan, and therefore fibrant.
+
+\medskip\noindent
+\textbf{Drift types.}
+Given a type $A$ and times $\tau \le \tau'$, the type
+\[
+\llbracket \Drift(A)_{\tau}^{\tau'} \rrbracket = \operatorname{Hom}_{\mathsf{SSet}}(A(\tau), A(\tau'))
+\]
+is interpreted as an internal hom in $\mathsf{SSet}$. Since Kan fibrations are exponentiable~\cite{joyal-tierney}, the internal hom of Kan complexes is again Kan. This object-wise fibrancy lifts to the presheaf, ensuring the overall interpretation is a fibration over $\llbracket \Gamma \rrbracket$.
+
+\medskip\noindent
+\textbf{Rupture types.}
+Fix a drift arrow $p : A(\tau) \to A(\tau')$ and a point $a \in A(\tau)$. Then $\llbracket \Rupt{p}{a} \rrbracket$ is defined as the homotopy pushout:
+\[
+\llbracket \Rupt{p}{a} \rrbracket =
+\pushout{A(\tau')}{\mathbf{1}}{A(\tau)}{p}{a}.
+\]
+The map $A(\tau) \hookrightarrow A(\tau')$ is a monomorphism in $\mathsf{SSet}$, hence a cofibration in the Kan–Quillen model structure. By Cisinski’s left-properness criterion~\cite[Prop.\,2.4.7]{cisinski}, pushouts along cofibrations preserve fibrations. Hence each component $\llbracket \Rupt{p}{a} \rrbracket$ is fibrant, and the rupture type is interpreted as a small fibration.
+
+\medskip\noindent
+\textbf{Conclusion.}
+Each formation rule in DHoTT maps to a constructor that preserves Kan fibrancy object-wise in $\mathsf{SSet}$. The projective model structure lifts this fibrancy to the presheaf level. Therefore, the map
+\[
+\llbracket A \rrbracket \to \llbracket \Gamma \rrbracket
+\]
+is always a small fibration.
+\end{proof}

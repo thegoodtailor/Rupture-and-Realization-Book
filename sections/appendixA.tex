@@ -1,0 +1,106 @@
+\appendix
+\chapter{Appendix 1: Rules of Homotopy Type Theory in $\DynSem/y(\tau)$}
+
+\addcontentsline{toc}{section}{Appendix 1: Rules of HoTT in $\DynSem/y(\tau)$}
+
+\paragraph{Aim.}
+This appendix collects the full formation, introduction, elimination, and
+computation rules of Homotopy Type Theory (HoTT), interpreted
+\emph{inside a fixed time slice} of our semantic universe
+\[
+\DynSem = [\Time^{\mathrm{op}}, \SSet_{\mathrm{Kan}}].
+\]
+That is, we work in the slice category $\DynSem / y(\tau)$ for a chosen
+$\tau \in \Time$, where $y(\tau)$ is the representable presheaf. Each such
+slice is equivalent to the simplicial set model of univalent HoTT, and hence
+supports the full MLTT/HoTT fragment with universes, identity types, dependent
+products, dependent sums, and higher inductives.
+
+\paragraph{Scope.}
+The rules given here are \emph{identical} to those of ordinary intensional
+HoTT, with the sole difference that every judgment is explicitly anchored to a
+time slice:
+\[
+\Gamma \;\vdash_{\tau}\; J.
+\]
+Semantically, $\Gamma$ is a presheaf of contexts and $\Gamma(\tau)$ is its
+presentation at time $\tau$. The indexed turnstile $\vdash_{\tau}$ signals that
+we reason internally in the fibre $A(\tau)$ for some presheaf $A$, i.e.\ in
+the frozen snapshot of the evolving text at $\tau$.
+
+\paragraph{Purpose.}
+By collecting these rules in one place, we make two points transparent:
+\begin{enumerate}
+\item At every frozen moment $\tau$, DHoTT reduces to standard HoTT in the
+Kan simplicial set model. No extra dynamic machinery is required in-frame.
+\item Later appendices will extend this static base with the
+\emph{dynamic} rules of DHoTT (drift, rupture, heal, reconcile, recursion),
+but those dynamic moves always presuppose that the in-slice HoTT fragment is
+available as their foundation.
+\end{enumerate}
+
+\paragraph{Style.}
+We present each rule in full: hypotheses, contexts, and conclusions written
+without abbreviation, so that every side-condition is explicit. The aim is to
+make this appendix a complete reference for humans and a canonical training
+dataset for AI models. Where ordinary type theory texts sometimes suppress
+context parameters, we keep them visible here.
+
+\paragraph{Contents.}
+The rules are grouped under the following headings:
+\begin{itemize}
+\item Structural rules (contexts, weakening, exchange, contraction, substitution).
+\item Universes and cumulativity.
+\item Dependent function types ($\Pi$) and dependent sum types ($\Sigma$).
+\item Identity types and their eliminator $J$.
+\item Function and product shorthands ($\to$, $\times$).
+\item Univalence and higher inductive types (as assumptions).
+\end{itemize}
+Together these constitute the in-frame fragment of DHoTT, which we may always
+invoke simply as ``HoTT in $\DynSem/y(\tau)$.''
+
+
+
+
+\begin{figure}[t]
+\fbox{\parbox{\textwidth}{
+\textbf{Contexts and Structural Rules (at a fixed $\tau$).}
+\[
+\varnothing \ \mathrm{ctx}_\tau \qquad
+\frac{\Gamma \ \mathrm{ctx}_\tau \quad \Gamma \vdash_\tau A : \mathrm{Type}}
+     {\Gamma, x:A \ \mathrm{ctx}_\tau}\ (\mathrm{Ext})
+\qquad
+\frac{\Gamma, x:A \ \mathrm{ctx}_\tau}{\Gamma, x:A \vdash_\tau x : A}\ (\mathrm{Var})
+\]
+\[
+\frac{\Gamma \vdash_\tau J \quad \Gamma \vdash_\tau A : \mathrm{Type}}
+     {\Gamma, x:A \vdash_\tau J}\ (\mathrm{Weak})\qquad
+\frac{\Gamma, x:A, y:B, \Delta\ \mathrm{ctx}_\tau}
+     {\Gamma, y:B, x:A, \Delta\ \mathrm{ctx}_\tau}\ (\mathrm{Exch})
+\]
+\[
+\frac{\Gamma, x:A, x':A, \Delta \vdash_\tau J}
+     {\Gamma, x:A, \Delta \vdash_\tau J[x/x']}\ (\mathrm{Contr})
+\qquad
+\frac{\Delta \vdash_\tau \sigma : \Gamma \quad \Gamma \vdash_\tau J}
+     {\Delta \vdash_\tau J[\sigma]}\ (\mathrm{Subst})
+\]
+\[
+\frac{\Gamma \vdash_\tau A \equiv B : \mathrm{Type} \quad \Gamma \vdash_\tau t : A}
+     {\Gamma \vdash_\tau t : B}\ (\mathrm{Conv})
+\]
+}}
+\caption{Structural rules in the slice $\DynSem/y(\tau)$. Every judgment is anchored to time $\tau$ by the indexed turnstile $\vdash_\tau$. Semantically, $\Gamma(\tau)$ is the context object at $\tau$ in the presheaf model $[\Time^{\mathrm{op}},\SSet_{\mathrm{Kan}}]$.}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
