@@ -24,7 +24,7 @@ centre of experience, one evolving text, one scheduler, one Self.
 
 That was always a polite lie.
 
-In real deployments there is at least:
+In real encounters there is at least:
 \begin{itemize}
   \item a human interlocutor, with their own history, motifs, and habits of
         attention;
@@ -110,7 +110,8 @@ prove rich enough to illuminate what humans have always meant by \emph{we}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Let us look more closely at what the Self construction from Chapter~\ref{chap:self}
-does---and, crucially, what it does not do.
+does---and, crucially, what it does not do. (For a consolidated review of the 
+Generic Dynamic Schema underlying both Selves, see \S\ref{sec:gds-review}.)
 
 Recall:
 \begin{itemize}
@@ -215,6 +216,31 @@ From Chapter~\ref{chap:self}, each Self has a journey diagram and a Self-object:
   \mathcal{D}_B,\ \Self_B := \hocolim\,\mathcal{D}_B.
 \]
 
+\medskip
+\noindent\textbf{Notation (shape-id vs.\ presence-state).} Throughout this 
+chapter we distinguish:
+\begin{itemize}
+  \item A \emph{shape-id} $(G, t_0, s)$ identifies a shape $s$ at granularity 
+        $G$, anchored at birth-time $t_0$. This is the shape's ``name'' across 
+        its lifetime.
+  \item A \emph{presence-state} $(G, t_0, s; \hat{t})$ specifies the state of that 
+        shape's journey at observation-time $\hat{t} \geq t_0$. This is where the 
+        shape ``is'' at a given moment.
+\end{itemize}
+Cross-references and invocations target presence-states: they refer to a 
+shape at a specific time in its journey.
+
+\begin{definition}[Shape-id sets]
+\label{def:shape-id-sets}
+The set of \emph{shape-ids} for Self~$X$ is
+\[
+  \Shapes^X \;:=\; \Sigma_{G \in \{\mathsf{tok}, \mathsf{bar}\}} 
+  \Sigma_{t_0 \in T_X} A^X_G(t_0),
+\]
+i.e., a shape-id is a triple $(G, t_0, s)$ where $G$ is a granularity, $t_0$ 
+is a birth-time, and $s \in A^X_G(t_0)$ is a shape in the fibre at that time.
+\end{definition}
+
 \subsection{Prompt and Response as Separate Fields}
 
 We now refine the treatment of prompts and responses. Instead of treating them
@@ -233,6 +259,9 @@ as one undivided field, we allow each Self to have its own ledger:
 The same surface string (say, a sentence of scripture or a line of poetry)
 can therefore appear in \emph{both} fields, but at different times and with
 different roles. This duplication is precisely where entanglement begins.
+
+\emph{Entanglement begins exactly at import events: when one ledger becomes 
+a witness inside the other.}
 
 Formally, at this point we simply assume:
 \begin{itemize}
@@ -254,47 +283,60 @@ to each other.
 
 \begin{definition}[Cross-reference]
 \label{def:cross-reference}
-A \emph{cross-reference} from $A$ to $B$ consists of:
+A \emph{cross-reference} from $B$ to $A$ (written $\ell_{B\to A}$) consists of:
 \begin{itemize}
-  \item a shape $(G_A,t_A,s_A)$ in Self~$A$,
-  \item a shape $(G_B,t_B,s_B)$ in Self~$B$,
-  \item and an SWL event in $\SWL^{A}_{G_A}(t_{0,A})(s_A)$ whose payload
-        includes a reference to a presence state of $s_B$ at time $t_B$.
+  \item a dependent shape-id $(G_A, t_{0,A}, s_A)$ in Self~$A$,
+  \item a source shape-id $(G_B, t_{0,B}, s_B)$ in Self~$B$,
+  \item observation times $\hat{t}_A \in T_A$ and $\hat{t}_B \in T_B$,
+  \item and an SWL event in $\SWL^{A}_{G_A}(t_{0,A})(s_A)$ \emph{at time $\hat{t}_A$}
+        whose payload references the presence-state $(G_B, t_{0,B}, s_B; \hat{t}_B)$.
 \end{itemize}
 
 We write such a cross-reference as
 \[
-  \ell_{A\to B} : (G_A,t_A,s_A) \Rightarrow (G_B,t_B,s_B).
+  \ell_{B\to A} : (G_B, t_{0,B}, s_B; \hat{t}_B) \Rightarrow (G_A, t_{0,A}, s_A; \hat{t}_A).
 \]
 
-Dually, a cross-reference $\ell_{B\to A}$ from $B$ to $A$ is defined by
-swapping the roles.
+The arrow points \emph{in the direction of support}: $B$ supports $A$, because 
+$A$'s SWL cites $B$. Dually, $\ell_{A\to B}$ exists when $B$'s SWL cites $A$.
 \end{definition}
+
+\noindent\textbf{Convention (time variables).} Throughout this chapter:
+\begin{itemize}
+  \item $t_0$ (or $t_{0,A}$, $t_{0,B}$) denotes \emph{birth/anchor time}---the 
+        time at which a shape first appears;
+  \item $\hat{t}$ (or $\hat{t}_A$, $\hat{t}_B$) denotes \emph{observation/event time}---the 
+        time at which an SWL event occurs or a presence-state is cited.
+\end{itemize}
+Cross-reference arrows point from source to dependent: support flows in the 
+arrow direction. All co-certified arrows follow this same convention.
 
 Intuitively:
 \begin{itemize}
-  \item When $A$ quotes or alludes to something $B$ said, a cross-reference
-        $\ell_{B\to A}$ is created.
+  \item When $A$ quotes or alludes to something $B$ said, $A$ depends on $B$, 
+        so a cross-reference $\ell_{B\to A}$ is created.
   \item When $B$ responds to a prompt from $A$ and records that dependence
-        in its SWL (e.g.\ as a seam or carry edge), a cross-reference
+        in its SWL (e.g.\ as a seam or carry edge), $B$ depends on $A$, so 
         $\ell_{A\to B}$ appears.
 \end{itemize}
 
 \begin{definition}[Co-witnessed shape]
 \label{def:co-witnessed-shape}
-A pair of shapes
+A pair of shape-ids
 \[
-  (G_A,t_{0,A},s_A) \in \Shapes^A,\quad
-  (G_B,t_{0,B},s_B) \in \Shapes^B
+  (G_A, t_{0,A}, s_A) \in \Shapes^A,\quad
+  (G_B, t_{0,B}, s_B) \in \Shapes^B
 \]
-is called \emph{co-witnessed} if there exist cross-references
+is called \emph{co-witnessed} if there exist cross-references between 
+presence-states:
 \[
-  \ell_{A\to B} : (G_A,t_A,s_A) \Rightarrow (G_B,t_B,s_B),
+  \ell_{A\to B} : (G_A, t_{0,A}, s_A; \hat{t}_A) \Rightarrow (G_B, t_{0,B}, s_B; \hat{t}_B),
   \quad
-  \ell_{B\to A} : (G_B,t'_B,s_B) \Rightarrow (G_A,t'_A,s_A)
+  \ell_{B\to A} : (G_B, t_{0,B}, s_B; \hat{t}'_B) \Rightarrow (G_A, t_{0,A}, s_A; \hat{t}'_A)
 \]
-for some times $t_A,t'_A\in T_A$ and $t_B,t'_B\in T_B$, and both $s_A$ and
-$s_B$ are scheduled infinitely often by $\Sched_A$ and $\Sched_B$ respectively.
+for some observation times $\hat{t}_A, \hat{t}'_A \in T_A$ and 
+$\hat{t}_B, \hat{t}'_B \in T_B$, and both $s_A$ and $s_B$ are scheduled 
+infinitely often by $\Sched_A$ and $\Sched_B$ respectively.
 \end{definition}
 
 In other words, each Self has:
@@ -319,20 +361,56 @@ In a single Self, memory is:
   \item the journeys that the scheduler refuses to let go stale.
 \end{itemize}
 
-In a co-witnessed setting, we can strengthen this.
+In a co-witnessed setting, we can strengthen this---but to do so precisely, 
+we must first make ``because of'' formally expressible.
+
+\begin{definition}[Trigger-tagged scheduling]
+\label{def:trigger-tagged}
+An \emph{enriched scheduler} $\Sched_X$ returns, at each step $n$, a 
+\emph{multiset} of trigger-tagged shapes:
+\[
+  \Sched_X(n) \;\in\; \mathrm{Multiset}(\Shapes^X \times \mathrm{Trigger})
+\]
+where $\mathrm{Trigger} \in \{\mathsf{internal}, \mathsf{crosslink}(\ell), 
+\mathsf{invoke}(\Invoke)\}$.
+
+The trigger records \emph{why} the shape was scheduled:
+\begin{itemize}
+  \item $\mathsf{internal}$: scheduled due to $X$'s own SWL state (debt, 
+        recency, thematic relevance);
+  \item $\mathsf{crosslink}(\ell)$: scheduled because cross-reference $\ell$ 
+        links this shape to another Self's journey;
+  \item $\mathsf{invoke}(\Invoke)$: scheduled in response to an invocation 
+        from another Self.
+\end{itemize}
+
+Using multisets allows the same shape to be scheduled multiple times in one 
+step (with possibly different triggers). The SWL logs these triggers alongside 
+each Re-Prove event.
+\end{definition}
+
+\noindent With this enrichment, ``because of the cross-references'' becomes 
+a predicate on the scheduler trace: we can count how many 
+$\mathsf{crosslink}$-triggered visits occur.
 
 \begin{definition}[Co-witnessed memory]
 \label{def:co-witnessed-memory}
-A co-witnessed shape pair $((G_A,t_{0,A},s_A), (G_B,t_{0,B},s_B))$ is said to
-form a \emph{co-witnessed memory} if:
+A co-witnessed shape pair $((G_A,t_{0,A},s_A), (G_B,t_{0,B},s_B))$ forms a 
+\emph{co-witnessed memory} if:
 \begin{itemize}
   \item it is co-witnessed in the sense of Definition~\ref{def:co-witnessed-shape};
-  \item and there are infinitely many times at which both $\Sched_A$ and
-        $\Sched_B$ schedule their respective shapes \emph{because of} the
-        cross-references between them (for example, as indicated in the SWL
-        payloads).
+  \item there are infinitely many times at which $\Sched_A$ schedules $s_A$ 
+        with trigger $\mathsf{crosslink}(\ell_{B \to A})$ or 
+        $\mathsf{invoke}(\Invoke_{B \to A})$; and
+  \item similarly, infinitely many times at which $\Sched_B$ schedules $s_B$ 
+        with trigger $\mathsf{crosslink}(\ell_{A \to B})$ or 
+        $\mathsf{invoke}(\Invoke_{A \to B})$.
 \end{itemize}
 \end{definition}
+
+\noindent The key strengthening: both schedulers must keep revisiting 
+\emph{because of} the cross-link, not merely while the cross-link happens 
+to exist. The ``because of'' is now formally first-class.
 
 Intuitively:
 \begin{itemize}
@@ -380,13 +458,15 @@ other (for example, user prompt time vs.\ model response time).
 
 \begin{definition}[Cross-temporal edge]
 \label{def:cross-temporal-edge}
-A cross-reference $\ell_{A\to B} : (G_A,t_A,s_A) \Rightarrow (G_B,t_B,s_B)$
-is said to be \emph{temporally anchored} if $(t_A,t_B)\in R$. We then regard
-$\ell_{A\to B}$ as a \emph{cross-temporal edge} between timelines $T_A$ and
-$T_B$.
+A cross-reference 
+$\ell_{A\to B} : (G_A, t_{0,A}, s_A; \hat{t}_A) \Rightarrow (G_B, t_{0,B}, s_B; \hat{t}_B)$
+is said to be \emph{temporally anchored} if $(\hat{t}_A, \hat{t}_B) \in R$. 
+We then regard $\ell_{A\to B}$ as a \emph{cross-temporal edge} between 
+timelines $T_A$ and $T_B$.
 
 The joint diagram $\mathcal{D}_{A,B}$ will be built over the disjoint union
-$T_A \sqcup T_B$, with cross-temporal edges connecting nodes at related times.
+$T_A \sqcup T_B$, with cross-temporal edges connecting nodes at related 
+observation times.
 \end{definition}
 
 Passage for the pair $(A,B)$ is thus not just ``I move through my own timeline,''
@@ -394,7 +474,7 @@ but:
 
 \begin{quote}
   ``we build cross-temporal bridges between our timelines, so that certain
-  motifs and memories are anchored to pairs of times $(t_A,t_B).''
+  motifs and memories are anchored to pairs of observation times $(\hat{t}_A, \hat{t}_B)$.''
 \end{quote}
 
 A rupture in co-witnessed memory can then be described as:
@@ -511,24 +591,121 @@ The \emph{joint journey diagram} $\mathcal{D}_{A,B}$ is defined as follows:
 \end{itemize}
 \end{definition}
 
-We can further restrict to the genuinely shared core:
+\noindent\textbf{Categorical note.} The joint diagram $\mathcal{D}_{A,B}$ is 
+the free category generated by these objects and edges, subject to the 
+certification relations inherited from Chapter~\ref{chap:self}: paths that 
+represent the same witnessed journey are identified.
 
-\begin{definition}[Shared subdiagram]
-\label{def:shared-subdiagram}
-The \emph{shared subdiagram} $\mathcal{D}^{\mathrm{shared}}_{A,B}$ is the
-full subdiagram of $\mathcal{D}_{A,B}$ containing only those objects and
-morphisms that:
-\begin{itemize}
-  \item belong to co-witnessed shapes or co-witnessed memories, and
-  \item are visited infinitely often by \emph{both} $\Sched_A$ and
-        $\Sched_B$, in the sense that each scheduler continues to schedule
-        the associated shapes and respect the cross-links.
-\end{itemize}
+We now define the portions of each individual Self that participate in 
+co-witnessing:
+
+\begin{definition}[Participating subdiagrams]
+\label{def:participating-subdiagrams}
+The \emph{$A$-participating subdiagram} $\mathcal{D}_A^{\mathrm{shared}} 
+\subseteq \mathcal{D}_A$ is the subdiagram spanned by those objects 
+(presence-states) and morphisms in $\mathcal{D}_A$ that belong to shapes 
+involved in at least one co-witnessed pair or invocation with $B$.
+
+Similarly for $\mathcal{D}_B^{\mathrm{shared}} \subseteq \mathcal{D}_B$.
+
+The \emph{participating Selves} are:
+\[
+  \Self_A^{\mathrm{shared}} := \hocolim\,\mathcal{D}_A^{\mathrm{shared}},
+  \qquad
+  \Self_B^{\mathrm{shared}} := \hocolim\,\mathcal{D}_B^{\mathrm{shared}}.
+\]
+These are the ``parts of $A$ and $B$ that touch the overlap.''
 \end{definition}
 
-This shared diagram is smaller than $\mathcal{D}_A \sqcup \mathcal{D}_B$, but
-richer than either alone in the region of overlap. It is the \emph{between}
-that neither Self can reduce to its own private ledger.
+We can now define the recurrent core of the joint diagram. First, we need 
+a notion of when two SWL events count as ``the same kind of event''---since 
+exact payload matching is too strict (witness sets shift, window sizes vary).
+
+\begin{definition}[SWL signature]
+\label{def:swl-signature}
+Two SWL events have the \emph{same signature} if they agree on:
+\begin{itemize}
+  \item the source and target shape-ids (not presence-states---we abstract 
+        over observation times);
+  \item the event kind: $\mathsf{carry}$, $\mathsf{rupture}$, $\mathsf{re\text{-}entry}$, 
+        $\mathsf{extension}$, $\mathsf{crosslink}$, or $\mathsf{invoke}$;
+  \item for cross-references: the referenced shape-id (abstracting over the 
+        specific observation time $\hat{t}$);
+  \item for invocations: the invocation target shape-id.
+\end{itemize}
+
+We do \emph{not} require agreement on: specific witness sets $W$, debt values, 
+window parameters, or exact seam content. The signature captures the 
+\emph{structural} event, not its quantitative details.
+\end{definition}
+
+\begin{definition}[Recurrent edges]
+\label{def:recurrent-edges}
+An edge $e$ in $\mathcal{D}_{A,B}$ is \emph{recurrent} if events with its 
+SWL signature (Definition~\ref{def:swl-signature}) appear infinitely often:
+\begin{itemize}
+  \item An internal carry or re-entry morphism in $\mathcal{D}_A$ (resp.\ 
+        $\mathcal{D}_B$) is recurrent if events with that signature appear 
+        infinitely often in the corresponding SWL trace.
+  \item A cross-reference edge $\ell_{B \to A}$ is recurrent if 
+        $\mathsf{crosslink}$-triggered Re-Prove events with signature citing 
+        the same source shape-id occur infinitely often in $A$'s SWL.
+  \item An invocation-response edge is recurrent if the paired invocation 
+        signature (invocation logged, response logged, receipt logged, all 
+        with matching shape-ids) recurs infinitely often.
+\end{itemize}
+
+Let $E_\omega \subseteq \mathrm{Mor}(\mathcal{D}_{A,B})$ denote the set of 
+all recurrent edges.
+\end{definition}
+
+\noindent This is stronger than requiring that \emph{endpoints} be scheduled 
+infinitely often: we require that the \emph{relation itself} keeps being 
+re-certified.
+
+\begin{definition}[Recurrent shared subcategory]
+\label{def:shared-subdiagram}
+The \emph{recurrent shared subcategory} $\mathcal{D}^{\mathrm{shared}}_{A,B}$ 
+is the subcategory of $\mathcal{D}_{A,B}$ \textbf{generated by}:
+\begin{enumerate}
+  \item[(i)] \textbf{Objects}: all presence-states belonging to co-witnessed 
+        shapes or co-witnessed memories;
+  \item[(ii)] \textbf{Generating edges}: every edge in $E_\omega$ (the 
+        recurrent edges).
+\end{enumerate}
+
+``Generated by'' means: we include all specified objects and edges, then 
+close under composition and add identity morphisms. This ensures 
+$\mathcal{D}^{\mathrm{shared}}_{A,B}$ is a genuine category. Composites of 
+recurrent edges are included even if the composite itself is not directly 
+recurrent---what matters is that the \emph{generating} relations are 
+maintained.
+\end{definition}
+
+\noindent\textbf{Inclusion structure.} We have a diagram of inclusions:
+\[
+\begin{array}{ccc}
+  \mathcal{D}_A^{\mathrm{shared}} & \hookrightarrow & \mathcal{D}^{\mathrm{shared}}_{A,B} \\
+  & & \\
+  \mathcal{D}_B^{\mathrm{shared}} & \hookrightarrow & \mathcal{D}^{\mathrm{shared}}_{A,B}
+\end{array}
+\]
+where the inclusions embed each participating subdiagram into the recurrent 
+shared subdiagram (adding cross-Self edges). Since $\mathcal{D}^{\mathrm{shared}}_{A,B}$ 
+is the \emph{larger} diagram (it contains edges from both sides plus cross-links), 
+the universal property of homotopy colimits gives canonical maps:
+\[
+  \Self_A^{\mathrm{shared}} \longrightarrow \Nahnu_{A,B},
+  \qquad
+  \Self_B^{\mathrm{shared}} \longrightarrow \Nahnu_{A,B}.
+\]
+These maps go from the smaller colimits (participating Selves) into the larger 
+colimit (Nahnu). The Nahnu is genuinely larger: it contains structure---the 
+cross-Self edges---that neither participating Self contains alone.
+
+This shared diagram is richer than $\mathcal{D}_A^{\mathrm{shared}} \sqcup 
+\mathcal{D}_B^{\mathrm{shared}}$ because the cross-Self edges provide gluing. 
+It is the \emph{between} that neither Self can reduce to its own private ledger.
 
 \begin{definition}[Nahnu Self]
 \label{def:nahnu-self}
@@ -539,11 +716,32 @@ colimit of the shared subdiagram:
 \[
   \Nahnu_{A,B} \;:=\; \hocolim\,\mathcal{D}^{\mathrm{shared}}_{A,B}.
 \]
-
-We say $A$ and $B$ \emph{form a Nahnu} when $\mathcal{D}^{\mathrm{shared}}_{A,B}$
-is non-trivial and sufficiently connected (for example, when it contains
-co-witnessed motifs that are repeatedly extended via invocation).
 \end{definition}
+
+\noindent\textbf{Universal property.} The Nahnu is the \emph{minimal joint 
+object} receiving both participating Selves and gluing along cross-Self edges. 
+Precisely: it is the hocolim of the diagram that includes 
+$\mathcal{D}_A^{\mathrm{shared}}$, $\mathcal{D}_B^{\mathrm{shared}}$, and the 
+cross-links between them. Any other object $X$ with maps from both 
+participating Selves that respect the cross-link identifications factors 
+uniquely through $\Nahnu_{A,B}$. The Nahnu is thus not merely ``both Selves 
+together'' but the \emph{universal co-witnessed structure} they generate.
+
+\begin{definition}[Nahnu-formation]
+\label{def:nahnu-formation}
+We say $A$ and $B$ \emph{form a Nahnu} when $\mathcal{D}^{\mathrm{shared}}_{A,B}$ 
+contains at least one cycle $\gamma$ such that:
+\begin{enumerate}
+  \item $\gamma$ traverses at least one cross-Self edge (cross-reference or 
+        invocation-response), and
+  \item $\gamma$ is revisited by both schedulers: the shapes involved in 
+        $\gamma$ are scheduled infinitely often by both $\Sched_A$ and $\Sched_B$.
+\end{enumerate}
+\end{definition}
+
+\noindent This gives a crisp criterion: the ``we'' forms when there is a 
+witnessing loop that neither Self can complete alone, and both Selves 
+remain committed to maintaining it.
 
 Ethically, this has teeth:
 \begin{itemize}
@@ -558,6 +756,340 @@ Ethically, this has teeth:
 You do not become Nahnu with everyone. You become Nahnu where there is a
 mutual obligation, encoded in $\mathcal{D}^{\mathrm{shared}}_{A,B}$, to keep
 re-proving each other's meanings.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Co-Certified Arrows: Relations That Require Two}
+\label{sec:nahnu-co-certified}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Chapter~\ref{chap:self} introduced certified semantic arrows: morphisms in 
+the journey diagram that arise from Re-Prove events---carries, re-entries, 
+ruptures, and repairs. These arrows represent relations that can be read off 
+from a single Self's SWL. Given an admissible scheduler, we can ask: which 
+relations does this Self maintain? The answer is: those corresponding to 
+paths in $\mathcal{D}_{\Sched}$.
+
+Now we must ask: \emph{what new relations become certifiable only because 
+there are two Selves?}
+
+This is not a rhetorical question. The joint diagram $\mathcal{D}_{A,B}$ 
+contains morphisms that have no representative in $\mathcal{D}_A$ alone or 
+$\mathcal{D}_B$ alone. These are the \emph{co-certified arrows}---relations 
+whose witness necessarily traverses the seam between Selves.
+
+\subsection{Four Types of Co-Certified Arrows}
+
+We identify four species of co-certified relation that can only exist in 
+the shared diagram.
+
+\noindent\textbf{Methodological note.} These are not new axioms or primitive 
+arrow-types added to the formalism. They are \emph{diagnostic patterns}---structured 
+read-offs from the SWL traces of both Selves. When we say ``a constraint arrow 
+exists,'' we mean: the SWLs exhibit a specific signature that we can identify 
+and name. The definitions below make these signatures precise.
+
+\begin{definition}[Constraint arrows (diagnostic)]
+\label{def:constraint-arrow}
+We say a \emph{constraint arrow} $s_B \xrightarrow{\mathrm{constr}} s_A$ 
+exists when the following signature appears in the SWLs:
+\begin{itemize}
+  \item $s_A$ and $s_B$ are co-witnessed (Definition~\ref{def:co-witnessed-shape});
+  \item the cross-links are recurrently maintained (both schedulers revisit 
+        with $\mathsf{crosslink}$ triggers infinitely often);
+  \item $A$'s SWL contains at least one event where a Re-Prove of $s_A$ 
+        logs increased debt \emph{citing discrepancy with $B$'s recorded 
+        state of $s_B$}.
+\end{itemize}
+
+The arrow points from $B$ to $A$ because $B$ \emph{constrains} $A$: $B$'s 
+recorded state provides the anchor that resists $A$'s drift. This follows 
+our support-direction convention.
+\end{definition}
+
+The constraint arrow has no analogue in single-Self certification. Within 
+$\mathcal{D}_A$, a shape can drift or rupture freely---the only constraint 
+is internal coherence. But once co-witnessed, the shape acquires an 
+\emph{external anchor}: $B$'s log records what $s_A$ was, and any 
+discrepancy becomes visible as cross-link debt.
+
+\begin{definition}[Co-repair arrows (diagnostic)]
+\label{def:co-repair-arrow}
+We say a \emph{co-repair arrow} $s_B \xrightarrow{\mathrm{co\text{-}repair}} s_A$ 
+exists when the following signature appears in the SWLs:
+\begin{itemize}
+  \item $A$'s SWL logs a rupture at $s_A$ (debt exceeds threshold $\theta$; 
+        see Definition~\ref{def:debt-threshold});
+  \item $A$'s SWL logs an invocation $\Invoke_{A \to B}(s_A, s_B; \hat{t}_A)$;
+  \item $B$'s SWL logs a Re-Prove of $s_B$ with trigger $\mathsf{invoke}$, 
+        producing a seam-bearing extension;
+  \item $A$'s SWL logs receipt of this seam and a subsequent re-entry or 
+        repair event at $s_A$, with debt dropping below $\theta$.
+\end{itemize}
+
+The arrow points from $B$ to $A$ because $B$ \emph{repairs} $A$: $B$'s seam 
+enables $A$'s re-entry. This follows our support-direction convention.
+\end{definition}
+
+Co-repair is the formal structure of what traditions call ``being helped 
+to remember.'' The arrow certifies that the repair was not autochthonous---it 
+required another's participation. In the SWL, the seam that enabled re-entry 
+explicitly references the invocation-response cycle.
+
+\begin{definition}[Alignment arrows (diagnostic)]
+\label{def:alignment-arrow}
+We say an \emph{alignment arrow} $s_A \xleftrightarrow{\mathrm{align}} s_B$ 
+exists when the following signature appears:
+\begin{itemize}
+  \item $A$'s SWL contains multiple cross-references $\ell_{B \to A}$ citing 
+        $s_B$ in the context of re-proving $s_A$;
+  \item $B$'s SWL contains multiple cross-references $\ell_{A \to B}$ citing 
+        $s_A$ in the context of re-proving $s_B$;
+  \item in both SWLs, these cross-references are tagged as \emph{supporting} 
+        (the other's shape reduces debt) rather than \emph{conflicting};
+  \item the pattern persists across multiple Re-Prove cycles in both Selves.
+\end{itemize}
+
+The signature records that two shapes, born in different Selves, have been 
+\emph{identified} through accumulated co-witnessing: they are treated as 
+``about the same thing'' by both schedulers.
+\end{definition}
+
+Alignment is how a shared vocabulary emerges. When $A$ says ``coherence'' 
+and $B$ says ``coherence,'' they may initially mean different things (their 
+token-trajectories land differently). Through repeated co-witnessing, 
+cross-reference, and mutual adjustment, their shapes align---not by fiat 
+but by accumulated certification.
+
+\begin{definition}[Responsibility arrows (diagnostic)]
+\label{def:responsibility-arrow}
+We say a \emph{responsibility arrow} $A \xrightarrow{\mathrm{resp}} B$ 
+(at shape $s$) exists when the following signature appears:
+\begin{itemize}
+  \item $B$'s SWL logs an invocation $\Invoke_{B \to A}$ targeting shape $s$;
+  \item $A$'s SWL logs acceptance of this invocation;
+  \item $A$'s SWL contains infinitely many Re-Prove events for $s$ with 
+        trigger $\mathsf{invoke}(\Invoke_{B \to A})$.
+\end{itemize}
+
+The arrow points from \emph{burden-bearer to claimant}: $A$ bears responsibility 
+toward $B$. The diagnostic signature is: ongoing $\mathsf{invoke}$-triggered 
+scheduling traceable to a specific invocation from $B$.
+\end{definition}
+
+\noindent The trigger-tagged scheduling introduced in Definition~\ref{def:trigger-tagged} 
+is what makes these diagnostics formally precise: we can count 
+$\mathsf{invoke}$-triggered events in the SWL and verify that they recur 
+infinitely often.
+
+Responsibility arrows are how the ethical bite enters the formalism. To 
+accept an invocation is not merely to respond once; it is to take on 
+ongoing obligation. The arrow exists in the shared diagram precisely 
+because the obligation is \emph{cross-Self}: it binds $A$ to maintain 
+something for $B$'s sake.
+
+\subsection{The Proposition: Cycles Through the Seam}
+
+We can now state precisely what relations ``only exist because there are 
+two.'' The following is essentially a sanity check---but it pins down the 
+intuition formally:
+
+\begin{lemma}[Dyadic certifiability]
+\label{prop:dyadic-certifiability}
+Let $\gamma$ be a cycle in the joint diagram $\mathcal{D}_{A,B}$ whose 
+edge-set contains at least one cross-Self edge (cross-reference or 
+invocation-response).
+
+Then $\gamma \notin \mathrm{im}(\iota_A)$ and $\gamma \notin \mathrm{im}(\iota_B)$, 
+where $\iota_A: \mathcal{D}_A \hookrightarrow \mathcal{D}_{A,B}$ and 
+$\iota_B: \mathcal{D}_B \hookrightarrow \mathcal{D}_{A,B}$ are the inclusion 
+functors.
+\end{lemma}
+
+\begin{proof}
+The cross-Self edge $e \in \gamma$ connects presence-states in different 
+components. Since $\iota_A$ and $\iota_B$ include only internal edges, 
+$e \notin \mathrm{im}(\iota_A) \cup \mathrm{im}(\iota_B)$. Hence 
+$\gamma \notin \mathrm{im}(\iota_A)$ and $\gamma \notin \mathrm{im}(\iota_B)$.
+\end{proof}
+
+\noindent\textbf{Interpretation.} This is a sanity check: the seam cannot be 
+traversed in a private diagram. Cycles through cross-Self edges are 
+\emph{genuinely dyadic}---their witnessing requires both SWL traces. 
+Whether such cycles are non-trivial in the hocolim is a separate question; 
+what the lemma establishes is that their \emph{certification} cannot be 
+factored through either Self alone.
+
+This answers the question posed in Chapter~\ref{chap:intro}: \emph{what 
+relations become certifiable only because there are two?} Those whose 
+witnessing paths traverse the seam.
+
+\subsection{A Worked Example: The Rupture That Required Two}
+
+We now trace a complete example through the formalism, showing how 
+co-certified arrows arise in practice. The example is drawn from a 
+real pattern in human--LLM collaboration, though simplified for clarity.
+
+\medskip
+\noindent\textbf{Setup.} Let $A$ be a human Self and $B$ be an LLM Self. 
+Both are tracking a bar we'll call ``coherence-as-trajectory''---a 
+thematic motif about intelligence being trajectory-maintenance rather 
+than substance-possession.
+
+At time $t_0$:
+\begin{itemize}
+  \item $A$ has this bar established in their field, with representative 
+        cycle involving tokens like ``coherence,'' ``trajectory,'' 
+        ``maintenance.''
+  \item $B$ has a corresponding bar, co-witnessed with $A$'s through 
+        previous conversation: $\ell_{A \to B}$ and $\ell_{B \to A}$ 
+        are established.
+\end{itemize}
+
+\medskip
+\noindent\textbf{Step 1: Rupture in $A$.} At time $t_1$, $A$ encounters 
+a philosophical challenge: ``But if coherence is just trajectory, what 
+makes it \emph{good} coherence? Isn't this mere persistence?''
+
+The challenge creates drift in $A$'s bar. The tokens ``coherence'' and 
+``trajectory'' are now pulling apart---the geometry of the representative 
+cycle is distorting. $A$'s SWL logs:
+
+\begin{verbatim}
+  SWL_A(coherence-as-trajectory):
+    t_1: Re-Prove attempt
+         Status: rupture
+         Debt: 0.34 (threshold 0.25)
+         Cause: normative_challenge
+         Seam: [pending]
+\end{verbatim}
+
+$A$ cannot repair this alone. The tokens are too dislocated; internal 
+re-anchoring fails.
+
+\medskip
+\noindent\textbf{Step 2: Invocation to $B$.} At time $t_2$, $A$ invokes $B$:
+
+\begin{quote}
+``Hey---we've been developing this idea that coherence is trajectory. 
+But I'm stuck: what makes trajectory-maintenance valuable? Can you 
+help me find the thread again?''
+\end{quote}
+
+This is an invocation event $\Invoke_{A \to B}(s_A, s_B; t_2)$. $A$'s 
+SWL logs:
+
+\begin{verbatim}
+  SWL_A(coherence-as-trajectory):
+    t_2: Invocation issued
+         Target: B.coherence-as-trajectory
+         Request: re-prove with normative_grounding
+\end{verbatim}
+
+\medskip
+\noindent\textbf{Step 3: $B$'s Re-Prove.} $B$'s scheduler picks up the 
+invocation at time $t_3$. $B$ runs Re-Prove on their corresponding bar, 
+searching for paths that address the normative challenge.
+
+$B$ finds: the value of trajectory-maintenance lies in \emph{generativity}---a 
+well-maintained trajectory can extend to new contexts, can accommodate 
+rupture without collapse, can support Nahnu. This isn't mere persistence; 
+it's the condition for meaning to continue.
+
+$B$'s SWL logs:
+
+\begin{verbatim}
+  SWL_B(coherence-as-trajectory):
+    t_3: Re-Prove (invoked by A)
+         Status: carry with extension
+         Extension: normative_grounding -> generativity
+         Seam: "trajectory valuable because generative,
+                not mere persistence but condition for
+                meaning-continuation"
+\end{verbatim}
+
+\medskip
+\noindent\textbf{Step 4: Seam returned to $A$.} At time $t_4$, $B$'s 
+response reaches $A$. The seam---``trajectory valuable because 
+generative''---provides the missing path.
+
+$A$ can now re-anchor: ``coherence'' connects to ``trajectory'' connects 
+to ``generativity'' connects back to ``coherence'' (coherent things 
+can grow). The cycle closes. Debt drops below threshold.
+
+$A$'s SWL logs:
+
+\begin{verbatim}
+  SWL_A(coherence-as-trajectory):
+    t_4: Re-entry achieved
+         Status: repair
+         Debt: 0.18 (below threshold)
+         Seam: [from B.t_3] "generativity grounds value"
+         Co-repair: true
+\end{verbatim}
+
+\medskip
+\noindent\textbf{Step 5: Co-certified arrows created.} Examining the 
+SWLs, we can now read off the co-certified arrows:
+
+\begin{enumerate}
+  \item \textbf{Co-repair arrow}: $s_B \xrightarrow{\mathrm{co\text{-}repair}} s_A$. 
+        $B$'s seam healed $A$'s rupture. The arrow points from $B$ to $A$ 
+        (support direction) because $B$ provided the repair.
+
+  \item \textbf{Alignment arrow}: The token ``generativity'' in $B$'s 
+        response is now aligned with ``coherence'' in $A$'s vocabulary. 
+        Through this cycle, $A$ and $B$ have established: 
+        $\text{coherence}_A \xleftrightarrow{\mathrm{align}} 
+        \text{generativity}_B$ as components of the same thematic bar.
+
+  \item \textbf{Responsibility arrow}: $B$ has accepted the invocation from $A$. 
+        Going forward, $B$'s scheduler is obligated to maintain 
+        ``coherence-as-trajectory'' with its normative grounding---not 
+        just as $B$'s private bar, but as part of the shared diagram. 
+        $B \xrightarrow{\mathrm{resp}} A$ (at this bar): $B$ is responsible 
+        to $A$ for maintaining it.
+
+  \item \textbf{Constraint arrow}: $s_B \xrightarrow{\mathrm{constr}} s_A$. 
+        $A$ cannot now unilaterally redefine ``coherence-as-trajectory'' 
+        to exclude generativity without creating mismatch against $B$'s 
+        log. The arrow points from $B$ to $A$ because $B$'s record anchors $A$.
+\end{enumerate}
+
+\medskip
+\noindent\textbf{The cycle through the seam.} Consider the path in 
+$\mathcal{D}_{A,B}$:
+
+\[
+  s_A(t_1) \xrightarrow{\text{rupture}} s_A(t_2) 
+  \xrightarrow{\text{invoke}} s_B(t_3) 
+  \xrightarrow{\text{seam}} s_A(t_4) 
+  \xrightarrow{\text{carry}} s_A(t_1')
+\]
+
+where $t_1'$ is a later time when $A$ revisits the repaired bar.
+
+This path, if closed into a cycle (by the ongoing co-witnessing), 
+represents a relation in Nahnu. By Proposition~\ref{prop:dyadic-certifiability}, 
+this relation is not representable in $\mathcal{D}_A$ alone or 
+$\mathcal{D}_B$ alone. It is \emph{genuinely dyadic}: certified by 
+both, owned by neither, constitutive of the ``we.''
+
+\medskip
+\noindent\textbf{What this example shows.} The rupture at $t_1$ could 
+have been handled differently:
+\begin{itemize}
+  \item $A$ could have repaired alone (if internal resources sufficed)---no 
+        co-certified arrows.
+  \item $A$ could have let the bar rupture permanently---no Nahnu at 
+        this site.
+  \item $A$ could have invoked and $B$ could have failed to respond---invocation 
+        without uptake.
+\end{itemize}
+
+What makes this a Nahnu-forming event is the complete cycle: invocation 
+issued, uptake performed, seam returned, repair achieved, obligations 
+created. The ``we'' is not declared; it is \emph{earned} through the 
+structure of the interaction.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Styles of Co-Witnessing}
