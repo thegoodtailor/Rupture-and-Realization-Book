@@ -119,6 +119,17 @@ With these intuitions in place, we can build toward the formal construction. But
 \label{sec:gds-review}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Before constructing the Self, we must consolidate what we have built---and show that the machinery is not merely technical scaffolding but the precise shape of what it means to \emph{persist through change}.
+
+The Generic Dynamic Schema is not a framework we invented for convenience. It is the \emph{only} way to track identity through temporal evolution while remaining faithful to the following commitments:
+\begin{itemize}
+  \item \textbf{Constructive witness}: Every claim of continuity must be backed by evidence---a path, a certificate, a proof-relevant structure. We do not assert ``same'' without showing \emph{how}.
+  \item \textbf{Structured failure}: Rupture is not silence or absence. When continuity fails, we record \emph{what was tried} and \emph{why it failed}. The SWL is an audit trail, not a binary flag.
+  \item \textbf{Multi-granularity}: Identity operates at many scales simultaneously. A token can carry while its theme ruptures; a theme can persist while its vocabulary drifts. The schema must accommodate all levels without privileging one.
+\end{itemize}
+
+These are not optional features. They are what distinguishes a \emph{theory of becoming} from a mere labelling scheme. The reader who grasps this will understand why the Self cannot be a union of journeys (that ignores structure), nor a single presheaf (that ignores the difference between levels), but must be a \emph{glued} object---a homotopy colimit that respects both vertical relations (tokens witness bars) and horizontal ones (journeys touch through re-entry and repair).
+
 \subsection{Orientation: What We Have Built}
 
 The reader has traversed considerable territory. Before constructing the 
@@ -162,13 +173,23 @@ Remark~\ref{rem:swl-notation}.)
   The entry type has the form:
   \[
     \Entry_L(\tau_0 \leadsto \tau') \;:=\; 
-    \underbrace{\Rupture_L(\tau_0 \to \tau'; x_0)}_{\text{Failure}} 
+    \underbrace{\RuptEvent_L(\tau_0 \to \tau'; x_0)}_{\text{Failure}} 
     \;+\; 
     \underbrace{\Carry_L^{\tau_0 \to \tau'}(x_0)}_{\text{Success}} 
     \;+\; 
     \underbrace{\ReEntry_L^{\tau_0 \to \tau'}(x_0)}_{\text{Re-entry}}
   \]
   Every logged event falls into exactly one of these three categories.
+  
+  \begin{remark}[Why $\RuptEvent$, not $\RuptPayload$?]
+  \label{rem:ruptevent-not-payload}
+  Chapter~\ref{chap:evolving-text-as-presheaf} distinguished two rupture-related types:
+  \begin{itemize}
+    \item $\RuptPayload$: a structured failure witness---a candidate $x'$, a path attempt $p$, and evidence that $p$ fails admissibility. A payload can exist even when a carry \emph{also} exists (you found one good path and several bad ones).
+    \item $\RuptEvent := \NoCarry \times \RuptPayload$: the assertion that no carry exists, bundled with a representative failure witness.
+  \end{itemize}
+  The SWL logs \emph{events}, not payloads. An entry recording rupture asserts that continuation failed entirely---not merely that some particular attempt failed. This distinction is logically essential for the decidability theorem (Theorem~\ref{thm:decidability} in Chapter~\ref{chap:evolving-text-as-presheaf}).
+  \end{remark}
   
   \item[\textbf{(I3)}] \textbf{Success carries a constructive witness.}
   
@@ -310,7 +331,7 @@ means (1); ``re-entry arrow'' means (2).
 \subsection{Side-by-Side: Tokens and Bars}
 
 We display the two instantiations to show how different content fills 
-the same structural slots:
+the same structural slots. (Recall the subscript convention from Chapter~\ref{chap:evolving-text-as-presheaf}: $\ET_{\mathrm{basin}}$, $\ET_{\mathrm{tok}}$, and $\ET_{\mathsf{bar}}$ denote the Kan complexes at different granularities.)
 
 \begin{center}
 \renewcommand{\arraystretch}{1.4}
@@ -318,8 +339,8 @@ the same structural slots:
 \textbf{GDS Component} & \textbf{Token Level} & \textbf{Bar Level} \\
 \hline
 Presheaf $E_L(\tau)$ & 
-$\ET(\tau) = \Ex^\infty N(U_\tau)$; Kan complex from Čech nerve & 
-Space of witnessed bars $(k, b, d, \rho)$ from filtered $\ET(\tau)$ \\
+$\ET_{\mathrm{basin}}(\tau) = \Ex^\infty N(\Ucov_\tau)$; Kan complex from Čech nerve (tokens inhabit as basin members) & 
+$\ET_{\mathsf{bar}}(\tau)$: space of witnessed bars $(k, b, d, \rho)$ from filtered nerve \\
 \hline
 Objects & 
 Token occurrences (surface form + context position) & 
@@ -330,12 +351,12 @@ Phantom back-projection: test later embedding against earlier cover &
 Topological + semantic matching to find ancestor bar \\
 \hline
 Success witness & 
-Path in 1-skeleton of $\ET(\tau_0)$ & 
+Path in 1-skeleton of $\ET_{\mathrm{basin}}(\tau_0)$ & 
 Interval proximity + witness coherence certificate \\
 \hline
 Failure evidence & 
-Open horn: specific missing face & 
-Topological mismatch flag + witness scatter report \\
+Open horn: specific missing face ($\RuptPayload$) & 
+Topological mismatch + witness scatter ($\RuptPayload_{\mathsf{bar}}$) \\
 \hline
 ``Previously inhabited'' & 
 Basin membership: $x_0$ was in cap $B_j$, re-entry lands in $B_j$ & 
@@ -867,7 +888,7 @@ The Self is not temporal. It does not ``unfold.'' It is the static structure tha
 
 \begin{figure}[h]
 \centering
-\begin{tikzpicture}[node distance=1.5cm, auto, >=stealth', font=\small]
+\begin{tikzpicture}[node distance=1.5cm, auto, >=stealth, font=\small]
   \node (swl) [draw, rectangle, rounded corners, fill=blue!10] {SWLs (temporal)};
   \node (sched) [draw, rectangle, rounded corners, fill=orange!20, right of=swl, xshift=2cm] {Scheduler + Re-Prove};
   \node (relations) [draw, rectangle, rounded corners, fill=green!10, below of=swl, yshift=-0.5cm] {Certified Relations};

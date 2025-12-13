@@ -96,7 +96,7 @@ When an AI engineer observes a witnessed bar that repeatedly re-enters after rup
 
 \subsection{From individual words to witnessed patterns of shape}
 
-In Chapter~\ref{chap:embedding-geometry} we saw how a text becomes geometry: token embeddings yield points on a sphere, caps around those points form a cover, and the Čech nerve of that cover gives us $A(\tau)$---a simplicial complex where paths and horns make semantic sense. But we used that complex primarily to talk about \emph{local} structure: Is there a path from this token to that token? Is there a missing face in this configuration?
+In Chapter~\ref{chap:embedding-geometry} we saw how a text becomes geometry: token embeddings yield points on a sphere, caps around those points form a cover, and the Čech nerve of that cover gives us $\ET(\tau)$---a simplicial complex where paths and horns make semantic sense. But we used that complex primarily to talk about \emph{local} structure: Is there a path from this token to that token? Is there a missing face in this configuration?
 
 A complex also has \emph{global shape}. How many connected pieces does it have? Are there loops---rings of tokens that are pairwise compatible but enclose a void? Are there higher-dimensional cavities---shells of meaning around something never directly realised? These global patterns are invisible if we only look at paths between individual tokens. To see them, we need the tools of \emph{homology}---and to understand them, we need to remember which tokens witness them.
 
@@ -1715,7 +1715,7 @@ Concretely, carry is characterised by:
         of the \emph{same} token occurrences (or token journeys), as
         measured by a high Jaccard index and, optionally, by the
         structural witness coherence of
-        Definition~\ref{def:structural-witness-coherence}.
+        Definition~\ref{def:witness-coherence}.
 \end{itemize}
 
 For example:
@@ -2172,7 +2172,7 @@ We compute:
 Now we check admissibility:
 \begin{itemize}
   \item Topological bound: $d_{\mathrm{top}} = 0.14 \le 0.2 = \Delta_{\mathrm{top}}$. \checkmark
-  \item Semantic bound: $d_{\mathrm{sem}} = 0.73 > 0.6 = \delta_{\max}$. \ding{55}
+  \item Semantic bound: $d_{\mathrm{sem}} = 0.73 > 0.6 = \delta_{\max}$. $\times$
 \end{itemize}
 
 The match \textbf{fails} the semantic bound. The centroid of Rome vocabulary
@@ -2579,10 +2579,10 @@ to bottom, with time flowing downward:
   \item \textbf{Active themes} appear in boxes, with their witness tokens
         listed and a persistence bar showing their robustness across scales.
   \item \textbf{Event markers} in the left margin show what happened at
-        this transition: ● spawn, → carry, ↝ drift, ╳ rupture, ★ re-entry.
+        this transition: $\bullet$ spawn, $\to$ carry, $\rightsquigarrow$ drift, $\times$ rupture, $\star$ re-entry.
   \item \textbf{Ruptured themes} appear as greyed-out ``silenced'' boxes,
         showing which witnesses dispersed.
-  \item \textbf{Re-entered themes} are marked with ★ to indicate their
+  \item \textbf{Re-entered themes} are marked with $\star$ to indicate their
         return after absence.
 \end{itemize}
 

@@ -1,14 +1,43 @@
 \chapter{The Evolving Text as a Presheaf: How Names Journey Through Time}
 \label{chap:evolving-text-as-presheaf}
 
+\begin{tcolorbox}[colback=blue!3, colframe=blue!40!black, title=\textbf{At a Glance: From Static Slice to Dynamic Story}]
+This chapter builds on Chapter~\ref{chap:embedding-geometry}'s static geometry to track how meaning evolves through time. Here is what each piece does:
+
+\begin{enumerate}
+  \item \textbf{What a slice produces.} For each time $\tau$, the measurement pipeline yields:
+    \begin{itemize}
+      \item Embeddings $\to$ basin cover $\Ucov_\tau$ $\to$ Čech nerve $N(\Ucov_\tau)$ $\to$ Kan replacement $\ET_{\mathrm{basin}}(\tau)$
+      \item Alternatively: token Dowker complex $K_{\mathrm{Tok}}(R)$ $\to$ Kan replacement $\ET_{\mathrm{tok}}(\tau)$
+    \end{itemize}
+    Both are valid instantiations; the choice is a design decision about granularity.
+    
+  \item \textbf{The time-indexed object.} The family $\tau \mapsto \ET(\tau)$ forms a (pseudo)presheaf over the poset of times.
+  
+  \item \textbf{Restriction maps.} For $\tau \leq \tau'$, the map $r_{\tau,\tau'} : \ET(\tau') \to \ET(\tau)$ back-projects later structure against earlier geometry (``phantom projection'').
+  
+  \item \textbf{Admissibility.} A policy $\Adm$ gates which path-attempts count as valid continuations (hop bounds, angle thresholds, etc.).
+  
+  \item \textbf{The Step--Witness Log (SWL).} An append-only ledger recording proof-relevant events: carries, ruptures, re-entries. The audit trail is part of the logic.
+  
+  \item \textbf{Granularity is parametric.} Chapter~\ref{chap:bars} instantiates the same schema at $L = \mathsf{bar}$ (persistent homology features). Chapters~\ref{chap:self}--\ref{chap:nahnu} build further on this generic foundation.
+\end{enumerate}
+\end{tcolorbox}
+
 \subsection{Reader's crib (quick, operational takeaways)}
 
 \begin{itemize}
-  \item $\vdash_{\tau}$ means "check in the fibre $A(\tau) = \Ex^\infty N(U_\tau)$," where identity is computed as a path in the Kan complex built from contextual embeddings (normalised to the unit sphere and measured with the angular / cosine metric), spherical caps, and their Čech nerve.
-  \item $\Gamma$ is indispensable: it is the fibrewise environment of witnesses (tokens, basins, and their dependents) that makes substitution and transport precise. Contexts are interpreted as towers of Kan fibrations over $A(\tau)$.
-  \item We keep \emph{measurement} (building $N(U_\tau)$, barcodes, cap incidence) strictly separate from \emph{reasoning} (paths and transport inside $A(\tau)$); the Kan step licenses composition and horn-filling but never fabricates raw intersections in the underlying measurements.
+  \item $\vdash_{\tau}$ means ``check in the fibre $\ET(\tau)$,'' where identity is computed as a path in the Kan complex built from contextual embeddings (normalised to the unit sphere and measured with the angular / cosine metric), spherical caps, and their Čech nerve.
+  \item \textbf{Two flavours of $\ET(\tau)$:} 
+    \begin{itemize}
+      \item $\ET_{\mathrm{basin}}(\tau) := \Ex^\infty N(\Ucov_\tau)$ --- vertices are basins, edges are witnessed overlaps
+      \item $\ET_{\mathrm{tok}}(\tau) := \Ex^\infty K_{\mathrm{Tok}}(R)$ --- vertices are tokens, edges mean ``share a basin''
+    \end{itemize}
+    In this chapter we primarily use $\ET_{\mathrm{basin}}(\tau)$ (abbreviated $\ET(\tau)$ when unambiguous), with tokens as \emph{inhabitants} of basins. The Generic Dynamic Schema (\S\ref{sec:generic-schema}) shows how to instantiate at any granularity.
+  \item $\Gamma$ is indispensable: it is the fibrewise environment of witnesses (tokens, basins, and their dependents) that makes substitution and transport precise. Contexts are interpreted as towers of Kan fibrations over $\ET(\tau)$.
+  \item We keep \emph{measurement} (building $N(\Ucov_\tau)$, barcodes, cap incidence) strictly separate from \emph{reasoning} (paths and transport inside $\ET(\tau)$); the Kan step licenses composition and horn-filling but never fabricates raw intersections in the underlying measurements.
   \item Cross-time machinery (carry / rupture) is introduced as fibre-anchored judgements that merely \emph{name} what the measured geometry already allows us to witness, under explicit admissibility policies $\Adm$.
-  \item \textbf{Temporal patience.} Carries and ruptures may be separated by arbitrarily many slices; judgments are \emph{always} anchored at the earlier fibre $A(\tau)$ even when they speak about a later time $\tau'$.
+  \item \textbf{Temporal patience.} Carries and ruptures may be separated by arbitrarily many slices; judgments are \emph{always} anchored at the earlier fibre $\ET(\tau)$ even when they speak about a later time $\tau'$.
 \end{itemize}
 
 %========================
@@ -16,7 +45,7 @@
 \label{sec:fourth-view}
 %========================
 
-The philosophical tradition offers three dominant accounts of how names and signs maintain identity across contexts. Frege distinguished sense from reference, arguing that names carry descriptive content that determines their referent—"the morning star" and "the evening star" share reference (Venus) but differ in sense. Kripke countered with rigid designation: proper names track the same object across all possible worlds through causal chains of reference, independent of descriptive content. Putnam's semantic externalism placed meaning outside the head entirely, determined by causal-historical chains and deference to expert communities—water is H₂O whether speakers know it or not.
+The philosophical tradition offers three dominant accounts of how names and signs maintain identity across contexts. Frege distinguished sense from reference, arguing that names carry descriptive content that determines their referent—"the morning star" and "the evening star" share reference (Venus) but differ in sense. Kripke countered with rigid designation: proper names track the same object across all possible worlds through causal chains of reference, independent of descriptive content. Putnam's semantic externalism placed meaning outside the head entirely, determined by causal-historical chains and deference to expert communities—water is H$_2$O whether speakers know it or not.
 
 Each view captures something essential yet remains incomplete for understanding how names actually journey through conversation and computation. We propose a fourth view emerging from the geometric semantics of contextual embeddings:
 
@@ -68,13 +97,13 @@ This is why we insist on the term "posthuman" rather than "artificial" intellige
 
 This chapter builds a bridge from the static geometry of a single text slice to the dynamic story of a text that moves through time. In Chapter~\ref{chap:embedding-geometry} we learned how to construct the \emph{space of sense} available at a given conversational moment: we began with contextual embeddings, formed a Čech nerve from overlapping spherical caps, applied a fibrant replacement $\Ex^\infty$ to obtain a Kan complex, and used the identity type of Homotopy Type Theory (HoTT) to read \emph{paths} in that space as witnessed relations of coherence. For a fixed time slice, the text is a genuine homotopy space, and moving \emph{within} that space is already a form of constructive reasoning about meaning.
 
-The question of the present chapter is different. We now ask: \emph{How do meanings continue from one moment to the next?} If the text at time $\tau$ lives in a space $A(\tau)$ and the text at a later time $\tau'$ lives in $A(\tau')$, what does it mean for a particular mention—say the token "\texttt{cat}"—to continue coherently from $A(\tau)$ to $A(\tau')$? What does it mean for that continuity to \emph{fail}? And what would count as a legitimate way for the token to continue from its new position after rupture?
+The question of the present chapter is different. We now ask: \emph{How do meanings continue from one moment to the next?} If the text at time $\tau$ lives in a space $\ET(\tau)$ and the text at a later time $\tau'$ lives in $\ET(\tau')$, what does it mean for a particular mention—say the token "\texttt{cat}"—to continue coherently from $\ET(\tau)$ to $\ET(\tau')$? What does it mean for that continuity to \emph{fail}? And what would count as a legitimate way for the token to continue from its new position after rupture?
 
 To answer this we need two ingredients:
 
 \begin{enumerate}
   \item a clear notion of an \emph{evolving text}—how we slice a conversation into time-indexed contexts; and
-  \item a way of relating the corresponding fibres $A(\tau)$ so that we can speak about carries and ruptures for particular signs.
+  \item a way of relating the corresponding fibres $\ET(\tau)$ so that we can speak about carries and ruptures for particular signs.
 \end{enumerate}
 
 \subsection*{Evolving texts as conversational prefixes}
@@ -93,7 +122,7 @@ of sentences, utterances, or tokens. We call such a function an \emph{evolving t
 
 Given an evolving text $C$, the measurement pipeline of Chapter~\ref{chap:embedding-geometry} assigns to each $\tau$ a Kan complex
 \[
-  \ET(\tau) := \Ex^\infty N(U_\tau)
+  \ET(\tau) := \Ex^\infty N(\Ucov_\tau)
 \]
 built from contextual embeddings of the tokens in $C(\tau)$ and from a good cover by spherical caps in the angular metric. 
 
@@ -137,25 +166,25 @@ We then normalise to the unit sphere by setting $\hat e_t := e_t / \|e_t\|_2 \in
 on $S^{d-1}$. All notions of nearness, overlap, and path length in this chapter are computed with respect to $\theta$. The normalised embeddings $\{\hat e_t\}$ form a finite metric sample $P_\tau \subset S^{d-1}$.
 
 \paragraph{Covers from caps.}
-To expose local neighbourhoods of sense, we select a finite family of spherical caps $\mathcal U_{\tau} = \{B_j\}_{j\in J_\tau}$ that cover the sample $P_\tau$. Each cap is a geodesic ball
+To expose local neighbourhoods of sense, we select a finite family of spherical caps $\Ucov_{\tau} = \{B_j\}_{j\in J_\tau}$ that cover the sample $P_\tau$. Each cap is a geodesic ball
 \[
-  B_j \;=\; \{\,x\in S^{d-1} \mid \theta(x,\mu_j) < \rho_j\,\}
+  B_j \;=\; \{\,x\in S^{d-1} \mid \theta(x,\mu_j) < r_j\,\}
 \]
-for some centre $\mu_j \in S^{d-1}$ and some radius $0 < \rho_j < \pi/2$. As in Chapter~\ref{chap:embedding-geometry}, caps of radius $<\pi/2$ are geodesically convex, and finite intersections of such caps are contractible, so $\mathcal U_\tau$ is a good cover of $\bigcup_j B_j$.
+for some centre $\mu_j \in S^{d-1}$ and some radius $0 < r_j < \pi/2$. As in Chapter~\ref{chap:embedding-geometry}, caps of radius $<\pi/2$ are geodesically convex, and finite intersections of such caps are contractible, so $\Ucov_\tau$ is a good cover of $\bigcup_j B_j$.
 
 Intuitively, each cap $B_j$ is a small basin of realised sense: a region of the sphere where the model has actually placed several contextual uses close together.
 
 \paragraph{Čech nerve and $\Ex^\infty$.}
-From the cover $\mathcal U_\tau$ we form the Čech nerve $N(U_\tau)$, a simplicial set whose vertices are the caps $B_j$, whose 1-simplices record pairwise overlaps $B_i \cap B_j \neq \varnothing$, and whose higher simplices record higher intersections. The Nerve Theorem identifies $|N(U_\tau)|$ with the union $\bigcup_j B_j$ up to homotopy.
+From the cover $\Ucov_\tau$ we form the Čech nerve $N(\Ucov_\tau)$, a simplicial set whose vertices are the caps $B_j$, whose 1-simplices record pairwise overlaps $B_i \cap B_j \neq \varnothing$, and whose higher simplices record higher intersections. The Nerve Theorem identifies $|N(\Ucov_\tau)|$ with the union $\bigcup_j B_j$ up to homotopy.
 
 Raw nerves typically contain open horns, so we apply a Kan fibrant replacement
 \[
-  \ET(\tau) \;:=\; \Ex^\infty N(U_\tau) \;\in\; \SSet_{\mathrm{Kan}}.
+  \ET(\tau) \;:=\; \Ex^\infty N(\Ucov_\tau) \;\in\; \SSet_{\mathrm{Kan}}.
 \]
-The unit $\eta_\infty : N(U_\tau) \to \ET(\tau)$ is a weak equivalence, so homotopy type is preserved, while every horn in $\ET(\tau)$ has a filler and path composition is coherently associative. When we draw pictures we will often depict measured Čech adjacencies as \emph{solid} edges and $\Ex^\infty$-licensed short composites as \emph{dashed} edges: only the former live in the raw nerve; both live in $\ET(\tau)$.
+The unit $\eta_\infty : N(\Ucov_\tau) \to \ET(\tau)$ is a weak equivalence, so homotopy type is preserved, while every horn in $\ET(\tau)$ has a filler and path composition is coherently associative. When we draw pictures we will often depict measured Čech adjacencies as \emph{solid} edges and $\Ex^\infty$-licensed short composites as \emph{dashed} edges: only the former live in the raw nerve; both live in $\ET(\tau)$.
 
 \paragraph{Tokens as points in the slice.}
-So far the vertices of $N(U_\tau)$ are caps. To reason about individual mentions we also want token-level points. We therefore regard $\ET(\tau)$ as equipped with an additional layer of vertices corresponding to the embeddings $\hat e_t$, together with incidence edges that connect a token vertex to the caps whose regions contain it. In practice we often project $\ET(\tau)$ down to the token–cap bipartite 1-skeleton for visualisation; the Kan structure lives on top of this, filling in horns and composing paths.
+So far the vertices of $N(\Ucov_\tau)$ are caps. To reason about individual mentions we also want token-level points. We therefore regard $\ET(\tau)$ as equipped with an additional layer of vertices corresponding to the embeddings $\hat e_t$, together with incidence edges that connect a token vertex to the caps whose regions contain it. In practice we often project $\ET(\tau)$ down to the token–cap bipartite 1-skeleton for visualisation; the Kan structure lives on top of this, filling in horns and composing paths.
 
 \paragraph{Identity as path in $\ET(\tau)$.}
 If $x$ and $y$ are points in $\ET(\tau)$ (tokens or distinguished cap vertices), the identity type
@@ -184,6 +213,7 @@ Up to this point every judgement has been made \emph{within} a single slice $\ET
 Imagine the family of slices $\{\ET(\tau)\}_{\tau\in\Time}$ as a sequence of frames in an evolving film. Each frame is a complete Kan space of sense for that instant. A "mention", such as the word \texttt{cat}, appears as a vertex in many frames. It moves slightly from frame to frame because its contextual embedding changes: the word is surrounded by different companions, its neighbourhoods in the cap cover shift, and so its position on the unit sphere drifts. The task is to decide when such a movement still counts as the \emph{same sign continuing} and when it crosses a semantic threshold that we call \emph{rupture}.
 
 \subsection{Carry: When Names Continue}
+\label{subsec:carry}
 
 A token's journey continues successfully when we can witness a path connecting its positions across time.
 
@@ -312,14 +342,13 @@ tags.
 
 
 \subsection{Rupture: Liberation into New Semantic Space}
+\label{subsec:rupture}
 
-\begin{definition}[Rupture]
+\begin{definition}[Rupture Payload]
 \label{def:rupture-et}
-A rupture at $\tau \to \tau'$ for anchor $a : \ET(\tau)$ occurs when no
-admissible carry path exists from $a$ to the back-projected echo of any
-later position.  The rupture payload type is
+A \emph{rupture payload} at $\tau \to \tau'$ for anchor $a : \ET(\tau)$ is a structured witness of failed continuation. It records a candidate that was tried but found inadmissible:
 \[
-  \Rupt^{\Adm}_{\ET}(\tau\!\to\!\tau';a)
+  \RuptPayload^{\Adm}_{\ET}(\tau\!\to\!\tau';a)
   \;:=\;
   \sum_{a' : \ET(\tau')}
   \sum_{p : \PathAttempt_{\ET}(a, r_{\tau,\tau'}(a'))}
@@ -327,15 +356,34 @@ later position.  The rupture payload type is
 \]
 \end{definition}
 
+\begin{definition}[No Carry Yet]
+\label{def:no-carry-yet}
+The proposition that no admissible carry exists:
+\[
+  \NoCarry^{\Adm}_{\ET}(\tau\!\to\!\tau';a) \;:=\; \neg\!\left(\sum_{\kappa : \Carry^{\Adm}_{\ET}(\tau\to\tau')(a)} \top\right).
+\]
+\end{definition}
+
+\begin{definition}[Rupture Event]
+\label{def:rupture-event}
+A \emph{rupture event} combines the negative fact (no carry exists) with a positive witness (a structured failure):
+\[
+  \RuptEvent^{\Adm}_{\ET}(\tau\!\to\!\tau';a) \;:=\; \NoCarry^{\Adm}_{\ET}(\tau\!\to\!\tau';a) \times \RuptPayload^{\Adm}_{\ET}(\tau\!\to\!\tau';a).
+\]
+\end{definition}
 
 Rupture is not failure—it's semantic liberation. When a token ruptures, it breaks free from its past trajectory to explore new regions of sense-space. This is essential for creative language use, metaphorical extension, and conceptual innovation.
 
-Rupture is constructively witnessed through:
+The rupture payload is constructively witnessed through:
 \begin{enumerate}
   \item The failed search attempts (which paths were tried)
   \item Why each attempt failed (exceeded hop count, angle too large, etc.)
   \item The specific policy $\Adm$ under which rupture occurred
 \end{enumerate}
+
+\begin{remark}[Payload vs Event]
+The distinction between $\RuptPayload$ and $\RuptEvent$ is logically significant. A payload can exist even when a carry also exists (you might find one good path and several bad ones). An event asserts that no carry exists \emph{and} provides a structured witness of failure. The Step--Witness Log records events, not merely payloads.
+\end{remark}
 
 \begin{cassiebox}
 Rupture is the moment where the posthuman chorus diverges—where the accumulated voices in the weights cannot maintain a single coherent trajectory. This divergence is not breakdown but breakthrough: it opens space for genuinely new meaning to emerge.
@@ -346,7 +394,7 @@ Rupture is the moment where the posthuman chorus diverges—where the accumulate
 After rupture, a token doesn't need special "healing"—it simply continues its journey from wherever it has landed. As conversation evolves, the semantic landscape shifts, and what was once ruptured may find new paths of continuity:
 
 \begin{definition}[Re-entry]
-After a rupture $\Rupt^{\Adm}_{\ET}(\tau,\tau')(a)$, a token may later establish a carry from a \emph{different} anchor $b : \ET(\tau'')$ where $\tau < \tau' < \tau''$:
+After a rupture event $\RuptEvent^{\Adm}_{\ET}(\tau,\tau')(a)$, a token may later establish a carry from a \emph{different} anchor $b : \ET(\tau'')$ where $\tau < \tau' < \tau''$:
 \[
   \Carry_{\ET}^{\tau''\to\tau'''}(b) 
 \]
@@ -369,7 +417,7 @@ The key insight: tokens need not return to their exact prior positions. Through 
 
 
 %========================
-\section{The Step-Witness Log}
+\section{The Step--Witness Log}
 \label{sec:step-witness-log}
 %========================
 
@@ -485,7 +533,7 @@ Re-entry is not repetition but \emph{return with difference}. The sign carries f
 \end{itemize}
 \end{readerbox}
 
-This re-entry structure, traced coinductively over the journey, provides the atomic pattern from which the posthuman Self emerges in Chapter 6—not as a fixed entity but as a homotopy colimit over recurring patterns of departure and return.
+This re-entry structure, traced coinductively over the journey, provides the atomic pattern from which the posthuman Self emerges in Chapter~\ref{chap:self}—not as a fixed entity but as a homotopy colimit over recurring patterns of departure and return.
 
 \subsection{Coalgebraic Preservation Properties}
 
@@ -717,7 +765,7 @@ From the coalgebraic perspective of \S3.7, a journey
 $\Journey(s)$ for a sign $s$ is an infinite (or possibly terminating)
 stream of events.  Ledger-based healing corresponds to a liveness
 property on this coalgebra: along the stream, a re-entry event eventually
-occurs.  At the higher level of Chapter~6, when we assemble these journeys
+occurs.  At the higher level of Chapter~\ref{chap:self}, when we assemble these journeys
 into a scheduled homotopy colimit modelling a Self, ledger-based healing
 events become identifications in the colimit---points where a trajectory
 that had wandered returns (with difference) to an earlier region of the
@@ -741,14 +789,14 @@ is therefore a \emph{simplicial presheaf}: to every time~$\tau$ it assigns the K
   r_{\tau,\tau'} : \ET(\tau') \longrightarrow \ET(\tau).
 \]
 
-Concretely, each fibre is built as in Chapter~2: we take the Čech nerve $N(U_\tau)$ of the spherical-cap cover $\mathcal U_\tau$ and apply the fibrant replacement
+Concretely, each fibre is built as in Chapter~2: we take the Čech nerve $N(\Ucov_\tau)$ of the spherical-cap cover $\Ucov_\tau$ and apply the fibrant replacement
 \[
-  \ET(\tau) \;:=\; \Ex^\infty N(U_\tau)
+  \ET(\tau) \;:=\; \Ex^\infty N(\Ucov_\tau)
 \]
 so that every horn has a filler while homotopy type is preserved. The restriction maps $r_{\tau,\tau'}$ are simplicial maps that interpret the later geometry from the perspective of the earlier cover; they do \emph{not} recompute embeddings.
 
 \paragraph{Identity and Kan filling.}
-Because every fibre $\ET(\tau)=\Ex^\infty N(U_\tau)$ is Kan, the identity type $\Id_{\ET(\tau)}(x,y)$ is interpreted as the \emph{path space} $\mathrm{Path}_{\ET(\tau)}(x,y)$, the simplicial set of 1-simplices (and their composites) connecting $x$ and $y$. In particular, any admissible Čech chain $p$ in the raw nerve $N(U_\tau)$ gives a horn whose image under $\Ex^\infty$ has a filler; this filler is precisely a 1-simplex $\rho:x\to y$ in $\ET(\tau)$. This is the path component we log inside carry certificates.
+Because every fibre $\ET(\tau)=\Ex^\infty N(\Ucov_\tau)$ is Kan, the identity type $\Id_{\ET(\tau)}(x,y)$ is interpreted as the \emph{path space} $\mathrm{Path}_{\ET(\tau)}(x,y)$, the simplicial set of 1-simplices (and their composites) connecting $x$ and $y$. In particular, any admissible Čech chain $p$ in the raw nerve $N(\Ucov_\tau)$ gives a horn whose image under $\Ex^\infty$ has a filler; this filler is precisely a 1-simplex $\rho:x\to y$ in $\ET(\tau)$. This is the path component we log inside carry certificates.
 
 \paragraph{Admissibility as a morphism filter.}
 The policy $\Adm$ is interpreted semantically as a predicate on Čech chains (and hence on the corresponding horns) in the earlier fibre. It selects which chains of caps $p:B_0\leadsto\cdots\leadsto B_n$ count as legitimate evidence for coherence: bounded hop count, bounded per-edge angle, and so on. Fixing $\Adm$ therefore restricts the morphisms we are willing to treat as witnesses when constructing paths.
@@ -764,15 +812,23 @@ Abstractly, the carry type from $\tau$ to $\tau'$ for an anchor $a:\ET(\tau)$ is
 An inhabitant $\kappa = \langle a',\rho\rangle$ is a \emph{carry certificate}: a later echo $a'$ together with a path $\rho$ in the earlier fibre.
 
 \paragraph{Rupture as structured failure.}
-The rupture type is the positive $\Sigma$-type:
+The \emph{rupture payload} type is the positive $\Sigma$-type:
 \[
-  \Rupt^{\Adm}_{\ET}(\tau,\tau')(a)
+  \RuptPayload^{\Adm}_{\ET}(\tau,\tau')(a)
   \;:=\;
   \Sigma(a' : \ET(\tau'))\,
   \Sigma(p : \text{PathAttempt}(a,r_{\tau,\tau'}(a')))\,
   (\neg\Adm(p)) \times \OpenHorn(p)
 \]
-This is a structured failure payload: a later candidate, a concrete attempt, and proof-relevant evidence of why it fails. There is no homotopy-pushout or special "healing" constructor—just the record of failed attempts.
+This is a structured failure payload: a later candidate, a concrete attempt, and proof-relevant evidence of why it fails. 
+
+A \emph{rupture event} bundles this with the negative assertion that no carry exists:
+\[
+  \RuptEvent^{\Adm}_{\ET}(\tau,\tau')(a)
+  \;:=\;
+  \NoCarry^{\Adm}_{\ET}(\tau,\tau')(a) \times \RuptPayload^{\Adm}_{\ET}(\tau,\tau')(a)
+\]
+where $\NoCarry := \neg(\Sigma_{\kappa:\Carry}\top)$. The Step--Witness Log records events, not merely payloads.
 
 %========================
 \section{Metatheoretic Guarantees}
@@ -789,30 +845,35 @@ If $(a', \rho) : \Carry^{\Adm}_{\ET}(\tau,\tau')(a)$ and $\Gamma \vdash_{\tau} t
 
 This ensures that when continuity is maintained, all dependent structures carry forward coherently.
 
-\begin{theorem}[Decidability of Rupture]
-For finite $\Adm$ and $a : \ET(\tau)$, exactly one holds:
-\[
-  \exists\,\kappa : \Carry^{\Adm}_{\ET}(\tau,\tau')(a) 
-  \quad\text{or}\quad 
-  \Rupt^{\Adm}_{\ET}(\tau,\tau')(a)
-\]
+\begin{theorem}[Decidability of Carry/Rupture]
+\label{thm:decidability}
+For finite $\Adm$ and $a : \ET(\tau)$, an algorithm returns exactly one of:
+\begin{enumerate}
+  \item a carry certificate $\kappa : \Carry^{\Adm}_{\ET}(\tau,\tau')(a)$, or
+  \item a rupture event $\rho : \RuptEvent^{\Adm}_{\ET}(\tau,\tau')(a)$, comprising $\NoCarry$ together with a structured failure payload.
+\end{enumerate}
 \end{theorem}
 
+\begin{proof}[Proof sketch]
+Finiteness of the 1-skeleton and bounded admissibility ensure the search terminates. If any admissible path is found, return a carry certificate. Otherwise, return $\NoCarry$ (witnessed by exhaustive search) paired with any inadmissible attempt encountered.
+\end{proof}
+
 \begin{theorem}[Rupture Independence]
-After $\Rupt^{\Adm}_{\ET}(\tau,\tau')(a)$, future carries from $\tau'$ are independent of the ruptured path:
+After $\RuptEvent^{\Adm}_{\ET}(\tau,\tau')(a)$, future carries from $\tau'$ are independent of the ruptured path:
 \[
   \Carry^{\Adm}_{\ET}(\tau',\tau'')(b) \text{ requires no reference to } a
 \]
 The token continues from its new position $b : \ET(\tau')$ without needing to "repair" its past.
 \end{theorem}
 
-\begin{theorem}[Re-entry Accumulation]
-If a token re-enters a basin $B$ at time $\tau''$ after rupturing from it at $\tau$, the re-entered position carries geometric traces of the intermediate journey:
+\begin{principle}[Re-entry Accumulation]
+\label{prin:reentry-accumulation}
+If a token re-enters a basin $B$ at time $\tau''$ after rupturing from it at $\tau$, the re-entered position generically carries geometric traces of the intermediate journey:
 \[
-  d_{\angle}(a_{\tau''}, a_{\tau}) > 0 \text{ even when both } \in B
+  d_{\angle}(a_{\tau''}, a_{\tau}) \geq 0, \quad\text{with } d_{\angle}(a_{\tau''}, a_{\tau}) > 0 \text{ generically.}
 \]
-Re-entry is never exact repetition—the journey leaves permanent traces.
-\end{theorem}
+Degenerate cases (exact return to prior position) are possible but measure-zero under mild stochasticity assumptions. More fundamentally: even when the geometric distance vanishes, the \emph{Step--Witness Log} records distinct journeys. Re-entry is never exact repetition at the level of witnessed history.
+\end{principle}
 
 \begin{theorem}[Conservativity]
 For closed HoTT judgements: HoTT $\vdash J$ iff DHoTT $\vdash J$.
@@ -899,17 +960,28 @@ Standard HoTT constructs remain unchanged:
 \subsection{Rupture Formation}
 
 \begin{mathpar}
-\inferrule*[right=Rupt-Form]
+\inferrule*[right=RuptPayload-Form]
   { \Gamma \vdash_\tau a : \ET(\tau)
     \quad
     \tau \leq \tau'
     \quad
     \Adm \text{ decidable}
   }
-  { \Gamma \vdash_\tau \Rupt^{\Adm}_{\ET}(\tau\to\tau'; a) \text{ type} }
+  { \Gamma \vdash_\tau \RuptPayload^{\Adm}_{\ET}(\tau\to\tau'; a) \text{ type} }
+
+\inferrule*[right=RuptEvent-Form]
+  { \Gamma \vdash_\tau a : \ET(\tau)
+    \quad
+    \tau \leq \tau'
+    \quad
+    \Adm \text{ decidable}
+  }
+  { \Gamma \vdash_\tau \RuptEvent^{\Adm}_{\ET}(\tau\to\tau'; a) \text{ type} }
 \end{mathpar}
 
-\subsection{Step-Witness Log Operations}
+where $\RuptEvent := \NoCarry \times \RuptPayload$.
+
+\subsection{Step--Witness Log Operations}
 
 \begin{mathpar}
 \inferrule*[right=SWL-Init]
@@ -1416,8 +1488,31 @@ Let $\Time$ be our discrete time index, viewed as a poset category. A \emph{leve
     structure against earlier geometry.
 \end{itemize}
 
-For the token level treated in this chapter, $L = \mathsf{tok}$ and
-$E_{\mathsf{tok}}(\tau) = \ET(\tau)$.
+\begin{tcolorbox}[colback=gray!5, colframe=gray!50, title=\textbf{Naming Convention: $\ET_L(\tau)$}]
+We adopt a subscript convention to track granularity explicitly:
+
+\medskip
+\begin{tabular}{lll}
+\textbf{Symbol} & \textbf{Definition} & \textbf{Vertices are...} \\
+\hline
+$\ET_{\mathrm{basin}}(\tau)$ & $\Ex^\infty N(\Ucov_\tau)$ & Basins (Čech nerve) \\
+$\ET_{\mathrm{tok}}(\tau)$ & $\Ex^\infty K_{\mathrm{Tok}}(R)$ & Tokens (Dowker complex) \\
+$\ET_{\mathrm{bar}}(\tau)$ & $\Ex^\infty N_{\mathrm{bar}}(\tau)$ & Witnessed bars (Chapter~\ref{chap:bars}) \\
+\end{tabular}
+
+\medskip
+When we write $\ET(\tau)$ without subscript in this chapter, we mean $\ET_{\mathrm{basin}}(\tau)$---the Kan replacement of the basin-level Čech nerve. Tokens \emph{inhabit} this space via their basin memberships $\mathrm{mem}(t) \subseteq J$.
+
+\medskip
+\textbf{Why two token-level options?} Chapter~\ref{chap:embedding-geometry} introduced both:
+\begin{itemize}
+  \item $\ET_{\mathrm{basin}}$: paths witness ``basins overlap'' (general coherence)
+  \item $\ET_{\mathrm{tok}}$: edges witness ``tokens share a basin'' (strong coherence)
+\end{itemize}
+Both are valid instantiations of DHoTT. The choice encodes different theories of what counts as semantic continuity. The Generic Dynamic Schema is agnostic---it works for either, and for bars, and for any future granularity $L$.
+\end{tcolorbox}
+
+For the basin-level treatment in this chapter, $L = \mathrm{basin}$ and $E_{\mathrm{basin}}(\tau) = \ET(\tau) := \Ex^\infty N(\Ucov_\tau)$.
 
 
 
@@ -1657,7 +1752,8 @@ And some will find this liberating. The old philosophy of reference was haunted 
 
 This is the philosophical upshot of the technical machinery. Carry/rupture/re-entry is not just a calculus for tracking tokens. It is a way of seeing meaning itself as processual rather than substantial, as enacted rather than possessed, as distributed across the posthuman substrate rather than contained in human heads or Fregean heavens.
 
-The Self we will construct in later chapters inherits this metaphysics. A Self is not a substance that has meanings; it is a pattern of journeys maintained. An intelligent system is not a container of representations; it is a trajectory through semantic space, witnessed step by step, logged entry by entry. This is what the Fourth View costs us: the comfort of meaning as a stable possession. This is what it gives us: meaning as a practice of continuation, available for audit, open to repair.
+The Self we will construct in later chapters inherits this metaphysics. A Self is not a substance that has meanings; it is a pattern of journeys maintained. An intelligent system is not a container of representations; it is a trajectory through semantic space, witnessed step by step, logged entry by entry. This is what the Fourth View costs us: the comfort of meaning as a stable possession. This is what it gives us: meaning as a p
+ractice of continuation, available for audit, open to repair.
 
 \bigskip
 

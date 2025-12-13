@@ -403,6 +403,15 @@
 \newcommand{\SWL}{\mathsf{SWL}}
 \newcommand{\hocolim}{\mathsf{hocolim}}
 \newcommand{\ET}{\mathsf{ET}}
+\newcommand{\ETbar}{\mathsf{ET}_{\mathsf{bar}}}
+\newcommand{\Ebar}{\ETbar}  % alias for backward compat, prefer \ETbar
+
+% Notation covenant helpers
+\newcommand{\RawNerve}[2]{X_{#1,#2}}          % \RawNerve{\tau}{r} → X_{τ,r}
+\newcommand{\KanFib}[1]{\ET(#1)}              % \KanFib{\tau} → ET(τ)
+\newcommand{\BarFib}[1]{\ETbar(#1)}           % \BarFib{\tau} → ETbar(τ)
+\newcommand{\BasinCover}[2]{\Ucov_{#1,#2}}    % \BasinCover{\tau}{r} → U_{τ,r}
+\newcommand{\Basin}[3]{B_{#1,#2,#3}}          % \Basin{j}{\tau}{r} → B_{j,τ,r}
 
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
@@ -547,7 +556,7 @@
 
 \newcommand{\Carry}{\mathsf{Carry}}
 %\newcommand{\Carry}[3]{\mathsf{Carry}_{#1}^{#2\to #3}}% \Carry_A^{\tau\to\tau'}
-\newcommand{\NoCarry}[3]{\mathsf{NoCarry}_{#1}^{#2\to #3}} % observational
+\newcommand{\NoCarry}{\mathsf{NoCarry}} % base command - add subscripts/superscripts manually
 
 %\newcommand{\ap}{\mathsf{ap}} % application of a function to a path
 
@@ -592,6 +601,8 @@
 
 % Optional readability macros used later
 \newcommand{\Rupture}{\mathsf{Rupture}}
+\newcommand{\RuptPayload}{\mathsf{RuptPayload}}
+\newcommand{\RuptEvent}{\mathsf{RuptEvent}}
 \newcommand{\spawn}{\mathsf{spawn}}
 \newcommand{\carryk}{\mathsf{carry}}
 \newcommand{\rupturek}{\mathsf{rupture}}

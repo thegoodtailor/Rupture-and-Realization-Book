@@ -7,7 +7,7 @@ There is a moment in the history of any discipline when a metaphor hardens into 
 
 That moment has passed. 
 
-When a transformer architecture embeds a word in context, it does not assign that word a meaning in the old sense---a definition, a reference, a place in a logical calculus. It assigns the word a \emph{position}: a point on a sphere in four thousand dimensions, surrounded by other points, some near, some far, the distances between them encoding substitutability in context. The word ``bank'' beside ``river'' lands in one region; beside ``loan'' it lands in another. The same surface form, different coordinates. Meaning has become literal geometry.
+When a transformer architecture embeds a word in context, it does not assign that word a meaning in the old sense---a definition, a reference, a place in a logical calculus. It assigns the word a \emph{position}: a vector in $\R^d$ (hundreds to thousands of dimensions, depending on the model); after normalisation, a point on a hypersphere $S^{d-1}$, surrounded by other points, some near, some far, the distances between them encoding substitutability in context. The word ``bank'' beside ``river'' lands in one region; beside ``loan'' it lands in another. The same surface form, different coordinates. Meaning has become literal geometry.
 
 What the transformer has discovered---or rather, what gradient descent over billions of human utterances has precipitated---is that the relational structure of sense can be geometrically encoded. The proximity of two tokens in embedding space is not an arbitrary number; it is a calibrated proxy for how often, across the vast archive of human text, those tokens have occupied similar contextual positions. When we measure distance in this space, we measure the collective judgment of a multitude: the posthuman substrate speaking through coordinates.
 
@@ -85,7 +85,7 @@ d_\angle(u,v)\;:=\;\arccos\!\big(\langle \hat u,\hat v\rangle\big)\in[0,\pi],
 \qquad
 \delta_\angle(u,v)\;:=\;\frac{1}{\pi}\,d_\angle(u,v)\in[0,1].
 \]
-Small $d_\angle$ (equivalently, small $\delta_\angle$) indicates similar \emph{use in context}. Two occurrences are \emph{neighbours} when $d_\angle(\hat e_{t_i},\hat e_{t_j})\le \tau$ for a chosen scale $\tau>0$.
+Small $d_\angle$ (equivalently, small $\delta_\angle$) indicates similar \emph{use in context}. Two occurrences are \emph{neighbours} when $d_\angle(\hat e_{t_i},\hat e_{t_j})\le r$ for a chosen scale $r>0$.
 
 \paragraph{Why angular distance encodes “meaning-as-use.”}
 This choice is not cosmetic; it matches how modern encoders are trained and deployed:
@@ -97,11 +97,13 @@ This choice is not cosmetic; it matches how modern encoders are trained and depl
 \end{enumerate}
 
 \paragraph{Neighbourhoods and basins (spherical caps).}
-At the scale of a single text, dense regions of compatible use are summarised as \emph{basins}. With the angular metric, a basin centred at a representative direction $\mu_j$ with radius $\rho_j$ is the spherical cap
+At the scale of a single text, dense regions of compatible use are summarised as \emph{basins}. With the angular metric, a basin centred at a representative direction $\mu_j$ with radius $r_j$ is the spherical cap
 \[
-B_j \;:=\; \{\,x\in S^{d-1} \mid d_\angle(x,\mu_j)\le \rho_j \,\}.
+B_j \;:=\; \{\,x\in S^{d-1} \mid d_\angle(x,\mu_j) < r_j \,\}.
 \]
-We may still speak informally of “balls,” but—unless noted otherwise—\emph{radii are angular} (radians) and the sets are caps on $S^{d-1}$.
+We may still speak informally of “balls,” but—unless noted otherwise—\emph{radii are angular} (radians) and the sets are open caps on $S^{d-1}$.
+
+\emph{Implementation note.} In computation we often test membership with $\le$ and apply an $\varepsilon$-thickening; this does not affect the homotopy type at the scales used.
 
 \paragraph{Metric policy and good-cover hygiene.}
 We adopt $d_\angle$ on $S^{d-1}$ as canonical. Spherical caps of radius $<\pi/2$ are geodesically convex; finite intersections of such caps are geodesically convex and hence contractible. We therefore choose basin radii in this regime so the collection $\Ucov=\{B_j\}$ forms a good cover and the Nerve Lemma applies.\\[2pt]
@@ -116,9 +118,9 @@ monotonically re-parametrises the same neighbourhoods; we do not otherwise rely 
 
 Raw point-level neighbourhoods are too granular. In a single text, uses concentrate in a handful of dense areas—topics, registers, or functional roles. We identify these areas by clustering the point cloud $E$ \emph{on the sphere under the angular metric} (e.g. spherical $k$-means/cosine, or density-based methods with an angular notion of reachability). For each cluster $j\in J$, summarise by a \emph{spherical cap}
 \[
-B_j \;=\; \{\,x\in S^{d-1} \mid d_\angle(x,\mu_j)\le \rho_j \,\},
+B_j \;=\; \{\,x\in S^{d-1} \mid d_\angle(x,\mu_j) < r_j \,\},
 \]
-where $\mu_j$ is a mean direction/Fréchet mean on $S^{d-1}$ and $\rho_j>0$ is a robust within-cluster quantile of geodesic radii. Each $B_j$ is a \textbf{basin}: a region where the text is currently realising a compatible reading.
+where $\mu_j$ is a mean direction/Fréchet mean on $S^{d-1}$ and $r_j>0$ is a robust within-cluster quantile of geodesic radii. Each $B_j$ is a \textbf{basin}: a region where the text is currently realising a compatible reading.
 
 \paragraph{Why caps (not just labels)?}
 Caps provide two features essential for our topological model:
@@ -133,7 +135,11 @@ Caps provide two features essential for our topological model:
 The family of all basins $\Ucov=\{B_j\mid j\in J\}$ is our first semantic object: each basin is a \enquote{patch} of attracted sense; each overlap is a \enquote{bridge} of compatibility. Points outside all caps are recorded as \texttt{Noise}.
 
 \paragraph{Open-cover hygiene.}
-As above, we model basins as spherical caps on $S^{d-1}$ with $\rho_j<\pi/2$. Finite intersections of such caps are geodesically convex and thus contractible, so the good-cover hypothesis for the Nerve Lemma applies unchanged.
+As above, we model basins as spherical caps on $S^{d-1}$ with $r_j<\pi/2$. Finite intersections of such caps are geodesically convex and thus contractible, so the good-cover hypothesis for the Nerve Lemma applies unchanged.
+
+To guarantee this, we enforce a hard clamp: $r_j \leftarrow \min\{r_j,\, \pi/2 - \varepsilon\}$ for small $\varepsilon > 0$. In practice, typical within-cluster radii from distributional clustering are well below $\pi/2$, so this clamp rarely activates.
+
+\emph{Open vs.\ closed in implementation.} Theoretically our caps are open ($d_\angle < r_j$); computationally we often test $\le$ for numerical stability. This closed/thickened proxy does not affect homotopy type at the scales used, since the perturbation is small relative to inter-basin distances.
 
 \begin{example}
 Throughout the book we illustrate on our own text; because we love recursivity, our prime demo is the chapter you are reading. Figure~\ref{fig:cech3d} shows the \emph{basin cover and its observed overlaps} for this chapter up to (and including) the \enquote{Phenomenology} box on page~\pageref{box:phenomenology}.
@@ -193,7 +199,7 @@ On a post-Fregean reading, we do not reify sense as a static intension detached 
 \medskip
 
 Given the basin cover $\Ucov=\{B_j\mid j\in J\}$ on the unit sphere $S^{d-1}$ (with
-$\rho_j<\pi/2$ so caps are geodesically convex), the standard tool is the \Cech{}
+$r_j<\pi/2$ so caps are geodesically convex), the standard tool is the \Cech{}
 nerve of the cover.
 
 \subsection{Simplices from witnessed overlaps}
@@ -244,22 +250,62 @@ a multi-overlap can exist even if no single observed token witnesses it.
 
 \paragraph{Čech pullback graph (our derived adjacency).}
 For fine-grained \emph{bridging} at token level, we also use the 1-skeleton of the
-Čech nerve. Define the graph $G_{\mathrm{tok}}(T,\Ucov)$ with vertices $T$ and
+Čech nerve. 
+
+\begin{definition}[Token graph]
+\label{def:token-graph}
+The graph $G_{\mathrm{tok}}(T,\Ucov)$ has vertices $T$ and
 \[
 \{t_i,t_j\}\in E
 \iff
 \exists\, (j,k)\in J^2\text{ with } \hat e_{t_i}\in B_j,\ \hat e_{t_j}\in B_k,\text{ and }B_j\cap B_k\neq\varnothing .
 \]
+\end{definition}
+
 (When $j{=}k$, tokens are adjacent for sharing a basin; otherwise, they are adjacent
 because their basins co-inhabit a witnessed overlap.) This \emph{is not} the token
 Dowker complex—it is the Čech 1-skeleton \emph{pulled back} along $R$. When we need
 simplices on tokens here, we take the \emph{clique complex} of $G_{\mathrm{tok}}$.
 
+\begin{tcolorbox}[colback=gray!5, colframe=gray!50, title=\textbf{Map of Objects}]
+We work with two levels of structure built from the same incidence relation $R \subseteq T \times J$:
+
+\medskip
+\textbf{Cover level (basins as vertices):}
+\begin{itemize}
+\item $N_{\mathrm{geom}}(\Ucov)$ --- the geometric \v{C}ech nerve: $[j_0,\dots,j_k]$ is a simplex iff $\bigcap_s B_{j_s} \neq \varnothing$
+\item $N_{\mathrm{obs}}(\Ucov)$ --- the observed nerve: $[j_0,\dots,j_k]$ is a simplex iff some token inhabits $\bigcap_s B_{j_s}$
+\item $A_{\mathrm{basin}} := \Ex^\infty N_{\mathrm{obs}}(\Ucov)$ --- Kan replacement at cover level
+\item Note: $N_{\mathrm{obs}} \subseteq N_{\mathrm{geom}}$; equality holds in the dense-sampling regime. The Nerve Lemma applies to $N_{\mathrm{geom}}$; the \emph{shape} of sense lives here.
+\end{itemize}
+
+\textbf{Token level (tokens as vertices):}
+\begin{itemize}
+\item $K_{\Tok}(R)$ --- token Dowker complex: simplex iff tokens \textbf{share a basin} (\emph{strong coherence})
+\item $G_{\mathrm{tok}}$ --- \v{C}ech pullback graph: edge iff tokens' \textbf{basins overlap} (\emph{general coherence})
+\item $\ET(\tau) := \Ex^\infty K_{\Tok}(R)$ --- the HoTT base for token-level reasoning
+\end{itemize}
+
+\medskip
+\textbf{Two grades of token coherence:}
+\begin{itemize}
+\item \emph{Strong}: tokens $a,b$ share a basin ($\mathrm{mem}(a) \cap \mathrm{mem}(b) \neq \varnothing$) --- direct edge in $K_{\Tok}(R)$
+\item \emph{General}: tokens $a,b$ have overlapping basins --- connected via path in $G_{\mathrm{tok}}$
+\end{itemize}
+Example: ``cat'' and ``feline'' in the same basin = strong coherence (near-identity of use). ``Feline'' and ``Leghato'' (a particular cat) in overlapping but distinct basins = general coherence (compatible but distinguishable).
+
+\medskip
+\textbf{Connection via Dowker duality:} By Dowker's theorem, $|K_{\Tok}(R)| \simeq |K_J(R)|$, and $K_J(R) \subseteq N_{\mathrm{obs}}(\Ucov)$. The token-level space $\ET(\tau)$ and the cover-level space $A_{\mathrm{basin}}$ are thus related: shape arguments use the cover level (Nerve Lemma); HoTT reasoning uses the token level (where individual mentions live).
+
+\medskip
+The \textbf{radius $r_j$ is a dial}: larger radii produce more overlaps, more edges, coarser coherence. The choice of radius encodes a theory of how tightly tokens must cluster to count as ``the same kind of thing.''
+\end{tcolorbox}
+
 \begin{cassiebox}\label{box:phenomenology}
 \textbf{Phenomenology.}
-At cover level, a Čech simplex is a witnessed multi-overlap of basins.
-At token level, $K_{\Tok}(R)$ captures \enquote{cohabitation in one region}, while
-the Čech pullback graph captures \enquote{bridgeability across regions}. The latter
+At cover level, a Čech simplex is a witnessed multi-overlap of basins---places where different regions of sense meet.
+At token level, $K_{\Tok}(R)$ captures \emph{strong coherence} (tokens that cohabit one region), while
+$G_{\mathrm{tok}}$ captures \emph{general coherence} (tokens whose regions bridge). The latter
 naturally exhibits \emph{open horns} (two edges present, the third missing): it records
 that composition is not yet witnessed, which is precisely why the Kan step will be
 felt as necessary.
@@ -303,15 +349,19 @@ serves as a computational proxy:
 \[
 \check C(P,r)\ \subseteq\ \VR(P,2r)\ \subseteq\ \check C(P,2r).
 \]
+\emph{Convention:} $\check{C}(P,r)$ uses balls of radius $r$; $\VR(P,\epsilon)$ uses pairwise distance threshold $\epsilon$.
+
 We nevertheless prefer Čech here because our semantics depends on \emph{witnessed}
 multi-intersections: pairwise closeness (VR cliques) can over-fill and collapse
 phenomenologically meaningful loops.
 
 \paragraph{Triangle gap (explicit).}
 Let three basin representatives form an equilateral triangle of side $s$ in $\R^2$,
-and set $r:=s/2$. Čech at radius $r$ has edges but no $2$-simplex (the triple
-intersection is empty; circumradius $s/\sqrt{3}>r$), so a loop survives. VR at
-scale $2r=s$ completes the triangle by clique, killing the loop prematurely.
+and pick $r$ in the range $s/2 < r < s/\sqrt{3}$. Čech at radius $r$ has edges (pairwise intersections exist) but no $2$-simplex (the triple
+intersection is empty; the circumradius $s/\sqrt{3} > r$), so a loop survives. VR at
+scale $2r > s$ completes the triangle by clique, killing the loop prematurely.
+
+This is not a pathology but a feature: Čech respects \emph{joint} presence, while VR only checks pairwise closeness.
 
 \paragraph{Empirical practice.}
 In high-dimensional embeddings, VR tends to over-fill; nerve-faithful constructions
@@ -337,16 +387,17 @@ We regard the simplicial \emph{complex} $X$ as its associated simplicial
 \emph{set} (same combinatorics) and apply the standard fibrant-replacement
 functor $\Ex^\infty$.
 
-\begin{definition}[Canonical fibrant replacement]
-Set
+\begin{definition}[Canonical fibrant replacement (cover level)]
+At the cover level, set
 \[
-  A \;:=\; \Ex^\infty X \;\in\; \mathbf{sSet}_{\Kan}.
+  A_{\mathrm{basin}} \;:=\; \Ex^\infty N(\Ucov) \;\in\; \mathbf{sSet}_{\Kan}.
 \]
-Then $A$ is Kan: for every horn $\Lambda^n_i\!\to\!A$ there exists a filler
-$\Delta^n\!\to\!A$. The unit $\eta_\infty\colon X\to A$ is a weak
-equivalence. Thus passing to $A$ preserves homotopy type while guaranteeing
-an internal, compositional path calculus suitable for transport and
-reasoning in DHoTT.
+Then $A_{\mathrm{basin}}$ is Kan: for every horn $\Lambda^n_i\!\to\!A_{\mathrm{basin}}$ there exists a filler
+$\Delta^n\!\to\!A_{\mathrm{basin}}$. The unit $\eta_\infty\colon N(\Ucov)\to A_{\mathrm{basin}}$ is a weak
+equivalence. Thus passing to $A_{\mathrm{basin}}$ preserves homotopy type while guaranteeing
+an internal, compositional path calculus.
+
+At the token level, we similarly define $\ET(\tau) := \Ex^\infty K_{\Tok}(R)$, which is the base for HoTT reasoning over tokens (see \S\ref{sec:hott-logic-final}).
 \end{definition}
 
 \begin{theorem}[Kan replacement without changing shape]
@@ -383,9 +434,9 @@ computation is carried out in $A$. See Fig.~\ref{fig:probes-edges}.
   \centering
   \includegraphics[width=\linewidth]{sections/chapter-2-images/fig_probes_overlay3d.png}
   \caption{\textbf{Observed vs.\ licensed edges on one token set.}
-  \emph{Solid} lines: Čech 1-skeleton (witnessed co-presence).  
-  \emph{Dashed}: edges visible only in $A=\Ex^\infty \mathcal N(\Ucov)$ when
-  a coherent composite path exists in $A$ between the two tokens. Dashed
+  \emph{Solid} lines: Čech 1-skeleton (witnessed co-presence in a shared basin).  
+  \emph{Dashed}: edges visible only in $\ET(\tau)=\Ex^\infty K_{\Tok}(R)$ when
+  a coherent composite path exists via the basin graph. Dashed
   edges license transport in the calculus; they never retroactively claim new
   overlaps in $X$.}
   \label{fig:probes-edges}
@@ -468,10 +519,10 @@ along $R$ (Def.~\ref{def:token-graph}).
     \min_{k\in R(v)}\cos(\hat e_v,\mu_k)
     \cdot \\
     \prod_{\text{edges }(a,b)}
-      \frac{\mathrm{area}(B_a\cap B_b)}
-           {\min\{\mathrm{area}(B_a),\mathrm{area}(B_b)\}},
+      \frac{|W_{ab}|}
+           {\min\{|W_a|,|W_b|\}},
   \end{multline*}
-  and retain only $w(u,v)\ge \theta$.
+  where $W_{ab}$ denotes the set of witness tokens inhabiting both $B_a$ and $B_b$, and $|W_j|$ the token count in basin $j$. Retain only $w(u,v)\ge \theta$.
 \end{enumerate}
 
 This licenses exactly those token composites that are \emph{explained} by
@@ -538,7 +589,7 @@ of paths and transport while preserving the original shape of sense.
 
 We're now going to see what HoTT looks like over the Kan Fibrant token nerve:
 \begin{itemize}
-\item \emph{Type} $\leftrightarrow$ the Kan fibrant token nerve $A=\Ex^\infty K_X$;
+\item \emph{Type} $\leftrightarrow$ the Kan fibrant token complex $\ET(\tau)=\Ex^\infty K_{\Tok}(R)$;
 \item \emph{Term / element of a type} $\leftrightarrow$ an individual token;
 \item \emph{Identity path} $\leftrightarrow$ a witnessed or composite coherence (solid or dashed edge);
 \item \emph{Dependent type} $\leftrightarrow$ any measurable predicate indexed by tokens (e.g.\ membership, top-word, register);
@@ -547,14 +598,20 @@ We're now going to see what HoTT looks like over the Kan Fibrant token nerve:
 This mapping lets HoTT’s logical operations speak directly to the data objects of distributional semantics.
 
 \paragraph{Base choice (tokens, not basins).}
-Let $X$ be the set of \emph{tokens} in the slice and $\mathcal U=\{B_j\mid j\in J\}$ the basin cover from \S\ref{sec:cover}. 
-Consider the relation $R\subseteq X\times J$ given by $x\,R\,j\iff x\in B_j$.
-We take as base the \emph{token Dowker complex} $K_X$: a finite set $\sigma\subseteq X$ is a simplex of $K_X$ iff the tokens in $\sigma$ share at least one basin, i.e.\ $\bigcap_{x\in\sigma} R(x,-)\neq\varnothing$.
-By Dowker duality $K_X$ is homotopy–equivalent to the basin Čech complex used earlier, so all homotopy–theoretic statements transfer unchanged.
+Let $T$ be the set of \emph{tokens} in the slice and $\mathcal U=\{B_j\mid j\in J\}$ the basin cover from \S\ref{sec:cover}. 
+Consider the incidence relation $R\subseteq T\times J$ given by $(t,j)\in R\iff \hat{e}_t\in B_j$.
+We take as base the \emph{token Dowker complex} $K_{\Tok}(R)$: a finite set $\sigma\subseteq T$ is a simplex iff the tokens in $\sigma$ share at least one basin, i.e.\ $\bigcap_{t\in\sigma} R(t,-)\neq\varnothing$. This captures \emph{strong coherence}: tokens that literally cohabit a region of sense.
+
+By Dowker's theorem, $|K_{\Tok}(R)| \simeq |K_J(R)|$, where $K_J(R)$ is the cover Dowker complex. Note that $K_J(R)$ is a \emph{witnessed subcomplex} of the full \v{C}ech nerve $N_{\mathrm{geom}}(\Ucov)$: a geometric multi-overlap can exist without any single token witnessing it. Our HoTT semantics operates at the token level, ensuring every path has empirical grounding in observed tokens.
+
+\begin{remark}[Design choice]
+\label{rem:design-choice}
+The Čech-based instrumentation is one principled choice encoding a distributional view of meaning: overlapping contextual regions imply semantic compatibility. The Dynamic Homotopy framework of Chapter~\ref{chap:evolving-text-as-presheaf} is agnostic about this choice---other instrumentations (e.g., $k$-nearest neighbor graphs, context window co-occurrence, attention-derived adjacency) would yield different but equally valid instantiations of the Generic Dynamic Schema. We develop this one because (i) it grounds coherence in witnessed geometric structure, and (ii) it connects naturally to the TDA machinery for bars in Chapter~\ref{chap:bars}.
+\end{remark}
 
 \paragraph{Kan replacement and path calculus.}
-We pass to a Kan fibrant replacement $A := \Ex^\infty K_X\in\mathbf{sSet}_{\mathrm{Kan}}$. 
-Points $x:A$ are tokens. A path $p:\Id_A(x,y)$ is a \emph{coherence path}: a composition of observed co‑presences (solid edges) and their Kan fillers. 
+We pass to a Kan fibrant replacement $\ET(\tau) := \Ex^\infty K_{\Tok}(R)\in\mathbf{sSet}_{\mathrm{Kan}}$. 
+Points $x:\ET(\tau)$ are tokens. A path $p:\Id_{\ET(\tau)}(x,y)$ is a \emph{coherence path}: a composition of observed co‑presences (solid edges) and their Kan fillers. 
 Different decompositions of the same composite are coherently identified by horn filling, so composition is well‑behaved.
 
 \begin{cassiebox}
@@ -575,6 +632,19 @@ The suite outputs, for each token $x$, its membership set $\mathrm{mem}(x)\subse
 \mathbf{Mem}(x) \;:=\; \Sigma\,(j:J).\; x\in B_j.
 \]
 An inhabitant is a \emph{way} that token $x$ is realized in the cover (a basin index with its witness).
+
+\begin{tcolorbox}[colback=blue!3, colframe=blue!40, title=\textbf{Run Specification (Chapter 2 Demo)}]
+\begin{tabular}{ll}
+\textbf{Encoder:} & DeBERTa-v3-base, layer 9 (768 dimensions) \\
+\textbf{Tokenizer:} & DeBERTa WordPiece (subwords kept as tokens) \\
+\textbf{Token count:} & $n = 847$ tokens in slice \\
+\textbf{Clustering:} & Spherical $k$-means with cosine distance, $k=12$ \\
+\textbf{Basin radii:} & $r_j = 0.85$-quantile of within-cluster angular distances \\
+\textbf{Witness selection:} & All content tokens in $B_i \cap B_j$ (stopwords retained) \\
+\end{tabular}
+\end{tcolorbox}
+
+\emph{Note:} Tokens with $\mathrm{mem}(x) = \varnothing$ in Table~\ref{tab:mem-probes} are outliers---points outside all basin caps at the chosen radii. They are retained in the token set but contribute no edges to $K_{\Tok}(R)$.
 
 % === Table 1: mem(x) for our probes ===
 \begin{table}[htbp]
@@ -709,7 +779,7 @@ The same files power our probe figure (Čech solid, E$^\infty$ dashed).
 \subsection{Three Worked Micro‑Examples on the Running Slice}
 \label{sec:micro-examples}
 
-Fix the probe set used in Figs.~\ref{fig:cech-only-3d}–\ref{fig:cech-kan-overlay-3d}. 
+Fix the probe set used in Fig.~\ref{fig:cech-tokens}. 
 Table~\ref{tab:mem-probes} lists $\mathrm{mem}(x)$ for each probe; 
 Tables~\ref{tab:cech-pairs}–\ref{tab:kan-paths} show, respectively, direct Čech intersections (solid edges) and one shortest basin path when no solid edge exists (dashed edges). 
 Table~\ref{tab:kan-paths-witness} then annotates each hop with the \emph{witness words} that inhabit both basin caps.
@@ -881,7 +951,7 @@ We record the HoTT rules used in Chapter~3. All equalities are identity types; $
 
 \inferrule*[right=ap-Functoriality]
 { f:A\to B \quad p:x{=}y \quad q:y{=}z }
-{ \ap{f}{q\circ p}\ \equiv\ \ap{f}{q}\circ \ap{f}{p} }
+{ \ap{f}{q\circ p}\ \simeq\ \ap{f}{q}\circ \ap{f}{p} }
 
 \inferrule*[right=ap-Refl/Inv]
 { f:A\to B \quad p:x{=}y }
@@ -902,7 +972,7 @@ Let $B:A\to\Type$ and $f:\prod_{x:A} B(x)$.
 
 \inferrule*[right=Transport-Functoriality]
 { p:x{=}y \quad q:y{=}z }
-{ \transportargs{B}{q\circ p}\ \equiv\ \transportargs{B}{q}\circ \transportargs{B}{p} }
+{ \transportargs{B}{q\circ p}\ \simeq\ \transportargs{B}{q}\circ \transportargs{B}{p} }
 
 \inferrule*[right=Transport-Refl/Const]
 {~}
@@ -955,6 +1025,10 @@ The interpretation of homotopy types as dependent contexts of data over an obser
 
 The HoTT framework thus supplies the local calculus of coherence for a single text.
 In the next chapter we extend it to evolving texts—where the nerve itself changes over time—and show that the same logic scales to trajectories of meaning.
+
+\subsection*{Bridge to Chapter 3}
+
+In Chapter~3, each time slice $\tau$ yields its own cover $\Ucov_\tau$ on the sphere, its own nerve $N(\Ucov_\tau)$, and its own Kan replacement $\ET(\tau)$. This chapter has built the single-slice version of that machinery. The only new ingredient in Chapter~3 is \emph{time}: how we compare slices, define carry and rupture between them, and track the evolution of sense as a presheaf over a category of moments. The static geometry becomes dynamic; the snapshot learns to breathe.
 
 
 
